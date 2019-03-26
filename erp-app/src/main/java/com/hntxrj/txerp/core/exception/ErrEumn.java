@@ -1,0 +1,164 @@
+package com.hntxrj.txerp.core.exception;
+
+public enum ErrEumn {
+    USER_NO_EXIT(-10000, "用户不存在"),
+    ADD_USER_ERR(-10001, "添加用户失败"),
+    UPDATE_USER_PARAMS_ERR(-10002, "修改用户-非法参数"),
+    UPDATE_USER_ERR(-10003, "修改用户-非法参数"),
+    DELECT_USER_ERR(-10004, "删除用户失败"),
+    LOGIN_ERR(-10005, "用户名或密码错误"),
+    EXPIRE_TOKEN(-10006, "身份认证过期,请重新登录"),
+    PARAM_IS_NULL(-10007, "参数为空"),
+
+
+    ADD_USER_UID_IS_NULL(-10008, "uid不能为空！"),
+    ADD_USER_PASSWORD_IS_NULL(-10008, "密码不能为空！"),
+    ADD_USER_USERNAME_IS_NULL(-10009, "用户名不能为空！"),
+    ADD_USER_PHONE_IS_NULL(-10010, "手机号不能为空！"),
+    ADD_USER_STATUS_IS_NULL(-10011, "状态不能为空！"),
+    ADD_USER_ENTERPRISE_IS_NULL(-10012, "企业不能为空！"),
+    ADD_USER_IS_NULL(-10012, "添加用户对象为空！"),
+
+    AUTH_GROUP_NULL(-10015, "权限组对象为空！"),
+    ENTERPRISE_NULL(-10016, "企业id为空！"),
+    UPDATEUSER_NULL(-10017, "更新用户为空！"),
+    AUTH_GROUP_NAME_NULL(-10018, "权限组名称为空！"),
+
+    EDIT_AUTH_GROUP_ERROR(-10013, "编辑权限组失败！"),
+
+
+    TOKEN_IS_NULL(-10014, "token为空！"),
+
+
+    ADD_ENTERPRISE_NULL(-10019, "企业对象不能为空！"),
+    ADD_ENTERPRISE_SHORT_NAME_NULL(-10020, "企业简称不能为空！"),
+    ADD_ENTERPRISE_NAME_NULL(-10021, "企业名称不能为空！"),
+
+
+    ADD_USER_PHONE_EXIST(-10022, "手机号已注册！"),
+    ENTERPRISE_NAME_EXIST(-10023, "企业名称已存在"),
+    ENTERPRISE_NOEXIST(-10024, "企业不存在!"),
+    ENTERPRISE_ID_NOTEXIST(-10025, "企业代号不存在!"),
+
+    PUBLIC_INFO_NOTEXIST(-10026, "公共信息不存在!"),
+    AUTH_PASSWORD_FAIL(-10027, "密码认证失败"),
+
+
+    NOT_LOGIN(-20000, "未登录请先登录！"),
+
+    NOT_PERMISSION(-20001, "您没有该操作的权限，请联系系统管理员！"),
+
+    NOT_BIND_ACCOUNT(-20002, "没有绑定账号！"),
+
+    OPENID_TYPE_CANNOT_NULL(-20003, "绑定账号和账号类型不能为空！"),
+    THIS_OPENID_USED(-20004, "该账号已绑定用户！"),
+    THIS_WECHAT_BIND_ACCOUNT_TOO_MANY(-20005, "该微信绑定帐号过多!"),
+
+    ENTERPRISE_NOT_OPEN_PROJECT(-20006, "该企业未开启该项目！"),
+
+    USER_CANNOT_LOGIN(-20007, "该帐号被禁止登录！"),
+
+    ACCOUNT_NUMBER_BIND_WECHAT_CANNOT_LOGIN(-20008, "该帐号已绑定微信，禁止登录"),
+    _PID_NOT_FIND_IN_HEADER(-20009, "在请求头中找不到pid"),
+    THE_USER_ALREADY_BOUND_THIS_TYPE_ACCOUNT(-20010, "该用户已经绑定过该类型帐号了!"),
+
+    ONLY_ADMINISTRATOR_CAN_DO_IT(-20011, "只有超级管理员能进行此操作！"),
+
+    PROJECT_LIFE_SPAN_NOT_EXIST(-20012, "时长不存在！"),
+
+    SEND_AUTH_CODE_ERROR(-20013, "发送验证码失败！"),
+
+    AUTH_CODE_ERROR(-20014, "验证码错误!"),
+
+
+    /*
+    销售模块异常
+     */
+    // 工程名称
+    ENGINEERING_ID_CANNOT_NULL_OR_ZERO(-100001, "工程名称不能为空！"),
+
+    ENGINEERING_CODE_CANNOT_NULL(-100002, "工程代号不能为空!"),
+
+    ENGINEERING_FULL_NAME_CANNOT_NULL(-100003, "工程全称不能为空！"),
+
+    ENGINEERING_SHORT_NAME_CANNOT_NULL(-100004, "工程简称不能为空！"),
+    ENGINEERING_NOT_FIND(-100004, "找不到工程！"),
+
+
+    // 施工单位
+    BUILDER_CODE_CANNOT_NULL(-100005, "施工代号不能为空"),
+
+    BUILDER_NAME_CANNOT_NULL(-100006, "施工名称不能为空"),
+    BUILDER_NOT_FIND(-100007, "找不到施工单位"),
+
+
+    // 合同
+    ADD_CONTRACRT_ERROR(-100100, "添加合同失败"),
+    USER_NOT_IN_ENTERPRISE(-100101, "用户不在该查询的企业中"),
+    CONTRACT_SALESMANUID_NULL(-100102, "销售员代号不能为空"),
+    CONTRACT_CMTYPE_NULL(-100103, "合同类型不能为空"),
+    CONTRACT_PRICESTYLE_NULL(-100104, "价格执行方式不能为空"),
+    CONTRACT_CMUID_NULL(-100104, "合同UID不能为空"),
+
+    CONTRACRT_NOT_FOUND(-100105, "找不到主合同！"),
+
+    CONTRACRT_DETAILS_NOT_FOUND(-100106, "找不到子合同"),
+    STG_ID_CANNOT_NULL(-100107, "标号不能为空"),
+    PROJECT_NAME_NULL(-100108, "项目名不能为空"),
+    PROJECT_CODE_NULL(-100109, "项目代号不能为空"),
+    PUMP_TYPE_NAME_NULL(-100110, "泵车类别名称不能为空！"),
+    PUMP_TYPE_CODE_NULL(-100111, "泵车类别代号不能为空！"),
+
+
+    ADD_ENTERPRISE_AFTER_SALE_ERROR(-100112, "添加企业售后信息失败！"),
+
+    DING_GET_ACCESS_ERROR(-100113, "连接钉钉服务器失败！"),
+    BIND_VALUE_NULL(-100114, "绑定账号为空！"),
+
+
+    ENTERPRISE_AFTER_SALE_LOG_ADD_ERROR(-100115, "企业售后信息添加失败！"),
+    ENTERPRISE_AFTER_SALE_LOG_NOT_FOUND(-100116, "找不到售后信息！"),
+
+
+    UPLOAD_FILE_ERROR(-100117, "上传文件失败"),
+    DOWNLOAD_FILE_ERROR(-100118, "下载文件失败！"),
+
+    PROJECT_HEAD_MAN_CANNOT_NULL(-100119, "项目负责人不能为空"),
+    PROJECT_CHECK_MAN_CANNOT_NULL(-100120, "项目验收人不能为空"),
+    PROJECT_SAVE_ERROR(-100121, "项目保存失败"),
+    PROJECT_NOT_FOUND(-100122, "项目不存在"),
+    ONLY_CHECK_MAN_OR_HEAD_MAN_CAN_START_PROJECT(-100123, "只有项目负责人和项目验收人可以开始项目"),
+    ONLY_HEAD_MAN_CAN_FINSH_PROJECT(-100124, "只有项目负责人可以完成项目"),
+    ONLY_CHECK_MAN_CAN_CHECK_PROJECT(-100125, "只有项目验收人可以验收项目"),
+
+    WORK_RECORD_ADD_ERROR(-100126, "添加待办事项失败！"),
+    WORK_RECORD_UP_ERROR(-100127, "更新待办事项失败！"),
+    ADD_SYSTEM_LOG_ERROR(-100128, "添加系统日志失败！"),
+    ENTERPRISE_TYPE_NOTEXIST(-100129, "企业状态不存在"),
+    SETTING_ENTERPRISE_NOT_NULL(-100130, "企业id不存在"),
+    SETTING_VALUE_NOT_NULL(-100131, "设置值不可为空"),
+    SETTING_CREATEUID_NOT_NULL(-100132, "创建人ID不可为空"),
+    IMGAGDFILE_FAIL(-100133, "读取地址失败"),
+    TO_TRANSFARTO_IMGFILE_FAIL(-100134, "保存文件失败"),
+    NOT_FOUNDNOT_FILE(-100135, "找不到文件"),
+    ;
+
+
+    private Integer code;
+    private String message;
+
+    public Integer getCode() {
+        return code;
+    }
+
+
+    public String getMessage() {
+        return message;
+    }
+
+    ErrEumn(Integer code, String message) {
+        this.message = message;
+        this.code = code;
+    }
+
+}
