@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.EngineeringMapper">
+
+
+    <select id="engineeringList" resultType="com.hntxrj.txerp.vo.EngineeringVO">
+        <bind name="ecode" value="'%' + engineeringCode + '%'"/>
+        <bind name="ename" value="'%' + engineeringName + '%'"/>
+        <bind name="lman" value="'%' + linkMan + '%'"/>
+
+        select eg.*, e.ep_short_name enterprise_name, u1.username create_user_name, u2.username update_user_name
+        from engineering_master eg
+        left join enterprise e on eg.enterprise_id = e.eid
+        left join user u1 on u1.uid = eg.create_user
+        left join user u2 on u2.uid = eg.update_user
+        where eg.enterprise_id = #{eid}
+        <if test="engineeringCode != null">
+            and eg.engineering_code like #{ecode}
+        </if>
+        <if test="engineeringName != null">
+            and (eg.engineering_full_name like #{ename} or eg.engineering_short_name like #{ename})
+        </if>
+        <if test="linkMan != null">
+            and eg.engineering_link_man like #{lman}
+        </if>
+    </select>
+</mapper>

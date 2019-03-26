@@ -31,7 +31,7 @@ import java.util.List;
 public class BuilderServiceImpl implements BuilderService {
 
 
-    private UserService userService;
+    private final UserService userService;
     private final BuilderRepository builderRepository;
     private JPAQueryFactory queryFactory;
 
@@ -39,7 +39,9 @@ public class BuilderServiceImpl implements BuilderService {
 
 
     @Autowired
-    public BuilderServiceImpl(BuilderRepository builderRepository, EntityManager entityManager, JdbcTemplate jdbcTemplate) {
+    public BuilderServiceImpl(UserService userService, BuilderRepository builderRepository,
+                              EntityManager entityManager, JdbcTemplate jdbcTemplate) {
+        this.userService = userService;
         this.builderRepository = builderRepository;
         queryFactory = new JPAQueryFactory(entityManager);
         this.jdbcTemplate = jdbcTemplate;
