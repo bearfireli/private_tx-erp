@@ -3,24 +3,29 @@ package com.hntxrj.txerp.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.hntxrj.txerp.core.web.ResultVO;
+import com.hntxrj.txerp.mapper.PublicInfoMapper;
 import com.hntxrj.txerp.service.PublicInfoService;
 import com.hntxrj.txerp.entity.base.PublicInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedList;
+
 @RestController
-@RequestMapping("/v1/pi")
+@RequestMapping({"/v1/pi", "/pi"})
 @Slf4j
 @Validated
 public class PublicInfoControllerV1 {
 
 
     private final PublicInfoService publicInfoService;
+
 
     private ResultVO resultVO;
 
@@ -33,7 +38,7 @@ public class PublicInfoControllerV1 {
         resultVO.setData("");
     }
 
-    @RequestMapping("/add")
+    @PostMapping("/add")
     public String add(PublicInfo publicInfo) {
         log.info("【添加公共信息】publicInfo={}", publicInfo);
         resultVO.setData(
@@ -41,7 +46,7 @@ public class PublicInfoControllerV1 {
         return JSON.toJSONString(resultVO);
     }
 
-    @RequestMapping("/update")
+    @PostMapping("/update")
     public String update(PublicInfo publicInfo) {
         log.info("【修改公共信息】publicInfo={}", publicInfo);
         resultVO.setData(
@@ -57,7 +62,7 @@ public class PublicInfoControllerV1 {
         return JSON.toJSONString(resultVO);
     }
 
-    @RequestMapping("/select")
+    @PostMapping("/select")
     public String select(Integer fid, @RequestParam(required = false) String name,
                          @RequestParam(defaultValue = "0") Integer status,
                          @RequestParam(defaultValue = "0") Integer delete) {
@@ -67,6 +72,13 @@ public class PublicInfoControllerV1 {
                 JSON.toJSONString(publicInfoService.getPublicInfo(fid, name, delete, status))
         );
         return JSON.toJSONString(resultVO);
+    }
+
+
+    @RequestMapping("/dropDown")
+    public ResultVO dropDown(String fVal) {
+        resultVO.setData(publicInfoService.getPublicInfoByFValue(fVal));
+        return resultVO;
     }
 
 }

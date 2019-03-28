@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.PublicInfoMapper">
+
+    <select id="findPublicInfo" resultType="com.hntxrj.txerp.entity.base.PublicInfo">
+        select *
+        from public_info
+        where fid = #{fid}
+        <if test="name != null">
+            and name=#{name}
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="del != null">
+            and `delete` = #{del}
+        </if>
+    </select>
+    <select id="findPublicInfoByFValue" resultType="com.hntxrj.txerp.entity.base.PublicInfo">
+        select *
+        from public_info
+        where fid = (select fid from public_info where value = #{val})
+    </select>
+</mapper>

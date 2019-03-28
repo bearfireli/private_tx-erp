@@ -20,4 +20,7 @@ public interface PublicInfoService {
     PublicInfo deletePublicInfo(Integer id) throws ErpException;
 
     List<PublicInfo> getPublicInfo(Integer fid, String name, Integer delete, Integer status);
+
+    List<PublicInfo> getPublicInfoByFValue(String fValue);
+
 }

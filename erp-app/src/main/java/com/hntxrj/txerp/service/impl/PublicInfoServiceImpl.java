@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.service.impl;
 
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.mapper.PublicInfoMapper;
 import com.hntxrj.txerp.service.PublicInfoService;
 import com.hntxrj.txerp.entity.base.PublicInfo;
 import com.hntxrj.txerp.entity.base.QPublicInfo;
@@ -29,13 +30,15 @@ public class PublicInfoServiceImpl extends BaseServiceImpl implements PublicInfo
     private final PublicInfoRepository publicInfoRepository;
     private JPAQueryFactory queryFactory;
 
+    private final PublicInfoMapper publicInfoMapper;
 
     @Autowired
     public PublicInfoServiceImpl(
-            PublicInfoRepository publicInfoRepository, EntityManager entityManager) {
+            PublicInfoRepository publicInfoRepository, EntityManager entityManager, PublicInfoMapper publicInfoMapper) {
         super(entityManager);
 
         this.publicInfoRepository = publicInfoRepository;
+        this.publicInfoMapper = publicInfoMapper;
         queryFactory = getQueryFactory();
     }
 
@@ -65,24 +68,12 @@ public class PublicInfoServiceImpl extends BaseServiceImpl implements PublicInfo
     }
 
     @Override
-    public List<PublicInfo> getPublicInfo(
-            @NotNull Integer fid, String name, @NotNull Integer delete,
-            @NotNull Integer status) {
-        QPublicInfo qPublicInfo = QPublicInfo.publicInfo;
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qPublicInfo.fid.eq(fid)
-                .and(qPublicInfo.delete.eq(delete)));
-        if (status != 99) {
-            // 代号99表示查询全部
-            builder.and(qPublicInfo.status.eq(status));
-        }
-        if (name != null) {
-            builder.and(qPublicInfo.name.like("%" + name + "%"));
-        }
+    public List<PublicInfo> getPublicInfo(Integer fid, String name, Integer delete, Integer status) {
+        return publicInfoMapper.findPublicInfo(fid, status, delete, name);
+    }
 
-        return queryFactory.selectFrom(qPublicInfo)
-                .where(builder)
-                .orderBy(qPublicInfo.value.asc())
-                .fetch();
+    @Override
+    public List<PublicInfo> getPublicInfoByFValue(String fValue) {
+        return publicInfoMapper.findPublicInfoByFValue(fValue);
     }
 }

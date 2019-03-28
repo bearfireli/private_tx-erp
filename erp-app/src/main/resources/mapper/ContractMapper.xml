@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.ContractMapper">
+    <select id="contractList" resultType="com.hntxrj.txerp.vo.ContractListVO">
+        <bind name="bname" value="'%' + builderName + '%'"/>
+        <bind name="ename" value="'%' + engineeringName + '%'"/>
+        <bind name="contractId" value="'%' + contractId + '%'"/>
+
+        SELECT cd.*,
+        e.*,
+        c.*,
+        s.salesman_name,
+        u1.username createUserName,
+        u2.username verifyUserName,
+        u3.username secondVerifyUserName
+        from contract_details cd
+        left join contract_master c on cd.cm_uid = c.cm_uid
+        left join engineering_master e on cd.engineering_id = e.id
+        left join builder_master b on cd.builder_id = b.id
+        left join salesman s on c.salesman_uid = s.id
+        left join user u1 on cd.create_user = u1.uid
+        left join user u2 on cd.verify_user = u2.uid
+        left join user u3 on cd.second_verify_user = u3.uid
+        where c.enterprise_id=#{eid}
+        <if test="builderName != null">
+            and (b.builder_name like #{bname} or b.builder_short_name like #{bname})
+        </if>
+        <if test="engineeringName != null">
+            and (e.engineering_full_name like #{ename} or e.engineering_short_name like #{ename})
+        </if>
+        <if test="contractId != null">
+            and c.cm_id like #{contractId}
+        </if>
+        <if test="saleUid != null">
+            and c.salesman_uid=#{saleUid}
+        </if>
+        <if test="contractStatus != null">
+            and cd.contract_status = #{contractStatus}
+        </if>
+        <if test="del != null">
+            and cd.del = #{del}
+        </if>
+        order by c.cm_id desc
+    </select>
+</mapper>

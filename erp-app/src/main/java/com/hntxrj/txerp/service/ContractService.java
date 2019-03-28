@@ -17,9 +17,8 @@ public interface ContractService {
     ContractDetails saveContractDetails(ContractDetails contractDetails, String token) throws ErpException;
 
     PageVO<ContractListVO> list(String builderName, String engineeringName, String contractId,
-                                Integer saleUid, Integer contractStatus, Integer del,
-                                long page, long pageSize, String token) throws ErpException;
-
+                                Integer saleUid, Integer contractStatus, Integer del, Integer eid,
+                                Integer page, Integer pageSize, String token) throws ErpException;
 
     ContractDetails getContractDetails(String cdUid) throws ErpException;
 

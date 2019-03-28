@@ -1,5 +1,9 @@
 package com.hntxrj.txerp.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.core.util.PageInfoUtil;
+import com.hntxrj.txerp.mapper.ContractMapper;
 import com.hntxrj.txerp.service.ContractService;
 import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.entity.sell.*;
@@ -12,14 +16,11 @@ import com.hntxrj.txerp.entity.sell.QPriceMarkup;
 import com.hntxrj.txerp.entity.sell.QPumpPrice;
 import com.hntxrj.txerp.entity.sell.QSalesman;
 import com.hntxrj.txerp.entity.util.EntityTools;
-import com.hntxrj.txerp.core.exception.*;
-import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.service.UserService;
 import com.hntxrj.txerp.mapper.SystemSqlMapper;
 import com.hntxrj.txerp.util.SQLUtil;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.entity.sell.*;
 import com.hntxrj.txerp.repository.*;
 import com.hntxrj.txerp.vo.ContractListVO;
 import com.hntxrj.txerp.vo.PageVO;
@@ -29,7 +30,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +37,6 @@ import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import com.hntxrj.txerp.repository.*;
 
 @Service
 @Slf4j
@@ -57,6 +55,7 @@ public class ContractServiceImpl implements ContractService {
     private final ContractPumpPriceRepository contractPumpPriceRepository;
     private final JdbcTemplate jdbcTemplate;
     private final SystemSqlMapper systemSqlMapper;
+    private final ContractMapper contractMapper;
 
     @Autowired
     public ContractServiceImpl(ContractRepository contractRepository, UserService userService, EntityManager entityManager,
@@ -68,7 +67,8 @@ public class ContractServiceImpl implements ContractService {
                                ContractGradePriceRepository contractGradePriceRepository,
                                ContractPriceMarkupRepository contractPriceMarkupRepository,
                                ContractPumpPriceRepository contractPumpPriceRepository,
-                               JdbcTemplate jdbcTemplate, SystemSqlMapper systemSqlMapper) {
+                               JdbcTemplate jdbcTemplate, SystemSqlMapper systemSqlMapper,
+                               ContractMapper contractMapper) {
         this.contractRepository = contractRepository;
         this.userService = userService;
         this.queryFactory = new JPAQueryFactory(entityManager);
@@ -82,6 +82,7 @@ public class ContractServiceImpl implements ContractService {
         this.contractPumpPriceRepository = contractPumpPriceRepository;
         this.jdbcTemplate = jdbcTemplate;
         this.systemSqlMapper = systemSqlMapper;
+        this.contractMapper = contractMapper;
     }
 
 
@@ -183,58 +184,20 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public PageVO<ContractListVO> list(String builderName, String engineeringName, String contractId,
-                                       Integer saleUid, Integer contractStatus, Integer del,
-                                       long page, long pageSize, String token) throws ErpException {
+                                       Integer saleUid, Integer contractStatus, Integer del, Integer eid,
+                                       Integer page, Integer pageSize, String token) throws ErpException {
 
-        QContractDetails qContractDetails = QContractDetails.contractDetails;
         User user = userService.tokenGetUser(token);
 
-        if (user == null) {
-            throw new ErpException(ErrEumn.USER_NO_EXIT);
-        }
-        // 获取用户所有企业
-        List<Integer> enterpriseIds = userService.getEnterpriseIdsByToken(token);
+        PageHelper.startPage(page, pageSize);
+
+        List<ContractListVO> listVOS = contractMapper.contractList(builderName, engineeringName,
+                contractId, saleUid, contractStatus, del, eid);
 
 
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qContractDetails.enterprise.in(enterpriseIds));
-
-
-        String sql = systemSqlMapper.getSqlByName(SQLUtil.CONTRACT_LIST);
-
-        String sqlBuilder =
-                " where (b.builder_name like '%" + builderName +
-                        "%' or b.builder_short_name like '%" + builderName + "%')\n" +
-                        "  and (eg.engineering_full_name like '%" + engineeringName +
-                        "%' or eg.engineering_short_name like '%" + engineeringName + "%')\n" +
-                        "  and c.cm_id like '%" + contractId + "%'\n";
-
-        if (saleUid != null && saleUid != 0) {
-            sqlBuilder += "  and salesman_uid = " + saleUid + " ";
-        }
-        if (contractStatus != null) {
-            sqlBuilder += "  and contract_status = " + contractStatus + " ";
-        }
-
-        if (del != null) {
-            sqlBuilder += "  and cd.del = " + del + " \n";
-        }
-        sqlBuilder += "order by cd.update_time desc \n";
-        sqlBuilder += "limit " + (page - 1) * pageSize + ", " + pageSize + " ";
-
-        sql += sqlBuilder;
-
-
-        List<ContractListVO> listVOS = jdbcTemplate.query(sql, new Object[]{},
-                new BeanPropertyRowMapper<>(ContractListVO.class));
-
-        Map<String, Object> rs =
-                jdbcTemplate.queryForMap(systemSqlMapper.getSqlByName(SQLUtil.CONTRACT_NUM) + sqlBuilder);
-
-        PageVO<ContractListVO> pageVO = new PageVO<>();
-        pageVO.init(Integer.parseInt(String.valueOf(rs.get("num"))), page, listVOS);
-
-        return pageVO;
+        PageInfo<ContractListVO> pageInfo = new PageInfo<>(listVOS);
+        PageInfoUtil<ContractListVO> contractListVO = new PageInfoUtil<>();
+        return contractListVO.init(pageInfo);
     }
 
     @Override

@@ -178,12 +178,13 @@ public class ContractController {
         Integer saleUid = paramsObj.getInteger("saleUid");
         Integer contractStatus = paramsObj.getInteger("contractStatus");
         Integer del = paramsObj.getInteger("del");
-        long page = paramsObj.getLong("page") == null ? 1 : paramsObj.getLong("page");
-        long pageSize = paramsObj.getLong("pageSize") == null ? 10 : paramsObj.getLong("pageSize");
+        Integer page = paramsObj.getInteger("page") == null ? 1 : paramsObj.getInteger("page");
+        Integer pageSize = paramsObj.getInteger("pageSize") == null ? 10 : paramsObj.getInteger("pageSize");
 
-        resultVO.setData(JSONObject.parseObject(JSON.toJSONString(
+        resultVO.setData(
                 contractService.list(builderName, engineeringName, contractId, saleUid,
-                        contractStatus, del, page, pageSize, request.getHeader("token")))));
+                        contractStatus, del, Integer.parseInt(request.getHeader("enterprise")),
+                        page, pageSize, request.getHeader("token")));
 
         return JSON.toJSONString(resultVO);
     }
