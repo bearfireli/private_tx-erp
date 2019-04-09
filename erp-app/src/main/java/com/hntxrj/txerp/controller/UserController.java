@@ -307,4 +307,16 @@ public class UserController {
     }
 
 
+    @PostMapping("/getUserFavorite")
+    public ResultVO getUserFavoriteConfig(@RequestHeader String token) throws ErpException {
+        resultVO.setData(userService.getUserFavoriteConfig(token));
+        return resultVO;
+    }
+
+
+    @PostMapping("/setUserFavorite")
+    public ResultVO setUserFavoriteConfig(@RequestHeader String token, String config) throws ErpException {
+        userService.setUserFavoriteConfig(token, config);
+        return resultVO;
+    }
 }

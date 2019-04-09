@@ -50,8 +50,9 @@ public class AuthFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-        if ("OPTIONS".equals(request.getMethod())){
+        if ("OPTIONS".equals(request.getMethod())) {
             chain.doFilter(req, resp);
+            return;
         }
         HttpServletResponse response = (HttpServletResponse) resp;
         String token = request.getParameter("token");
@@ -66,12 +67,16 @@ public class AuthFilter implements Filter {
         for (String publicApi : PUBLIC_API_LIST) {
             if (publicApi.equals(uri)) {
                 chain.doFilter(req, resp);
+                return;
+
             }
         }
 
         for (String publicPath : PUBLIC_PATH) {
             if (publicPath.equals(uri)) {
                 chain.doFilter(req, resp);
+                return;
+
             }
         }
 

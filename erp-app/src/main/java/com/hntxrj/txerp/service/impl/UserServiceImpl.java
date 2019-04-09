@@ -375,6 +375,25 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
+    public String getUserFavoriteConfig(String token) throws ErpException {
+
+        User user = tokenGetUser(token);
+
+        return user.getUserFavoriteConfig();
+    }
+
+    @Override
+    public void setUserFavoriteConfig(String token, String config) throws ErpException {
+
+        User user = tokenGetUser(token);
+
+        user.setUserFavoriteConfig(config);
+
+        updateUser(user);
+
+    }
+
+    @Override
     public void loginOut(String token) {
         UserLogin userLogin;
         if ((userLogin = userLoginRepository.findByUserToken(token)) != null) {

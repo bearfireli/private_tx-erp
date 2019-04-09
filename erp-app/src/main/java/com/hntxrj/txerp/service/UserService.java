@@ -190,4 +190,9 @@ public interface UserService {
 
     void getHeader(String token, HttpServletResponse response) throws ErpException;
 
+
+    String getUserFavoriteConfig(String token) throws ErpException;
+
+    void setUserFavoriteConfig(String token, String config) throws ErpException;
+
 }

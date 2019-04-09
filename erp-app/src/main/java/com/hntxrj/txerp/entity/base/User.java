@@ -28,6 +28,6 @@ public class User implements Serializable {
     private Date createTime;
     @Column(insertable = false, updatable = false)
     private Date updateTime;
-
+    private String userFavoriteConfig;
 
 }
