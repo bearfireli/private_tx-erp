@@ -64,8 +64,8 @@ public class PublicInfoControllerV1 {
 
     @PostMapping("/select")
     public String select(Integer fid, @RequestParam(required = false) String name,
-                         @RequestParam(defaultValue = "0") Integer status,
-                         @RequestParam(defaultValue = "0") Integer delete) {
+                         @RequestParam(required = false) Integer status,
+                         @RequestParam(required = false) Integer delete) {
         log.info("【查询公共信息】fid={}，status={}， delete={}", fid, status, delete);
 
         resultVO.setData(

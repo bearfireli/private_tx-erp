@@ -6,7 +6,7 @@
         select *
         from public_info
         where fid = #{fid}
-        <if test="name != null">
+        <if test="name != null and name != ''">
             and name=#{name}
         </if>
         <if test="status != null">

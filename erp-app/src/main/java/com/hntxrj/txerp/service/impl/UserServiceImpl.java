@@ -389,7 +389,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         user.setUserFavoriteConfig(config);
 
-        updateUser(user);
+        updateUserNotEncrypt(user);
 
     }
 
@@ -545,10 +545,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         if (user.getPassword() != null) {
             // 修改密码删除所有令牌
-//            List<UserLogin> userLogins = userLoginRepository.findAllByUserId(user.getUid());
-//            userLogins.forEach(userLogin -> {
-//                redisUtil.redisRemoveValue(RedisDataTypeEnums.TOKEN + userLogin.getUserToken());
-//            });
             deleteUserToken(user.getUid());
             oldUser.setPassword(EncryptUtil.encryptPassword(user.getPassword()));
         }
@@ -567,6 +563,50 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         oldUser.setStatus(user.getStatus());
 
+
+        try {
+            userRepository.save(oldUser);
+//            cacheUser(oldUser);
+            return userToUserVO(oldUser, true);
+        } catch (Exception e) {
+            // 处理入库失败情况
+            throw new ErpException(ErrEumn.UPDATE_USER_ERR);
+        }
+    }
+
+
+    /**
+     * 修改用户，该方法不会修改密码
+     *
+     * @param user 返回以后
+     * @return
+     * @throws ErpException 异常
+     */
+    private UserVO updateUserNotEncrypt(User user) throws ErpException {
+        if (user == null) {
+            throw new ErpException(ErrEumn.ADD_USER_IS_NULL);
+        }
+        if (user.getUid() == null || user.getUid() == 0) {
+            throw new ErpException(ErrEumn.ADD_USER_UID_IS_NULL);
+        }
+        User oldUser = findById(user.getUid());
+        if (user.getUsername() != null) {
+            oldUser.setUsername(user.getUsername());
+        }
+        if (user.getPhone() != null) {
+            oldUser.setPhone(user.getPhone());
+        }
+        if (user.getHeader() != null) {
+            oldUser.setHeader(user.getHeader());
+        }
+        if (user.getEmail() != null) {
+            oldUser.setEmail(user.getEmail());
+        }
+        if (user.getUid() <= 0) {
+            //当修改用户或找不到该用户的id时
+            throw new ErpException(ErrEumn.UPDATE_USER_PARAMS_ERR);
+        }
+        oldUser.setStatus(user.getStatus());
 
         try {
             userRepository.save(oldUser);
