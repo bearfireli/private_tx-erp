@@ -20,32 +20,27 @@ public class RedisUtil<T> {
         this.redisTemplate = redisTemplate;
     }
 
-    //添加缓存数据
     public void stringRedisSetKey(String key, String value) {
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
         ops.set(key, value, 10, TimeUnit.MINUTES);// 10分钟后过期
     }
 
-    //查询缓存数据
     public String stringRedisGetValue(String key) {
         ValueOperations<String, String> ops = this.stringRedisTemplate.opsForValue();
         return ops.get(key);
     }
 
 
-    //添加缓存数据
     public void redisSetKey(String key, T object) {
         ValueOperations ops = redisTemplate.opsForValue();
         ops.set(key, object, 10, TimeUnit.MINUTES);// 10分钟后过期
     }
 
-    //查询缓存数据
     public T redisGetValue(String key) {
         ValueOperations ops = this.redisTemplate.opsForValue();
         return (T) ops.get(key);
     }
 
-    //删除缓存数据
     public void redisRemoveValue(String key) {
         redisTemplate.delete(key);
     }

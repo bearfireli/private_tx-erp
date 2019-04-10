@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.StatisticsMapper">
+
+    <insert id="insertStatistics">
+        insert statistics (statistics_code, statistics_type, enterprise, statistics_val)
+        values (#{statisticsCode}, #{statisticsType}, #{enterprise}, #{statisticsVal})
+    </insert>
+</mapper>
