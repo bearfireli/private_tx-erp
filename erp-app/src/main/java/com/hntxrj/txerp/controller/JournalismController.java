@@ -30,46 +30,46 @@ public class JournalismController {
         resultVO.setData(null);
     }
     @PostMapping("/selectjournalism")
-    public String selectJournalism(Journalism journalism,@RequestHeader String token, HttpServletResponse response,
+    public ResultVO selectJournalism(Journalism journalism,@RequestHeader String token, HttpServletResponse response,
                                    @RequestParam(defaultValue = "1") long page,
                                    @RequestParam(defaultValue = "10") long pageSize) throws Exception {
-        resultVO.setData(JSON.toJSONString(journalismService.selectJournalism(journalism,token,response,page,pageSize)));
-        return JSON.toJSONString(resultVO);
+        resultVO.setData(journalismService.selectJournalism(journalism,token,response,page,pageSize));
+        return resultVO;
     }
     @PostMapping("/journalismlist")
-    public String journalismlist(Journalism journalism,@RequestHeader String token) throws Exception {
+    public ResultVO journalismlist(Journalism journalism,@RequestHeader String token) throws Exception {
         resultVO.setData(journalismService.Journalismlist(journalism,token));
-        return JSON.toJSONString(resultVO);
+        return resultVO;
     }
     @PostMapping("/getJournalism")
-    public String getJournalism(Integer id)throws Exception{
+    public ResultVO getJournalism(Integer id)throws Exception{
         resultVO.setData(journalismService.getJournalism(id));
-        return JSON.toJSONString(resultVO);
+        return resultVO;
     }
     @PostMapping("/updatejournalism")
-    public String updateJournalism(Journalism journalism)throws Exception{
-        resultVO.setData(JSON.toJSONString(journalismService.updateJournalism(journalism)));
-        return JSON.toJSONString(resultVO);
+    public ResultVO updateJournalism(Journalism journalism)throws Exception{
+        resultVO.setData(journalismService.updateJournalism(journalism));
+        return resultVO;
     }
     @PostMapping("/deleteJournalism")
-    public String deleteJournalism(Integer id) throws Exception {
-        resultVO.setData(JSON.toJSONString(journalismService.deleteJournalism(id)));
-        return JSON.toJSONString(resultVO);
+    public ResultVO deleteJournalism(Integer id) throws Exception {
+        resultVO.setData(journalismService.deleteJournalism(id));
+        return resultVO;
     }
 
     @PostMapping("/saveJournalism")
-    public String  saveJournalism(Journalism journalism , @RequestHeader String token)throws Exception{
+    public ResultVO  saveJournalism(Journalism journalism , @RequestHeader String token)throws Exception{
         resultVO.setData(journalismService.addJournalism(journalism,token));
-        return JSON.toJSONString(resultVO);
+        return resultVO;
     }
 
     @PostMapping("/setHeader")
-    public String setHeader(MultipartFile files,
+    public ResultVO setHeader(MultipartFile files,
                             @RequestHeader String token) throws ErpException {
 
         resultVO.setData(journalismService.setHeader(files, token));
 
-        return JSON.toJSONString(resultVO);
+        return resultVO;
     }
 
 
