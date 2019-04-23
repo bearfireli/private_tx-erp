@@ -313,7 +313,7 @@ public class UserController {
     }
 
     @GetMapping("/header.png")
-    public void header(@RequestHeader String token, HttpServletResponse response) throws ErpException, IOException {
+    public void header(@RequestHeader String token, HttpServletResponse response) throws ErpException{
         userService.getHeader(token, response);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface JournalismService {
 
@@ -36,7 +37,7 @@ public interface JournalismService {
      * @return
      * @throws ErpException
      */
-    String setHeader(MultipartFile files, String token) throws ErpException;
+    Map<String, String> setHeader(MultipartFile files, String token) throws ErpException;
 
     /*查询列表
      * Journalism

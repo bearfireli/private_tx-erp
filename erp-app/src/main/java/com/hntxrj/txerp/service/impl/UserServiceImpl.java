@@ -350,7 +350,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
 
     @Override
-    public void getHeader(String token, HttpServletResponse response) throws ErpException, IOException {
+    public void getHeader(String token, HttpServletResponse response) throws ErpException{
         User user = tokenGetUser(token);
         String fileName = "default.png";
         if (user.getHeader() != null && !user.getHeader().equals("")) {
@@ -360,8 +360,13 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         if (!file.exists()) {
             throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
         }
-        OutputStream outputStream = response.getOutputStream();
-        IOUtils.copy(new FileInputStream(file), outputStream);
+        try {
+            OutputStream outputStream = response.getOutputStream();
+            IOUtils.copy(new FileInputStream(file), outputStream);
+        }catch (Exception e){
+            log.error("【上传头像失败】errorMsg={}", e.getMessage());
+            throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
+        }
     }
 
 

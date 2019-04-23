@@ -190,7 +190,7 @@ public interface UserService {
 
     User setHeader(MultipartFile file, String token) throws ErpException;
 
-    void getHeader(String token, HttpServletResponse response) throws ErpException, IOException;
+    void getHeader(String token, HttpServletResponse response) throws ErpException;
 
 
     String getUserFavoriteConfig(String token) throws ErpException;

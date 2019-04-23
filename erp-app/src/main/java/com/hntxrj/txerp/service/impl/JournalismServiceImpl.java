@@ -83,8 +83,9 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
      * @throws ErpException
      */
     @Override
-    public String setHeader(MultipartFile files, String token ) throws ErpException {
+    public  Map<String, String> setHeader(MultipartFile files, String token ) throws ErpException {
         User user = userService.tokenGetUser(token);
+        Map<String,String> map = new HashMap<>();
         if (user==null){
             throw new ErpException(ErrEumn.USER_NO_EXIT);
         }
@@ -108,9 +109,9 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
                 log.error("【上传文件失败】errorMsg={}", e.getMessage());
                 throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
             }
-
+            map.put("img",reName);
         }
-        return reName;
+        return map;
 
     }
 

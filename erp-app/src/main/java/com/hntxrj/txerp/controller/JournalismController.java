@@ -67,7 +67,7 @@ public class JournalismController {
     public String setHeader(MultipartFile files,
                             @RequestHeader String token) throws ErpException {
 
-        resultVO.setData(JSON.parse(JSON.toJSONString(journalismService.setHeader(files, token))));
+        resultVO.setData(journalismService.setHeader(files, token));
 
         return JSON.toJSONString(resultVO);
     }
