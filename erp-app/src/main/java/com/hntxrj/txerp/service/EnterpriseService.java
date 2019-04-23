@@ -36,7 +36,7 @@ public interface EnterpriseService {
 
     Enterprise addEnterprise(Enterprise enterprise) throws ErpException;
 
-    Enterprise updateEnterprise(Enterprise enterprise) throws ErpException;
+    Enterprise updateEnterprise(Enterprise enterprise, Integer eidCode) throws ErpException;
 
     void deleteEnterprise(Integer eid) throws ErpException;
 

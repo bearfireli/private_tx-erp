@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.EnterpriseMapper">
+
+
+    <update id="updateId" parameterType="com.hntxrj.txerp.entity.base.Enterprise"   >
+        update  enterprise
+        set
+            eid =#{enterpriseOld.eid},
+            ep_name =#{enterpriseOld.epName},
+            ep_short_name =#{enterpriseOld.epShortName},
+            ep_link =#{enterpriseOld.epLink},
+            ep_remark =#{enterpriseOld.epRemark},
+            ep_type =#{enterpriseOld.epType},
+            ep_status =#{enterpriseOld.epStatus},
+            create_time =#{enterpriseOld.createTime},
+            update_time =#{enterpriseOld.updateTime},
+            `delete` =#{enterpriseOld.delete},
+            collection_code =#{enterpriseOld.collectionCode}
+        where
+          eid =#{id}
+    </update>
+</mapper>

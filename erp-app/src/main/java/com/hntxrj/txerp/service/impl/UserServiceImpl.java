@@ -7,7 +7,7 @@ import com.hntxrj.txerp.core.util.EncryptUtil;
 import com.hntxrj.txerp.core.util.IpUtil;
 import com.hntxrj.txerp.core.util.TimeUtil;
 import com.hntxrj.txerp.enums.UserStatusEnums;
-import com.hntxrj.txerp.repository.*;
+import com.hntxrj.txerp.mapper.UserMapper;
 import com.hntxrj.txerp.repository.*;
 import com.hntxrj.txerp.service.UserService;
 import com.hntxrj.txerp.core.exception.ErpException;
@@ -16,13 +16,13 @@ import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.hntxrj.txerp.entity.base.QUserAccount;
 import com.hntxrj.txerp.entity.base.QUserAuth;
 import com.hntxrj.txerp.entity.base.*;
-import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.UserVO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +52,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     private final UserAccountRepository userAccountRepository;
     private final UserAuthRepository userAuthRepository;
 
+    private final UserMapper userMapper;
+
     @Value("${app.user.headerPath}")
     private String headerUploadPath;
 
@@ -66,7 +68,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                            AuthGroupRepository authGroupRepository,
                            UserLoginRepository userLoginRepository,
                            EntityManager entityManager, UserAccountRepository userAccountRepository,
-                           UserAuthRepository userAuthRepository) {
+                           UserAuthRepository userAuthRepository, UserMapper userMapper) {
         super(entityManager);
         this.userRepository = userRepository;
         this.enterpriseRepository = enterpriseRepository;
@@ -74,6 +76,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         this.userLoginRepository = userLoginRepository;
         this.userAccountRepository = userAccountRepository;
         this.userAuthRepository = userAuthRepository;
+        this.userMapper = userMapper;
         this.queryFactory = getQueryFactory();
     }
 
@@ -345,34 +348,29 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                 new ErpException(ErrEumn.USER_NO_EXIT));
     }
 
+
     @Override
-    public void getHeader(String token, HttpServletResponse response) throws ErpException {
+    public void getHeader(String token, HttpServletResponse response) throws ErpException{
         User user = tokenGetUser(token);
-        String fileName = "defualt.png";
+        String fileName = "default.png";
         if (user.getHeader() != null && !user.getHeader().equals("")) {
             fileName = user.getHeader();
         }
-
         File file = new File(headerUploadPath + fileName);
         if (!file.exists()) {
-            response.setStatus(404);
-            return;
+            throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
         }
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("content-disposition", "attachment;filename=header.png");
-        response.setContentType("application/octet-stream");
         try {
-            OutputStream os = response.getOutputStream();
-            byte[] bis = new byte[1024];
-            InputStream inputStream = new FileInputStream(file);
-            while (-1 != inputStream.read(bis)) {
-                os.write(bis);
-            }
-        } catch (Exception e) {
-            throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
+            OutputStream outputStream = response.getOutputStream();
+            IOUtils.copy(new FileInputStream(file), outputStream);
+        }catch (Exception e){
+            log.error("【上传头像失败】errorMsg={}", e.getMessage());
+            throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
         }
-
     }
+
+
+
 
     @Override
     public String getUserFavoriteConfig(String token) throws ErpException {
@@ -475,6 +473,37 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         return userToUserVO(findById(userId), showPhoneNumber);
 
+    }
+
+    @Override
+    public UserVO findUserdetails(Integer userId) throws ErpException {
+        User user = findById(userId);
+        List<User> users =new ArrayList<>();
+        users.add(user);
+        UserAccount userAccounts =userMapper.type(userId);
+        List<UserVO> userVOS =userToUserVO(users,true);
+        UserVO  userVO =userVOS.get(0);
+        List<AuthGroupVO> authGroups =userMapper.findbyId(userId);
+        String epShortNamelist ="";
+        String agnamelist ="";
+        for (AuthGroupVO authGroupVO :authGroups){
+            if (epShortNamelist.isEmpty()){
+                epShortNamelist =authGroupVO.getEpShortName();
+            }else{
+                epShortNamelist =epShortNamelist+","+authGroupVO.getEpShortName();
+            }
+            if (agnamelist.isEmpty()){
+                agnamelist =authGroupVO.getAgName();
+            }else{
+                agnamelist =agnamelist+","+authGroupVO.getAgName();
+            }
+        }
+        userVO.setEpShortNamelist(epShortNamelist);
+        userVO.setAgnamelist(agnamelist);
+        if(userAccounts !=null ){
+            userVO.setActype(userAccounts.getAcType());
+        }
+        return userVO;
     }
 
     @Override
