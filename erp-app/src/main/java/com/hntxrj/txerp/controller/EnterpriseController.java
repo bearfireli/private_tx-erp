@@ -103,14 +103,14 @@ public class EnterpriseController {
     }
 
     @PostMapping("/updateEnterprise")
-    public String updateEnterprise(Enterprise enterprise,Integer eidcode) throws ErpException {
+    public String updateEnterprise(Enterprise enterprise,Integer eidCode) throws ErpException {
         log.info("【修改企业】enterprise={}", enterprise);
         if (enterprise == null
                 || enterprise.getEid() == null
                 || enterprise.getEid() == 0) {
             throw new ErpException(ErrEumn.ADD_ENTERPRISE_NULL);
         }
-        resultVO.setData(JSON.toJSONString(enterpriseService.updateEnterprise(enterprise,eidcode)));
+        resultVO.setData(JSON.toJSONString(enterpriseService.updateEnterprise(enterprise,eidCode)));
         return JSON.toJSONString(resultVO);
     }
 

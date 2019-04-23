@@ -165,29 +165,29 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     /**
      *
      * @param enterprise　
-     * @param eidcode   新ｉｄ
+     * @param eidCode   新ｉｄ
      * @return
      * @throws ErpException
      */
     @Override
-    public Enterprise updateEnterprise(Enterprise enterprise, Integer eidcode) throws ErpException {
+    public Enterprise updateEnterprise(Enterprise enterprise, Integer eidCode) throws ErpException {
 
         Enterprise enterpriseOld = new Enterprise();
         Integer eid=enterprise.getEid();
         //判断新ｉｄ与老id 是否一致 如果不一致则说明修改了ｉｄ．
-        if (!enterprise.getEid().equals(eidcode)) {
+        if (!enterprise.getEid().equals(eidCode)) {
 //            enterprise.setEid(eidcode);
             // 判断新修改的ｉｄ是否已经存在，主要用与ｉｄ不能重复
             Optional<Enterprise> optionalEnterprise =
-                    enterpriseRepository.findById(eidcode);
+                    enterpriseRepository.findById(eidCode);
            // 如果存在则不能修改，在前台提示．
             if (optionalEnterprise.isPresent()) {
                 enterpriseOld = optionalEnterprise.get();
                 throw new ErpException(ErrEumn.ENTERPRISE_id_EXIST);
             }else {
                 //判断新ｉｄ是否为空
-                if (eidcode != null && !"".equals(eidcode)) {
-                    enterprise.setEid(eidcode);
+                if (eidCode != null && !"".equals(eidCode)) {
+                    enterprise.setEid(eidCode);
                 }
                 //进行修改操作，并返回
                 int request= enterpriseMapper.updateId(enterprise, eid);
