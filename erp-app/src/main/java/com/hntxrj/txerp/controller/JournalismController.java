@@ -38,12 +38,12 @@ public class JournalismController {
     }
     @PostMapping("/journalismlist")
     public String journalismlist(Journalism journalism,@RequestHeader String token) throws Exception {
-        resultVO.setData(JSON.parseArray(JSON.toJSONString(journalismService.Journalismlist(journalism,token))));
+        resultVO.setData(journalismService.Journalismlist(journalism,token));
         return JSON.toJSONString(resultVO);
     }
     @PostMapping("/getJournalism")
     public String getJournalism(Integer id)throws Exception{
-        resultVO.setData(JSON.parseObject(JSON.toJSONString(journalismService.getJournalism(id))));
+        resultVO.setData(journalismService.getJournalism(id));
         return JSON.toJSONString(resultVO);
     }
     @PostMapping("/updatejournalism")
@@ -53,13 +53,13 @@ public class JournalismController {
     }
     @PostMapping("/deleteJournalism")
     public String deleteJournalism(Integer id) throws Exception {
-        resultVO.setData(JSON.parseObject(JSON.toJSONString(journalismService.deleteJournalism(id))));
+        resultVO.setData(JSON.toJSONString(journalismService.deleteJournalism(id)));
         return JSON.toJSONString(resultVO);
     }
 
     @PostMapping("/saveJournalism")
     public String  saveJournalism(Journalism journalism , @RequestHeader String token)throws Exception{
-        resultVO.setData(JSON.toJSONString(journalismService.addJournalism(journalism,token)));
+        resultVO.setData(journalismService.addJournalism(journalism,token));
         return JSON.toJSONString(resultVO);
     }
 
