@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -73,6 +74,7 @@ public interface UserService {
      * @throws ErpException throw ERP EXCEPTION
      */
     UserVO findUserById(Integer userId, boolean showPhoneNumber) throws ErpException;
+    UserVO findUserdetails(Integer userId) throws ErpException;
 
     /**
      * find by user uid, Return null when the user does not exist
@@ -188,7 +190,7 @@ public interface UserService {
 
     User setHeader(MultipartFile file, String token) throws ErpException;
 
-    void getHeader(String token, HttpServletResponse response) throws ErpException;
+    void getHeader(String token, HttpServletResponse response) throws ErpException, IOException;
 
 
     String getUserFavoriteConfig(String token) throws ErpException;

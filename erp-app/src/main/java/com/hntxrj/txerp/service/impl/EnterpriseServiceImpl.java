@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.vo.*;
+import com.hntxrj.txerp.mapper.EnterpriseMapper;
 import com.hntxrj.txerp.entity.base.Enterprise;
 import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.hntxrj.txerp.entity.base.User;
@@ -45,12 +45,15 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     @Value("${app.pay.imgFilePath}")
     private String imgFilePath;
 
+    private final EnterpriseMapper enterpriseMapper;
+
 
     @Autowired
     public EnterpriseServiceImpl(EnterpriseRepository enterpriseRepository
-            , EntityManager entityManager, UserService userService) {
+            , EntityManager entityManager, UserService userService, EnterpriseMapper enterpriseMapper) {
         super(entityManager);
         this.userService = userService;
+        this.enterpriseMapper = enterpriseMapper;
         queryFactory = getQueryFactory();
         this.enterpriseRepository = enterpriseRepository;
     }
@@ -159,39 +162,60 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         return enterpriseRepository.save(enterprise);
     }
 
+    /**
+     *
+     * @param enterprise　
+     * @param eidcode   新ｉｄ
+     * @return
+     * @throws ErpException
+     */
     @Override
-    public Enterprise updateEnterprise(Enterprise enterprise) throws ErpException {
+    public Enterprise updateEnterprise(Enterprise enterprise, Integer eidcode) throws ErpException {
 
-        Enterprise enterpriseOld;
-        // 企业是否存在
-        Optional<Enterprise> optionalEnterprise =
-                enterpriseRepository.findById(enterprise.getEid());
-        if (optionalEnterprise.isPresent()) {
-            enterpriseOld = optionalEnterprise.get();
-        } else {
-            throw new ErpException(ErrEumn.ENTERPRISE_NOEXIST);
+        Enterprise enterpriseOld = new Enterprise();
+        Integer eid=enterprise.getEid();
+        //判断新ｉｄ与老id 是否一致 如果不一致则说明修改了ｉｄ．
+        if (!enterprise.getEid().equals(eidcode)) {
+//            enterprise.setEid(eidcode);
+            // 判断新修改的ｉｄ是否已经存在，主要用与ｉｄ不能重复
+            Optional<Enterprise> optionalEnterprise =
+                    enterpriseRepository.findById(eidcode);
+           // 如果存在则不能修改，在前台提示．
+            if (optionalEnterprise.isPresent()) {
+                enterpriseOld = optionalEnterprise.get();
+                throw new ErpException(ErrEumn.ENTERPRISE_id_EXIST);
+            }else {
+                //判断新ｉｄ是否为空
+                if (eidcode != null && !"".equals(eidcode)) {
+                    enterprise.setEid(eidcode);
+                }
+                //进行修改操作，并返回
+                int request= enterpriseMapper.updateId(enterprise, eid);
+            }
+        }else{
+            if (enterprise.getEid() != null && !"".equals(enterprise.getEid())) {
+                enterprise.setEid(enterprise.getEid());
+            }
+            //禁止编辑企业全称和简称
+            if (enterprise.getEpLink() != null
+                    && !"".equals(enterprise.getEpLink())) {
+                enterprise.setEpLink(enterprise.getEpLink());
+            }
+            if (enterprise.getEpStatus() != null) {
+                enterprise.setEpStatus(enterprise.getEpStatus());
+            }
+            if (enterprise.getEpRemark() != null
+                    && !"".equals(enterprise.getEpRemark())) {
+                enterprise.setEpRemark(enterprise.getEpRemark());
+            }
+
+
+            if (enterprise.getDelete() != null) {
+                enterprise.setDelete(enterprise.getDelete());
+            }
+
         }
-
-        //禁止编辑企业全称和简称
-
-        if (enterprise.getEpLink() != null
-                && !"".equals(enterprise.getEpLink())) {
-            enterpriseOld.setEpLink(enterprise.getEpLink());
-        }
-        if (enterprise.getEpStatus() != null) {
-            enterpriseOld.setEpStatus(enterprise.getEpStatus());
-        }
-        if (enterprise.getEpRemark() != null
-                && !"".equals(enterprise.getEpRemark())) {
-            enterpriseOld.setEpRemark(enterprise.getEpRemark());
-        }
-
-
-        if (enterprise.getDelete() != null) {
-            enterpriseOld.setDelete(enterprise.getDelete());
-        }
-
-        return enterpriseRepository.save(enterpriseOld);
+        return enterpriseRepository.save(enterprise);
     }
 
     @Override
