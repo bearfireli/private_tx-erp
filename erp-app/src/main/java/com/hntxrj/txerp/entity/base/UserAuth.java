@@ -2,6 +2,8 @@ package com.hntxrj.txerp.entity.base;
 
 
 import lombok.Data;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,8 +25,8 @@ public class UserAuth implements Serializable {
     @JoinColumn(name = "eid")
     private Enterprise enterprise;
 
-    @OneToOne(targetEntity = AuthGroup.class)
-    @JoinColumn(name = "auth_group", referencedColumnName = "agid")
+    @OneToOne(targetEntity = AuthGroup.class, optional = false)
+    @JoinColumn(name = "auth_group", referencedColumnName = "agid", nullable = false)
     private AuthGroup authGroup;
 
     private Integer createUser;

@@ -32,9 +32,13 @@ public class PVStatisticsFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         if (!req.getMethod().equals("OPTIONS")) {
-            pvStatisticsService.augmentPV(req.getRequestURI(),
-                    Integer.valueOf("".equals(req.getHeader("enterprise")) ?
-                            "0" : req.getHeader("enterprise")));
+            if (req.getHeader("enterprise") == null || "".equals(req.getHeader("enterprise"))) {
+                pvStatisticsService.augmentPV(req.getRequestURI(), 0);
+
+            } else {
+                pvStatisticsService.augmentPV(req.getRequestURI(), Integer.valueOf(req.getHeader("enterprise")));
+
+            }
         }
 
         chain.doFilter(request, response);

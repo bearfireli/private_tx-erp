@@ -75,6 +75,7 @@ public interface UserService {
      * @throws ErpException throw ERP EXCEPTION
      */
     UserVO findUserById(Integer userId, boolean showPhoneNumber) throws ErpException;
+
     UserVO findUserdetails(Integer userId) throws ErpException;
 
     /**

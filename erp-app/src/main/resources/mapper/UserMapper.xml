@@ -2,47 +2,62 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.UserMapper">
 
+
     <select id="details" resultType="com.hntxrj.txerp.entity.base.User">
-        select
-            u.uid,
-            u.username,
-            u.password,
-            u.phone,
-            u.email,
-            u.header,
-            u.auth_group,
-            u.status,
-            u.create_time,
-            u.update_time,
-            a.ac_type
-        from
-            user u
-                left join  user_account a on u.uid =a.uid
+        select u.uid,
+               u.username,
+               u.password,
+               u.phone,
+               u.email,
+               u.header,
+               u.auth_group,
+               u.status,
+               u.create_time,
+               u.update_time,
+               a.ac_type
+        from user u
+                 left join user_account a on u.uid = a.uid
         where u.uid = #{userId}
     </select>
     <select id="findbyId" resultType="com.hntxrj.txerp.vo.AuthGroupVO">
-        select
-            e.eid,
-            e.ep_short_name,
-            a.ag_name
-        from
-            enterprise e
-                left join user_auth u on e.eid =u.eid
-                LEFT JOIN auth_group a on a.agid =u.auth_group
-        where
-          u.uid =#{userId}
+        select e.eid,
+               e.ep_short_name,
+               a.ag_name
+        from enterprise e
+                 left join user_auth u on e.eid = u.eid
+                 LEFT JOIN auth_group a on a.agid = u.auth_group
+        where u.uid = #{userId}
 
     </select>
     <select id="type" resultType="com.hntxrj.txerp.entity.base.UserAccount">
-        select
-            acid,
-            uid,
-            ac_type
-        from
-            user_account
-        where
-            uid =#{userId}
+        select acid,
+               uid,
+               ac_type
+        from user_account
+        where uid = #{userId}
           AND ac_type = 'wechat'
+    </select>
+    <select id="selectUserList" resultType="com.hntxrj.txerp.entity.base.UserAuth">
+        <bind name="_userName" value="'%' + userName + '%'"/>
+        <bind name="_phone" value="'%' + phone + '%'"/>
+        <bind name="_email" value="'%' + email + '%'"/>
+        select ua.*,u.*,e.*
+        from user_auth ua
+        left join user u on ua.uid=u.uid
+        left join enterprise e on ua.eid=e.eid
+        where 1=1
+        <if test="enterpriseId != null and enterpriseId!=''">
+            and ua.eid = #{enterpriseId}
+        </if>
+        <if test="userName != null">
+            and u.username like #{_userName}
+        </if>
+        <if test="phone != null">
+            and u.phone like #{_phone}
+        </if>
+        <if test="email != null">
+            and u.email like #{_email}
+        </if>
     </select>
 
 </mapper>

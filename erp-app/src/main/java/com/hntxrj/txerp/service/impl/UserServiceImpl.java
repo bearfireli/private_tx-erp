@@ -2,9 +2,12 @@ package com.hntxrj.txerp.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.EncryptUtil;
 import com.hntxrj.txerp.core.util.IpUtil;
+import com.hntxrj.txerp.core.util.PageInfoUtil;
 import com.hntxrj.txerp.core.util.TimeUtil;
 import com.hntxrj.txerp.enums.UserStatusEnums;
 import com.hntxrj.txerp.mapper.UserMapper;
@@ -350,7 +353,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
 
     @Override
-    public void getHeader(String token, HttpServletResponse response) throws ErpException{
+    public void getHeader(String token, HttpServletResponse response) throws ErpException {
         User user = tokenGetUser(token);
         String fileName = "default.png";
         if (user.getHeader() != null && !user.getHeader().equals("")) {
@@ -363,13 +366,11 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         try {
             OutputStream outputStream = response.getOutputStream();
             IOUtils.copy(new FileInputStream(file), outputStream);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("【上传头像失败】errorMsg={}", e.getMessage());
             throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
         }
     }
-
-
 
 
     @Override
@@ -426,37 +427,16 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         log.info("【user】user={}", user);
 
-        QUserAuth qUserAuth = QUserAuth.userAuth;
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qUserAuth.user.status.eq(0));
+        PageHelper.startPage(page, pageSize);
 
-        if (user == null) {
-            throw new ErpException(ErrEumn.USER_NO_EXIT);
-        }
-        if (user.getUsername() != null && !user.getUsername().isEmpty()) {
-            builder.and(qUserAuth.user.username.like("%" + user.getUsername() + "%"));
-        }
-        if (user.getPhone() != null && !user.getPhone().equals("")) {
-            builder.and(qUserAuth.user.phone.like("%" + user.getPhone() + "%"));
-        }
-        if (user.getEmail() != null && !user.getEmail().equals("")) {
-            builder.and(qUserAuth.user.email.like("%" + user.getEmail() + "%"));
-        }
-        if (enterpriseId != null && enterpriseId != 0) {
-            builder.and(qUserAuth.enterprise.eid.eq(enterpriseId));
-        }
+        List<UserAuth> userAuths = userMapper.selectUserList(enterpriseId, user.getUsername(), user.getPhone(), user.getEmail());
 
-        JPAQuery<UserAuth> userAuthJPAQuery = queryFactory.selectFrom(qUserAuth)
-                .where(builder)
-                .offset(pageSize * (page - 1))
-                .limit(pageSize)
-                .orderBy(qUserAuth.enterprise.eid.asc());
+        PageInfo<UserAuth> pageInfo = new PageInfo<>(userAuths);
 
-        PageVO<UserAuth> pageVO = new PageVO<>();
+        PageInfoUtil<UserAuth> pageInfoUtil = new PageInfoUtil<>();
 
-        pageVO.init(userAuthJPAQuery, pageSize);
+        return pageInfoUtil.init(pageInfo);
 
-        return pageVO;
     }
 
 
@@ -478,29 +458,29 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     @Override
     public UserVO findUserdetails(Integer userId) throws ErpException {
         User user = findById(userId);
-        List<User> users =new ArrayList<>();
+        List<User> users = new ArrayList<>();
         users.add(user);
-        UserAccount userAccounts =userMapper.type(userId);
-        List<UserVO> userVOS =userToUserVO(users,true);
-        UserVO  userVO =userVOS.get(0);
-        List<AuthGroupVO> authGroups =userMapper.findbyId(userId);
-        String epShortNamelist ="";
-        String agnamelist ="";
-        for (AuthGroupVO authGroupVO :authGroups){
-            if (epShortNamelist.isEmpty()){
-                epShortNamelist =authGroupVO.getEpShortName();
-            }else{
-                epShortNamelist =epShortNamelist+","+authGroupVO.getEpShortName();
+        UserAccount userAccounts = userMapper.type(userId);
+        List<UserVO> userVOS = userToUserVO(users, true);
+        UserVO userVO = userVOS.get(0);
+        List<AuthGroupVO> authGroups = userMapper.findbyId(userId);
+        StringBuilder epShortNamelist = new StringBuilder();
+        StringBuilder agnamelist = new StringBuilder();
+        for (AuthGroupVO authGroupVO : authGroups) {
+            if (epShortNamelist.length() == 0) {
+                epShortNamelist = new StringBuilder(authGroupVO.getEpShortName());
+            } else {
+                epShortNamelist.append(",").append(authGroupVO.getEpShortName());
             }
-            if (agnamelist.isEmpty()){
-                agnamelist =authGroupVO.getAgName();
-            }else{
-                agnamelist =agnamelist+","+authGroupVO.getAgName();
+            if (agnamelist.length() == 0) {
+                agnamelist = new StringBuilder(authGroupVO.getAgName());
+            } else {
+                agnamelist.append(",").append(authGroupVO.getAgName());
             }
         }
-        userVO.setEpShortNamelist(epShortNamelist);
-        userVO.setAgnamelist(agnamelist);
-        if(userAccounts !=null ){
+        userVO.setEpShortNamelist(epShortNamelist.toString());
+        userVO.setAgnamelist(agnamelist.toString());
+        if (userAccounts != null) {
             userVO.setActype(userAccounts.getAcType());
         }
         return userVO;
