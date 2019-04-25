@@ -19,7 +19,7 @@ public interface AuthGroupService {
      * @param enterprise enterprise id
      * @return auth group drop down
      */
-    List<AuthGroupDropDownVO> getAuthGroupDropDown(Integer enterprise);
+    List<AuthGroupDropDownVO> getAuthGroupDropDown(Integer enterprise) throws ErpException;
 
 
     /**

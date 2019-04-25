@@ -49,7 +49,7 @@ public class AuthGroupController {
     }
 
     @PostMapping("/getAuthGroupDropDown")
-    public String getAuthGroupDropDown(Integer enterprise) {
+    public String getAuthGroupDropDown(Integer enterprise) throws ErpException {
         resultVO.setData(JSON.toJSONString(
                 authGroupService.getAuthGroupDropDown(enterprise)));
         return JSON.toJSONString(resultVO);

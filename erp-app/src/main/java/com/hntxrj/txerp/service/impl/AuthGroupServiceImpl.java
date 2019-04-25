@@ -61,7 +61,11 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
     }
 
     @Override
-    public List<AuthGroupDropDownVO> getAuthGroupDropDown(Integer enterprise) {
+    public List<AuthGroupDropDownVO> getAuthGroupDropDown(Integer enterprise) throws ErpException {
+
+        if (enterprise == null) {
+            throw new ErpException(ErrEumn.ENTERPRISE_NULL);
+        }
 
         List<AuthGroupDropDownVO> authGroupDropDownVOS = new ArrayList<>();
 
@@ -69,7 +73,6 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
                 .where(QAuthGroup.authGroup.enterprise.eq(enterprise)
                         .and(QAuthGroup.authGroup.agStatus.eq(0)))
                 .fetch();
-
 
         authGroups.forEach(authGroup ->
                 makeDropDown(authGroupDropDownVOS, authGroup));

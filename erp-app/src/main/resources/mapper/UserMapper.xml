@@ -3,6 +3,52 @@
 <mapper namespace="com.hntxrj.txerp.mapper.UserMapper">
 
 
+    <resultMap id="UserAuthResultMap" type="com.hntxrj.txerp.entity.base.UserAuth">
+        <id column="uaid" property="uaid" jdbcType="INTEGER"/>
+        <result column="create_user" property="createUser" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="update_user" property="updateUser" jdbcType="INTEGER"/>
+        <association property="authGroup" javaType="com.hntxrj.txerp.entity.base.AuthGroup">
+            <id column="agid" property="agid" jdbcType="INTEGER"/>
+            <result column="ag_name" property="agName" jdbcType="VARCHAR"/>
+            <result column="ag_status" property="agStatus" jdbcType="INTEGER"/>
+            <result column="enterprise" property="enterprise" jdbcType="INTEGER"/>
+            <result column="project" property="project" jdbcType="INTEGER"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="update_user" property="updateUser" jdbcType="INTEGER"/>
+            <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        </association>
+        <association property="user" column="uid" javaType="com.hntxrj.txerp.entity.base.User">
+            <id column="uid" property="uid" jdbcType="INTEGER"/>
+            <result column="username" property="username" jdbcType="VARCHAR"/>
+            <result column="password" property="password" jdbcType="VARCHAR"/>
+            <result column="phone" property="phone" jdbcType="VARCHAR"/>
+            <result column="email" property="email" jdbcType="VARCHAR"/>
+            <result column="erp_type" property="erpType" jdbcType="INTEGER"/>
+            <result column="bind_sale_man_name" property="bindSaleManName" jdbcType="VARCHAR"/>
+            <result column="header" property="header" jdbcType="VARCHAR"/>
+            <result column="status" property="status" jdbcType="INTEGER"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+            <result column="user_favorite_config" property="userFavoriteConfig" jdbcType="VARCHAR"/>
+        </association>
+        <association property="enterprise" column="eid" javaType="com.hntxrj.txerp.entity.base.Enterprise">
+            <id column="eid" property="eid" jdbcType="INTEGER"/>
+            <result column="ep_name" property="epName" jdbcType="VARCHAR"/>
+            <result column="ep_short_name" property="epShortName" jdbcType="VARCHAR"/>
+            <result column="ep_link" property="epLink" jdbcType="VARCHAR"/>
+            <result column="ep_remark" property="epRemark" jdbcType="VARCHAR"/>
+            <result column="ep_type" property="epType" jdbcType="INTEGER"/>
+            <result column="ep_status" property="epStatus" jdbcType="INTEGER"/>
+            <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+            <result column="delete" property="delete" jdbcType="INTEGER"/>
+            <result column="collection_code" property="collectionCode" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+
     <select id="details" resultType="com.hntxrj.txerp.entity.base.User">
         select u.uid,
                u.username,
@@ -37,14 +83,14 @@
         where uid = #{userId}
           AND ac_type = 'wechat'
     </select>
-    <select id="selectUserList" resultType="com.hntxrj.txerp.entity.base.UserAuth">
+    <select id="selectUserList" resultMap="UserAuthResultMap">
         <bind name="_userName" value="'%' + userName + '%'"/>
         <bind name="_phone" value="'%' + phone + '%'"/>
         <bind name="_email" value="'%' + email + '%'"/>
-        select ua.*,u.*,e.*
-        from user_auth ua
+        select * from user_auth ua
         left join user u on ua.uid=u.uid
         left join enterprise e on ua.eid=e.eid
+        left join auth_group ag on ua.auth_group=ag.agid
         where 1=1
         <if test="enterpriseId != null and enterpriseId!=''">
             and ua.eid = #{enterpriseId}
