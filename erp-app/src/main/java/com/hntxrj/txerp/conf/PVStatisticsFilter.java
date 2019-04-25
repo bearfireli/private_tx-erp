@@ -31,17 +31,22 @@ public class PVStatisticsFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        if (!req.getMethod().equals("OPTIONS")) {
-            if (req.getHeader("enterprise") == null || "".equals(req.getHeader("enterprise"))) {
-                pvStatisticsService.augmentPV(req.getRequestURI(), 0);
+        try {
+            if (!req.getMethod().equals("OPTIONS")) {
+                if (req.getHeader("enterprise") == null || "".equals(req.getHeader("enterprise"))) {
+                    pvStatisticsService.augmentPV(req.getRequestURI(), 0);
 
-            } else {
-                pvStatisticsService.augmentPV(req.getRequestURI(), Integer.valueOf(req.getHeader("enterprise")));
+                } else {
+                    pvStatisticsService.augmentPV(req.getRequestURI(), Integer.valueOf(req.getHeader("enterprise")));
 
+                }
             }
+        } finally {
+            // 即使统计报错 继续执行请求
+            chain.doFilter(request, response);
         }
 
-        chain.doFilter(request, response);
+
     }
 
     @Override
