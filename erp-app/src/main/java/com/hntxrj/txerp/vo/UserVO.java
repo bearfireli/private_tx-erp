@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.vo;
 
 
+import com.hntxrj.txerp.entity.base.AuthGroup;
 import com.hntxrj.txerp.entity.base.Enterprise;
 import com.hntxrj.txerp.entity.base.UserAuth;
 import lombok.Data;
@@ -36,7 +37,8 @@ public class UserVO {
 //     * 企业名称
 //     */
 //    private String enterpriseName;
-
+    private String epShortNamelist;
+    private String agnamelist;
     /**
      * 企业集合
      */
@@ -54,6 +56,7 @@ public class UserVO {
     private String header;
 
     List<UserAuth> userAuths;
+    List<AuthGroupVO> authGroups;
 
 //    /**
 //     * 用户权限组
@@ -77,6 +80,9 @@ public class UserVO {
      * 用户更新时间
      */
     private Date updateTime;
+
+    private String actype;
+
 
 
 }

@@ -216,6 +216,17 @@ public class UserController {
     }
 
 
+    @PostMapping("/details")
+    public String details(Integer uid)
+            throws ErpException {
+        log.info("【查看用户】uid={}", uid);
+        resultVO.setData(JSON.toJSONString(
+                userService.findUserdetails(uid)
+        ));
+
+        return JSON.toJSONString(resultVO);
+    }
+
     @PostMapping("/getUsers")
     public String getUsers(String uids) {
         String[] es = uids.split("\\|");
@@ -302,7 +313,7 @@ public class UserController {
     }
 
     @GetMapping("/header.png")
-    public void header(String token, HttpServletResponse response) throws ErpException {
+    public void header(@RequestHeader String token, HttpServletResponse response) throws ErpException{
         userService.getHeader(token, response);
     }
 

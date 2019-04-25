@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.UserMapper">
+
+    <select id="details" resultType="com.hntxrj.txerp.entity.base.User">
+        select
+            u.uid,
+            u.username,
+            u.password,
+            u.phone,
+            u.email,
+            u.header,
+            u.auth_group,
+            u.status,
+            u.create_time,
+            u.update_time,
+            a.ac_type
+        from
+            user u
+                left join  user_account a on u.uid =a.uid
+        where u.uid = #{userId}
+    </select>
+    <select id="findbyId" resultType="com.hntxrj.txerp.vo.AuthGroupVO">
+        select
+            e.eid,
+            e.ep_short_name,
+            a.ag_name
+        from
+            enterprise e
+                left join user_auth u on e.eid =u.eid
+                LEFT JOIN auth_group a on a.agid =u.auth_group
+        where
+          u.uid =#{userId}
+
+    </select>
+    <select id="type" resultType="com.hntxrj.txerp.entity.base.UserAccount">
+        select
+            acid,
+            uid,
+            ac_type
+        from
+            user_account
+        where
+            uid =#{userId}
+          AND ac_type = 'wechat'
+    </select>
+
+</mapper>
