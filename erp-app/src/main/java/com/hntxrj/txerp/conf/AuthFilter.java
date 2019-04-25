@@ -77,7 +77,7 @@ public class AuthFilter implements Filter {
         }
 
         for (String publicPath : PUBLIC_PATH) {
-            if (publicPath.equals(uri)) {
+            if (uri.contains(publicPath)) {
                 chain.doFilter(req, resp);
                 return;
 
