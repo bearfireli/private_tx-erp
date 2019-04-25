@@ -34,7 +34,7 @@ public class AuthFilter implements Filter {
     private static final String DOCUMENT_URI = "/swagger";
     private static final String WEBJARS = "/webjars";
     private static final String V2 = "/v2";
-    private static final String JOURNALISM_IMAGES="/journalism/images";
+    private static final String JOURNALISM_IMAGES = "/journalism/images";
 
 
     private static final String[] PUBLIC_API_LIST = new String[]{
@@ -42,7 +42,7 @@ public class AuthFilter implements Filter {
     };
 
     private static final String[] PUBLIC_PATH = new String[]{
-            DOCUMENT_URI, WEBJARS, V2
+            DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES
     };
 
     @Autowired
@@ -83,8 +83,6 @@ public class AuthFilter implements Filter {
 
             }
         }
-
-
 
 
         response.setHeader("Content-type", "text/html;charset=UTF-8");
