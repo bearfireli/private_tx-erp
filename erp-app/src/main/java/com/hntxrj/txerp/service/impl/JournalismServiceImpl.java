@@ -10,8 +10,10 @@ import com.hntxrj.txerp.repository.UserRepository;
 import com.hntxrj.txerp.service.JournalismService;
 import com.hntxrj.txerp.service.UserService;
 import com.hntxrj.txerp.vo.JournalismVO;
+import com.hntxrj.txerp.vo.PageVO;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -20,23 +22,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
-import com.hntxrj.txerp.vo.PageVO;
-import com.querydsl.jpa.impl.JPAQuery;
-
 import java.io.*;
 import java.util.*;
-import java.util.List;
 
 @Service
 @Slf4j
 public class JournalismServiceImpl extends BaseServiceImpl implements JournalismService {
 
     private final JournalismRepository journalismRepository;
-    private JPAQueryFactory queryFactory;
     private final UserService userService;
     private final UserRepository userRepository;
+    private JPAQueryFactory queryFactory;
+    @Value("${app.user.headerPath}")
+    private String headerUploadPath;
 
     public JournalismServiceImpl(JournalismRepository journalismRepository, EntityManager entityManager, UserService userService, UserRepository userRepository) {
         super(entityManager);
@@ -45,9 +46,6 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
         this.userRepository = userRepository;
         queryFactory = getQueryFactory();
     }
-
-    @Value("${app.user.headerPath}")
-    private String headerUploadPath;
 
     /*添加新闻*/
     @Override
@@ -68,7 +66,7 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
         if (journalism.getContent() == null) {
             throw new ErpException(ErrEumn.JOURNALISM_CONTENT_NULL);
         }
-        if (journalism.getImg() ==null ){
+        if (journalism.getImg() == null) {
             throw new ErpException(ErrEumn.JOURNALISM_IMG_NULL);
         }
         journalism.setCreateUser(user.getUid());
@@ -77,23 +75,24 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
 
     /**
      * 上传图片
+     *
      * @param files
      * @param token
      * @return
      * @throws ErpException
      */
     @Override
-    public  Map<String, String> setHeader(MultipartFile files, String token ) throws ErpException {
+    public Map<String, String> setHeader(MultipartFile files, String token) throws ErpException {
         User user = userService.tokenGetUser(token);
-        Map<String,String> map = new HashMap<>();
-        if (user==null){
+        Map<String, String> map = new HashMap<>();
+        if (user == null) {
             throw new ErpException(ErrEumn.USER_NO_EXIT);
         }
-        String reName ="";
+        String reName = "";
 
-        if (files ==null){
+        if (files == null) {
             throw new ErpException(ErrEumn.JOURNALISM_IMG_NULL);
-        }else{
+        } else {
             log.info("【文件上传路径】path={}", headerUploadPath);
             String[] fileNameSplits = files.getOriginalFilename().split("\\.");
             reName = UUID.randomUUID().toString() +
@@ -109,7 +108,7 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
                 log.error("【上传文件失败】errorMsg={}", e.getMessage());
                 throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
             }
-            map.put("img",reName);
+            map.put("img", reName);
         }
         return map;
 
@@ -117,6 +116,7 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
 
     /**
      * 读取图片
+     *
      * @param img
      * @param response
      * @throws ErpException
@@ -125,14 +125,14 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
     @Override
     public void getimg(String img, HttpServletResponse response) throws ErpException, IOException {
         String fileName = "default.png";
-        if (img !=null && !img.equals("")){
-            fileName = img ;
+        if (img != null && !img.equals("")) {
+            fileName = img;
         }
         File file = new File(headerUploadPath + fileName);
         if (!file.exists()) {
 //            throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
             fileName = "default.png";
-           file = new File(headerUploadPath + fileName);
+            file = new File(headerUploadPath + fileName);
         }
         OutputStream outputStream = response.getOutputStream();
         IOUtils.copy(new FileInputStream(file), outputStream);
@@ -146,10 +146,10 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
     public PageVO<JournalismVO> selectJournalism(Journalism journalism, String token, HttpServletResponse response, long page, long pageSize) throws ErpException, IOException {
         QJournalism qJournalism = QJournalism.journalism;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        if(journalism.getTitle() != null && !"".equals(journalism.getTitle())){
-            booleanBuilder.and(qJournalism.title.like("%"+journalism.getTitle()+"%"));
+        if (journalism.getTitle() != null && !"".equals(journalism.getTitle())) {
+            booleanBuilder.and(qJournalism.title.like("%" + journalism.getTitle() + "%"));
         }
-        JPAQuery<Journalism> journalism1 =  queryFactory.selectFrom(qJournalism) .where(booleanBuilder)
+        JPAQuery<Journalism> journalism1 = queryFactory.selectFrom(qJournalism).where(booleanBuilder)
                 .offset((page - 1) * pageSize)
                 .limit(pageSize);
         List<Journalism> journalisms = journalism1.fetch();
@@ -165,7 +165,7 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
             journalismVO.add(journalismVOs);
         }
         PageVO<JournalismVO> pageVO = new PageVO<>();
-        pageVO.init(journalism1.fetchCount(),page,journalismVO);
+        pageVO.init(journalism1.fetchCount(), page, journalismVO);
 
         return pageVO;
     }
@@ -184,28 +184,29 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
     public List<Journalism> Journalismlist(Journalism journalism, String token) throws ErpException {
         QJournalism qJournalism = QJournalism.journalism;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        if(journalism.getTitle() != null && !"".equals(journalism.getTitle())){
-            booleanBuilder.and(qJournalism.title.like("%"+journalism.getTitle()+"%"));
+        if (journalism.getTitle() != null && !"".equals(journalism.getTitle())) {
+            booleanBuilder.and(qJournalism.title.like("%" + journalism.getTitle() + "%"));
         }
-        List<Journalism> journalism1 =  queryFactory.selectFrom(qJournalism).where(booleanBuilder).fetch();
+        List<Journalism> journalism1 = queryFactory.selectFrom(qJournalism).where(booleanBuilder).fetch();
         String fileName = "";
-        for (Journalism j: journalism1) {
+        for (Journalism j : journalism1) {
             if (j.getImg() != null && !j.getImg().equals("")) {
                 fileName = j.getImg();
-            }else{
+            } else {
                 fileName = "default.png";
             }
             j.setImg(fileName);
         }
         return journalism1;
     }
+
     /*查询详情新闻*/
     @Override
-    public Journalism getJournalism(Integer id) throws ErpException{
+    public Journalism getJournalism(Integer id) throws ErpException {
         QJournalism qJournalism = QJournalism.journalism;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qJournalism.id.eq(id));
-        Journalism journalism  =queryFactory.select(
+        Journalism journalism = queryFactory.select(
                 Projections.bean(
                         Journalism.class,
                         qJournalism.img,
@@ -220,7 +221,7 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
 
     /*修改新闻*/
     @Override
-    public Journalism updateJournalism(Journalism journalism)throws ErpException {
+    public Journalism updateJournalism(Journalism journalism) throws ErpException {
         Journalism journalismold;
         Optional<Journalism> optionalJournalism = journalismRepository.findById(journalism.getId());
         if (optionalJournalism.isPresent()) {
@@ -229,22 +230,22 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
             throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
         }
 
-        if(journalism.getTitle() != null && !journalism.getTitle().equals("")){
+        if (journalism.getTitle() != null && !journalism.getTitle().equals("")) {
             journalism.setTitle(journalism.getTitle());
         }
-        if(journalism.getContent() != null && !journalism.getContent().equals("")){
+        if (journalism.getContent() != null && !journalism.getContent().equals("")) {
             journalism.setContent(journalism.getContent());
         }
-        if(journalism.getImg() != null && !journalism.getImg().equals("")){
+        if (journalism.getImg() != null && !journalism.getImg().equals("")) {
             journalism.setImg(journalism.getImg());
         }
-        if (journalismold.getCreateTime() !=null && !journalismold.getCreateTime().equals("")){
+        if (journalismold.getCreateTime() != null && !journalismold.getCreateTime().equals("")) {
             journalism.setCreateTime(journalismold.getCreateTime());
         }
-        if (journalismold.getCreateUser() !=null && !journalismold.getCreateUser().equals("")){
+        if (journalismold.getCreateUser() != null && !journalismold.getCreateUser().equals("")) {
             journalism.setCreateUser(journalismold.getCreateUser());
         }
-        if (journalismold.getClickRate() !=null && !journalismold.getClickRate().equals("")){
+        if (journalismold.getClickRate() != null && !journalismold.getClickRate().equals("")) {
             journalism.setClickRate(journalismold.getClickRate());
         }
         journalism.setUpdateTime(
@@ -255,7 +256,7 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
 
     /*删除新闻*/
     @Override
-    public Journalism deleteJournalism(Integer id) throws ErpException{
+    public Journalism deleteJournalism(Integer id) throws ErpException {
         Journalism journalism;
         Optional<Journalism> optionalJournalism = journalismRepository.findById(id);
         if (optionalJournalism.isPresent()) {
