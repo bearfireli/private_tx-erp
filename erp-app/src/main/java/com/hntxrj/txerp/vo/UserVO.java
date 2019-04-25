@@ -46,6 +46,8 @@ public class UserVO {
      * 用户登录令牌
      */
     private String token;
+
+    private Integer erpType;
     /**
      * 用户头像
      */

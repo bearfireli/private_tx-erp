@@ -22,6 +22,7 @@ public class AuthFilter implements Filter {
     private final AuthGroupService authService;
 
     private static final String LOGIN_API = "/user/login";
+    private static final String LOGIN_REST_API = "/api/user/login";
     private static final String TOKEN_USE = "/user/tokenUse";
     private static final String THIRD_LOGIN = "/user/thirdLogin";
     private static final String USER_ENTERPRISE = "/user/getUserEnterprise";
@@ -34,7 +35,7 @@ public class AuthFilter implements Filter {
     private static final String V2 = "/v2";
 
     private static final String[] PUBLIC_API_LIST = new String[]{
-            LOGIN_API, TOKEN_USE, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD
+            LOGIN_API, TOKEN_USE, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API
     };
 
     private static final String[] PUBLIC_PATH = new String[]{

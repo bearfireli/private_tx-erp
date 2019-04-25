@@ -11,6 +11,7 @@ import tk.mybatis.spring.annotation.MapperScan;
         "com.hntxrj.txerp.mapper",
         "com.hntxrj.txerp.conf",
         "com.hntxrj.txerp.controller",
+        "com.hntxrj.txerp.web.api",
         "com.hntxrj.txerp.service"
 })
 @EnableJpaRepositories("com.hntxrj.txerp.repository")

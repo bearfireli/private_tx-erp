@@ -16,7 +16,6 @@ import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.hntxrj.txerp.entity.base.QUserAccount;
 import com.hntxrj.txerp.entity.base.QUserAuth;
 import com.hntxrj.txerp.entity.base.*;
-import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.UserVO;
 import com.querydsl.core.BooleanBuilder;
@@ -187,7 +186,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         userLogin = userLoginRepository.save(userLogin);
 
-        User user = findById(userId);
+//        User user = findById(userId);
 //        redisUtil.redisSetKey(RedisDataTypeEnums.TOKEN + userLogin.getUserToken(), user);
         return userLogin;
     }

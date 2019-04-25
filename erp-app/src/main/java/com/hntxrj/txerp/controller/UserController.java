@@ -255,9 +255,6 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
-
-
-    
     @PostMapping("/initUser")
     public String initUser(String token, Integer uid, String password) throws ErpException {
         userService.initPassword(token, uid, password);

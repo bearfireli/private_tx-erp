@@ -1,4 +1,4 @@
-package com.hntxrj.txerp.entity.util;
+package com.hntxrj.txerp.core.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

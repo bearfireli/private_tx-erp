@@ -9,7 +9,7 @@ import com.hntxrj.txerp.entity.base.ProjectProgress;
 import com.hntxrj.txerp.entity.base.QProjectProgress;
 import com.hntxrj.txerp.entity.base.QUser;
 import com.hntxrj.txerp.entity.base.User;
-import com.hntxrj.txerp.entity.util.EntityTools;
+import com.hntxrj.txerp.core.util.EntityTools;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.ProjectProgressVO;

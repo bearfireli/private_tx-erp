@@ -63,6 +63,7 @@ public interface UserService {
     PageVO<UserAuth> getUser(User user, String token, Integer enterpriseId, HttpServletRequest request,
                              int page, int pageSize) throws ErpException;
 
+
     /**
      * select user by uid
      *
