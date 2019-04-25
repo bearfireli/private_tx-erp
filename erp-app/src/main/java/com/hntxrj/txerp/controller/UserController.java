@@ -164,11 +164,10 @@ public class UserController {
     }
 
     @PostMapping("/tokenUse")
-    public String tokenUse(String token) throws ErpException {
+    public ResultVO tokenUse(String token) throws ErpException {
         log.debug("【验证token是否可用】token={}", token);
-
-        resultVO.setData(JSON.toJSONString(userService.tokenCanUse(token)));
-        return JSON.toJSONString(resultVO);
+        resultVO.setData(userService.tokenCanUse(token));
+        return resultVO;
     }
 
 
@@ -313,7 +312,7 @@ public class UserController {
     }
 
     @GetMapping("/header.png")
-    public void header(@RequestHeader String token, HttpServletResponse response) throws ErpException{
+    public void header(@RequestHeader String token, HttpServletResponse response) throws ErpException {
         userService.getHeader(token, response);
     }
 
