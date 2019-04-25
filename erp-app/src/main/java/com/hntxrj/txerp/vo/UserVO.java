@@ -29,7 +29,7 @@ public class UserVO {
      */
     private String email;
 
-//    /**
+    //    /**
 //     * 企业代号
 //     */
 //    private Integer enterprise;
@@ -50,6 +50,7 @@ public class UserVO {
     private String token;
 
     private Integer erpType;
+    private String bindSaleManName;
     /**
      * 用户头像
      */
@@ -82,7 +83,6 @@ public class UserVO {
     private Date updateTime;
 
     private String actype;
-
 
 
 }

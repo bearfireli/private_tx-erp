@@ -24,6 +24,7 @@ public class User implements Serializable {
     private String email;
     // 1 销售，2 司机
     private Integer erpType;
+    private String bindSaleManName;
     private String header;
     private Integer status;
     @Column(insertable = false, updatable = false)
