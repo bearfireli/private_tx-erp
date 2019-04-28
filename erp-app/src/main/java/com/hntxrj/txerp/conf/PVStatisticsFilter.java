@@ -1,7 +1,5 @@
 package com.hntxrj.txerp.conf;
 
-import com.alibaba.fastjson.JSONObject;
-import com.hntxrj.txerp.core.util.RedisUtil;
 import com.hntxrj.txerp.service.PVStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +31,10 @@ public class PVStatisticsFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         try {
             if (!req.getMethod().equals("OPTIONS")) {
-                if (req.getHeader("enterprise") == null || "".equals(req.getHeader("enterprise"))) {
+                if (req.getHeader("enterprise") == null ||
+                        "".equals(req.getHeader("enterprise")) ||
+                        "undefined".equals(req.getHeader("enterprise"))
+                ) {
                     pvStatisticsService.augmentPV(req.getRequestURI(), 0);
 
                 } else {
