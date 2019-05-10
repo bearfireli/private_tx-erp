@@ -98,6 +98,12 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
             reName = UUID.randomUUID().toString() +
                     (fileNameSplits.length != 0 ? "." + fileNameSplits[fileNameSplits.length - 1] : "");
             String filePath = headerUploadPath + reName;
+            //判断文件夹不存在时，自动新建文件夹
+            File fils = new File(filePath);
+            File fileParent = fils.getParentFile();
+            if (!fileParent.exists()) {
+                fileParent.mkdir();
+            }
             try {
                 BufferedOutputStream out = new BufferedOutputStream(
                         new FileOutputStream(new File(filePath)));
@@ -211,7 +217,11 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
                         Journalism.class,
                         qJournalism.img,
                         qJournalism.title,
-                        qJournalism.content
+                        qJournalism.content,
+                        qJournalism.createTime,
+                        qJournalism.updateTime,
+                        qJournalism.createUser,
+                        qJournalism.clickRate
                 )
         ).from(qJournalism)
                 .where(builder)
