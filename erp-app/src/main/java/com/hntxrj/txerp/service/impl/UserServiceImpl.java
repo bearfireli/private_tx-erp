@@ -513,6 +513,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         if (user.getStatus() == null) {
             throw new ErpException(ErrEumn.ADD_USER_STATUS_IS_NULL);
         }
+        if(user.getBindSaleManName() == null){
+            user.setBindSaleManName("");
+        }
         if (user.getHeader() == null) {
             user.setHeader("");
         }
@@ -568,6 +571,13 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             //当修改用户或找不到该用户的id时
             throw new ErpException(ErrEumn.UPDATE_USER_PARAMS_ERR);
         }
+        if(user.getErpType() != null){
+            oldUser.setErpType(user.getErpType());
+        }
+        if(user.getBindSaleManName() != null){
+            oldUser.setBindSaleManName(user.getBindSaleManName());
+        }
+
         oldUser.setStatus(user.getStatus());
 
 
