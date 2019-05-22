@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.core.util.EncryptUtil;
-import com.hntxrj.txerp.core.util.IpUtil;
-import com.hntxrj.txerp.core.util.PageInfoUtil;
-import com.hntxrj.txerp.core.util.TimeUtil;
+import com.hntxrj.txerp.core.util.*;
 import com.hntxrj.txerp.enums.UserStatusEnums;
 import com.hntxrj.txerp.mapper.UserMapper;
 import com.hntxrj.txerp.repository.*;
@@ -526,11 +523,12 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 //        if (user.getAuthGroup() == null) {
 //            user.setAuthGroup(0);
 //        }
-        phoneIsExist(user.getPhone());
 
+        phoneIsExist(user.getPhone());
         user.setPassword(
                 EncryptUtil.encryptPassword(user.getPassword()));
 
+        EntityTools.setEntityDefaultValue(user);
 
         try {
             return userRepository.save(user);
