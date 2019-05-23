@@ -3,6 +3,7 @@ spring:
     name: erp-app
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   redis:
     database: 0
     host: 127.0.0.1
@@ -13,7 +14,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 20MB
   datasource:
-    url: jdbc:mysql://192.168.31.2/tx-cloud?characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://192.168.31.2/tx-cloud?characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2b8
     username: root
     password: TongXin2019
     hikari:
@@ -50,7 +51,7 @@ app:
     headerPath: ${app.workspace}/upload/user/header/
   pay:
     imgFilePath: ${app.workspace}/upload/payImgPath
-
+    
 server:
   port: 9501
 
