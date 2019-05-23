@@ -70,6 +70,7 @@ public class JournalismServiceImpl extends BaseServiceImpl implements Journalism
             throw new ErpException(ErrEumn.JOURNALISM_IMG_NULL);
         }
         journalism.setCreateUser(user.getUid());
+        journalism.setClickRate(0);
         return journalismRepository.save(journalism);
     }
 
