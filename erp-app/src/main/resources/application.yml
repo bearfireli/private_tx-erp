@@ -43,15 +43,15 @@ pagehelper:
 
 
 app:
-  workspace: /home/qyb/IdeaProjects
+  workspace: /Users/haoranliu/IdeaProjects/tx-erp
   afterSaleLog:
     upload:
       path: ${app.workspace}/upload/
   user:
-    headerPath: ${app.workspace}/upload/
+    headerPath: ${app.workspace}/upload/user/header/
   pay:
     imgFilePath: ${app.workspace}/upload/payImgPath
-
+    
 server:
   port: 9501
 
