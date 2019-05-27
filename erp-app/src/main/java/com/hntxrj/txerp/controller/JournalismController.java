@@ -29,7 +29,7 @@ public class JournalismController {
         resultVO.setMsg("ok");
         resultVO.setData(null);
     }
-    @PostMapping("/selectjournalism")
+    @PostMapping("/selectJournalism")
     public ResultVO selectJournalism(Journalism journalism,@RequestHeader String token, HttpServletResponse response,
                                    @RequestParam(defaultValue = "1") long page,
                                    @RequestParam(defaultValue = "10") long pageSize) throws Exception {
