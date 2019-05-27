@@ -144,12 +144,13 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         }
         // 添加spterp中的企业
         OkHttpClient client = new OkHttpClient();
-        String url = "https://erp.hntxrj.com/comp";
+        String url = "https://erp.hntxrj.com/addComp";
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("compid", String.valueOf(enterprise.getEid()))
-                .addFormDataPart("longname", enterprise.getEpName())
-                .addFormDataPart("shortname", enterprise.getEpShortName())
+                .addFormDataPart("compName", enterprise.getEpName())
+                .addFormDataPart("compShortName", enterprise.getEpShortName())
+                .addFormDataPart("securityKey", "adsfbnhjkwegbrw")
                 .build();
 
         Request request = new Request.Builder()
@@ -163,9 +164,8 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     }
 
     /**
-     *
-     * @param enterprise　
-     * @param eidCode   新ｉｄ
+     * @param enterprise
+     * @param eidCode    新ｉｄ
      * @return
      * @throws ErpException
      */
@@ -173,26 +173,26 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     public Enterprise updateEnterprise(Enterprise enterprise, Integer eidCode) throws ErpException {
 
         Enterprise enterpriseOld = new Enterprise();
-        Integer eid=enterprise.getEid();
+        Integer eid = enterprise.getEid();
         //判断新ｉｄ与老id 是否一致 如果不一致则说明修改了ｉｄ．
         if (!enterprise.getEid().equals(eidCode)) {
 //            enterprise.setEid(eidcode);
             // 判断新修改的ｉｄ是否已经存在，主要用与ｉｄ不能重复
             Optional<Enterprise> optionalEnterprise =
                     enterpriseRepository.findById(eidCode);
-           // 如果存在则不能修改，在前台提示．
+            // 如果存在则不能修改，在前台提示．
             if (optionalEnterprise.isPresent()) {
                 enterpriseOld = optionalEnterprise.get();
                 throw new ErpException(ErrEumn.ENTERPRISE_id_EXIST);
-            }else {
+            } else {
                 //判断新ｉｄ是否为空
                 if (eidCode != null && !"".equals(eidCode)) {
                     enterprise.setEid(eidCode);
                 }
                 //进行修改操作，并返回
-                int request= enterpriseMapper.updateId(enterprise, eid);
+                int request = enterpriseMapper.updateId(enterprise, eid);
             }
-        }else{
+        } else {
             if (enterprise.getEid() != null && !"".equals(enterprise.getEid())) {
                 enterprise.setEid(enterprise.getEid());
             }
