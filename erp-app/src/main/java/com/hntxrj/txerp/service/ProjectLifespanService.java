@@ -27,7 +27,7 @@ public interface ProjectLifespanService {
 
     ProjectLifespanVO saveProjectLifespan(String token, ProjectLifespan projectLifespan) throws ErpException;
 
-    void delProjectLifespan(String token, Integer enterprise, Integer pid) throws ErpException;
+    void delProjectLifespan(String token, Integer enterpriseId, Integer pid) throws ErpException;
 
     PageVO<ProjectLifespanVO> list(String token, Integer enterpriseId, long page, long pageSize) throws ErpException;
 }

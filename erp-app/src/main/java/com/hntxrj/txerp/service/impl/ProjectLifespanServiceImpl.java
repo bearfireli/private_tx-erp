@@ -106,11 +106,11 @@ public class ProjectLifespanServiceImpl extends BaseServiceImpl implements Proje
 
 
     @Override
-    public void delProjectLifespan(String token, Integer enterprise, Integer pid) throws ErpException {
+    public void delProjectLifespan(String token, Integer enterpriseId, Integer pid) throws ErpException {
         User user = userService.tokenGetUser(token);
         ProjectLifespanKeys projectLifespanKeys = new ProjectLifespanKeys();
         projectLifespanKeys.setPid(pid);
-        projectLifespanKeys.setEnterpriseId(enterprise);
+        projectLifespanKeys.setEnterpriseId(enterpriseId);
         projectLifespanRepository.deleteById(projectLifespanKeys);
     }
 

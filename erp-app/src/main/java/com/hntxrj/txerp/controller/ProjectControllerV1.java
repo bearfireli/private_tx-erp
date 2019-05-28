@@ -92,9 +92,9 @@ public class ProjectControllerV1 {
     }
 
     @PostMapping("/delProjectLifespan")
-    public String delProjectLifespan(String token, @RequestHeader Integer enterprise, Integer pid) throws ErpException {
+    public String delProjectLifespan(String token,Integer enterpriseId, Integer pid) throws ErpException {
         projectLifespanService
-                .delProjectLifespan(token, enterprise, pid);
+                .delProjectLifespan(token, enterpriseId, pid);
         return JSON.toJSONString(resultVO);
     }
 
