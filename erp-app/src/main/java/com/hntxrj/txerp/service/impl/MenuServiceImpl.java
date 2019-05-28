@@ -138,7 +138,7 @@ public class MenuServiceImpl extends BaseServiceImpl implements MenuService {
             menu.setUpdateUser(1);
         }
 
-
+        menu.setModelName("");
         return menuRepository.save(menu);
     }
 
