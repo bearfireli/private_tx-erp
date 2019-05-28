@@ -27,6 +27,8 @@ public class Menu implements Serializable {
     private Integer enterprise;
     private Integer project;
     private Integer updateUser;
+    private String funcName;
+    private String modelName;
     @Column(insertable = false, updatable = false)
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
