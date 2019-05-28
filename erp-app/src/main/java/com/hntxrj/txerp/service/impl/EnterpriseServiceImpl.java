@@ -28,10 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 
@@ -142,14 +139,16 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         if (enterpriseNameExist(enterprise.getEpName(), enterprise.getEpShortName())) {
             throw new ErpException(ErrEumn.ENTERPRISE_NAME_EXIST);
         }
+
+        Enterprise savedEnterprise = enterpriseRepository.save(enterprise);
         // 添加spterp中的企业
         OkHttpClient client = new OkHttpClient();
-        String url = "https://erp.hntxrj.com/addComp";
+        String url = "https://dev.erp.hntxrj.com/comp/addComp";
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("compid", String.valueOf(enterprise.getEid()))
-                .addFormDataPart("compName", enterprise.getEpName())
-                .addFormDataPart("compShortName", enterprise.getEpShortName())
+                .addFormDataPart("compid", String.valueOf(savedEnterprise.getEid()))
+                .addFormDataPart("compName", savedEnterprise.getEpName())
+                .addFormDataPart("compShortName", savedEnterprise.getEpShortName())
                 .addFormDataPart("securityKey", "adsfbnhjkwegbrw")
                 .build();
 
@@ -158,9 +157,19 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                 .post(requestBody)
                 .build();
 
-        client.newCall(request);
+        Call call = client.newCall(request);
+        try {
+            Response response = call.execute();
+            if (response.body() != null) {
+                log.info("【老版本企业添加】val={}", response.body().string());
+            }
+        } catch (IOException e) {
+            log.error("【老版本企业添加失败】err={}", e.getMessage());
+            e.printStackTrace();
+        }
 
-        return enterpriseRepository.save(enterprise);
+
+        return savedEnterprise;
     }
 
     /**

@@ -85,7 +85,7 @@ public class EnterpriseController {
         if (enterprise == null) {
             throw new ErpException(ErrEumn.ADD_ENTERPRISE_NULL);
         }
-        enterprise.setEid(null);
+//        enterprise.setEid(null);
         if (StringUtils.isEmpty(enterprise.getEpShortName())) {
             throw new ErpException(ErrEumn.ADD_ENTERPRISE_SHORT_NAME_NULL);
         }
