@@ -51,7 +51,8 @@ app:
     headerPath: ${app.workspace}/upload/user/header/
   pay:
     imgFilePath: ${app.workspace}/upload/payImgPath
-    
+  feedback:
+    imgFilePath: ${app.workspace}/upload/feedbackImgPath/
 server:
   port: 9501
 

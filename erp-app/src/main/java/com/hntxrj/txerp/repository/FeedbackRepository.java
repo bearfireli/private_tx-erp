@@ -10,6 +10,4 @@ import org.springframework.stereotype.Repository;
 public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
 
 
-    Page<Feedback> findAllByPid(Integer pid, Pageable pageable);
-
 }
