@@ -37,7 +37,7 @@ public enum ErrEumn {
 
     ADD_USER_PHONE_EXIST(-10022, "手机号已注册！"),
     ENTERPRISE_NAME_EXIST(-10023, "企业名称已存在"),
-    ENTERPRISE_id_EXIST(-100234,"企业id已存在"),
+    ENTERPRISE_id_EXIST(-100234, "企业id已存在"),
     ENTERPRISE_NOEXIST(-10024, "企业不存在!"),
     ENTERPRISE_ID_NOTEXIST(-10025, "企业代号不存在!"),
 
@@ -142,10 +142,14 @@ public enum ErrEumn {
     IMGAGDFILE_FAIL(-100133, "读取地址失败"),
     TO_TRANSFARTO_IMGFILE_FAIL(-100134, "保存文件失败"),
     NOT_FOUNDNOT_FILE(-100135, "找不到文件"),
-    JOURNALISM_NEWS_NULL(-100135,"新闻不存在"),
-    JOURNALISM_TITLE_NULL(-100136,"新闻标题为空"),
-    JOURNALISM_CONTENT_NULL(-100137,"新闻内容为空"),
-    JOURNALISM_IMG_NULL(-100138,"新闻图片为空"),
+    JOURNALISM_NEWS_NULL(-100135, "新闻不存在"),
+    JOURNALISM_TITLE_NULL(-100136, "新闻标题为空"),
+    JOURNALISM_CONTENT_NULL(-100137, "新闻内容为空"),
+    JOURNALISM_IMG_NULL(-100138, "新闻图片为空"),
+
+
+    add_feedback_error(-100201, "反馈失败"),
+
     ;
 
 

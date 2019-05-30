@@ -12,6 +12,21 @@ public class ResultVO {
     private Object data;
 
 
+    public static ResultVO create(Object date) {
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        resultVO.setMsg("ok");
+        resultVO.setData(date);
+        return resultVO;
+    }
+
+    public static ResultVO create() {
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        resultVO.setMsg("ok");
+        return resultVO;
+    }
+
     /**
      * 主要用于转换组件之间通讯获取的字符串json为JSONObject的快捷方式。
      *
