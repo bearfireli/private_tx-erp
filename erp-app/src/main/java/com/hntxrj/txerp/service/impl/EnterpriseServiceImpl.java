@@ -19,6 +19,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -314,6 +315,68 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         } catch (Exception e) {
             throw new ErpException(ErrEumn.IMGAGDFILE_FAIL);
         }
+    }
+
+    @Override
+    public void getPaymentImage(String  enterprise,Integer type, HttpServletResponse response) throws ErpException {
+        int eid =Integer.parseInt(enterprise);
+        Enterprise enterpriseid = enterpriseRepository.findById(eid)
+                .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
+        String fileName = "";
+        if (enterpriseid.getCollectionCode() != null && !enterpriseid.getCollectionCode().equals("")) {
+            fileName = enterpriseid.getCollectionCode();
+        } else if (type ==1){
+            fileName = "weixin.png";
+        }else if (type ==2){
+            fileName = "zhifubao.jpg";
+        }
+        File file = new File(imgFilePath + fileName);
+        if (!file.exists()) {
+            throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
+        }
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("img/*");
+        try {
+            OutputStream os = response.getOutputStream();
+            byte[] bis = new byte[1024];
+            InputStream inputStream = new FileInputStream(file);
+            while (-1 != inputStream.read(bis)) {
+                os.write(bis);
+            }
+        } catch (Exception e) {
+            throw new ErpException(ErrEumn.IMGAGDFILE_FAIL);
+        }
+    }
+
+    @Override
+    public String uploadFeedbackImg(MultipartFile multipartFile) throws ErpException {
+        String fileName = UUID.randomUUID().toString();
+        File dir = new File(imgFilePath);
+        dir.mkdirs();
+        File file = new File(imgFilePath + fileName);
+        try {
+            file.createNewFile();
+            IOUtils.copy(multipartFile.getInputStream(), new FileOutputStream(file));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
+        }
+        return fileName;
+    }
+
+    @Override
+    public void getFeedbackImg(String fileName, HttpServletResponse response) throws ErpException {
+        File file = new File(imgFilePath + fileName);
+        if (!file.exists()) {
+            throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
+        }
+        try {
+            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
+        }
+
     }
 
     /**

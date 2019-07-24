@@ -36,7 +36,7 @@ public class AuthFilter implements Filter {
     private static final String V2 = "/v2";
     private static final String JOURNALISM_IMAGES = "/journalism/images";
     private static final String USER_IMAGES = "/user/header.png";
-    private static final String ENTERPRISE_IMAGES = "/enterprise/getCollectionCode";
+    private static final String ENTERPRISE_IMAGES = "/enterprise/getFeedboackPicture";
     private static final String FEEDBOCK_IMAGES = "/feedback/getFeedboackPicture";
 
 

@@ -34,6 +34,7 @@ public class EnterpriseController {
         resultVO.setCode(0);
         resultVO.setMsg("ok");
         resultVO.setData(null);
+        resultVO.setData(null);
         this.enterpriseService = enterpriseService;
     }
 
@@ -137,4 +138,24 @@ public class EnterpriseController {
         enterpriseService.getCollectionCode(enterprise, type, response);
     }
 
+    /*读取地址
+     * @param eid       企业id
+     * @param type      收款码类型，1微信，2支付宝
+     * */
+    @GetMapping("/getPaymentImage")
+    public void getPaymentImage(String  enterprise,Integer type,
+                                  HttpServletResponse response) throws ErpException {
+        enterpriseService.getPaymentImage(enterprise,type, response);
+    }
+
+    //上传收款码
+    @PostMapping("/uploadPicture")
+    public ResultVO uploadPicture(MultipartFile image) throws ErpException {
+        return ResultVO.create(enterpriseService.uploadFeedbackImg(image));
+    }
+    //读取图片
+    @GetMapping("/getFeedboackPicture")
+    public void getFeedbackPicture(String fileName, HttpServletResponse response) throws ErpException {
+        enterpriseService.getFeedbackImg(fileName, response);
+    }
 }

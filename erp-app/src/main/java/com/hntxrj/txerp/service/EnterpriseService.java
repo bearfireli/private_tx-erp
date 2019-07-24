@@ -58,4 +58,12 @@ public interface EnterpriseService {
       * */
     void getCollectionCode(Integer eid, Integer type, HttpServletResponse response) throws ErpException;
 
+    /*读取地址
+     * @param eid       企业id
+     * */
+    void getPaymentImage(String enterprise,Integer type, HttpServletResponse response) throws ErpException;
+
+    String uploadFeedbackImg(MultipartFile multipartFile) throws ErpException;
+
+    void getFeedbackImg(String fileName, HttpServletResponse response) throws ErpException;
 }

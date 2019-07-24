@@ -43,14 +43,14 @@ pagehelper:
 
 
 app:
-  workspace: /Users/haoranliu/IdeaProjects/tx-erp
+  workspace: /home/qyb/IdeaProjects
   afterSaleLog:
     upload:
       path: ${app.workspace}/upload/
   user:
     headerPath: ${app.workspace}/upload/user/header/
   pay:
-    imgFilePath: ${app.workspace}/upload/payImgPath
+    imgFilePath: ${app.workspace}/upload/payImgPath/
   feedback:
     imgFilePath: ${app.workspace}/upload/feedbackImgPath/
 server:
