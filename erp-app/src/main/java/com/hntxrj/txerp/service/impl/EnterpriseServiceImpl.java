@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErpException;
@@ -19,6 +20,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -313,6 +315,107 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             }
         } catch (Exception e) {
             throw new ErpException(ErrEumn.IMGAGDFILE_FAIL);
+        }
+    }
+
+    @Override
+    public String uploadFeedbackImg(MultipartFile multipartFile) throws ErpException {
+        String fileName = UUID.randomUUID().toString();
+        File dir = new File(imgFilePath);
+        dir.mkdirs();
+        File file = new File(imgFilePath + fileName);
+        try {
+            file.createNewFile();
+            IOUtils.copy(multipartFile.getInputStream(), new FileOutputStream(file));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
+        }
+        return fileName;
+    }
+
+    @Override
+    public void getFeedbackImg(Integer eid, Integer type, HttpServletResponse response) throws ErpException {
+        Enterprise enterprise = enterpriseRepository.findById(eid)
+                .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
+        String fileName = "noimage.png";
+        String image = "";
+        if (enterprise.getCollectionCode() != null && !enterprise.getCollectionCode().equals("")) {
+            JSONObject array = (JSONObject) JSON.parse(enterprise.getCollectionCode());
+            for (int i = 0; i < array.size(); i++) {
+                if (type == 1) {
+                    JSONObject jObject3 = (JSONObject) JSON.parse(array.getString("wechat"));
+                    if (jObject3 != null || "".equals(jObject3)) {
+                        int wechat = Integer.parseInt(jObject3.getString("wechat"));
+                        if (wechat == 1) {
+                            image = jObject3.getString("fileName");
+                            fileName = image.replaceAll("[\\[\\]]", "");
+                        }
+                    }
+                }
+                if (type == 2) {
+                    JSONObject jObject3 = (JSONObject) JSON.parse(array.getString("alipay"));
+                    if (jObject3 != null || "".equals(jObject3)) {
+                        int alipay = Integer.parseInt(jObject3.getString("alipay"));
+                        if (alipay == 2) {
+                            image = jObject3.getString("fileName");
+                            fileName = image.replaceAll("[\\[\\]]", "");
+                        }
+                    }
+                }
+            }
+        }
+        File file = new File(imgFilePath + fileName);
+        if (!file.exists()) {
+            throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
+        }
+        try {
+            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
+        }
+    }
+
+    @Override
+    public Enterprise saveCollectionCode(Integer eid, String imageFile, Integer type) throws ErpException {
+        Enterprise enterprise = enterpriseRepository.findById(eid)
+                .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
+        JSONObject array = (JSONObject) JSON.parse(enterprise.getCollectionCode());
+        if (array == null) {
+            array = new JSONObject();
+        }
+        if (type == 1) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("fileName", imageFile);
+            jsonObject.put("filePath", imgFilePath + imageFile);
+            jsonObject.put("imgfile", imageFile);
+            jsonObject.put("wechat", type);
+            array.put("wechat", jsonObject);
+        } else {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("fileName", imageFile);
+            jsonObject.put("filePath", imgFilePath + imageFile);
+            jsonObject.put("imgfile", imageFile);
+            jsonObject.put("alipay", type);
+            array.put("alipay", jsonObject);
+        }
+        enterprise.setCollectionCode(String.valueOf(array));
+        enterpriseRepository.save(enterprise);
+        return enterprise;
+    }
+
+    @Override
+    public void getimage(String fileName, HttpServletResponse response) throws ErpException {
+        File file = new File(imgFilePath + fileName);
+        if (!file.exists()) {
+            throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
+        }
+        try {
+            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
         }
     }
 

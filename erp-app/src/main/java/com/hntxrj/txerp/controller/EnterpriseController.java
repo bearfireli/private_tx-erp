@@ -34,6 +34,7 @@ public class EnterpriseController {
         resultVO.setCode(0);
         resultVO.setMsg("ok");
         resultVO.setData(null);
+        resultVO.setData(null);
         this.enterpriseService = enterpriseService;
     }
 
@@ -137,4 +138,28 @@ public class EnterpriseController {
         enterpriseService.getCollectionCode(enterprise, type, response);
     }
 
+    //上传收款码
+    @PostMapping("/uploadPicture")
+    public ResultVO uploadPicture(MultipartFile image) throws ErpException {
+        return ResultVO.create(enterpriseService.uploadFeedbackImg(image));
+    }
+    //读取图片
+    @GetMapping("/getFeedboackPicture")
+    public void getFeedbackPicture(Integer eid, Integer type,HttpServletResponse response) throws ErpException {
+        enterpriseService.getFeedbackImg(eid,type, response);
+    }
+
+    //上传成功回显图片
+    @GetMapping("/getimage")
+    public void getimage(String fileName, HttpServletResponse response) throws ErpException {
+        enterpriseService.getimage(fileName, response);
+    }
+
+    //保存收款码
+    @PostMapping("/saveCollectionCode")
+    public ResultVO saveCollectionCode(Integer eid, String imageFile,
+                                      Integer type) throws ErpException {
+        resultVO.setData(enterpriseService.saveCollectionCode(eid, imageFile, type));
+        return resultVO;
+    }
 }
