@@ -39,6 +39,7 @@ public class AuthFilter implements Filter {
     private static final String ENTERPRISE_IMAGES = "/enterprise/getFeedboackPicture";
     private static final String ENTERPRISE_IMAGE = "/enterprise/getimage";
     private static final String FEEDBOCK_IMAGES = "/feedback/getFeedboackPicture";
+    private static final String USER_USERNAME= "/user/getUser";
 
 
     private static final String[] PUBLIC_API_LIST = new String[]{
@@ -46,7 +47,8 @@ public class AuthFilter implements Filter {
     };
 
     private static final String[] PUBLIC_PATH = new String[]{
-            DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES,USER_IMAGES,FEEDBOCK_IMAGES,ENTERPRISE_IMAGES,ENTERPRISE_IMAGE
+            DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES,USER_IMAGES,FEEDBOCK_IMAGES,ENTERPRISE_IMAGES,ENTERPRISE_IMAGE,
+            USER_USERNAME
     };
 
     @Autowired
@@ -90,29 +92,28 @@ public class AuthFilter implements Filter {
 
 
         response.setHeader("Content-type", "text/html;charset=UTF-8");
+            if (request.getHeader("pid") == null || "".equals(request.getHeader("pid"))) {
+                ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn._PID_NOT_FIND_IN_HEADER));
 
-        if (request.getHeader("pid") == null || "".equals(request.getHeader("pid"))) {
-            ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn._PID_NOT_FIND_IN_HEADER));
-
-        }
-
-        if (token == null || "".equals(token)) {
-            ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.NOT_LOGIN));
-        }
-        int enterprise = request.getIntHeader("enterprise");
-
-        if (enterprise <= 0) {
-            ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.ENTERPRISE_ID_NOTEXIST));
-        }
-        log.info("【验证身份】token={}, uri={}, enterprise={}", token, uri, enterprise);
-        try {
-            if (authService.isPermission(token, enterprise, uri)) {
-                chain.doFilter(req, resp);
-                return;
             }
-            ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.NOT_PERMISSION));
-        } catch (ErpException e) {
-            ExceptionUtil.defaultErrorHandler(request, response, e);
-        }
+
+            if (token == null || "".equals(token)) {
+                ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.NOT_LOGIN));
+            }
+            int enterprise = request.getIntHeader("enterprise");
+
+            if (enterprise <= 0) {
+                ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.ENTERPRISE_ID_NOTEXIST));
+            }
+            log.info("【验证身份】token={}, uri={}, enterprise={}", token, uri, enterprise);
+            try {
+                if (authService.isPermission(token, enterprise, uri)) {
+                    chain.doFilter(req, resp);
+                    return;
+                }
+                ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.NOT_PERMISSION));
+            } catch (ErpException e) {
+                ExceptionUtil.defaultErrorHandler(request, response, e);
+            }
     }
 }
