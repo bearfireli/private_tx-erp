@@ -30,6 +30,7 @@ public class AuthFilter implements Filter {
     private static final String FILEDOWNLOAD = "/afterSale/file";
     private static final String FAVICON = "/favicon.ico";
     private static final String JOURNALISM_LIST = "/journalism/journalismlist";
+    private static final String JOURNALISM_SELECT_LIST = "/journalism/selectJournalism";
     private static final String JOURNALISM_BYID = "/journalism/getJournalism";
 
 
@@ -46,7 +47,7 @@ public class AuthFilter implements Filter {
 
     private static final String[] PUBLIC_API_LIST = new String[]{
             LOGIN_API, TOKEN_USE, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API, FAVICON,JOURNALISM_LIST
-            ,JOURNALISM_BYID
+            ,JOURNALISM_BYID,JOURNALISM_SELECT_LIST
     };
 
     private static final String[] PUBLIC_PATH = new String[]{
