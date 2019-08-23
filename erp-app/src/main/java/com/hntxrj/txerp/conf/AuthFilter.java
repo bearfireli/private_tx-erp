@@ -43,6 +43,7 @@ public class AuthFilter implements Filter {
     private static final String ENTERPRISE_IMAGE = "/enterprise/getimage";
     private static final String FEEDBOCK_IMAGES = "/feedback/getFeedboackPicture";
     private static final String USER_USERNAME= "/user/getUser";
+    private static final String ENTERPRISE_GETENTERPRISE= "/enterprise/getEnterprise";
 
 
     private static final String[] PUBLIC_API_LIST = new String[]{
@@ -52,7 +53,7 @@ public class AuthFilter implements Filter {
 
     private static final String[] PUBLIC_PATH = new String[]{
             DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES,USER_IMAGES,FEEDBOCK_IMAGES,ENTERPRISE_IMAGES,ENTERPRISE_IMAGE,
-            USER_USERNAME
+            USER_USERNAME,ENTERPRISE_GETENTERPRISE
     };
 
     @Autowired
