@@ -2,6 +2,11 @@ package com.hntxrj.txerp.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.arronlong.httpclientutil.HttpClientUtil;
+import com.arronlong.httpclientutil.common.HttpConfig;
+import com.arronlong.httpclientutil.common.HttpHeader;
+import com.arronlong.httpclientutil.exception.HttpProcessException;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErrEumn;
@@ -23,6 +28,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +62,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Value("${app.user.headerPath}")
     private String headerUploadPath;
+
+    @Value("${app.host}")
+    private String url;
 
     // private final AmqpTemplate rabbitTemplate;
     // JPA查询工厂
@@ -427,6 +436,56 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         PageHelper.startPage(page, pageSize);
 
         List<UserAuth> userAuths = userMapper.selectUserList(enterpriseId, user.getUsername(), user.getPhone(), user.getEmail());
+        List<UserListVO> userList = userMapper.getUserList(enterpriseId, user.getUsername(), user.getPhone(), user.getEmail());
+        String driverCodes = "";
+        for (UserListVO userListVO : userList) {
+            String driverCode = userListVO.getDriverCode();
+            if (driverCode != null&&driverCode!="") {
+                driverCodes += driverCode + ",";
+            }
+        }
+
+        String baseUrl = "";
+        baseUrl = url + "/driver/getDriverNames";
+        Map<String, Object> map = new HashMap<>();
+        map.put("driverCodes", driverCodes);
+        map.put("compid", enterpriseId.toString());
+        Header[] headers = HttpHeader.custom()
+                .other("version", "1")
+                .other("token",token)
+                .build();
+        //插件式配置请求参数（网址、请求参数、编码、client）
+        HttpConfig config = HttpConfig.custom()
+                .headers(headers)
+                .url(baseUrl)
+                .map(map)
+                .encoding("utf-8")
+                .inenc("utf-8");
+        //使用方式：
+        String pass = "";
+        try {
+            String result = HttpClientUtil.post(config);
+            JSONObject data1 = JSONObject.parseObject(result);
+
+            JSONObject data = data1.getJSONObject("data");
+
+            for (UserAuth userAuth : userAuths) {
+                for (UserListVO userListVO : userList) {
+                    if ((int)userAuth.getUser().getUid() == (int)userListVO.getUid()) {
+                        //把司机姓名赋值给userAuth
+                        if (data.get(userListVO.getDriverCode()) != null) {
+                            userAuth.setDriverName((String) data.get(userListVO.getDriverCode()));
+                        }else {
+                            userAuth.setDriverName("");
+                        }
+
+                    }
+                }
+            }
+        } catch (HttpProcessException e) {
+            log.warn("请求spterp项目失败");
+            e.printStackTrace();
+        }
 
         PageInfo<UserAuth> pageInfo = new PageInfo<>(userAuths);
 

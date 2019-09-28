@@ -37,4 +37,9 @@ public class UserAuth implements Serializable {
     private Integer updateUser;
 
 
+    @Transient
+    private String driverName;
+
+
+
 }
