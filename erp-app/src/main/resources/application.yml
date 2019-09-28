@@ -53,8 +53,7 @@ app:
     imgFilePath: ${app.workspace}/upload/payImgPath/
   feedback:
     imgFilePath: ${app.workspace}/upload/feedbackImgPath/
-# host: https://api.hntxrj.com
-  host: http://192.168.31.198:8088
+ host: https://dev.erp.hntxrj.com
 server:
   port: 9501
 
