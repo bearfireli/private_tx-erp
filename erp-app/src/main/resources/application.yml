@@ -53,6 +53,7 @@ app:
     imgFilePath: ${app.workspace}/upload/payImgPath/
   feedback:
     imgFilePath: ${app.workspace}/upload/feedbackImgPath/
+ host: https://dev.erp.hntxrj.com
 server:
   port: 9501
 
