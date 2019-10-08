@@ -198,5 +198,6 @@ public interface UserService {
     String getUserFavoriteConfig(String token) throws ErpException;
 
     void setUserFavoriteConfig(String token, String config) throws ErpException;
+    void updateUserAdminStatus(Integer userId,String eadmin) throws ErpException;
 
 }

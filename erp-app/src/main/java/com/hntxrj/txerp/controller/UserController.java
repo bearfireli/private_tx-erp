@@ -329,4 +329,11 @@ public class UserController {
         userService.setUserFavoriteConfig(token, config);
         return resultVO;
     }
+
+    @RequestMapping("/updateUserStatus")
+    public ResultVO updateUserAdminStatus(int uid,String eadmin) throws ErpException {
+        userService.updateUserAdminStatus(uid, eadmin);
+        return resultVO.create();
+    }
+
 }

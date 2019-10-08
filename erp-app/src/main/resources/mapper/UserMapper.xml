@@ -9,6 +9,7 @@
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="update_user" property="updateUser" jdbcType="INTEGER"/>
+        <result column="eadmin"  property="eadmin" jdbcType="CHAR"/>
         <association property="authGroup" javaType="com.hntxrj.txerp.entity.base.AuthGroup">
             <id column="agid" property="agid" jdbcType="INTEGER"/>
             <result column="ag_name" property="agName" jdbcType="VARCHAR"/>
@@ -133,6 +134,12 @@
         </if>
     </select>
 
+    <update id="addUserStatus" parameterType="int">
+        update user_auth set  eadmin=1 where uid=#{userId}
+    </update>
 
+    <update id="deleteUserStatus" parameterType="int">
+        update user_auth set  eadmin=0 where uid=#{userId}
+    </update>
 
 </mapper>

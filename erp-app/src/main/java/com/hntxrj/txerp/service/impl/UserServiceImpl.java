@@ -905,6 +905,20 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
     }
 
+    /*
+     * 修改用户的权限状态码eadmin
+     * */
+    @Override
+    public void updateUserAdminStatus(Integer userId,String eadmin) throws ErpException{
+        if ("0".equals(eadmin)) {
+            //此用户需要添加权限
+            userMapper.addUserStatus(userId);
+        } else if ("1".equals(eadmin)) {
+            //此用户需要取消权限
+            userMapper.deleteUserStatus(userId);
+        }
+    }
+
 
 
     /*================================================================================================================*/
