@@ -21,5 +21,9 @@ public interface UserMapper {
 
 
     List<UserAuth> selectUserList(Integer enterpriseId, String userName, String phone, String email);
+
+    void addUserStatus(Integer userId);
+
+    void deleteUserStatus(Integer userId);
     List<UserListVO>  getUserList(Integer enterpriseId, String userName, String phone, String email);
 }
