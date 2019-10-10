@@ -9,6 +9,7 @@
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="update_user" property="updateUser" jdbcType="INTEGER"/>
+        <result column="eadmin"  property="eadmin" jdbcType="CHAR"/>
         <association property="authGroup" javaType="com.hntxrj.txerp.entity.base.AuthGroup">
             <id column="agid" property="agid" jdbcType="INTEGER"/>
             <result column="ag_name" property="agName" jdbcType="VARCHAR"/>
@@ -105,5 +106,40 @@
             and u.email like #{_email}
         </if>
     </select>
+
+    <select id="getUserList" resultType="com.hntxrj.txerp.vo.UserListVO">
+        <bind name="_userName" value="'%' + userName + '%'"/>
+        <bind name="_phone" value="'%' + phone + '%'"/>
+        <bind name="_email" value="'%' + email + '%'"/>
+        select
+            ua.uid uid,
+            ud.driver_code driverCode
+        from user_auth ua
+        left join user u on ua.uid=u.uid
+        left join enterprise e on ua.eid=e.eid
+        left join auth_group ag on ua.auth_group=ag.agid
+        left join user_bind_driver ud on ua.uid=ud.uid
+        where 1=1
+        <if test="enterpriseId != null and enterpriseId!=''">
+            and ua.eid = #{enterpriseId}
+        </if>
+        <if test="userName != null">
+            and u.username like #{_userName}
+        </if>
+        <if test="phone != null">
+            and u.phone like #{_phone}
+        </if>
+        <if test="email != null">
+            and u.email like #{_email}
+        </if>
+    </select>
+
+    <update id="addUserStatus" parameterType="int">
+        update user_auth set  eadmin=1 where uid=#{userId}
+    </update>
+
+    <update id="deleteUserStatus" parameterType="int">
+        update user_auth set  eadmin=0 where uid=#{userId}
+    </update>
 
 </mapper>
