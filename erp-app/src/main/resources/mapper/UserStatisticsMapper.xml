@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.UserStatisticsMapper">
+
+    <select id="userCount" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select * from user_statistics where typeCode=1
+        <if test="statDate != null">
+            and statDate = #{statDate}
+        </if>
+    </select>
+
+    <select id="loginCount" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select sum(value) as value ,appCode,appName,statDate
+        from user_statistics where typeCode=2 and statDate = #{statDate}
+        <if test="compid != null">
+            and compid = #{compid}
+        </if>
+        <if test="statDate != null">
+            and statDate = #{statDate}
+        </if>
+        <if test="appCode != null">
+            and appCode = #{appCode}
+        </if>
+        group by appCode
+    </select>
+
+    <select id="loginUser" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select * from user_statistics where typeCode=2
+        <if test="compid != null">
+            and compid = #{compid}
+        </if>
+        <if test="uid != null">
+            and uid = #{uid}
+        </if>
+        <if test="appCode != null">
+            and appCode = #{appCode}
+        </if>
+        <if test="statDate != null">
+            and statDate = #{statDate}
+        </if>
+    </select>
+    <update id="updateUserStatistic" parameterType="com.hntxrj.txerp.entity.base.UserStatistic">
+            update user_statistics set value=#{value} where id=#{id}
+    </update>
+
+    <insert id="addUserStatistic" parameterType="com.hntxrj.txerp.entity.base.UserStatistic">
+        insert into user_statistics(typeName,typeCode,value,statDate,compid,uid,methodName,functionName,appName,appCode)
+        values (#{typeName},#{typeCode},#{value},#{statDate},#{compid},#{uid},#{methodName},#{functionName},#{appName},#{appCode})
+    </insert>
+
+
+    <select id="functionClick" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select *
+        from user_statistics where typeCode=3
+        <if test="methodName != null">
+            and methodName = #{methodName}
+        </if>
+        <if test="statDate != null">
+            and statDate = #{statDate}
+        </if>
+        <if test="appCode != null">
+            and appCode = #{appCode}
+        </if>
+        <if test="compid != null">
+            and compid = #{compid}
+        </if>
+
+    </select>
+
+    <select id="selectUser" resultType="integer">
+        select count(*) from user
+    </select>
+
+    <select id="functionCount" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select sum(value) as value ,functionName,statDate
+        from user_statistics where typeCode=3
+        <if test="statDate != null">
+            and statDate = #{statDate}
+        </if>
+        <if test="methodName != null and methodName!=''">
+            and methodName = #{methodName}
+        </if>
+        <if test="appCode != null">
+            and appCode = #{appCode}
+        </if>
+        <if test="compid != null and compid != 0 ">
+            and compid = #{compid}
+        </if>
+    </select>
+
+    <select id="functionRank" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select sum(value) as value ,functionName,typeName,appName
+        from user_statistics where typeCode=3
+        <if test="compid != null and compid != 0 ">
+            and compid = #{compid}
+        </if>
+        <if test="statDate != null">
+            and statDate like #{statDate}"%"
+        </if>
+        <if test="appCode != null">
+            and appCode = #{appCode}
+        </if>
+        group by methodName
+        order by value desc
+    </select>
+    <select id="getEnterprise" resultType="com.hntxrj.txerp.entity.base.Enterprise">
+      select eid, ep_name as epName,ep_short_name as epShortName
+        from enterprise where `delete` =0
+    </select>
+
+</mapper>
