@@ -68,7 +68,7 @@
     </select>
 
     <select id="selectUser" resultType="integer">
-        select count(*) from user
+        select count(*) from user where status=0
     </select>
 
     <select id="functionCount" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
