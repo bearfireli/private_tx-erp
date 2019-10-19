@@ -8,6 +8,7 @@ import org.hibernate.annotations.NotFoundAction;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -40,6 +41,10 @@ public class UserAuth implements Serializable {
     private String eadmin;
     @Transient
     private String driverName;
+
+
+    @Transient
+    List<Menu> menuVOS;
 
 
 
