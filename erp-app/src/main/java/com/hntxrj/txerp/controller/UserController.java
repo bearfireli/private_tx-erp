@@ -37,7 +37,8 @@ public class UserController {
     private final UserAccountService userAccountService;
     private ResultVO resultVO;
     private final AuthCodeService authCodeService;
-    private User newUser;
+
+    private User newUser;   //用来保存用户添加的新用户，等给这个新用户绑定权限之后，统一添加到用户表和权限表中
 
 
     @Autowired
@@ -242,6 +243,8 @@ public class UserController {
     @PostMapping("/addUser")
     public String addUser(User user, String enterprise) throws ErpException {
         log.info("【添加用户】user={}", user);
+
+        //先把用户添加的用户复制给newUser,先不向数据库中添加。用户添加权限时在添加用户。
         newUser = userService.addUser(user);
         resultVO.setData(JSON.toJSONString(newUser));
         return JSON.toJSONString(resultVO);
