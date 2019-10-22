@@ -37,7 +37,7 @@ public class UserAuth implements Serializable {
     private Date updateTime;
     private Integer updateUser;
 
-    @Column(insertable = true, updatable = true)
+    @Column(insertable = false, updatable = false)
     private String eadmin;
     @Transient
     private String driverName;

@@ -275,8 +275,18 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserAuth(String params, String token) throws ErpException {
+    public void setUserAuth(String params, String token,User newUser) throws ErpException {
         JSONObject data = JSONObject.parseObject(params);
+        if (data.getInteger("uid") == 0) {
+            try {
+                User saveUser= userRepository.save(newUser);
+                data.put("uid", saveUser.getUid());
+            } catch (Exception e) {
+                throw new ErpException(ErrEumn.ADD_USER_ERR);
+            }
+
+        }
+
         Integer uid = data.getInteger("uid");
         JSONArray userAuthArray = data.getJSONArray("arr");
 
@@ -297,7 +307,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             authGroup.setAgid(userAuthObj.getInteger("agid"));
 
             User user = new User();
-            user.setUid(userAuthObj.getInteger("uid"));
+            user.setUid(uid);
 
             userAuth.setEnterprise(enterprise);
             userAuth.setAuthGroup(authGroup);
@@ -591,12 +601,13 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                 EncryptUtil.encryptPassword(user.getPassword()));
 
         EntityTools.setEntityDefaultValue(user);
-
-        try {
+        user.setUid(0);
+        return user;
+        /*try {
             return userRepository.save(user);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_USER_ERR);
-        }
+        }*/
 
     }
 

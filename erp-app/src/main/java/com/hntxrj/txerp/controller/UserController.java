@@ -37,6 +37,7 @@ public class UserController {
     private final UserAccountService userAccountService;
     private ResultVO resultVO;
     private final AuthCodeService authCodeService;
+    private User newUser;
 
 
     @Autowired
@@ -241,13 +242,14 @@ public class UserController {
     @PostMapping("/addUser")
     public String addUser(User user, String enterprise) throws ErpException {
         log.info("【添加用户】user={}", user);
-        resultVO.setData(JSON.toJSONString(userService.addUser(user)));
+        newUser = userService.addUser(user);
+        resultVO.setData(JSON.toJSONString(newUser));
         return JSON.toJSONString(resultVO);
     }
 
     @PostMapping("/setUserAuth")
     public String setUserAuth(@RequestBody String param, @RequestHeader String token) throws ErpException {
-        userService.setUserAuth(param, token);
+        userService.setUserAuth(param, token,newUser);
         return JSON.toJSONString(resultVO);
     }
 

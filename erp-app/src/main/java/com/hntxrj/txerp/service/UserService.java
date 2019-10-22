@@ -184,7 +184,7 @@ public interface UserService {
 
     boolean userIsSupperAdmin(String token) throws ErpException;
 
-    void setUserAuth(String params, String token) throws ErpException;
+    void setUserAuth(String params, String token,User newUser) throws ErpException;
 
 
     void checkPassword(String token, String password) throws ErpException;
