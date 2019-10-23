@@ -1,9 +1,9 @@
-package com.hntxrj.driver.services.impl;
+package com.hntxrj.txerp.services.impl;
 
-import com.hntxrj.driver.entity.EppAddress;
-import com.hntxrj.driver.mapper.EppAddressMapper;
-import com.hntxrj.driver.repository.EppAddressRepository;
-import com.hntxrj.driver.services.EppAddressService;
+import com.hntxrj.txerp.entity.EppAddress;
+import com.hntxrj.txerp.mapper.EppAddressMapper;
+import com.hntxrj.txerp.repository.EppAddressRepository;
+import com.hntxrj.txerp.services.EppAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

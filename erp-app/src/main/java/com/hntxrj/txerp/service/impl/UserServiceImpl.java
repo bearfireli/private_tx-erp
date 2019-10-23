@@ -16,6 +16,7 @@ import com.hntxrj.txerp.mapper.UserMapper;
 import com.hntxrj.txerp.repository.*;
 import com.hntxrj.txerp.service.UserService;
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.util.PageInfoUtil;
 import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.hntxrj.txerp.entity.base.QUserAccount;
@@ -437,22 +438,22 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         List<UserAuth> userAuths = userMapper.selectUserList(enterpriseId, user.getUsername(), user.getPhone(), user.getEmail());
         List<UserListVO> userList = userMapper.getUserList(enterpriseId, user.getUsername(), user.getPhone(), user.getEmail());
-        String driverCodes = "";
+        StringBuilder driverCodes = new StringBuilder();
         for (UserListVO userListVO : userList) {
             String driverCode = userListVO.getDriverCode();
-            if (driverCode != null&&driverCode!="") {
-                driverCodes += driverCode + ",";
+            if (driverCode != null && !driverCode.equals("")) {
+                driverCodes.append(driverCode).append(",");
             }
         }
 
         String baseUrl = "";
         baseUrl = url + "/driver/getDriverNames";
         Map<String, Object> map = new HashMap<>();
-        map.put("driverCodes", driverCodes);
+        map.put("driverCodes", driverCodes.toString());
         map.put("compid", enterpriseId.toString());
         Header[] headers = HttpHeader.custom()
                 .other("version", "1")
-                .other("token",token)
+                .other("token", token)
                 .build();
         //插件式配置请求参数（网址、请求参数、编码、client）
         HttpConfig config = HttpConfig.custom()
@@ -471,11 +472,11 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
             for (UserAuth userAuth : userAuths) {
                 for (UserListVO userListVO : userList) {
-                    if ((int)userAuth.getUser().getUid() == (int)userListVO.getUid()) {
+                    if ((int) userAuth.getUser().getUid() == (int) userListVO.getUid()) {
                         //把司机姓名赋值给userAuth
                         if (data.get(userListVO.getDriverCode()) != null) {
                             userAuth.setDriverName((String) data.get(userListVO.getDriverCode()));
-                        }else {
+                        } else {
                             userAuth.setDriverName("");
                         }
 
@@ -572,7 +573,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         if (user.getStatus() == null) {
             throw new ErpException(ErrEumn.ADD_USER_STATUS_IS_NULL);
         }
-        if(user.getBindSaleManName() == null){
+        if (user.getBindSaleManName() == null) {
             user.setBindSaleManName("");
         }
         if (user.getHeader() == null) {
@@ -630,10 +631,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             //当修改用户或找不到该用户的id时
             throw new ErpException(ErrEumn.UPDATE_USER_PARAMS_ERR);
         }
-        if(user.getErpType() != null){
+        if (user.getErpType() != null) {
             oldUser.setErpType(user.getErpType());
         }
-        if(user.getBindSaleManName() != null){
+        if (user.getBindSaleManName() != null) {
             oldUser.setBindSaleManName(user.getBindSaleManName());
         }
 
@@ -909,7 +910,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      * 修改用户的权限状态码eadmin
      * */
     @Override
-    public void updateUserAdminStatus(Integer userId,String eadmin) throws ErpException{
+    public void updateUserAdminStatus(Integer userId, String eadmin) throws ErpException {
         if ("0".equals(eadmin)) {
             //此用户需要添加权限
             userMapper.addUserStatus(userId);

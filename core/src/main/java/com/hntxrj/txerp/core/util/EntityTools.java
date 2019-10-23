@@ -1,12 +1,12 @@
 package com.hntxrj.txerp.core.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * 实体类操作

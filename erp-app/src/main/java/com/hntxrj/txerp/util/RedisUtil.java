@@ -1,4 +1,4 @@
-package com.hntxrj.txerp.core.util;
+package com.hntxrj.txerp.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

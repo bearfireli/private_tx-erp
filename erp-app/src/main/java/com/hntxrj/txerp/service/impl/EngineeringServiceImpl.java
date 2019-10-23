@@ -3,26 +3,24 @@ package com.hntxrj.txerp.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.core.util.PageInfoUtil;
 import com.hntxrj.txerp.mapper.EngineeringMapper;
 import com.hntxrj.txerp.service.EngineeringService;
 import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.entity.sell.QEngineering;
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.util.PageInfoUtil;
 import com.hntxrj.txerp.vo.EngineeringVO;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.repository.EngineeringRepository;
 import com.hntxrj.txerp.service.UserService;
 import com.hntxrj.txerp.entity.sell.Engineering;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 

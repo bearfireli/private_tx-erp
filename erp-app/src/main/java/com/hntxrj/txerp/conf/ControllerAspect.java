@@ -1,7 +1,6 @@
 package com.hntxrj.txerp.conf;
 
-import com.alibaba.fastjson.JSONObject;
-import com.hntxrj.txerp.core.util.RedisUtil;
+import com.hntxrj.txerp.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

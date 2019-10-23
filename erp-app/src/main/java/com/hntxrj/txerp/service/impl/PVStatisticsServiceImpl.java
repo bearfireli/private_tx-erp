@@ -2,10 +2,10 @@ package com.hntxrj.txerp.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hntxrj.txerp.core.util.RedisUtil;
 import com.hntxrj.txerp.entity.base.Statistics;
 import com.hntxrj.txerp.mapper.StatisticsMapper;
 import com.hntxrj.txerp.service.PVStatisticsService;
+import com.hntxrj.txerp.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

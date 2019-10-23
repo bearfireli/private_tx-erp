@@ -1,6 +1,6 @@
-package com.hntxrj.driver.mapper;
+package com.hntxrj.txerp.mapper;
 
-import com.hntxrj.driver.entity.EppAddress;
+import com.hntxrj.txerp.entity.EppAddress;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
