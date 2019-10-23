@@ -184,7 +184,15 @@ public interface UserService {
 
     boolean userIsSupperAdmin(String token) throws ErpException;
 
-    void setUserAuth(String params, String token,User newUser) throws ErpException;
+    /**
+     * 老用户更改权限
+     */
+    void setUserAuth(String params, String token) throws ErpException;
+
+    /**
+     * 新用户添加权限
+     */
+    void addUserAuth(String params, String token,User user) throws ErpException;
 
 
     void checkPassword(String token, String password) throws ErpException;
@@ -198,6 +206,13 @@ public interface UserService {
     String getUserFavoriteConfig(String token) throws ErpException;
 
     void setUserFavoriteConfig(String token, String config) throws ErpException;
-    void updateUserAdminStatus(Integer userId,String eadmin) throws ErpException;
+
+    /**
+     * 用于更改用户的超级管理员权限
+     * @param userId
+     * @param eadmin
+     * @throws ErpException
+     */
+    void updateUserAdminStatus(Integer userId, String eadmin) throws ErpException;
 
 }

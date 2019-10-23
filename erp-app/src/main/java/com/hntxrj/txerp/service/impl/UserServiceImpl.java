@@ -275,63 +275,37 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserAuth(String params, String token,User newUser) throws ErpException {
+    public void setUserAuth(String params, String token) throws ErpException {
         JSONObject data = JSONObject.parseObject(params);
-        if (data.getInteger("uid") == 0) {
+
+        Integer uid = data.getInteger("uid");
+        JSONArray userAuthArray = data.getJSONArray("arr");
+        User addUser = tokenGetUser(token);
+
+        //将用户和权限关联起来
+        userAuth(uid, userAuthArray, addUser);
+
+
+    }
+
+    @Override
+    public void addUserAuth(String params, String token, User user) throws ErpException {
+        JSONObject data = JSONObject.parseObject(params);
+
+        //将新添加的用户存入数据库
             try {
-                User saveUser= userRepository.save(newUser);
+                User saveUser= userRepository.save(user);
                 data.put("uid", saveUser.getUid());
             } catch (Exception e) {
                 throw new ErpException(ErrEumn.ADD_USER_ERR);
             }
 
-        }
-
         Integer uid = data.getInteger("uid");
         JSONArray userAuthArray = data.getJSONArray("arr");
-
         User addUser = tokenGetUser(token);
 
-        // 获取添加人的所有企业和权限信息验证是否可以添加该企业用户
-        QUserAuth qUserAuth = QUserAuth.userAuth;
-        List<UserAuth> addUserAuth = queryFactory.selectFrom(qUserAuth)
-                .where(qUserAuth.user.uid.eq(addUser.getUid())).fetch();
-        List<UserAuth> userAuths = new ArrayList<>();
-        userAuthArray.forEach(userArrayObj -> {
-            JSONObject userAuthObj = JSONObject.parseObject(userArrayObj.toString());
-            UserAuth userAuth = new UserAuth();
-            Enterprise enterprise = new Enterprise();
-            enterprise.setEid(userAuthObj.getInteger("eid"));
-
-            AuthGroup authGroup = new AuthGroup();
-            authGroup.setAgid(userAuthObj.getInteger("agid"));
-
-            User user = new User();
-            user.setUid(uid);
-
-            userAuth.setEnterprise(enterprise);
-            userAuth.setAuthGroup(authGroup);
-            userAuth.setUser(user);
-            userAuth.setUaid(userAuthObj.getInteger("uaid"));
-
-
-            userAuth.setCreateUser(addUser.getUid());
-            userAuth.setUpdateUser(addUser.getUid());
-            addUserAuth.forEach(aua -> {
-                if ((uid.equals(userAuth.getUser().getUid()) &&
-                        aua.getEnterprise().getEid().equals(userAuth.getEnterprise().getEid()))
-                        || userIsSupperAdmin(addUser.getUid())) {
-                    // 超级管理员或者添加用户有该企业权限
-                    // 过滤跟要修改以后id（uid）不同的数据
-                    userAuths.add(userAuth);
-                }
-            });
-        });
-        try {
-            userAuthRepository.saveAll(userAuths);
-        } catch (Exception e) {
-            throw new ErpException(ErrEumn.EDIT_AUTH_GROUP_ERROR);
-        }
+        //将新添加的用户和权限关联起来。
+        userAuth(uid, userAuthArray, addUser);
     }
 
     @Override
@@ -601,7 +575,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                 EncryptUtil.encryptPassword(user.getPassword()));
 
         EntityTools.setEntityDefaultValue(user);
-        user.setUid(0);
+
         return user;
         /*try {
             return userRepository.save(user);
@@ -933,6 +907,50 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         } else if ("1".equals(eadmin)) {
             //此用户需要取消权限
             userMapper.deleteUserStatus(userId);
+        }
+    }
+
+    //此方法用于关联用户和权限
+    public void userAuth(Integer uid, JSONArray userAuthArray, User addUser) throws ErpException {
+        // 获取添加人的所有企业和权限信息验证是否可以添加该企业用户
+        QUserAuth qUserAuth = QUserAuth.userAuth;
+        List<UserAuth> addUserAuth = queryFactory.selectFrom(qUserAuth)
+                .where(qUserAuth.user.uid.eq(addUser.getUid())).fetch();
+        List<UserAuth> userAuths = new ArrayList<>();
+        userAuthArray.forEach(userArrayObj -> {
+            JSONObject userAuthObj = JSONObject.parseObject(userArrayObj.toString());
+            UserAuth userAuth = new UserAuth();
+            Enterprise enterprise = new Enterprise();
+            enterprise.setEid(userAuthObj.getInteger("eid"));
+
+            AuthGroup authGroup = new AuthGroup();
+            authGroup.setAgid(userAuthObj.getInteger("agid"));
+
+            User user = new User();
+            user.setUid(uid);
+
+            userAuth.setEnterprise(enterprise);
+            userAuth.setAuthGroup(authGroup);
+            userAuth.setUser(user);
+            userAuth.setUaid(userAuthObj.getInteger("uaid"));
+
+
+            userAuth.setCreateUser(addUser.getUid());
+            userAuth.setUpdateUser(addUser.getUid());
+            addUserAuth.forEach(aua -> {
+                if ((uid.equals(userAuth.getUser().getUid()) &&
+                        aua.getEnterprise().getEid().equals(userAuth.getEnterprise().getEid()))
+                        || userIsSupperAdmin(addUser.getUid())) {
+                    // 超级管理员或者添加用户有该企业权限
+                    // 过滤跟要修改以后id（uid）不同的数据
+                    userAuths.add(userAuth);
+                }
+            });
+        });
+        try {
+            userAuthRepository.saveAll(userAuths);
+        } catch (Exception e) {
+            throw new ErpException(ErrEumn.EDIT_AUTH_GROUP_ERROR);
         }
     }
 
