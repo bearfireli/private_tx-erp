@@ -275,15 +275,15 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserAuth(String params, String token) throws ErpException {
+    public void updateUserAuth(String params, String token) throws ErpException {
         JSONObject data = JSONObject.parseObject(params);
 
         Integer uid = data.getInteger("uid");
         JSONArray userAuthArray = data.getJSONArray("arr");
         User addUser = tokenGetUser(token);
 
-        //将用户和权限关联起来
-        userAuth(uid, userAuthArray, addUser);
+        //给用户绑定权限
+        setUserAuth(uid, userAuthArray, addUser);
 
 
     }
@@ -305,7 +305,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         User addUser = tokenGetUser(token);
 
         //将新添加的用户和权限关联起来。
-        userAuth(uid, userAuthArray, addUser);
+        setUserAuth(uid, userAuthArray, addUser);
     }
 
     @Override
@@ -910,8 +910,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
     }
 
-    //此方法用于关联用户和权限
-    public void userAuth(Integer uid, JSONArray userAuthArray, User addUser) throws ErpException {
+    //此方法用于绑定用户权限
+    public void setUserAuth(Integer uid, JSONArray userAuthArray, User addUser) throws ErpException {
         // 获取添加人的所有企业和权限信息验证是否可以添加该企业用户
         QUserAuth qUserAuth = QUserAuth.userAuth;
         List<UserAuth> addUserAuth = queryFactory.selectFrom(qUserAuth)

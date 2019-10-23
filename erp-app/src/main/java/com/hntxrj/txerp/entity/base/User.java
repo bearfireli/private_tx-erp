@@ -33,9 +33,6 @@ public class User implements Serializable {
     private Date updateTime;
     private String userFavoriteConfig;
 
-    //新添加用户的hashcode,此字段只在添加用户时使用
-    @Transient
-    private Integer Identification;
 
 
 

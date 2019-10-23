@@ -13,6 +13,7 @@ import com.hntxrj.txerp.entity.base.AuthCode;
 import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.web.ResultVO;
+import com.hntxrj.txerp.vo.UserSaveVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -248,16 +249,19 @@ public class UserController {
     public String addUser(User user, String enterprise) throws ErpException {
         log.info("【添加用户】user={}", user);
 
-        //先把用户添加到缓存中,先不向数据库中添加。用户添加权限时再和用户权限统一添加到数据库中。
+        //用户先不添加到数据库user表中，等用户添加权限时再和用户权限统一添加到数据库中。
         user = userService.addUser(user);
         //得到这个用户的hashcode值作为区分用户的唯一标示
         int hashCode = user.hashCode();
-        user.setIdentification(hashCode);
 
         //以此用户的hashcode值作为key把用户存进缓存中
         redisTemplate.opsForValue().set(hashCode+"",user);
+        UserSaveVO userSaveVO = new UserSaveVO();
+        userSaveVO.setUid(0);
+        userSaveVO.setIdentification(hashCode);
 
-        resultVO.setData(JSON.toJSONString(user));
+
+        resultVO.setData(JSON.toJSONString(userSaveVO));
         return JSON.toJSONString(resultVO);
     }
 
@@ -275,7 +279,7 @@ public class UserController {
             userService.addUserAuth(param, token, user);
         } else {
             //说明是老用户修改权限，调用修改权限的接口
-            userService.setUserAuth(param, token);
+            userService.updateUserAuth(param, token);
         }
 
         return JSON.toJSONString(resultVO);

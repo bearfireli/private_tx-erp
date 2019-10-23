@@ -187,7 +187,7 @@ public interface UserService {
     /**
      * 老用户更改权限
      */
-    void setUserAuth(String params, String token) throws ErpException;
+    void updateUserAuth(String params, String token) throws ErpException;
 
     /**
      * 新用户添加权限
