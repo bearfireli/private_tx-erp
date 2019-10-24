@@ -13,11 +13,14 @@ import com.hntxrj.txerp.entity.base.AuthCode;
 import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.web.ResultVO;
+import com.hntxrj.txerp.vo.UserSaveVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -37,6 +40,10 @@ public class UserController {
     private final UserAccountService userAccountService;
     private ResultVO resultVO;
     private final AuthCodeService authCodeService;
+
+    @Resource
+    private RedisTemplate redisTemplate;
+
 
 
     @Autowired
@@ -241,13 +248,40 @@ public class UserController {
     @PostMapping("/addUser")
     public String addUser(User user, String enterprise) throws ErpException {
         log.info("【添加用户】user={}", user);
-        resultVO.setData(JSON.toJSONString(userService.addUser(user)));
+
+        //用户先不添加到数据库user表中，等用户添加权限时再和用户权限统一添加到数据库中。
+        user = userService.addUser(user);
+        //得到这个用户的hashcode值作为区分用户的唯一标示
+        int hashCode = user.hashCode();
+
+        //以此用户的hashcode值作为key把用户存进缓存中
+        redisTemplate.opsForValue().set(String.valueOf(hashCode),user);
+        UserSaveVO userSaveVO = new UserSaveVO();
+        userSaveVO.setUid(0);
+        userSaveVO.setIdentification(hashCode);
+
+
+        resultVO.setData(JSON.toJSONString(userSaveVO));
         return JSON.toJSONString(resultVO);
     }
 
     @PostMapping("/setUserAuth")
     public String setUserAuth(@RequestBody String param, @RequestHeader String token) throws ErpException {
-        userService.setUserAuth(param, token);
+
+        JSONObject data = JSONObject.parseObject(param);
+
+        Integer uid = data.getInteger("uid");
+        Integer identification = data.getInteger("identification");
+
+        if (uid == 0 || uid == null) {
+            //新用户添加权限，调用新用户添加权限的借口
+            User user = (User) redisTemplate.opsForValue().get(identification.toString());
+            userService.addUserAuth(param, token, user);
+        } else {
+            //说明是老用户修改权限，调用修改权限的接口
+            userService.updateUserAuth(param, token);
+        }
+
         return JSON.toJSONString(resultVO);
     }
 
@@ -331,7 +365,7 @@ public class UserController {
     }
 
     @RequestMapping("/updateUserStatus")
-    public ResultVO updateUserAdminStatus(int uid,String eadmin) throws ErpException {
+    public ResultVO updateUserAdminStatus(int uid, String eadmin) throws ErpException {
         userService.updateUserAdminStatus(uid, eadmin);
         return resultVO.create();
     }
