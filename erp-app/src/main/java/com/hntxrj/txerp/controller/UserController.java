@@ -255,7 +255,7 @@ public class UserController {
         int hashCode = user.hashCode();
 
         //以此用户的hashcode值作为key把用户存进缓存中
-        redisTemplate.opsForValue().set(hashCode+"",user);
+        redisTemplate.opsForValue().set(String.valueOf(hashCode),user);
         UserSaveVO userSaveVO = new UserSaveVO();
         userSaveVO.setUid(0);
         userSaveVO.setIdentification(hashCode);
