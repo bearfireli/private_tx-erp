@@ -6,7 +6,6 @@ import com.arronlong.httpclientutil.HttpClientUtil;
 import com.arronlong.httpclientutil.common.HttpConfig;
 import com.arronlong.httpclientutil.common.HttpHeader;
 import com.arronlong.httpclientutil.exception.HttpProcessException;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErrEumn;
@@ -24,8 +23,6 @@ import com.hntxrj.txerp.entity.base.QUserAuth;
 import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.UserVO;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -58,6 +55,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     private final UserAccountRepository userAccountRepository;
     private final UserAuthRepository userAuthRepository;
+    private final UserBindDriverRepository userBindDriverRepository;
 
     private final UserMapper userMapper;
 
@@ -78,7 +76,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                            AuthGroupRepository authGroupRepository,
                            UserLoginRepository userLoginRepository,
                            EntityManager entityManager, UserAccountRepository userAccountRepository,
-                           UserAuthRepository userAuthRepository, UserMapper userMapper) {
+                           UserAuthRepository userAuthRepository, UserBindDriverRepository userBindDriverRepository, UserMapper userMapper) {
         super(entityManager);
         this.userRepository = userRepository;
         this.enterpriseRepository = enterpriseRepository;
@@ -86,6 +84,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         this.userLoginRepository = userLoginRepository;
         this.userAccountRepository = userAccountRepository;
         this.userAuthRepository = userAuthRepository;
+        this.userBindDriverRepository = userBindDriverRepository;
         this.userMapper = userMapper;
         this.queryFactory = getQueryFactory();
     }
@@ -919,6 +918,33 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             userMapper.deleteUserStatus(userId);
         }
     }
+
+
+    public UserBindDriver getBindDriver(String token, String compid) throws ErpException {
+        User user = tokenGetUser(token);
+        return this.userBindDriverRepository.findUserBindDriverByUidAndCompid(user.getUid(), compid);
+    }
+
+
+    public void bindDriver(Integer uid, String compid, String driverCode) throws ErpException {
+        UserBindDriver userBindDriver = new UserBindDriver();
+        userBindDriver.setCompid(compid);
+        userBindDriver.setDriverCode(driverCode);
+        userBindDriver.setUid(uid);
+        userBindDriver.setCreateTime(new Date());
+
+
+        UserBindDriver oldBindDriver = this.userBindDriverRepository.findUserBindDriverByUidAndCompid(uid, compid);
+        if (oldBindDriver != null) {
+            this.userBindDriverRepository.delete(oldBindDriver);
+        }
+        oldBindDriver = this.userBindDriverRepository.findUserBindDriverByDriverCodeAndCompid(driverCode, compid);
+        if (oldBindDriver != null) {
+            this.userBindDriverRepository.delete(oldBindDriver);
+        }
+        this.userBindDriverRepository.save(userBindDriver);
+    }
+
 
 
 

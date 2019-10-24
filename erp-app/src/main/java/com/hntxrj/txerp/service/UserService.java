@@ -1,17 +1,13 @@
 package com.hntxrj.txerp.service;
 
 import com.hntxrj.txerp.core.exception.ErpException;
-import com.hntxrj.txerp.entity.base.Enterprise;
-import com.hntxrj.txerp.entity.base.User;
-import com.hntxrj.txerp.entity.base.UserAuth;
-import com.hntxrj.txerp.entity.base.UserLogin;
+import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -198,6 +194,10 @@ public interface UserService {
     String getUserFavoriteConfig(String token) throws ErpException;
 
     void setUserFavoriteConfig(String token, String config) throws ErpException;
-    void updateUserAdminStatus(Integer userId,String eadmin) throws ErpException;
 
+    void updateUserAdminStatus(Integer userId, String eadmin) throws ErpException;
+
+    UserBindDriver getBindDriver(String paramString1, String paramString2) throws ErpException;
+
+    void bindDriver(Integer paramInteger, String paramString1, String paramString2) throws ErpException;
 }

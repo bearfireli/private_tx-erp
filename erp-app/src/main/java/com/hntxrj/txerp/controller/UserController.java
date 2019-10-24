@@ -330,8 +330,22 @@ public class UserController {
         return resultVO;
     }
 
+
+    @PostMapping({"/getBindDriver"})
+    public ResultVO getBindDriver(@RequestHeader String token, String compid) throws ErpException {
+        return ResultVO.create(this.userService.getBindDriver(token, compid));
+    }
+
+
+    @PostMapping({"/bindDriver"})
+    public ResultVO getBindDriver(Integer uid, String compid, String driverCode) throws ErpException {
+        this.userService.bindDriver(uid, compid, driverCode);
+        return ResultVO.create();
+    }
+
+
     @RequestMapping("/updateUserStatus")
-    public ResultVO updateUserAdminStatus(int uid,String eadmin) throws ErpException {
+    public ResultVO updateUserAdminStatus(int uid, String eadmin) throws ErpException {
         userService.updateUserAdminStatus(uid, eadmin);
         return resultVO.create();
     }
