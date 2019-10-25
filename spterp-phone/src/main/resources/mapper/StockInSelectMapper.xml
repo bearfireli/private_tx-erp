@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.mapper.StockInSelectMapper">
+    <!--原材料过磅部分修改数据-->
+    <update id="updateStockInDate" useGeneratedKeys="true">
+        update MP_StockIn set
+        compid=#{compid}
+        <if test="grWeight!=null  ">
+            ,GrWeight=#{grWeight}
+        </if>
+        <if test="taWeight!=null ">
+            ,TaWeight=#{taWeight}
+        </if>
+        <if test="clWeight!=null ">
+            ,ClWeight=#{clWeight}
+        </if>
+        <if test="netWeight!=null">
+            ,netWeight=#{netWeight}
+        </if>
+        <if test="deductNum!=null ">
+            ,deductNum=#{deductNum}
+        </if>
+        <if test="deduct!=null">
+            , deduct=#{deduct}
+        </if>
+        <if test="remarks!=null">
+            ,remarks=#{remarks}
+        </if>
+        <if test="firstTime!=null">
+            ,firstTime=#{firstTime}
+        </if>
+        <if test="secondTime!=null">
+            ,secondTime=#{secondTime}
+        </if>
+        <if test="supExFactory=!null">
+            , sup_ExFactory=#{supExFactory}
+        </if>
+        <if test="supCode!= null">
+            , SupCode=#{supCode}
+        </if>
+        <if test="stkCode!=null">
+            ,StkCode=#{stkCode}
+        </if>
+        <if test="saleType!=null">
+            ,SaleType=#{saleType}
+        </if>
+        <if test="vehicleId!=null">
+            ,vehicleID=#{vehicleId}
+        </if>
+        <if test="matCode!=null">
+            ,matCode=#{matCode}
+        </if>
+        <if test="opid!=null">
+            ,OPER1=#{opid}
+        </if>
+        <if test="opids!=null">
+            ,OPER2=#{opids}
+        </if>
+        <if test="supOilNum!=null">
+            ,Sup_OilNum=#{supOilNum}
+        </if>
+        <if test="stlTimes!=null">
+            ,StI_Times=#{stlTimes}
+        </if>
+        where compid=#{compid}
+        and stICode=#{stICode}
+    </update>
+    <!--原材料过磅查询-->
+    <select id="getStockInDetails" resultType="com.hntxrj.vo.StockInSelectVO">
+        select si.StI_Status,
+        si.StICode,
+        si.VehicleID,
+        si.GrWeight,
+        si.TaWeight,
+        si.NetWeight,
+        si.Deduct
+        ,u1.empname as oper1Name,
+        u2.empname as oper2Name
+        , si.DeductNum
+        , si.Remarks
+        , si.StI_Times as stlTimes
+        , si.SecondTime
+        , si.Sup_NetWeight
+        , si.ClWeight
+        , si.Sup_OilNum
+        , si.FirstTime
+        , si.Sup_ExFactory
+        , ms.Sup_Name
+        , mk.Sto_Name
+        , mt.MatName
+        , si.SaleType
+        , vp.PI_TypeName as ptTypeName
+        from MP_StockIn si
+        left join dbo.MP_Supplier ms on si.SupCode = ms.SupCode and si.compid = ms.compid
+        left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+        left join MP_MaterialInfor mt on si.MatCode = mt.MatCode and si.compid = mt.compid
+        left join (SELECT PI_TypeName, PI_Values,compid FROM DD_PublicInfo where PI_Class = '30' and RecStatus = 1) vp
+        on vp.PI_Values = si.SaleType and si.compid =vp.compid
+        left join User_employee u1 on u1.opid = si.OPER1 and si.compid = u1.compid
+        left join User_employee u2 on u2.opid = si.OPER2 and si.compid = u2.compid
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="matName != null">
+            and matName like '%'+#{matName}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        <if test="saleType != null ">
+            and si.saleType=#{saleType}
+        </if>
+        group by si.StI_Status, si.StICode, si.VehicleID, si.GrWeight, si.TaWeight, si.NetWeight, si.Deduct, u1.empname,
+        u2.empname, si.DeductNum, si.Remarks, si.StI_Times, si.SecondTime, si.Sup_NetWeight, si.ClWeight,
+        si.Sup_OilNum, si.FirstTime, si.Sup_ExFactory, ms.Sup_Name, mk.Sto_Name, mt.MatName, si.SaleType,
+        vp.PI_TypeName
+        order by si.StICode
+    </select>
+    <!--原材料过磅查询结算-->
+    <select id="getStockInSelectClose" resultType="com.hntxrj.vo.StockInSelectCloseVO">
+        select sum(si.ClWeight) as clWeight
+        from MP_StockIn si
+        left join dbo.MP_Supplier ms on si.SupCode = ms.SupCode and si.compid = ms.compid
+        left join MP_MaterialInfor mt on si.MatCode = mt.MatCode and si.compid = mt.compid
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="matName != null">
+            and MatName like '%'+#{matName}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        <if test="saleType != null">
+            and saleType=#{saleType}
+        </if>
+    </select>
+    <!--    /**
+     * 获取供货商一共多少种
+     * @return
+     */-->
+    <select id="getSupName" resultType="com.hntxrj.vo.ConsultSupplierVO">
+        select distinct
+        MP_Supplier.Sup_Name supName,MP_StockIn.SupCode
+        from
+        MP_StockIn
+        left join
+        MP_Supplier
+        on
+        MP_StockIn.SupCode=MP_Supplier.SupCode
+        and
+        MP_StockIn.compid=MP_Supplier.compid
+        where
+        MP_Supplier.Sup_Name
+        like
+        <if test="supName == null? '' : supName">
+            '%'+#{supName}+'%'
+        </if>
+        and
+        MP_StockIn.compid =#{compid} and si.RecStatus=1
+    </select>
+
+    <!--
+    /**
+     * 获取业务类别一共多少种
+     * @return
+     */-->
+    <select id="getTypeName" resultType="com.hntxrj.vo.ConsultSupplierVO">
+        select distinct
+        vp.PI_TypeName,MP_StockIn.SaleType
+        from
+        MP_StockIn
+        left join
+        (SELECT PI_TypeName, PI_Values FROM DD_PublicInfo where PI_Class = '30' and RecStatus = 1) AS vp
+        on
+        vp.PI_Values=MP_StockIn.SaleType
+        where MP_StockIn.RecStatus=1
+    </select>
+    <!--
+   /**
+    * 获取库位一共多少种
+    * @return
+    */-->
+    <select id="getStoNames" resultType="com.hntxrj.vo.ConsultSupplierVO">
+        select distinct
+        MP_Stock.Sto_Name,MP_StockIn.StkCode
+        from
+        MP_StockIn
+        left join
+        MP_Stock
+        on
+        MP_Stock.compid=MP_Stock.compid
+        and
+        MP_Stock.StkCode=MP_StockIn.StkCode
+        where
+        MP_Stock.compid=#{compid} and MP_StockIn.RecStatus=1
+        <if test="supName == null? '' : supName">
+            and
+            MP_Stock.Sto_Name
+            like
+            '%'+#{supName}+'%'
+        </if>
+    </select>
+    <!--
+    获取材料名称
+    -->
+    <select id="getMaterialName" resultType="com.hntxrj.vo.ConsultSupplierVO">
+        select
+        distinct
+        MP_StockIn.MatCode,
+        MP_MaterialInfor.MatName
+        from
+        MP_StockIn
+        left join
+        MP_MaterialInfor
+        on
+        MP_StockIn.MatCode=MP_MaterialInfor.MatCode
+        where MP_StockIn.compid=#{compid} and MP_StockIn.RecStatus=1
+        <if test="supName == null? '' : supName">
+            and
+            MP_MaterialInfor.MatName
+            like
+            '%'+#{supName}+'%'
+        </if>
+    </select>
+    <!--获取所有过磅员信息-->
+    <select id="getOverweightMation" resultType="com.hntxrj.vo.ConsultSupplierVO">
+        select distinct
+        empname as oper1Name,u.OpId,empname AS oper2Name
+        from
+        User_employee u
+        left join
+        User_position p
+        on
+        u.compid =p.compid
+        and
+        p.code ='50'
+        where
+        u.compid =#{compid} and u.useing =1
+        <if test="supName == null? '' : supName">
+            and
+            u.empname
+            like '%'+#{supName}+'%'
+        </if>
+    </select>
+
+    <!--获取车辆号码-->
+    <select id="getVehicleNumber" resultType="com.hntxrj.vo.ConsultSupplierVO">
+        select
+        DISTINCT
+        vehicleId
+        from
+        MP_StockIn
+        where
+        compid=#{compid} and MP_StockIn.RecStatus=1
+        <if test="supName == null? '' : supName">
+            and
+            vehicleId
+            like '%'+#{supName}+'%'
+        </if>
+    </select>
+</mapper>

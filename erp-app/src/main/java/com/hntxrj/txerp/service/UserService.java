@@ -1,10 +1,7 @@
 package com.hntxrj.txerp.service;
 
 import com.hntxrj.txerp.core.exception.ErpException;
-import com.hntxrj.txerp.entity.base.Enterprise;
-import com.hntxrj.txerp.entity.base.User;
-import com.hntxrj.txerp.entity.base.UserAuth;
-import com.hntxrj.txerp.entity.base.UserLogin;
+import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -215,4 +212,7 @@ public interface UserService {
      */
     void updateUserAdminStatus(Integer userId, String eadmin) throws ErpException;
 
+    UserBindDriver getBindDriver(String paramString1, String paramString2) throws ErpException;
+
+    void bindDriver(Integer paramInteger, String paramString1, String paramString2) throws ErpException;
 }

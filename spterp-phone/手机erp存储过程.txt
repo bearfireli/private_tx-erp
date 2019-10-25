@@ -1,0 +1,75 @@
+﻿存储过程   按 模块
+
+  统计（sp_Query_All_Total ）
+ 
+
+
+销售
+	合同管理    	
+		简易合同     		（简易合同列表，详情sp_Query_SimpleContract  解析粘贴板 sp_Query_ParseData  合同砼标号sp_Query_SM_ContractGradePriceDetail  
+						合同特殊材料  sp_Query_SM_ContractPriceMarkup  合同泵车价格  sp_Query_SM_PumpPriceSet  合同运距 sp_Query_SM_ContractDistanceSet
+						工程名称 sp_Query_SM_EPPInfo 施工单位 sp_Query_SM_BuilderInfo 添加修改删除  施工单位 sp_insertUpDel_SM_BUILDERINFO
+					 价格执行方式下拉列表 sp_QueryPrice_DD_PublicInfo  合同审核  sp_updata_ContractIsEffective）
+		销售方量统计   		（销售方量统计列表   sp_Query_BuilderSala_Total ）
+		砼标号管理		（砼标号列表       sp_quancha_SM_GradePriceInfo  添加砼标号 sp_insertUpDel_SM_GradePriceInfo）
+
+统计
+	生产管理     
+		砼产量统计   		（砼产量统计        sp_Query_Total_Yield）
+		生产消耗汇总  		（生产消耗汇总     sp_Query_V_Account_PTProduceConsume）
+	车辆管理
+		搅拌车工作量统计 	（搅拌车工作量统计        sp_Query_vehicle）
+		司机工作量统计 		（司机工作量统计          sp_Query_vehicle）	
+		泵车工作量统计   	( 泵车工作量统计        sp_V_VM_PumpTruckPersonalWorksrq)
+		搅拌车过磅查询		( 搅拌车过磅查询         sp_Query_VM_VehicleWeightListsrq)	
+	物料管理
+		原材料过磅查询 		 (原材料过磅             sp_V_MP_StockInQuerylistsrq）  
+		原材料过磅统计		( 原材料过磅统计        sp_V_MP_StockInQuerysql)
+		原材料过磅汇总		( 原材料过磅汇总       sp_V_MP_StockInQueryManNsrq)
+		
+
+生产
+	任务单
+		任务单管理     		(任务单列表       sp_Query_PT_TASKPLANLIST     加载砼标号下拉 sp_Query_V_SM_Stgid  
+				修改任务单增,删,改sp_insertUpDel_PT_TaskPlan   任务单审核 sp_Verify_Task  加载浇筑部位 sp_Query_PT_TaskPlan_Placing  增加任务单sp_insertUpDel_PT_TaskPlan
+				司机，站别搅拌楼调度员下拉 sp_Query_DropDown 
+
+   				 浇筑方式1 浇筑 方式 2  水泥品种 3  石料要求 4  泵送否 5 塌落度 6  任务单类型 7 企业信息下拉 sp_Query_FullDown）
+		生产计划统计   		（生产查询统计    sp_Query_Product_Total   ）
+		小票签收查询   		( 小票签收查询    sp_Query_Delivery_ticket  查看图片sp_filedown  保存图片 sp_insert_fileImage)   
+		      		（调度派车          sp_Query_VehicleCar_Two   ）
+		司机排班表信息 		（ 司机排班表信息    sp_Query_VM_WorkClassLog）
+
+	实验室
+		开具生产配比   		（ 开具生产配比     sp_Query_V_PT_PlanFind   修改配比 sp_insert_LM_TaskTheoryFormula    配比审核 sp_Verify_LM_TaskTheoryFormula）
+
+物料
+	库存管理  
+		实时库存 		（线号下拉  sp_Query_DropDown   实时库存sp_Query_StockInQuery）
+
+
+登录     （ 修改密码  sp_User_Updata_Pwd 用户登录 sp_check_User_employee 用户登录记录 sp_User_Inser_History    检查token是否存在 sp_User_Query_History   加载菜单信息 sp_Query_MenuInfo）
+	（增/删/改 权限组  sp_InserUpdateDel_User_PermissionGroup）  
+	（修改用户的图片  edit_employee_idphoto）
+	 （根据token查询权限对应的url		sp_Query_Token）
+	（反馈  sp_insert_Feedback）
+admin	（员工增-删-改   sp_insertUpDel_user_etion 添加所属关系表  -- User_ascription 添加所属关系表 
+	（企业的增删改  sp_insertUpDel_User_comp）
+	（增删改菜单   sp_Admin_edit_MenuInfo）
+	（保存权限   sp_Admin_ManagerPermiss）
+	（模糊查询企业用户  sp_Admin_Employee_Query）
+
+
+
+手机erp中查询车辆状态SQL语句：
+1.查询正在生产的车辆排队：
+select * from VM_VehicelManagement where compid='01' and StirId=1  and  VehicleStatus=3 and VehicleClass=1 
+order by CreateTime
+
+2.查询等待生产的车辆排队信息：
+select * from VM_VehicelManagement where  compid='01' and StirId=1 and  VehicleStatus=1 and VehicleClass=1 
+order by CreateTime 
+		  
+
+
+

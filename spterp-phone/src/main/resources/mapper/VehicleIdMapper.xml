@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.mapper.VehicleIdMapper">
+    <!--查询车号-->
+    <select id="getVehicleId" resultType="com.hntxrj.vo.VehicleIdVO">
+        SELECT d.PI_TypeName typeName, carid vehicleId
+        from VM_VehicelManagement vm
+                 left join DD_PublicInfo d on vm.VehicleClass = d.PI_Values and d.PI_Class = '20'
+            and vm.compid = d.compid
+        where vm.compid = #{compid}
+          and vm.RecStatus = 1
+        ORDER BY VehicleClass
+    </select>
+</mapper>

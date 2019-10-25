@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.mapper.StockInCollectMapper">
+    <!--原材料明细汇总-->
+    <select id="getMatDetailsList" resultType="com.hntxrj.vo.StockInCollectVO">
+        select mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,sum(si.ClWeight) as clWeight,si.TaWeight,mt.MatSpecs
+        from MP_StockIn si left join MP_MaterialInfor mt on si.compid = mt.compid and si.MatCode = mt.MatCode
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="MatName != null">
+            and MatName like '%'+#{MatName}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="matSpecs != null">
+            and MatSpecs like '%'+#{matSpecs}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        group by mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,si.TaWeight,mt.MatSpecs
+    </select>
+    <!--原材料明细汇总合计入库量-->
+    <select id="getStockInCollectClose" resultType="com.hntxrj.vo.StockInCollectCloseVO">
+        select sum(clWeight) as totalLWeight
+        from ( select SUM(ClWeight ) AS ClWeight
+        from MP_StockIn si left join MP_MaterialInfor mt on si.compid = mt.compid and si.MatCode = mt.MatCode
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="MatName != null">
+            and MatName like '%'+#{MatName}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="matSpecs != null">
+            and MatSpecs like '%'+#{matSpecs}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>)s
+    </select>
+    <!--原材料汇总统计-->
+    <select id="getMatStatistics" resultType="com.hntxrj.vo.StockInMatStatisticsVO">
+        select sum(si.ClWeight) as clWeight,mt.MatName,count(*) as carcount
+        from MP_StockIn si left join MP_MaterialInfor mt on si.compid = mt.compid and si.MatCode = mt.MatCode
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="MatName != null">
+            and MatName like '%'+#{MatName}+'%'
+        </if>
+        <if test="matSpecs != null">
+            and MatSpecs like '%'+#{matSpecs}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        group by mt.MatName
+    </select>
+    <!--原材料汇总统计合计购入量-->
+    <select id="getMatStatisticsClose" resultType="com.hntxrj.vo.StockInMatStatisticsCloseVO">
+        select sum(clWeight) as totalLWeight
+        from ( select sum(si.ClWeight) as clWeight
+        from MP_StockIn si left join MP_MaterialInfor mt on si.compid = mt.compid and si.MatCode = mt.MatCode
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="MatName != null">
+            and MatName like '%'+#{MatName}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="matSpecs != null">
+            and MatSpecs like '%'+#{matSpecs}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>)s
+    </select>
+
+    <!--材料入库汇总-->
+    <select id="getMaterialCount" resultType="com.hntxrj.vo.MaterialCountVO">
+        select ds.stirName,
+        mt.MatName stoName,
+        sum(clWeight) clWeight,
+        sum(NetWeight) ConWeight,
+        sum(ms.Sto_Curqty )stoCurqty
+        from MP_StockIn si left join MP_MaterialInfor mt on si.compid = mt.compid and si.MatCode = mt.MatCode
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        left join MP_Stock ms on si.compid =ms.compid and si.StkCode =ms.StkCode
+        left join PT_ProduceMatConsume pt on ms.compid =pt.compid and ms.StirId =pt.StirId
+        left join  DD_StirInfoSet ds on si.compid=ds.compid and ms.stirId=ds.stirId
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="vehicleId != null">
+            and si.vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="matName != null">
+            and mt.MatName like '%'+#{matName}+'%'
+        </if>
+        <if test="supName != null">
+            and sl.Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="matSpecs != null">
+            and MatSpecs like '%'+#{matSpecs}+'%'
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            and si.SecondTime <![CDATA[ >= ]]>  #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and si.SecondTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+        group by ds.stirName, mt.MatName
+    </select>
+
+</mapper>

@@ -2,7 +2,6 @@ package com.hntxrj.txerp.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hntxrj.txerp.core.util.PageInfoUtil;
 import com.hntxrj.txerp.mapper.ContractMapper;
 import com.hntxrj.txerp.service.ContractService;
 import com.hntxrj.txerp.entity.base.User;
@@ -21,6 +20,7 @@ import com.hntxrj.txerp.mapper.SystemSqlMapper;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.repository.*;
+import com.hntxrj.txerp.util.PageInfoUtil;
 import com.hntxrj.txerp.vo.ContractListVO;
 import com.hntxrj.txerp.vo.PageVO;
 import com.querydsl.core.BooleanBuilder;
