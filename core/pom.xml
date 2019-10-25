@@ -37,17 +37,16 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>servletapi</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-        </dependency>
-        <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
         </dependency>
     </dependencies>
 
