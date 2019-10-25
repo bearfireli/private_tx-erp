@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -180,7 +181,15 @@ public interface UserService {
 
     boolean userIsSupperAdmin(String token) throws ErpException;
 
-    void setUserAuth(String params, String token) throws ErpException;
+    /**
+     * 老用户更改权限
+     */
+    void updateUserAuth(String params, String token) throws ErpException;
+
+    /**
+     * 新用户添加权限
+     */
+    void addUserAuth(String params, String token,User user) throws ErpException;
 
 
     void checkPassword(String token, String password) throws ErpException;
@@ -195,6 +204,12 @@ public interface UserService {
 
     void setUserFavoriteConfig(String token, String config) throws ErpException;
 
+    /**
+     * 用于更改用户的超级管理员权限
+     * @param userId
+     * @param eadmin
+     * @throws ErpException
+     */
     void updateUserAdminStatus(Integer userId, String eadmin) throws ErpException;
 
     UserBindDriver getBindDriver(String paramString1, String paramString2) throws ErpException;

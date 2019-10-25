@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.UserStatisticsMapper">
+
+    <select id="userCount" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select * from user_statistics where type_code=1
+        <if test="statDate != null">
+            and stat_date = #{statDate}
+        </if>
+    </select>
+
+    <select id="loginCount" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select sum(value) as value ,app_code as appCode,app_name as appName,stat_date as statDate
+        from user_statistics where type_code=2 and stat_date = #{statDate}
+        <if test="compid != null">
+            and compid = #{compid}
+        </if>
+        <if test="statDate != null">
+            and stat_date = #{statDate}
+        </if>
+        <if test="appCode != null">
+            and app_code = #{appCode}
+        </if>
+        group by app_code
+    </select>
+
+    <select id="loginUser" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select * from user_statistics where type_code=2
+        <if test="compid != null">
+            and compid = #{compid}
+        </if>
+        <if test="uid != null">
+            and uid = #{uid}
+        </if>
+        <if test="appCode != null">
+            and app_code = #{appCode}
+        </if>
+        <if test="statDate != null">
+            and stat_date = #{statDate}
+        </if>
+    </select>
+    <update id="updateUserStatistic" parameterType="com.hntxrj.txerp.entity.base.UserStatistic">
+            update user_statistics set value=#{value} where id=#{id}
+    </update>
+
+    <insert id="addUserStatistic" parameterType="com.hntxrj.txerp.entity.base.UserStatistic">
+        insert into user_statistics(type_name,type_code,value,stat_date,compid,uid,method_name,function_name,app_name,app_code)
+        values (#{typeName},#{typeCode},#{value},#{statDate},#{compid},#{uid},#{methodName},#{functionName},#{appName},#{appCode})
+    </insert>
+
+
+    <select id="functionClick" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select *
+        from user_statistics where type_code=3
+        <if test="methodName != null">
+            and method_name = #{methodName}
+        </if>
+        <if test="statDate != null">
+            and stat_date = #{statDate}
+        </if>
+        <if test="appCode != null">
+            and app_code = #{appCode}
+        </if>
+        <if test="compid != null">
+            and compid = #{compid}
+        </if>
+
+    </select>
+
+    <select id="selectUser" resultType="integer">
+        select count(*) from user where status=0
+    </select>
+
+    <select id="functionCount" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select sum(value) as value ,function_name as functionName, stat_date as statDate
+        from user_statistics where type_code=3
+        <if test="statDate != null">
+            and stat_date = #{statDate}
+        </if>
+        <if test="methodName != null and methodName!=''">
+            and method_name = #{methodName}
+        </if>
+        <if test="appCode != null">
+            and app_code = #{appCode}
+        </if>
+        <if test="compid != null and compid != 0 ">
+            and compid = #{compid}
+        </if>
+    </select>
+
+    <select id="functionRank" resultType="com.hntxrj.txerp.entity.base.UserStatistic">
+        select sum(value) as value ,function_name as functionName,type_name as typeName, app_name as appName
+        from user_statistics where type_code=3
+        <if test="compid != null and compid != 0 ">
+            and compid = #{compid}
+        </if>
+        <if test="statDate != null">
+            and stat_date like #{statDate}"%"
+        </if>
+        <if test="appCode != null">
+            and app_code = #{appCode}
+        </if>
+        group by method_name
+        order by value desc
+    </select>
+    <select id="getEnterprise" resultType="com.hntxrj.txerp.entity.base.Enterprise">
+      select eid, ep_name as epName,ep_short_name as epShortName
+        from enterprise where `delete` =0
+    </select>
+
+</mapper>

@@ -33,4 +33,7 @@ public class User implements Serializable {
     private Date updateTime;
     private String userFavoriteConfig;
 
+
+
+
 }
