@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.mapper.StockMapper">
+    <select id="getStockAll" resultType="java.util.Map">
+        select MatCode,
+               MatName,
+               MatParent
+        from MP_MaterialInfor
+        where compid = #{compid}
+          and RecStatus = 1
+    </select>
+
+    <select id="getStockByStirId" resultType="com.hntxrj.vo.StockVO">
+        select MP_Stock.*,MP_MaterialInfor.MatParent
+        from MP_Stock  left join MP_MaterialInfor
+        on MP_Stock.compid=MP_MaterialInfor.compid and MP_Stock.MatCode=MP_MaterialInfor.MatCode
+        where MP_Stock.RecStatus = 1
+          and MP_Stock.compid = #{compid}
+          and MP_Stock.stirId = #{stirId}
+    </select>
+
+    <select id="getPublicStockByStirId" resultType="com.hntxrj.vo.StockVO">
+        select MP_Stock.*,MP_MaterialInfor.MatParent
+        from MP_Stock left join MP_MaterialInfor on
+            MP_Stock.compid=MP_MaterialInfor.compid and
+            MP_Stock.MatCode=MP_MaterialInfor.MatCode
+        where MP_Stock.RecStatus = 1
+          and MP_Stock.compid = #{compid}
+          and MP_Stock.stirId = #{stirId}
+          and OderBy in (select ERPStockCode from De_StockCompare where stirid = #{stirId}
+                                                                    and compid = #{compid})
+    </select>
+
+
+    <select id="getStirIds" resultType="com.hntxrj.vo.StirIdVO">
+        select *
+        from DD_StirInfoSet
+        where compid = #{compid}
+    </select>
+
+</mapper>

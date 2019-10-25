@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.mapper.StirInfoSetMapper">
+
+    <!--楼号-->
+    <select id="getStirInfoSet" resultType="com.hntxrj.vo.StirInfoSetVO">
+        select compid, StirName stirName, StirId stirId
+        from DD_StirInfoSet
+        where compid = #{compid}
+          and RecStatus = 'true'
+    </select>
+
+</mapper>
