@@ -34,4 +34,14 @@ public interface EppAddressService {
      * @param id 主键
      */
     void delEppAddress(Integer id);
+
+    /**
+     * 保存司机地址
+     *
+     * @param id       小票id
+     * @param compid   企业id
+     * @param location 位置信息
+     * @param token    令牌
+     */
+    void saveDriverLocation(Integer id, String compid, String location, String token);
 }

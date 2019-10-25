@@ -42,7 +42,8 @@ public class EppAddressController {
      * @return 成功信息
      */
     @PostMapping("/driverLocation")
-    public ResultVO driverLocation(String id, String compid, String location, String token) {
+    public ResultVO driverLocation(Integer id, String compid, String location, String token) {
+        eppAddressService.saveDriverLocation(id, compid, location, token);
         return ResultVO.create();
     }
 }

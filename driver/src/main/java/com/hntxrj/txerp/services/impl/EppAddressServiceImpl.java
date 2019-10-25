@@ -1,9 +1,12 @@
 package com.hntxrj.txerp.services.impl;
 
+import com.hntxrj.txerp.entity.DriverLocation;
 import com.hntxrj.txerp.entity.EppAddress;
 import com.hntxrj.txerp.mapper.EppAddressMapper;
 import com.hntxrj.txerp.repository.EppAddressRepository;
 import com.hntxrj.txerp.services.EppAddressService;
+import com.hntxrj.txerp.services.TaskSaleInvoiceService;
+import com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +20,13 @@ public class EppAddressServiceImpl implements EppAddressService {
     private final EppAddressMapper eppAddressMapper;
     private final EppAddressRepository eppAddressRepository;
 
+    private final TaskSaleInvoiceService taskSaleInvoiceService;
+
     @Autowired
-    public EppAddressServiceImpl(EppAddressMapper eppAddressMapper, EppAddressRepository eppAddressRepository) {
+    public EppAddressServiceImpl(EppAddressMapper eppAddressMapper, EppAddressRepository eppAddressRepository, TaskSaleInvoiceService taskSaleInvoiceService) {
         this.eppAddressMapper = eppAddressMapper;
         this.eppAddressRepository = eppAddressRepository;
+        this.taskSaleInvoiceService = taskSaleInvoiceService;
     }
 
 
@@ -49,4 +55,20 @@ public class EppAddressServiceImpl implements EppAddressService {
         EppAddress address = eppAddressRepository.getOne(id);
         address.setStatus(false);
     }
+
+
+    @Override
+    public void saveDriverLocation(Integer id, String compid, String location, String token) {
+        DriverLocation driverLocation = new DriverLocation();
+        driverLocation.setDlTsiId(id);
+        driverLocation.setAddress(location);
+
+        // 查小票
+        TaskSaleInvoiceDetailVO taskSaleInvoiceDetailVO = taskSaleInvoiceService.getTaskSaleInvoice(id, compid);
+
+        driverLocation.setDlCarId(taskSaleInvoiceDetailVO.getVehicleID());
+        driverLocation.setDlDriverCode(taskSaleInvoiceDetailVO.getPersonalCode());
+        driverLocation.setDlEppCode(taskSaleInvoiceDetailVO.getEppCode());
+    }
+
 }

@@ -10,3 +10,7 @@ mybatis:
   configuration:
     use-generated-keys: true
     map-underscore-to-camel-case: true
+
+
+app:
+  host: https://api.hntxrj.com/

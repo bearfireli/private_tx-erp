@@ -19,6 +19,7 @@
         <module>erp-app</module>
         <module>driver</module>
         <module>core</module>
+        <module>spterp-phone</module>
     </modules>
 
     <properties>
