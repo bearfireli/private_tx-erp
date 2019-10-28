@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.AdjunctMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="adjunct_id" parameterType="com.hntxrj.txerp.entity.Adjunct">
+        insert into DD_Adjunct (adjunct_name, adjunct_type, adjunct_key, adjunct_num, adjunct_file_name, compid)
+        values (#{adjunctName}, #{adjunctType}, #{adjunctKey}, #{adjunctNum}, #{adjunctFileName}, #{compid});
+    </insert>
+
+    <delete id="deleteById">
+        delete
+        from DD_Adjunct
+        where adjunct_id = #{adjunctId}
+    </delete>
+    <select id="getAdjunctList" resultType="com.hntxrj.txerp.entity.Adjunct">
+        select *
+        from DD_Adjunct
+        where compid = #{compid}
+          and adjunct_type = #{type}
+          and adjunct_key = #{adjunctKey}
+    </select>
+    <select id="getAdjunctByFileName" resultType="com.hntxrj.txerp.entity.Adjunct">
+        select *
+        from DD_Adjunct
+        where adjunct_file_name = #{fileUid}
+    </select>
+</mapper>

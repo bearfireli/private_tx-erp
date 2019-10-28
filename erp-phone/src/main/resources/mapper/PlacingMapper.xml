@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.PlacingMapper">
+    <select id="getPlacingDropDown" resultType="com.hntxrj.txerp.vo.PlacingDropDownVO">
+        select
+        placing
+        from PT_TaskPlan
+        where compid=#{compid}
+        <if test="placing != null and placing != ''">
+            and placing like '%'+#{placing}+'%'
+        </if>
+        group by Placing
+    </select>
+</mapper>

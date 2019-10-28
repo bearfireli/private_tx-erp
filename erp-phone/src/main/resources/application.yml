@@ -1,0 +1,66 @@
+spring:
+  devtools:
+    restart:
+      exclude: /static/**,/templates/**
+  datasource:
+    url: jdbc:sqlserver://192.168.31.2:1433;databaseName=SPTERPNEWData
+    username: sa
+    password: TongXin2019
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  http:
+    encoding:
+      charset: utf-8
+  jpa:
+    show-sql: true
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 20MB
+  main:
+    allow-bean-definition-overriding: true
+  redis:
+    port: 6379
+  cache:
+    redis:
+      time-to-live: 600000
+    cache-names: cache1，cache2
+mybatis:
+  type-aliases-package: com.hntxrj.txerp.mapper
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+pagehelper:
+  helper-dialect: sqlserver
+  reasonable: false
+  support-methods-arguments: true
+  params: countSql
+
+app:
+  spterp:
+    #  uploadpath: /Users/lhr/Desktop/blogUpload/articleImage/
+    uploadpath: D:\spterp\header
+    version: D:\Tomcat 8.0\webapps\ROOT\
+    # erp 企业类型(用于判断是否走第三方接口的存储过程)
+    erptype: 1
+    # 合同附件上传路径
+    contractAdjunctPath: /Users/haoranliu/MobleWebERP/SourceDirectory/spterp/log/
+    # 任务单附件上传路径
+    taskPlanAdjunctPath: /Users/haoranliu/MobleWebERP/SourceDirectory/spterp/log/
+    taskSaleInvoiceUploadPath: /Users/haoranliu/IdeaProjects/spterp-phone/upload/
+  cloud:
+    host: http://localhost:9501
+#    host: http://192.168.31.8:9501
+    auth: ${app.cloud.host}/user/tokenUse
+logging:
+  file:
+    name: spterp.%d{yyyy-MM-dd HH:mm:ss.SSS}.log
+    path: /tmp/spterp/
+    # 要保留日志的总大小
+  level:
+    com.hntxrj.mapper: DEBUG
+server:
+  port: 8088

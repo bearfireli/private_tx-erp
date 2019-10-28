@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.BuilderMapper">
+    <select id="getBuilderDropDown" resultType="com.hntxrj.txerp.vo.BuilderDropDownVO">
+        select
+        BuilderCode, BuilderShortName builderName
+        from SM_BuilderInfo
+        where compid=#{compid}
+        and RecStatus = 1
+        <if test="builderName != null and builderName != ''">
+            and builderShortName like '%'+#{builderName}+'%'
+        </if>
+    </select>
+    <select id="getBuilderInfo" resultType="com.hntxrj.txerp.entity.BuilderInfo">
+        select *
+        from SM_BuilderInfo
+        where BuilderCode = #{builderCode}
+          and CompId = #{compid}
+    </select>
+</mapper>

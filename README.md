@@ -2,10 +2,10 @@
 
 
 ### 目录结构
-core----核心代码，工具类，异常处理等
-driver----司机业务
-erp-app----用户，权限，企业等核心业务
-spterp-phone----手机erp业务
+ - erp-core ---- 核心代码，工具类，异常处理等
+ - erp-driver ---- 司机业务
+ - erp-base ---- 用户，权限，企业等核心业务
+ - erp-phone ---- 手机erp业务
 
 ### 引入淘宝sdk
 ```bash

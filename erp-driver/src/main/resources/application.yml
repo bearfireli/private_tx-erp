@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/tx-driver?characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: root
+  jpa:
+    show-sql: true
+
+mybatis:
+  type-aliases-package: com.hntxrj.txerp.mapper
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+app:
+  host: localhost
+  erp-base: http://${app.host}:9501/
+  erp-phone: http://${app.host}:8088/
+
+server:
+  port: 9222
