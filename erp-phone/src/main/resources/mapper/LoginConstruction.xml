@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.LoginConstructionMapper">
+
+    <insert id="save" useGeneratedKeys="true">
+        insert into bd_build_accounts
+        (build_login_name,
+         build_password)
+        VALUES (#{userName},
+                #{passWord})
+    </insert>
+
+    <!--查询账户密码-->
+    <select id="getAccountPassword" resultType="com.hntxrj.txerp.vo.LoginClibationVO">
+        select build_id         as id,
+               build_login_name as loginName,
+               build_password   as password
+        from bd_build_accounts
+        where build_login_name = #{userName}
+          and build_password = #{passWord}
+    </select>
+
+    <select id="findBybuildId" resultType="com.hntxrj.txerp.vo.BuildAccountsVO">
+        select build_id         as id,
+               build_login_name as loginName,
+               build_password   as password
+        from bd_build_accounts
+        where build_login_name = #{userName}
+    </select>
+    <select id="findByid" resultType="com.hntxrj.txerp.vo.InvitationVO">
+        select build_invitation_code,
+               use_status
+        from bd_invitation_code
+        where build_invitation_code = #{buildInvitationCode}
+    </select>
+</mapper>

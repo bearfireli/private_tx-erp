@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.ContractMapper">
+    <select id="getContractList" resultType="com.hntxrj.txerp.vo.ContractListVO">
+        select cd.EPPCode,
+        cd.BuilderCode,
+        epp.EPPName,
+        bu.BuilderShortName builderName,
+        cm.ContractUID,
+        cm.ContractId,
+        cd.CContractCode contractDetailCode,
+        cm.compid,
+        cd.Address,
+        cd.ContractNum,
+        cd.ContractStatus,
+        cm.SignDate,
+        cm.Salesman,
+        bg.ScaleName,
+        cd.VerifyStatus
+        from SM_ContractMaster cm
+        left join SM_ContractDetail cd on cm.ContractUID = cd.ContractUID and cm.compid=cd.compid
+        left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid=epp.compid
+        left join SM_BuilderInfo bu on cd.BuilderCode = bu.BuilderCode and cd.compid=bu.compid
+        left join (select * from SM_BusinessGroup where compid = #{compId}) bg on bg.SalesmanCode = cm.Salesman
+        where cd.compid = #{compId}
+        and cm.RecStatus=1
+        and cd.RecStatus=1
+        <if test="eppCode != null">
+            and cd.EPPCode = #{eppCode}
+        </if>
+        <if test="buildCode != null">
+            and cd.BuilderCode = #{buildCode}
+        </if>
+        <if test="salesMan != null">
+            and cm.Salesman = #{salesMan}
+        </if>
+        <if test="startTime != null">
+            and cm.SignDate <![CDATA[ >= ]]> #{startTime}
+        </if>
+        <if test="endTime != null">
+            and cm.SignDate <![CDATA[ <= ]]>  #{endTime}
+        </if>
+        <if test="contractCode != null">
+            and cm.ContractId like '%'+#{contractCode}+'%'
+        </if>
+        <if test="verifyStatus != null">
+            and cd.verifyStatus = #{verifyStatus}
+        </if>
+    </select>
+    <select id="getContractDetail" resultType="com.hntxrj.txerp.vo.ContractVO">
+        select cd.EPPCode,
+        cd.BuilderCode,
+        epp.EPPName,
+        bu.BuilderShortName builderName,
+        cm.ContractUID,
+        cm.ContractId contractCode,
+        cd.CContractCode contractDetailCode,
+        cm.compid,
+        cd.PreNum,
+        cd.ContractNum,
+        cd.ContractStatus,
+        statusName.PI_TypeName contractStatusName,
+        cm.SignDate,
+        cm.Salesman,
+        bg.ScaleName,
+        cm.ExpiresDate,
+        cd.Address,
+        cd.verifyStatus,
+        cd.Remarks,
+        cm.ContractType,
+        ContractType_pi.PI_TypeName contractTypeName,
+        cm.PriceStyle,
+        PriceStyle_pi.PI_TypeName priceStyleName
+        from SM_ContractMaster cm
+        left join SM_ContractDetail cd on cm.ContractUID = cd.ContractUID and cm.compid = cd.compid
+        left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid = epp.compid
+        left join SM_BuilderInfo bu on cd.BuilderCode = bu.BuilderCode and cd.compid = bu.compid
+        left join (select * from SM_BusinessGroup where compid = #{compid}) bg on bg.SalesmanCode = cm.Salesman
+        left join (select * from DD_PublicInfo where PI_class = 46) ContractType_pi
+        on ContractType_pi.PI_Values = cm.ContractType and cm.compid = ContractType_pi.compid
+        left join (select * from DD_PublicInfo where PI_class = 47) PriceStyle_pi
+        on PriceStyle_pi.PI_Values = cm.PriceStyle and cm.compid = PriceStyle_pi.compid
+        left join (select * from DD_PublicInfo where PI_class = 49) statusName
+        on statusName.PI_Values = cd.contractStatus and cm.compid = statusName.compid
+        where cd.compid = #{compid}
+        and cd.ContractUID = #{contractUid}
+        <if test="contractDetailCode != null and contractDetailCode != ''">
+           and cd.CContractCode =#{contractDetailCode}
+        </if>
+    </select>
+    <select id="getContractGradePrice" resultType="com.hntxrj.txerp.vo.ContractGradePriceVO">
+        select compid,
+               StgId,
+               NotPumpPrice,
+               PumpPrice,
+               PriceDifference,
+               TowerCranePrice,
+               PriceETime priceExecuteTime,
+               PriceStopTime
+        from SM_ContractGradePriceDetail
+        where compid = #{compid}
+          and contractUid = #{contractUid}
+          and ccontractcode = #{contractDetailCode}
+          and VerifyStatus = 1
+        order by priceETime desc
+    </select>
+    <select id="getContractPriceMarkupVO" resultType="com.hntxrj.txerp.vo.ContractPriceMarkupVO">
+        select CContractCode contractDetailCode,
+               PPName        pName,
+               UnitPrice,
+               JumpPrice,
+               SelfDiscPrice,
+               TowerCranePrice,
+               OtherPrice
+        from SM_ContractPriceMarkup
+        where compid = #{compid}
+          and CContractCode = #{contractDetailCode}
+          and contractUid = #{contractUid}
+    </select>
+    <select id="getContractPumpPrice" resultType="com.hntxrj.txerp.vo.ContractPumpPriceVO">
+        select pps.CContractCode contractDetailCode,
+               pps.pumpType,
+               ppps.pumpTypeName,
+               pps.pumpPrice,
+               pps.TableExpense
+        from SM_PumpPriceSet pps
+                 left join SM_PumpPublicPriceSet ppps on pps.compid = ppps.compid and pps.Pumptype = ppps.Pumptype
+        where pps.compid = #{compid}
+          and pps.ccontractCode = #{contractDetailCode}
+          and pps.contractUid = #{contractUid}
+    </select>
+    <select id="getContractDistanceSet" resultType="com.hntxrj.txerp.vo.ContractDistanceSetVO">
+        select ds.compid, ds.CContractCode contractDetailCode, ds.Distance, comp.shortname compName
+        from SM_ContractDistanceSet ds
+                 left join User_comp comp on ds.compid = comp.compid
+        where ds.compid = #{compid}
+          and ds.contractuid = #{contractUid}
+          and ds.ccontractCode = #{contractDetailCode}
+    </select>
+    <update id="verifyContract">
+        update SM_ContractDetail
+        set VerifyStatus=#{verifyStatus},
+            VerifyId=#{opId},
+            VerifyTime=#{verifyTime},
+            updownmark=0
+        where compid = #{compid}
+          and contractUID = #{contractUid}
+    </update>
+    <select id="getStgIdDropDown" resultType="com.hntxrj.txerp.vo.StgIdDropDown">
+        select compid, stgid, NotPumpPrice, PumpPrice, TowerCranePrice, isDefault
+        from SM_GradePriceInfo
+        where compid = #{compid}
+          and recstatus = 1
+    </select>
+    <select id="getPriceMarkupDropDown" resultType="com.hntxrj.txerp.vo.PriceMarkupDropDown">
+        select PPName pName,
+               PPCode pCode,
+               UnitPrice,
+               SelfDiscPrice,
+               JumpPrice,
+               TowerCranePrice,
+               OtherPrice,
+               IsDefault,
+               UpDown,
+               RecStatus,
+               QuotesStatus,
+               UpDownMark
+        from SM_PriceMarkup
+        where compid = #{compid}
+    </select>
+    <select id="getContractId" resultType="java.lang.String">
+        declare @rt varchar(20);
+        exec [sp_Query_Create_ContractId] 1, #{compid}, @rt output;
+        select @rt;
+    </select>
+
+    <!-- 泵车类价格-->
+    <select id="getContractPumperPrice" resultType="com.hntxrj.txerp.vo.ContractPumperVO">
+        select SM.PumpTypeName,
+               SP.Pumptype,
+               SP.PumpPrice,
+               SP.TableExpense
+        from SM_PumpPriceSet AS SP
+                 LEFT JOIN
+             SM_PumpPublicPriceSet AS SM
+             ON SP.compid = SM.compid
+                 AND SP.Pumptype = SM.Pumptype
+        where SP.compid = #{compid}
+          AND SP.CContractCode = #{cContractCode}
+          AND SP.ContractUID = #{contractUID}
+          AND SP.RecStatus = '1'
+    </select>
+
+    <!-- 泵车类价格添加 -->
+    <insert id="insertPumpTruck" useGeneratedKeys="true">
+        insert into SM_PumpPriceSet(compid, ContractUID,
+                                    CContractCode, OpId, Pumptype, PumpPrice,
+                                    TableExpense, CreateTime, RecStatus,
+                                    UpDownMark, UpDown)
+        values ( #{compid}
+               ,
+                 #{contractUID}
+               ,
+                 #{contractCode}
+               ,
+                 #{opid}
+               ,
+                 #{pumptype}
+               ,
+                 #{pumPrice}
+               ,
+                 #{tableExpense}
+               ,
+                 #{createTime}
+               , 1, 0, 0)
+
+    </insert>
+
+
+    <!--/**
+     * 合同运距
+     */-->
+    <select id="getContractDistance" resultType="com.hntxrj.txerp.vo.ContractDistanceVO">
+        select us.shortname, sc.Distance
+        from SM_ContractDistanceSet sc
+                 left join User_comp us on sc.compid = us.compid
+        where sc.compid = #{compid}
+          and sc.CContractCode = #{cContractCode}
+          and sc.ContractUID = #{contractUID}
+          and SC.RecStatus = 1
+    </select>
+
+
+    <!--/**
+         * 添加合同运距
+         */-->
+    <insert id="saveContractDistance" useGeneratedKeys="true">
+        insert into SM_ContractDistanceSet
+        (ContractUID,
+         CContractCode,
+         compid,
+         Distance,
+         Remarks,
+         RecStatus,
+         UpDown,
+         UpDownMark)
+        VALUES (#{contractUID},
+                #{cContractCode},
+                #{compid},
+                #{distance},
+                #{remarks},
+                #{recStatus},
+                #{upDown},
+                #{upDownMark})
+
+    </insert>
+
+    <!--添加特殊材料-->
+    <insert id="saveContractPriceMarkup" useGeneratedKeys="true">
+        insert into SM_ContractPriceMarkup
+        (compid,
+         ContractUID,
+         CContractCode,
+         PPCode,
+         PPName,
+         UnitPrice,
+         JumpPrice,
+         SelfDiscPrice,
+         TowerCranePrice,
+         OtherPrice,
+         IsDefault)
+        VALUES (#{compid},
+                #{contractUid},
+                #{contractDetailCode},
+                #{pPCode},
+                #{pPName},
+                #{unitPrice},
+                #{jumpPrice},
+                #{selfDiscPrice},
+                #{towerCranePrice},
+                #{otherPrice},
+                #{isDefault})
+    </insert>
+
+    <!--
+    查询泵车列表
+    -->
+    <select id="selectPumpTruckList" resultType="com.hntxrj.txerp.vo.PumpTruckListVO">
+        select SM.PumpTypeName, SM.Pumptype
+        from SM_PumpPublicPriceSet AS SM
+        where SM.compid = #{compid}
+        AND SM.RecStatus = '1'
+        <if test="builderName != null and builderName != ''">
+            and SM.PumpTypeName like '%'+#{builderName}+'%'
+        </if>
+        group by SM.PumpTypeName, SM.Pumptype
+    </select>
+
+</mapper>
