@@ -494,8 +494,12 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             e.printStackTrace();
         }
 
+        //把userAuths的分页查询总数赋值给userAuthVO的pageInfo中
         PageInfo<UserAuthVO> pageInfo = new PageInfo<>(userAuthVOS);
+        PageInfo<UserAuth> userAuthPageInfo = new PageInfo<>(userAuths);
+        long total = userAuthPageInfo.getTotal();
 
+        pageInfo.setTotal(total);
         PageInfoUtil<UserAuthVO> pageInfoUtil = new PageInfoUtil<>();
 
         return pageInfoUtil.init(pageInfo);
