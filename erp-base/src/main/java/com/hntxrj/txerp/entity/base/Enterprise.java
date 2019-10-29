@@ -33,5 +33,6 @@ public class Enterprise implements Serializable {
     @Column(name = "`delete`", insertable = false)
     private Integer delete;
     private String collectionCode;
+    private String epAddress;
 
 }

@@ -6,9 +6,14 @@ import com.hntxrj.txerp.mapper.DriverMapper;
 import com.hntxrj.txerp.server.DriverService;
 import com.hntxrj.txerp.vo.DriverVO;
 import com.hntxrj.txerp.vo.TaskJumpVO;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,6 +76,10 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Map<String, String> getDriverName(String compid, String driverCode) {
+        //如果传递的公司代号是个位数，前面加一个0
+        if (compid.length() == 1) {
+            compid = "0" + compid;
+        }
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("driverName", driverMapper.getDriverName(compid, driverCode));
         return resultMap;
@@ -78,8 +87,27 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public String getDriverNames(String compid, String driverCode) {
-        String driverName = driverMapper.getDriverNames(compid,driverCode);
+        //如果传递的公司代号是个位数，前面加一个0
+        if (compid.length() == 1) {
+            compid = "0" + compid;
+        }
+        String driverName = driverMapper.getDriverNames(compid, driverCode);
         return driverName;
+    }
+
+    @Override
+    public void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath,String fileName, HttpServletResponse response) throws IOException {
+
+        File file = new File( taskSaleInvoiceUploadPath+ fileName);
+        if (!file.exists()) {
+            file = new File(taskSaleInvoiceUploadPath + "default.png");
+        }
+        try {
+            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException();
+        }
     }
 
 

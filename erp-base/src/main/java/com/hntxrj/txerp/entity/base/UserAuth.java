@@ -37,13 +37,5 @@ public class UserAuth implements Serializable {
 
     @Column(insertable = false, updatable = false)
     private String eadmin;
-    @Transient
-    private String driverName;
-
-
-    @Transient
-    List<Menu> menuVOS;
-
-
 
 }

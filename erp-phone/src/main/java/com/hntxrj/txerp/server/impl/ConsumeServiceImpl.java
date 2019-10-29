@@ -306,161 +306,161 @@ public class ConsumeServiceImpl implements ConsumeService {
         List<ProductConsume> productConsumeList=consumeMapper.getErroPan(compid,beginTime,endTime);
         for (ProductConsume productConsume : productConsumeList) {
             if (productConsume.getMatV1() .compareTo(BigDecimal.ZERO)!=0) {
-                if (isChaoCha(productConsume.getMatV1(), productConsume.getMatL1(), new BigDecimal(0.02))) {
+                if (outRange(productConsume.getMatV1(), productConsume.getMatL1(), new BigDecimal(0.02))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV2() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV2(), productConsume.getMatL2(), new BigDecimal(0.02))) {
+                if (outRange(productConsume.getMatV2(), productConsume.getMatL2(), new BigDecimal(0.02))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV3() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV3(), productConsume.getMatL3(), new BigDecimal(0.02))) {
+                if (outRange(productConsume.getMatV3(), productConsume.getMatL3(), new BigDecimal(0.02))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV4() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV4(), productConsume.getMatL4(), new BigDecimal(0.02))) {
+                if (outRange(productConsume.getMatV4(), productConsume.getMatL4(), new BigDecimal(0.02))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV5() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV5(), productConsume.getMatL5(), new BigDecimal(0.02))) {
+                if (outRange(productConsume.getMatV5(), productConsume.getMatL5(), new BigDecimal(0.02))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV6().compareTo(BigDecimal.ZERO) != 0) {
-                if (isChaoCha(productConsume.getMatV6(), productConsume.getMatL6(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV6(), productConsume.getMatL6(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV7() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV7(), productConsume.getMatL7(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV7(), productConsume.getMatL7(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV8() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV8(), productConsume.getMatL8(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV8(), productConsume.getMatL8(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV9() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV9(), productConsume.getMatL9(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV9(), productConsume.getMatL9(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV10() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV10(), productConsume.getMatL10(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV10(), productConsume.getMatL10(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV11() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV11(), productConsume.getMatL11(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV11(), productConsume.getMatL11(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV12() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV12(), productConsume.getMatL12(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV12(), productConsume.getMatL12(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV13() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV13(), productConsume.getMatL13(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV13(), productConsume.getMatL13(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV14() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV14(), productConsume.getMatL14(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV14(), productConsume.getMatL14(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV15().compareTo(BigDecimal.ZERO) != 0) {
-                if (isChaoCha(productConsume.getMatV15(), productConsume.getMatL15(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV15(), productConsume.getMatL15(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV16() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV16(), productConsume.getMatL16(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV16(), productConsume.getMatL16(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV17() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV17(), productConsume.getMatL17(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV17(), productConsume.getMatL17(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV18() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV18(), productConsume.getMatL18(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV18(), productConsume.getMatL18(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV19() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV19(), productConsume.getMatL19(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV19(), productConsume.getMatL19(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV20() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV20(), productConsume.getMatL20(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV20(), productConsume.getMatL20(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV21() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV21(), productConsume.getMatL21(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV21(), productConsume.getMatL21(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV22() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV22(), productConsume.getMatL22(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV22(), productConsume.getMatL22(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
 
             }
             if (productConsume.getMatV23() .compareTo(BigDecimal.ZERO)!= 0) {
-                if (isChaoCha(productConsume.getMatV23(), productConsume.getMatL23(), new BigDecimal(0.01))) {
+                if (outRange(productConsume.getMatV23(), productConsume.getMatL23(), new BigDecimal(0.01))) {
                     panValue++;
                     continue;
                 }
@@ -473,9 +473,15 @@ public class ConsumeServiceImpl implements ConsumeService {
     }
 
 
-    private boolean isChaoCha(BigDecimal theory, BigDecimal actual,BigDecimal standard) {
+    private boolean outRange(BigDecimal theory, BigDecimal actual,BigDecimal standard) {
 
-        BigDecimal percentage = (theory.subtract(actual)).divide(theory,3, RoundingMode.HALF_UP).abs();
+        //获得理论值和实际值的差值
+        BigDecimal subtract = theory.subtract(actual);
+        //获得差值占理论值的比重
+        BigDecimal divide = subtract.divide(theory, 3, RoundingMode.HALF_UP);
+        //获得差值所占百分比的绝对值
+        BigDecimal percentage = divide.abs();
+
 
         return percentage.compareTo(standard) > 0;
     }

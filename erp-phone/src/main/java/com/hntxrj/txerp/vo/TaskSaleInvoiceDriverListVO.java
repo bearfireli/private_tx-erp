@@ -45,5 +45,8 @@ public class TaskSaleInvoiceDriverListVO {
     private double numberOfSignings; // 签收方量
     private double saleNum; // 销售方量
 
+    private String ReceiptMan;   //签收人
+    private String SaleFileImage;   //签收人签名
+
     private String jumpVehicleID; // 泵车号
 }
