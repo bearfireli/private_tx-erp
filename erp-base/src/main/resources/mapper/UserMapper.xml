@@ -142,4 +142,30 @@
         update user_auth set  eadmin=0 where uid=#{userId}
     </update>
 
+    <select id="getOpenAuth" resultType="string">
+       select menu_id from auth_value where group_id='#{groupId}'
+    </select>
+
+    <select id="getAuthValue" resultType="com.hntxrj.txerp.vo.AuthValueVO">
+      select  ag.agid AS agid,
+      ag.ag_name as agName,
+      ag.enterprise as  enterprise,
+      me.menu_name AS menuName,
+      me.mid as mid,
+      me.func_name as funcName,
+      me.menu_fmid as menuFmid,
+      me.menu_status as menuStatus,
+      av.`value`  as  value
+      from auth_value  av
+        INNER JOIN  auth_group  ag on av.group_id=ag.agid
+        INNER JOIN menu me  on av.menu_id=me.mid
+        where av.group_id=#{groupId}
+    </select>
+
+    <select id="PermissionCheck" resultType="integer">
+        select count(*) from auth_value
+        where group_id=(select auth_group from user_auth where uid=#{uid} and eid=#{compid})
+        and  menu_id=(select mid from menu where func_name=#{methodName})
+    </select>
+
 </mapper>
