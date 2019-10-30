@@ -159,8 +159,8 @@
         vs.PI_TypeName VehicleStatusName,
         it.PI_TypeName invoiceTypeName,
         tsi.VehicleID_Jump JumpVehicleID,
-        tsi.ReceiptMan  ReceiptMan,
-        tsi.SaleFileImage SaleFileImage
+        tsi.ReceiptMan  receiptMan,
+        tsi.SaleFileImage saleFileImage
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
         left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle and tsi.compid = ps.compid
@@ -211,8 +211,8 @@
                vs.PI_TypeName     VehicleStatusName,
                it.PI_TypeName     invoiceTypeName,
                tsi.VehicleID_Jump JumpVehicleID
-               tsi.ReceiptMan  ReceiptMan,
-               tsi.SaleFileImage SaleFileImage
+               tsi.ReceiptMan  receiptMan,
+               tsi.SaleFileImage saleFileImage
         from PT_TaskSaleInvoice tsi
                  left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
                  left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
