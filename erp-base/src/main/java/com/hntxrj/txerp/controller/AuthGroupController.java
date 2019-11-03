@@ -9,6 +9,7 @@ import com.hntxrj.txerp.entity.base.AuthGroup;
 import com.hntxrj.txerp.entity.base.Menu;
 import com.hntxrj.txerp.service.AuthGroupService;
 import com.hntxrj.txerp.service.MenuService;
+import com.hntxrj.txerp.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -152,7 +153,7 @@ public class AuthGroupController {
 
     @PostMapping("/openAuth")
     public String getOpenAuth(Integer groupId) {
-        resultVO.setData(Arrays.toString(authGroupService.getOpenAuth(groupId)));
+        resultVO.setData(JSON.toJSONString(authGroupService.getOpenAuthIds(groupId)));
         return JSON.toJSONString(resultVO);
     }
 
@@ -173,7 +174,7 @@ public class AuthGroupController {
             Map<String, String> mapData = new HashMap<>();
 
             mapData.put("openAuth", JSON.toJSONString(
-                    authGroupService.getOpenAuth(groupId)));
+                    authGroupService.getOpenAuthIds(groupId)));
             mapData.put("authValue", JSON.toJSONString(
                     authGroupService.saveAuthValue(menuIds, groupId, token, pid)));
 
@@ -182,8 +183,6 @@ public class AuthGroupController {
         }
 
         return JSON.toJSONString(resultVO);
-
-
     }
 
 

@@ -1,9 +1,11 @@
 package com.hntxrj.txerp.mapper;
 
+import com.hntxrj.txerp.entity.base.AuthValue;
 import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.entity.base.UserAccount;
 import com.hntxrj.txerp.entity.base.UserAuth;
 import com.hntxrj.txerp.vo.AuthGroupVO;
+import com.hntxrj.txerp.vo.AuthValueVO;
 import com.hntxrj.txerp.vo.UserListVO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -24,5 +26,26 @@ public interface UserMapper {
     void addUserStatus(Integer userId);
 
     void deleteUserStatus(Integer userId);
-    List<UserListVO>  getUserList(Integer enterpriseId, String userName, String phone, String email);
+
+    List<UserListVO> getUserList(Integer enterpriseId, String userName, String phone, String email);
+
+    List<String> getOpenAuth(Integer groupId);
+
+    List<AuthValueVO> getAuthValue(Integer groupId);
+
+
+    Integer getAuthGroupByUserAndCompid(Integer uid, Integer enterprise);
+
+    Integer judgementAuth(Integer authGroupID, String methodName);
+
+    Integer getMenuIdByFunName(String funName);
+
+    String getfunNameByMid(Integer menuId);
+
+    /**
+     * 查询该权限组是否绑定此方法
+     * */
+    Integer isBound(Integer groupId, String funName);
+
+    List<AuthValue> getAuthValueByGroupId(Integer groupId);
 }

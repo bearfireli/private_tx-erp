@@ -455,18 +455,21 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             String result = HttpClientUtil.post(config);
             JSONObject data1 = JSONObject.parseObject(result);
 
-            JSONObject data = data1.getJSONObject("data");
 
-            for (UserAuth userAuth : userAuths) {
-                for (UserListVO userListVO : userList) {
-                    if ((int) userAuth.getUser().getUid() == (int) userListVO.getUid()) {
-                        //把司机姓名赋值给userAuth
-                        if (data.get(userListVO.getDriverCode()) != null) {
-                            userAuth.setDriverName((String) data.get(userListVO.getDriverCode()));
-                        } else {
-                            userAuth.setDriverName("");
+            if (data1 != null) {
+                JSONObject data = data1.getJSONObject("data");
+
+                for (UserAuth userAuth : userAuths) {
+                    for (UserListVO userListVO : userList) {
+                        if ((int) userAuth.getUser().getUid() == (int) userListVO.getUid()) {
+                            //把司机姓名赋值给userAuth
+                            if (data.get(userListVO.getDriverCode()) != null) {
+                                userAuth.setDriverName((String) data.get(userListVO.getDriverCode()));
+                            } else {
+                                userAuth.setDriverName("");
+                            }
+
                         }
-
                     }
                 }
             }
@@ -983,6 +986,33 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         this.userBindDriverRepository.save(userBindDriver);
     }
+
+/*
+* 获取该用户的权限组
+* */
+    @Override
+    public Integer getAuthGroupByUserAndCompid(Integer uid, Integer enterprise) {
+       return userMapper.getAuthGroupByUserAndCompid(uid, enterprise);
+    }
+
+    /*
+    * 判断此权限组是否包含此方法
+    * */
+    @Override
+    public Integer judgementAuth(Integer authGroupID, String methodName) {
+        return userMapper.judgementAuth(authGroupID, methodName);
+    }
+
+
+    /**
+     * 从auth_value_new表中查询出该权限组的所有信息
+     * */
+    @Override
+    public List<AuthValue> getAuthValue(Integer groupId) {
+
+        return userMapper.getAuthValueByGroupId(groupId);
+    }
+
 
 
 

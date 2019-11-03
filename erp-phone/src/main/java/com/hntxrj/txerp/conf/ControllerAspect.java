@@ -62,7 +62,7 @@ public class ControllerAspect {
 
     }
 
-    @Around("execution(* com.hntxrj.api.*.*(..))||execution(* com.hntxrj.txerp.controller.stock.StockController.getRealStock(..))")
+    @Around("execution(* com.hntxrj.txerp.api.*.*(..))||execution(* com.hntxrj.txerp.controller.stock.StockController.getRealStock(..))")
     private Object mappingAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Class executionClass;// 访问的类

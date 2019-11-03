@@ -68,15 +68,36 @@ public interface AuthGroupService {
     @Transactional
     List<AuthValue> saveAuthValue(List<Integer> menuId, Integer groupId, String token, Integer pid) throws ErpException;
 
-    Integer[] getOpenAuth(Integer groupId);
+    @Transactional
+//    void saveAuthValue(List<Integer> menuId, Integer groupId, String token, Integer pid) throws ErpException
+
+
+    /**
+     * 得到该权限组的全部方法
+     * */
+    String[] getOpenAuth(Integer groupId);
+
+    /**
+     * 得到该权限组的全部方法
+     * */
+    Integer[] getOpenAuthIds(Integer groupId);
 
 
     /**
      * Is there permission?
      *
      * @param token user login token
-     * @param uri   request uri
+     * @param enterprise   公司代号
      * @return
      */
-    boolean isPermission(String token, Integer enterprise, String uri) throws ErpException;
+    boolean isPermission(String token, Integer enterprise, String methodName) throws ErpException;
+
+    String getfunNameByMid(Integer menuId);
+
+
+
+    /**
+    * 查询方法名和权限组是否绑定
+    * */
+    Integer isBound(Integer groupId, String funName);
 }

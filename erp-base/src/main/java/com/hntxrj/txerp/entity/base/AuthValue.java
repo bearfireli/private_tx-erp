@@ -13,10 +13,13 @@ import java.util.Objects;
 @Data
 @Entity
 @IdClass(AuthValuePK.class)
+@Table(name = "auth_value_new")
 public class AuthValue implements Serializable {
     @Id
     private Integer groupId;
     @Id
+    private String funName;
+
     private Integer menuId;
     private Integer value;
     @Column(insertable = false, updatable = false)

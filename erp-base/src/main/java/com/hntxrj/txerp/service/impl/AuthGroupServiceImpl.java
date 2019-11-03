@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.service.impl;
 
 import com.hntxrj.txerp.entity.base.*;
+import com.hntxrj.txerp.mapper.UserMapper;
 import com.hntxrj.txerp.service.AuthGroupService;
 import com.hntxrj.txerp.service.MenuService;
 import com.hntxrj.txerp.service.UserService;
@@ -43,15 +44,18 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
 
     private JPAQueryFactory queryFactory;
 
+    private final UserMapper userMapper;
+
     @Autowired
     public AuthGroupServiceImpl(AuthGroupRepository authGroupRepository,
                                 AuthValueRepository authValueRepository, MenuRepository menuRepository,
-                                EntityManager entityManager, UserService userService, MenuService menuService) {
+                                EntityManager entityManager, UserService userService, MenuService menuService, UserMapper userMapper) {
         super(entityManager);
         this.authGroupRepository = authGroupRepository;
         this.authValueRepository = authValueRepository;
         this.menuRepository = menuRepository;
         this.userService = userService;
+        this.userMapper = userMapper;
         this.queryFactory = getQueryFactory();
     }
 
@@ -185,35 +189,15 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
                 .fetch();
     }
 
+    /**
+     *获取权限组的方法，名称等信息
+     */
     @Override
     public List<AuthValueVO> getAuthValue(Integer groupId) {
-        QAuthValue qAuthValue = QAuthValue.authValue;
-        QAuthGroup qAuthGroup = QAuthGroup.authGroup;
-        QMenu qMenu = QMenu.menu;
+
+        return userMapper.getAuthValue(groupId);
 
 
-        return getQueryFactory()
-                .select(
-                        Projections.bean(
-                                AuthValueVO.class,
-                                qAuthGroup.agid,
-                                qAuthGroup.agName,
-                                qAuthGroup.enterprise,
-                                qMenu.mid,
-                                qMenu.menuName,
-                                qMenu.menuUrl,
-                                qMenu.menuApi,
-                                qMenu.menuFmid,
-                                qMenu.menuStatus,
-                                qAuthValue.value
-                        )
-                ).from(qAuthValue)
-                .innerJoin(qAuthGroup)
-                .on(qAuthValue.groupId.eq(qAuthGroup.agid))
-                .innerJoin(qMenu)
-                .on(qAuthValue.menuId.eq(qMenu.mid))
-                .where(qAuthValue.groupId.eq(groupId))
-                .fetch();
     }
 
     @Override
@@ -223,15 +207,8 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
                                          Integer pid) throws ErpException {
         User user = userService.tokenGetUser(token);
 
-        QAuthValue qAuthValue = QAuthValue.authValue;
-        QMenu qMenu = QMenu.menu;
-        // 获取权限组的菜单项
-        List<AuthValue> authValues = getQueryFactory()
-                .selectFrom(qAuthValue)
-                .join(qMenu).on(qMenu.mid.eq(qAuthValue.menuId))
-                .where(qAuthValue.groupId.eq(groupId))
-                .where(qMenu.project.eq(pid)).fetch();
-//                authValueRepository.findAllByGroupId(groupId);
+        List<AuthValue> authValues=userService.getAuthValue(groupId);
+
 
         // 对菜单项进行对比
         for (AuthValue authValue : authValues) {
@@ -263,6 +240,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
                 authValue.setValue(1);
                 authValue.setGroupId(groupId);
                 authValue.setMenuId(menuId);
+                authValue.setFunName(userMapper.getfunNameByMid(menuId));
                 authValues.add(authValue);
             }
         }
@@ -277,25 +255,47 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
         return authValueRepository.saveAll(authValues);
     }
 
-    @Override
-    public Integer[] getOpenAuth(Integer groupId) {
-        QAuthValue qAuthValue = QAuthValue.authValue;
-        List<AuthValue> authValues = getQueryFactory().selectFrom(qAuthValue)
-                .where(qAuthValue.groupId.eq(groupId))
-                .where(qAuthValue.value.eq(1))
-                .fetch();
-        Integer[] resultIds = new Integer[authValues.size()];
-        final int[] i = {0};
-        authValues.forEach(authValue -> {
-            resultIds[i[0]] = authValue.getMenuId();
-            i[0]++;
-        });
 
-        return resultIds;
+    /**
+     * 得到此权限组的方法名集合
+     */
+    @Override
+    public String[] getOpenAuth(Integer groupId) {
+
+        List<String> authList = userMapper.getOpenAuth(groupId);
+
+        String[] functionNames = new String[authList.size()];
+        for (int i = 0; i < authList.size(); i++) {
+            functionNames[i] = authList.get(i);
+        }
+        return functionNames;
     }
 
+
+    /**
+     * 得到此权限组的菜单ID
+     */
     @Override
-    public boolean isPermission(String token, Integer enterprise, String uri) throws ErpException {
+    public Integer[] getOpenAuthIds(Integer groupId) {
+
+        List<String> authList = userMapper.getOpenAuth(groupId);
+
+        Integer[] menuids = new Integer[authList.size()];
+
+        //根据方法名查询出menuid.
+        for (int i = 0; i < authList.size(); i++) {
+            menuids[i] = userMapper.getMenuIdByFunName(authList.get(i));
+        }
+
+        return menuids;
+    }
+
+
+    /**
+     * 根据token,compid判断该用户是否具有访问此methodName的权限
+     */
+    @Override
+    public boolean isPermission(String token, Integer enterprise, String methodName) throws ErpException {
         // get user
 
         User user = userService.tokenGetUser(token);
@@ -307,35 +307,34 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
             return true;
         }
 
-        if (userService.gerEnterprisesById(user.getUid()).stream()
-                .filter(enterprise1 -> enterprise1.getEid().equals(enterprise)).count() <= 0) {
-            return false;
+        //根据uid和compid查询出用户的权限组id
+        Integer authGroupID=userService.getAuthGroupByUserAndCompid(user.getUid(), enterprise);
+
+        //根据authGrouID和methodName从auth_value中查询是否存在数据
+        Integer authCount=userService.judgementAuth(authGroupID, methodName);
+
+        if (authCount >= 1) {
+            return true;
         }
 
-
-        QUserAuth qUserAuth = QUserAuth.userAuth;
-        // get auth group id
-        UserAuth userAuth = queryFactory.selectFrom(qUserAuth)
-                .where(qUserAuth.user.uid.eq(user.getUid()))
-                .where(qUserAuth.enterprise.eid.eq(enterprise))
-                .fetchOne();
-        if (userAuth == null) {
-            return false;
-        }
-
-        Integer authGroupId = userAuth.getAuthGroup().getAgid();
-
-        // get auth group permission
-        List<AuthValueVO> authValueVOS = this.getAuthValue(authGroupId);
-
-        for (AuthValueVO authValueVO : authValueVOS) {
-            if (authValueVO.getMenuApi().equals(uri)
-                    && authValueVO.getValue() != 0) {
-                return true;
-            }
-        }
 
         return false;
+    }
+/*
+* 通过mid得到对应的方法名
+* */
+    @Override
+    public String getfunNameByMid(Integer menuId) {
+        return userMapper.getfunNameByMid(menuId);
+    }
+
+
+    /**
+     * 查询此权限组是否包含此方法
+     * **/
+    @Override
+    public Integer isBound(Integer groupId, String funName) {
+        return userMapper.isBound(groupId, funName);
     }
 
     private void makeDropDown(
