@@ -151,7 +151,7 @@ public class LaboratroyController {
      * @return jsonArray
      */
     @RequestMapping(value = "/spVerifyLMTaskTheoryFormula")
-    public JsonVo sp_Verify_LM_TaskTheoryFormula(@RequestParam String TaskId,
+    public JsonVo spVerifyLMTaskTheoryFormula(@RequestParam String TaskId,
                                                  @RequestParam String compid,
                                                  @RequestParam String opid,
                                                  @RequestParam Integer verifystatus,

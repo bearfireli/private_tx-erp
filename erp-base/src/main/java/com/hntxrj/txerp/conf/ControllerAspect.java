@@ -36,29 +36,46 @@ public class ControllerAspect {
     private final AuthGroupService authService;
 
 
-    private static final String login = "login";
-    private static final String userLogin = "userLogin";
-    private static final String tokenUse = "tokenUse";
-    private static final String thirdLogin = "thirdLogin";
-    private static final String getUserEnterprise = "getUserEnterprise";
-    private static final String error = "error";
-    private static final String file = "file";
-    private static final String favicon_ico = "favicon.ico";
-    private static final String journalismList = "journalismlist";
-    private static final String selectJournalism = "selectJournalism";
-    private static final String getJournalism = "getJournalism";
-    private static final String getAuthValue = "getAuthValue";
-    private static final String functionClick = "functionClick";
-    //private static final String getUserFavoriteConfig = "getUserFavoriteConfig";
+    private static final String LOGIN_API = "/user/login";
+    private static final String LOGIN_REST_API = "/api/user/login";
+    private static final String TOKEN_USE = "/user/tokenUse";
+    private static final String THIRD_LOGIN = "/user/thirdLogin";
+    private static final String USER_ENTERPRISE = "/user/getUserEnterprise";
+    private static final String ERROR = "/error";
+    private static final String FILEDOWNLOAD = "/afterSale/file";
+    private static final String FAVICON = "/favicon.ico";
+    private static final String JOURNALISM_LIST = "/journalism/journalismlist";
+    private static final String JOURNALISM_SELECT_LIST = "/journalism/selectJournalism";
+    private static final String JOURNALISM_BYID = "/journalism/getJournalism";
+
+
+    private static final String DOCUMENT_URI = "/swagger";
+    private static final String WEBJARS = "/webjars";
+    private static final String V2 = "/v2";
+    private static final String JOURNALISM_IMAGES = "/journalism/images";
+    private static final String USER_IMAGES = "/user/header.png";
+    private static final String ENTERPRISE_IMAGES = "/enterprise/getFeedboackPicture";
+    private static final String ENTERPRISE_IMAGE = "/enterprise/getimage";
+    private static final String FEEDBOCK_IMAGES = "/feedback/getFeedboackPicture";
+    private static final String FEEDBOCK_UPLOADPICTURE = "/feedback/uploadPicture";
+    private static final String FEEDBOCK_ADDFEEDBACK = "/feedback/addFeedback";
+    private static final String USER_USERNAME = "/user/getUser";
+    private static final String USER_SETHEADER = "/user/setHeader";
+    private static final String ENTERPRISE_GETENTERPRISE = "/enterprise/getEnterprise";
+    private static final String USER_STATISTIC = "/statistic";
+
+    private static final String[] PUBLIC_API_LIST = new String[]{
+            LOGIN_API, TOKEN_USE, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API, FAVICON, JOURNALISM_LIST
+            , JOURNALISM_BYID, JOURNALISM_SELECT_LIST
+    };
 
     private static final String[] PUBLIC_PATH = new String[]{
-            login, tokenUse, thirdLogin, getUserEnterprise, error, file, favicon_ico, journalismList, selectJournalism, getJournalism, userLogin, getAuthValue,
-            functionClick
+            DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES, USER_IMAGES, FEEDBOCK_IMAGES, ENTERPRISE_IMAGES, ENTERPRISE_IMAGE,
+            USER_USERNAME, ENTERPRISE_GETENTERPRISE, USER_SETHEADER, FEEDBOCK_UPLOADPICTURE, FEEDBOCK_ADDFEEDBACK, USER_STATISTIC
     };
 
 
     @Autowired
-
     public ControllerAspect( AuthGroupService authService) {
         this.authService = authService;
     }
@@ -69,6 +86,27 @@ public class ControllerAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 
+        if ("OPTIONS".equals(request.getMethod())) {
+            return joinPoint.proceed();
+        }
+
+        //打印出请求的地址
+        String uri = request.getRequestURI();
+        log.info(String.format("%s >>> %s", request.getMethod(), uri));
+
+
+        // 判断无权限接口
+        for (String publicApi : PUBLIC_API_LIST) {
+            if (publicApi.equals(uri)) {
+                return joinPoint.proceed();
+            }
+        }
+
+        for (String publicPath : PUBLIC_PATH) {
+            if (uri.contains(publicPath)) {
+                return joinPoint.proceed();
+            }
+        }
 
         //通过AOP得到要访问的方法名和类名
         Signature signature = joinPoint.getSignature();
@@ -81,17 +119,6 @@ public class ControllerAspect {
         //得到的类名是全路径，用.截取其具体的类名。
         String[] strings = className.split("\\.");
         className = strings[strings.length - 1];
-
-        //打印出请求的地址
-        String uri = request.getRequestURI();
-        log.info(String.format("%s >>> %s", request.getMethod(), uri));
-
-        // 判断是否是不需要权限认证的接口
-        for (String publicApi : PUBLIC_PATH) {
-            if (publicApi.equals(methodName)) {
-                return joinPoint.proceed();
-            }
-        }
 
 
         //获取参数中的token和compid以及pid
@@ -107,9 +134,7 @@ public class ControllerAspect {
         }
 
         if (token == null || "".equals(token)) {
-            if (token == null || "".equals(token)) {
-                token = request.getHeader("token");
-            }
+            token = request.getHeader("token");
             if (token == null || "".equals(token)) {
                 ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.NOT_LOGIN));
             }

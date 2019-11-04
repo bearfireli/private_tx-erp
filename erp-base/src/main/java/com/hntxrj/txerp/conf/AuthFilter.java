@@ -1,10 +1,8 @@
-/*
 package com.hntxrj.txerp.conf;
 
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.exception.ExceptionUtil;
-import com.hntxrj.txerp.mapper.UserMapper;
 import com.hntxrj.txerp.service.AuthGroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 @Component
 @Slf4j
@@ -145,4 +142,3 @@ public class AuthFilter implements Filter {
         }
     }
 }
-*/

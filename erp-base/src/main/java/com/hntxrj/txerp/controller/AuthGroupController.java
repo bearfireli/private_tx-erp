@@ -9,7 +9,7 @@ import com.hntxrj.txerp.entity.base.AuthGroup;
 import com.hntxrj.txerp.entity.base.Menu;
 import com.hntxrj.txerp.service.AuthGroupService;
 import com.hntxrj.txerp.service.MenuService;
-import com.hntxrj.txerp.service.UserService;
+import com.hntxrj.txerp.vo.MenuListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,6 +64,11 @@ public class AuthGroupController {
 
     @PostMapping("/getMenuListByProject")
     public String getMenuListByProject(Integer pid) {
+        List<MenuListVO> menuTreeByProject = menuService.getMenuTreeByProject(pid);
+        System.out.println("我是menuTreeByProject");
+        System.out.println(menuTreeByProject);
+
+
         resultVO.setData(JSON.toJSONString(menuService.getMenuTreeByProject(pid)));
         return JSON.toJSONString(resultVO);
     }
@@ -153,13 +158,34 @@ public class AuthGroupController {
 
     @PostMapping("/openAuth")
     public String getOpenAuth(Integer groupId) {
+
+        //返回menuId
+        Integer[] openAuthIds = authGroupService.getOpenAuthIds(groupId);
+        System.out.println("我是openAuthIds");
+        System.out.println(openAuthIds);
+
+
         resultVO.setData(JSON.toJSONString(authGroupService.getOpenAuthIds(groupId)));
         return JSON.toJSONString(resultVO);
+
+
+
+        //返回fun_name
+
+        /*String[] openAuth = authGroupService.getOpenAuth(groupId);
+        System.out.println("我是openAuth");
+        for (String s : openAuth) {
+            System.out.println(s);
+        }
+        resultVO.setData(JSON.toJSONString(authGroupService.getOpenAuth(groupId)));
+        return JSON.toJSONString(resultVO);*/
     }
 
 
     @PostMapping("/saveAuthValue")
     public String saveAuthValue(String authValues, Integer groupId, Integer pid, String token) throws ErpException {
+
+        //传递过来的参数是菜单Id
         String[] avs;
         if (authValues != null) {
             avs = authValues.split("\\|");
@@ -181,6 +207,32 @@ public class AuthGroupController {
         } else {
             resultVO.setData(JSON.toJSONString(new ArrayList<>()));
         }
+
+
+        //传递过来的是方法名
+        /*String[] avs;
+        if (authValues != null) {
+            avs = authValues.split("\\|");
+            List<String> funNames = Arrays.asList(new String[avs.length]);
+            int i = 0;
+            for (String funName : avs) {
+                if (!funName.equals("")) {
+                    funNames.set(i, funName);
+                    i++;
+                }
+            }
+            Map<String, String> mapData = new HashMap<>();
+
+            mapData.put("openAuth", JSON.toJSONString(
+                    authGroupService.getOpenAuth(groupId)));
+            mapData.put("authValue", JSON.toJSONString(
+                    authGroupService.saveAuthValue(funNames, groupId, token, pid)));
+
+        } else {
+            resultVO.setData(JSON.toJSONString(new ArrayList<>()));
+        }*/
+
+
 
         return JSON.toJSONString(resultVO);
     }

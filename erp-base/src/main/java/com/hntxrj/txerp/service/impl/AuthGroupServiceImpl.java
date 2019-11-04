@@ -14,7 +14,6 @@ import com.hntxrj.txerp.vo.AuthGroupDropDownVO;
 import com.hntxrj.txerp.vo.AuthGroupVO;
 import com.hntxrj.txerp.vo.AuthValueVO;
 import com.hntxrj.txerp.vo.PageVO;
-import com.hntxrj.txerp.entity.base.QAuthValue;
 import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
@@ -127,8 +126,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
                 .offset((page - 1) * pageSize)
                 .limit(pageSize);
 
-        List<AuthGroupVO> authGroupList =
-                select.fetch();
+        List<AuthGroupVO> authGroupList = select.fetch();
 
 
         PageVO<AuthGroupVO> authGroupVOPageVO = new PageVO<>();
@@ -200,6 +198,8 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
 
     }
 
+
+    //传递过来的是菜单id
     @Override
     @Transactional
     public List<AuthValue> saveAuthValue(List<Integer> menuIds,
@@ -254,6 +254,62 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
         // save operation
         return authValueRepository.saveAll(authValues);
     }
+
+
+
+//传递过来的是方法名
+   /* @Override
+    @Transactional
+    public List<AuthValue> saveAuthValue(List<String> funNames,
+                                         Integer groupId, String token,
+                                         Integer pid) throws ErpException {
+        User user = userService.tokenGetUser(token);
+
+        List<AuthValue> authValues=userService.getAuthValue(groupId);
+
+
+        // 对菜单项进行对比
+        for (AuthValue authValue : authValues) {
+            //Used to control whether menuId still exists in this save.
+            boolean isExist = false;
+            for (String funName : funNames) {
+                if (funName != null && funName.equals(authValue.getFunName())) {
+                    isExist = true;
+                }
+            }
+            if (!isExist) {
+                // This save operation does not have this menu
+                authValue.setValue(0);
+            } else {
+                authValue.setValue(1);
+            }
+        }
+
+        for (String funName : funNames) {
+            boolean isExist = false;
+            for (AuthValue authValue : authValues) {
+                if (funName != null && funName.equals(authValue.getFunName())) {
+                    isExist = true;
+                }
+            }
+
+            if (funName != null && !isExist) {
+                AuthValue authValue = new AuthValue();
+                authValue.setValue(1);
+                authValue.setGroupId(groupId);
+                authValue.setMenuId(userMapper.getMenuIdByFunName(funName));
+                authValue.setFunName(funName);
+                authValues.add(authValue);
+            }
+        }
+
+        for (AuthValue authValue : authValues) {
+            authValue.setUpdateUser(user.getUid());
+        }
+
+        // save operation
+        return authValueRepository.saveAll(authValues);
+    }*/
 
 
     /**
