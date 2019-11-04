@@ -172,6 +172,7 @@
         where tsi.compid=#{compid}
         and tsi.PersonalCode=#{driverCode}
         and tsi.InvoiceType != 6
+        and tsi.InvoiceType not in('1','2')
         and tsi.recStatus = 1
         <if test="eppCode != null and eppCode != ''">
             and tp.EPPCode = #{eppCode}
