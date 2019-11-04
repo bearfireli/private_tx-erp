@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.services.impl;
 
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.entity.DriverLocation;
 import com.hntxrj.txerp.entity.EppAddress;
 import com.hntxrj.txerp.mapper.EppAddressMapper;
@@ -36,7 +37,10 @@ public class EppAddressServiceImpl implements EppAddressService {
 
 
     @Override
-    public EppAddress addEppAddress(String compid, String eppCode, String address, Integer addressType, String userName) {
+    public EppAddress addEppAddress(String compid, String eppCode, String address, Integer addressType, String userName) throws ErpException {
+        if (eppCode == null || "".equals(eppCode)) {
+            throw new ErpException(ErrEumn.ADD_EPP_ADDRESS_EPP_CODE_IS_NULL);
+        }
         EppAddress eppAddress = new EppAddress();
         eppAddress.setCompid(compid);
         eppAddress.setAddress(address);

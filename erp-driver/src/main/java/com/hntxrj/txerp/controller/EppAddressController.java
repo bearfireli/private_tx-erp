@@ -46,7 +46,7 @@ public class EppAddressController {
      * @return 结果代码
      */
     @RequestMapping("/saveEppAddress")
-    public ResultVO saveEppAddress(String eppCode, String compid, String address, Integer addressType, String userName) {
+    public ResultVO saveEppAddress(String eppCode, String compid, String address, Integer addressType, String userName) throws ErpException {
         eppAddressService.addEppAddress(compid, eppCode, address, addressType, userName);
         return ResultVO.create();
     }

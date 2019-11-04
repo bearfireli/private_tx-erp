@@ -24,6 +24,8 @@ public class TaskSaleInvoiceDriverListVO {
     private Date sendTime;
     private String eppName;
     private String builderName;
+    private String eppCode;
+    private String builderCode;
     private String stgId;
     private String placeStyleName;
 

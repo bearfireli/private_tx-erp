@@ -34,7 +34,7 @@ class EppAddressServiceTest {
 
 
     @Test
-    void addEppAddress() {
+    void addEppAddress() throws ErpException {
         addAddress = eppAddressService.addEppAddress(compid, eppCode, addressObj.toJSONString(),
                 EppAddress.ADDRESS_TYPE_MANUAL_SETTING, "单元测试");
         assert addAddress != null;

@@ -19,7 +19,7 @@ public interface EppAddressService {
      * @param addressType 地址类型, 0手动添加，1获取签收位置
      * @return 返回结果对象
      */
-    EppAddress addEppAddress(String compid, String eppCode, String address, Integer addressType, String userName);
+    EppAddress addEppAddress(String compid, String eppCode, String address, Integer addressType, String userName) throws ErpException;
 
     /**
      * 通过工程获取地址集合
