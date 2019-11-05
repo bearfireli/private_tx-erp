@@ -226,5 +226,5 @@ public interface UserService {
     /**
      * 从auth_value_new表中查询出该权限组的所有信息
      * */
-    List<AuthValue> getAuthValue(Integer groupId);
+    List<AuthValue> getAuthValue(Integer groupId,Integer pid);
 }

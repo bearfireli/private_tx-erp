@@ -1008,9 +1008,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      * 从auth_value_new表中查询出该权限组的所有信息
      * */
     @Override
-    public List<AuthValue> getAuthValue(Integer groupId) {
+    public List<AuthValue> getAuthValue(Integer groupId,Integer pid) {
 
-        return userMapper.getAuthValueByGroupId(groupId);
+        return userMapper.getAuthValueByGroupId(groupId,pid);
     }
 
 

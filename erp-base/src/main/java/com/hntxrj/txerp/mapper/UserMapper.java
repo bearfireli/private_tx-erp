@@ -40,12 +40,6 @@ public interface UserMapper {
 
     Integer getMenuIdByFunName(String funName);
 
-    String getfunNameByMid(Integer menuId);
 
-    /**
-     * 查询该权限组是否绑定此方法
-     * */
-    Integer isBound(Integer groupId, String funName);
-
-    List<AuthValue> getAuthValueByGroupId(Integer groupId);
+    List<AuthValue> getAuthValueByGroupId(Integer groupId,Integer pid);
 }

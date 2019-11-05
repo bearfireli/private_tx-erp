@@ -199,73 +199,14 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
     }
 
 
-    //传递过来的是菜单id
     @Override
-    @Transactional
-    public List<AuthValue> saveAuthValue(List<Integer> menuIds,
-                                         Integer groupId, String token,
-                                         Integer pid) throws ErpException {
-        User user = userService.tokenGetUser(token);
-
-        List<AuthValue> authValues=userService.getAuthValue(groupId);
-
-
-        // 对菜单项进行对比
-        for (AuthValue authValue : authValues) {
-            //Used to control whether menuId still exists in this save.
-            boolean isExist = false;
-            for (Integer menuId : menuIds) {
-                if (menuId != null && menuId.equals(authValue.getMenuId())) {
-                    isExist = true;
-                }
-            }
-            if (!isExist) {
-                // This save operation does not have this menu
-                authValue.setValue(0);
-            } else {
-                authValue.setValue(1);
-            }
-        }
-
-        for (Integer menuId : menuIds) {
-            boolean isExist = false;
-            for (AuthValue authValue : authValues) {
-                if (menuId != null && menuId.equals(authValue.getMenuId())) {
-                    isExist = true;
-                }
-            }
-
-            if (menuId != null && !isExist) {
-                AuthValue authValue = new AuthValue();
-                authValue.setValue(1);
-                authValue.setGroupId(groupId);
-                authValue.setMenuId(menuId);
-                authValue.setFunName(userMapper.getfunNameByMid(menuId));
-                authValues.add(authValue);
-            }
-        }
-
-
-        for (AuthValue authValue : authValues) {
-            authValue.setUpdateUser(user.getUid());
-        }
-
-
-        // save operation
-        return authValueRepository.saveAll(authValues);
-    }
-
-
-
-//传递过来的是方法名
-   /* @Override
     @Transactional
     public List<AuthValue> saveAuthValue(List<String> funNames,
                                          Integer groupId, String token,
                                          Integer pid) throws ErpException {
         User user = userService.tokenGetUser(token);
 
-        List<AuthValue> authValues=userService.getAuthValue(groupId);
+        List<AuthValue> authValues=userService.getAuthValue(groupId,pid);
 
 
         // 对菜单项进行对比
@@ -309,7 +250,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
 
         // save operation
         return authValueRepository.saveAll(authValues);
-    }*/
+    }
 
 
     /**
@@ -327,24 +268,6 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
         return functionNames;
     }
 
-
-    /**
-     * 得到此权限组的菜单ID
-     */
-    @Override
-    public Integer[] getOpenAuthIds(Integer groupId) {
-
-        List<String> authList = userMapper.getOpenAuth(groupId);
-
-        Integer[] menuids = new Integer[authList.size()];
-
-        //根据方法名查询出menuid.
-        for (int i = 0; i < authList.size(); i++) {
-            menuids[i] = userMapper.getMenuIdByFunName(authList.get(i));
-        }
-
-        return menuids;
-    }
 
 
     /**
@@ -376,22 +299,10 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
 
         return false;
     }
-/*
-* 通过mid得到对应的方法名
-* */
-    @Override
-    public String getfunNameByMid(Integer menuId) {
-        return userMapper.getfunNameByMid(menuId);
-    }
 
 
-    /**
-     * 查询此权限组是否包含此方法
-     * **/
-    @Override
-    public Integer isBound(Integer groupId, String funName) {
-        return userMapper.isBound(groupId, funName);
-    }
+
+
 
     private void makeDropDown(
             List<AuthGroupDropDownVO> result, AuthGroup authGroup) {

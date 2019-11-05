@@ -1,3 +1,4 @@
+/*
 package com.hntxrj.txerp.conf;
 
 import com.hntxrj.txerp.core.exception.ErpException;
@@ -142,3 +143,4 @@ public class AuthFilter implements Filter {
         }
     }
 }
+*/

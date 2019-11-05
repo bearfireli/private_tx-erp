@@ -66,12 +66,12 @@ public interface AuthGroupService {
      * @return saved auth values
      */
     //传递过来的是菜单id
-    @Transactional
-    List<AuthValue> saveAuthValue(List<Integer> menuId, Integer groupId, String token, Integer pid) throws ErpException;
+//    @Transactional
+//    List<AuthValue> saveAuthValue(List<Integer> menuId, Integer groupId, String token, Integer pid) throws ErpException;
 
     //传递过来的是方法名
-//    @Transactional
-//    List<AuthValue> saveAuthValue(List<String> funName, Integer groupId, String token, Integer pid) throws ErpException;
+    @Transactional
+    List<AuthValue> saveAuthValue(List<String> funName, Integer groupId, String token, Integer pid) throws ErpException;
 
 
 
@@ -80,10 +80,7 @@ public interface AuthGroupService {
      * */
     String[] getOpenAuth(Integer groupId);
 
-    /**
-     * 得到该权限组的全部方法
-     * */
-    Integer[] getOpenAuthIds(Integer groupId);
+
 
 
     /**
@@ -95,12 +92,4 @@ public interface AuthGroupService {
      */
     boolean isPermission(String token, Integer enterprise, String methodName) throws ErpException;
 
-    String getfunNameByMid(Integer menuId);
-
-
-
-    /**
-    * 查询方法名和权限组是否绑定
-    * */
-    Integer isBound(Integer groupId, String funName);
 }

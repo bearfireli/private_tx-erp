@@ -158,59 +158,21 @@ public class AuthGroupController {
 
     @PostMapping("/openAuth")
     public String getOpenAuth(Integer groupId) {
-
-        //返回menuId
-        Integer[] openAuthIds = authGroupService.getOpenAuthIds(groupId);
-        System.out.println("我是openAuthIds");
-        System.out.println(openAuthIds);
-
-
-        resultVO.setData(JSON.toJSONString(authGroupService.getOpenAuthIds(groupId)));
-        return JSON.toJSONString(resultVO);
-
-
-
-        //返回fun_name
-
-        /*String[] openAuth = authGroupService.getOpenAuth(groupId);
+        String[] openAuth = authGroupService.getOpenAuth(groupId);
         System.out.println("我是openAuth");
         for (String s : openAuth) {
             System.out.println(s);
         }
         resultVO.setData(JSON.toJSONString(authGroupService.getOpenAuth(groupId)));
-        return JSON.toJSONString(resultVO);*/
+        return JSON.toJSONString(resultVO);
     }
 
 
     @PostMapping("/saveAuthValue")
     public String saveAuthValue(String authValues, Integer groupId, Integer pid, String token) throws ErpException {
 
-        //传递过来的参数是菜单Id
-        String[] avs;
-        if (authValues != null) {
-            avs = authValues.split("\\|");
-            List<Integer> menuIds = Arrays.asList(new Integer[avs.length]);
-            int i = 0;
-            for (String authValueId : avs) {
-                if (!authValueId.equals("")) {
-                    menuIds.set(i, Integer.valueOf(authValueId));
-                    i++;
-                }
-            }
-            Map<String, String> mapData = new HashMap<>();
-
-            mapData.put("openAuth", JSON.toJSONString(
-                    authGroupService.getOpenAuthIds(groupId)));
-            mapData.put("authValue", JSON.toJSONString(
-                    authGroupService.saveAuthValue(menuIds, groupId, token, pid)));
-
-        } else {
-            resultVO.setData(JSON.toJSONString(new ArrayList<>()));
-        }
-
-
         //传递过来的是方法名
-        /*String[] avs;
+        String[] avs;
         if (authValues != null) {
             avs = authValues.split("\\|");
             List<String> funNames = Arrays.asList(new String[avs.length]);
@@ -230,7 +192,7 @@ public class AuthGroupController {
 
         } else {
             resultVO.setData(JSON.toJSONString(new ArrayList<>()));
-        }*/
+        }
 
 
 

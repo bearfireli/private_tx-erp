@@ -176,23 +176,18 @@
        select mid from  menu where func_name=#{funName}
     </select>
 
-    <select id="getfunNameByMid" resultType="string">
-       select func_name from menu where mid=#{menuId}
-    </select>
-
-    <select id="isBound" resultType="integer">
-       select count(*) from auth_value_new where group_id=#{groupId} and fun_name=#{funName} and value=1
-    </select>
 
     <select id="getAuthValueByGroupId" resultType="com.hntxrj.txerp.entity.base.AuthValue">
-       select fun_name  funName,
-        group_id  groupId  ,
-        menu_id menuId,
-        value,
-        create_time  createTime,
-        update_time updateTime,
-        update_user updateUser
-from auth_value_new where group_id=#{groupId} and value=1
+       select av.fun_name  funName,
+        av.group_id  groupId  ,
+        av.menu_id menuId,
+        av.value,
+        av.create_time  createTime,
+        av.update_time updateTime,
+        av.update_user updateUser
+        from auth_value_new av
+        left join menu me on  av.fun_name=me.func_name
+        where av.group_id=#{groupId} and me.project=#{pid} and value=1
     </select>
 
 
