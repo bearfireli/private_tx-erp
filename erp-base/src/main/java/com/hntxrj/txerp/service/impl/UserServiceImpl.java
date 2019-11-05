@@ -477,7 +477,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
                 for (UserAuthVO userAuthVO1 : userAuthVOS) {
                     for (UserListVO userListVO : userList) {
-                        if ((int) userAuthVO1.getUser().getUid() == (int) userListVO.getUid()) {
+                        if ( userAuthVO1.getUser().getUid().equals(userListVO.getUid()) ) {
                             //把司机姓名赋值给userAuth
                             if (data.get(userListVO.getDriverCode()) != null) {
                                 userAuthVO1.setDriverName((String) data.get(userListVO.getDriverCode()));

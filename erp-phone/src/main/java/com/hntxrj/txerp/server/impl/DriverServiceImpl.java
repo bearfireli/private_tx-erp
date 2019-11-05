@@ -98,7 +98,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath,String fileName, HttpServletResponse response) throws IOException {
 
-        File file = new File( taskSaleInvoiceUploadPath+ fileName);
+        File file = new File(taskSaleInvoiceUploadPath+ fileName);
         if (!file.exists()) {
             file = new File(taskSaleInvoiceUploadPath + "default.png");
         }
