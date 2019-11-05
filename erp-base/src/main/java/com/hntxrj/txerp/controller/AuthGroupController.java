@@ -64,11 +64,6 @@ public class AuthGroupController {
 
     @PostMapping("/getMenuListByProject")
     public String getMenuListByProject(Integer pid) {
-        List<MenuListVO> menuTreeByProject = menuService.getMenuTreeByProject(pid);
-        System.out.println("我是menuTreeByProject");
-        System.out.println(menuTreeByProject);
-
-
         resultVO.setData(JSON.toJSONString(menuService.getMenuTreeByProject(pid)));
         return JSON.toJSONString(resultVO);
     }
@@ -158,11 +153,6 @@ public class AuthGroupController {
 
     @PostMapping("/openAuth")
     public String getOpenAuth(Integer groupId) {
-        String[] openAuth = authGroupService.getOpenAuth(groupId);
-        System.out.println("我是openAuth");
-        for (String s : openAuth) {
-            System.out.println(s);
-        }
         resultVO.setData(JSON.toJSONString(authGroupService.getOpenAuth(groupId)));
         return JSON.toJSONString(resultVO);
     }
@@ -171,7 +161,6 @@ public class AuthGroupController {
     @PostMapping("/saveAuthValue")
     public String saveAuthValue(String authValues, Integer groupId, Integer pid, String token) throws ErpException {
 
-        //传递过来的是方法名
         String[] avs;
         if (authValues != null) {
             avs = authValues.split("\\|");

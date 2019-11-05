@@ -65,11 +65,7 @@ public interface AuthGroupService {
      * @param token   用户token
      * @return saved auth values
      */
-    //传递过来的是菜单id
-//    @Transactional
-//    List<AuthValue> saveAuthValue(List<Integer> menuId, Integer groupId, String token, Integer pid) throws ErpException;
 
-    //传递过来的是方法名
     @Transactional
     List<AuthValue> saveAuthValue(List<String> funName, Integer groupId, String token, Integer pid) throws ErpException;
 
