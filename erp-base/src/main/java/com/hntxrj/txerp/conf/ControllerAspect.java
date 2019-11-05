@@ -47,6 +47,7 @@ public class ControllerAspect {
     private static final String JOURNALISM_LIST = "/journalism/journalismlist";
     private static final String JOURNALISM_SELECT_LIST = "/journalism/selectJournalism";
     private static final String JOURNALISM_BYID = "/journalism/getJournalism";
+    private static final String GETAUTHVALUE = "/auth/getAuthValue";
 
 
     private static final String DOCUMENT_URI = "/swagger";
@@ -66,7 +67,7 @@ public class ControllerAspect {
 
     private static final String[] PUBLIC_API_LIST = new String[]{
             LOGIN_API, TOKEN_USE, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API, FAVICON, JOURNALISM_LIST
-            , JOURNALISM_BYID, JOURNALISM_SELECT_LIST
+            , JOURNALISM_BYID, JOURNALISM_SELECT_LIST,GETAUTHVALUE
     };
 
     private static final String[] PUBLIC_PATH = new String[]{
