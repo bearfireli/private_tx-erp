@@ -27,4 +27,6 @@ public class MenuListVO {
 
     private List<MenuListVO> children;
 
+    private String funcName;
+
 }

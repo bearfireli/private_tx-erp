@@ -155,6 +155,7 @@ public class MenuServiceImpl extends BaseServiceImpl implements MenuService {
         menuListVO.setLevel(menu.getMenuLevel());
         menuListVO.setUrl(menu.getMenuUrl());
         menuListVO.setApi(menu.getMenuApi());
+        menuListVO.setFuncName(menu.getFuncName());
         return menuListVO;
     }
 

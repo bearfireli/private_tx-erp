@@ -7,6 +7,7 @@ import com.hntxrj.txerp.service.UserStatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         return userStatisticsMapper.getEnterprise();
     }
 
+    /*
+    * 用户每次登录向user_statistics表中插入一条数据
+    * */
     @Override
     public void userLogin(Integer compid, Integer uid, Integer appCode, String statDate) {
         UserStatistic loginUser1 = userStatisticsMapper.loginUser(compid, uid, appCode, statDate);
@@ -122,6 +126,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     /**
      * 此方法每次用户点击某一个功能时调用，统计表中添加记录
      */
+    @Transactional
     @Override
     public void functionClick(String methodName, String functionName, String statData, Integer appCode, Integer compid) {
         UserStatistic functionClick = userStatisticsMapper.functionClick(methodName, statData, appCode, compid);
@@ -153,12 +158,18 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
 
     }
-
+/*
+* 查询用户个数
+* */
     @Override
     public Integer selectUser() {
         return userStatisticsMapper.selectUser();
     }
 
+
+    /*
+    * 每日凌晨向统计表中插入今日用户数量
+    * */
     @Override
     public void addUserStatistics(UserStatistic userStatistic) {
         UserStatistic userCount = userStatisticsMapper.userCount(userStatistic.getStatDate());
@@ -170,7 +181,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         }
     }
 
-
+/*
+* 此方法用户把1900-01-01时间格式转换成01-01格式
+* */
     private UserStatistic returnUserStatistic(String statDate) {
         UserStatistic userStatistic = new UserStatistic();
         userStatistic.setValue(0);

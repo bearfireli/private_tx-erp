@@ -9,7 +9,7 @@
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
         <result column="update_user" property="updateUser" jdbcType="INTEGER"/>
-        <result column="eadmin"  property="eadmin" jdbcType="CHAR"/>
+        <result column="eadmin" property="eadmin" jdbcType="CHAR"/>
         <association property="authGroup" javaType="com.hntxrj.txerp.entity.base.AuthGroup">
             <id column="agid" property="agid" jdbcType="INTEGER"/>
             <result column="ag_name" property="agName" jdbcType="VARCHAR"/>
@@ -112,8 +112,8 @@
         <bind name="_phone" value="'%' + phone + '%'"/>
         <bind name="_email" value="'%' + email + '%'"/>
         select
-            ua.uid uid,
-            ud.driver_code driverCode
+        ua.uid uid,
+        ud.driver_code driverCode
         from user_auth ua
         left join user u on ua.uid=u.uid
         left join enterprise e on ua.eid=e.eid
@@ -141,5 +141,54 @@
     <update id="deleteUserStatus" parameterType="int">
         update user_auth set  eadmin=0 where uid=#{userId}
     </update>
+
+    <select id="getOpenAuth" resultType="string">
+       select fun_name from auth_value_new where group_id=#{groupId} and value=1
+    </select>
+
+    <select id="getAuthValue" resultType="com.hntxrj.txerp.vo.AuthValueVO">
+      select  ag.agid AS agid,
+      ag.ag_name as agName,
+      ag.enterprise as  enterprise,
+      me.menu_name AS menuName,
+      me.mid as mid,
+      me.func_name as funcName,
+      me.menu_fmid as menuFmid,
+      me.menu_status as menuStatus,
+      av.`value`  as  value
+      from auth_value_new  av
+        INNER JOIN  auth_group  ag on av.group_id=ag.agid
+        INNER JOIN menu me  on av.fun_name=me.func_name
+        where av.group_id=#{groupId} and av.value=1
+    </select>
+
+
+    <select id="getAuthGroupByUserAndCompid" resultType="integer">
+        select auth_group from user_auth where  uid=#{uid}  and  eid=#{enterprise}
+    </select>
+
+
+    <select id="judgementAuth" resultType="integer">
+        select count(*) from auth_value_new where group_id=#{authGroupID} and fun_name=#{methodName} and value=1
+    </select>
+
+    <select id="getMenuIdByFunName" resultType="integer">
+       select mid from  menu where func_name=#{funName}
+    </select>
+
+
+    <select id="getAuthValueByGroupId" resultType="com.hntxrj.txerp.entity.base.AuthValue">
+       select av.fun_name  funName,
+        av.group_id  groupId  ,
+        av.menu_id menuId,
+        av.value,
+        av.create_time  createTime,
+        av.update_time updateTime,
+        av.update_user updateUser
+        from auth_value_new av
+        left join menu me on  av.fun_name=me.func_name
+        where av.group_id=#{groupId} and me.project=#{pid} and value=1
+    </select>
+
 
 </mapper>

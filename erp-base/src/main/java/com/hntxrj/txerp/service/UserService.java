@@ -18,7 +18,6 @@ import java.util.List;
  */
 public interface UserService {
 
-
     /**
      * 用户登录
      *
@@ -215,4 +214,18 @@ public interface UserService {
     UserBindDriver getBindDriver(String paramString1, String paramString2) throws ErpException;
 
     void bindDriver(Integer paramInteger, String paramString1, String paramString2) throws ErpException;
+/**
+ * 通过用户和公司名称得到权限组
+ * */
+    Integer getAuthGroupByUserAndCompid(Integer uid, Integer enterprise);
+/**
+* 判定权限组是否具有该方法
+* */
+    Integer judgementAuth(Integer authGroupID, String methodName);
+
+
+    /**
+     * 从auth_value_new表中查询出该权限组的所有信息
+     * */
+    List<AuthValue> getAuthValue(Integer groupId,Integer pid);
 }

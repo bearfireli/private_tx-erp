@@ -94,7 +94,8 @@ public class BuilderController {
      * @return
      */
     @RequestMapping("/insertUpDelBuilder")
-    public JsonVo insertUpDel_SM_BUILDERINFO(String compid,
+    public JsonVo insertUpDelSMBuilderInfo(String compid,
+
                                              String opid,
                                              Integer mark,
                                              String builderCode,

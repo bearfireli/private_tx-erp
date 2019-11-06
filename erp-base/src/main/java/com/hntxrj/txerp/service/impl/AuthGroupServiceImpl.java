@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.service.impl;
 
 import com.hntxrj.txerp.entity.base.*;
+import com.hntxrj.txerp.mapper.UserMapper;
 import com.hntxrj.txerp.service.AuthGroupService;
 import com.hntxrj.txerp.service.MenuService;
 import com.hntxrj.txerp.service.UserService;
@@ -13,7 +14,6 @@ import com.hntxrj.txerp.vo.AuthGroupDropDownVO;
 import com.hntxrj.txerp.vo.AuthGroupVO;
 import com.hntxrj.txerp.vo.AuthValueVO;
 import com.hntxrj.txerp.vo.PageVO;
-import com.hntxrj.txerp.entity.base.QAuthValue;
 import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
@@ -43,15 +43,18 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
 
     private JPAQueryFactory queryFactory;
 
+    private final UserMapper userMapper;
+
     @Autowired
     public AuthGroupServiceImpl(AuthGroupRepository authGroupRepository,
                                 AuthValueRepository authValueRepository, MenuRepository menuRepository,
-                                EntityManager entityManager, UserService userService, MenuService menuService) {
+                                EntityManager entityManager, UserService userService, MenuService menuService, UserMapper userMapper) {
         super(entityManager);
         this.authGroupRepository = authGroupRepository;
         this.authValueRepository = authValueRepository;
         this.menuRepository = menuRepository;
         this.userService = userService;
+        this.userMapper = userMapper;
         this.queryFactory = getQueryFactory();
     }
 
@@ -123,8 +126,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
                 .offset((page - 1) * pageSize)
                 .limit(pageSize);
 
-        List<AuthGroupVO> authGroupList =
-                select.fetch();
+        List<AuthGroupVO> authGroupList = select.fetch();
 
 
         PageVO<AuthGroupVO> authGroupVOPageVO = new PageVO<>();
@@ -185,60 +187,34 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
                 .fetch();
     }
 
+    /**
+     *获取权限组的方法，名称等信息
+     */
     @Override
     public List<AuthValueVO> getAuthValue(Integer groupId) {
-        QAuthValue qAuthValue = QAuthValue.authValue;
-        QAuthGroup qAuthGroup = QAuthGroup.authGroup;
-        QMenu qMenu = QMenu.menu;
+
+        return userMapper.getAuthValue(groupId);
 
 
-        return getQueryFactory()
-                .select(
-                        Projections.bean(
-                                AuthValueVO.class,
-                                qAuthGroup.agid,
-                                qAuthGroup.agName,
-                                qAuthGroup.enterprise,
-                                qMenu.mid,
-                                qMenu.menuName,
-                                qMenu.menuUrl,
-                                qMenu.menuApi,
-                                qMenu.menuFmid,
-                                qMenu.menuStatus,
-                                qAuthValue.value
-                        )
-                ).from(qAuthValue)
-                .innerJoin(qAuthGroup)
-                .on(qAuthValue.groupId.eq(qAuthGroup.agid))
-                .innerJoin(qMenu)
-                .on(qAuthValue.menuId.eq(qMenu.mid))
-                .where(qAuthValue.groupId.eq(groupId))
-                .fetch();
     }
+
 
     @Override
     @Transactional
-    public List<AuthValue> saveAuthValue(List<Integer> menuIds,
+    public List<AuthValue> saveAuthValue(List<String> funNames,
                                          Integer groupId, String token,
                                          Integer pid) throws ErpException {
         User user = userService.tokenGetUser(token);
 
-        QAuthValue qAuthValue = QAuthValue.authValue;
-        QMenu qMenu = QMenu.menu;
-        // 获取权限组的菜单项
-        List<AuthValue> authValues = getQueryFactory()
-                .selectFrom(qAuthValue)
-                .join(qMenu).on(qMenu.mid.eq(qAuthValue.menuId))
-                .where(qAuthValue.groupId.eq(groupId))
-                .where(qMenu.project.eq(pid)).fetch();
-//                authValueRepository.findAllByGroupId(groupId);
+        List<AuthValue> authValues=userService.getAuthValue(groupId,pid);
+
 
         // 对菜单项进行对比
         for (AuthValue authValue : authValues) {
             //Used to control whether menuId still exists in this save.
             boolean isExist = false;
-            for (Integer menuId : menuIds) {
-                if (menuId != null && menuId.equals(authValue.getMenuId())) {
+            for (String funName : funNames) {
+                if (funName != null && funName.equals(authValue.getFunName())) {
                     isExist = true;
                 }
             }
@@ -250,52 +226,55 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
             }
         }
 
-        for (Integer menuId : menuIds) {
+        for (String funName : funNames) {
             boolean isExist = false;
             for (AuthValue authValue : authValues) {
-                if (menuId != null && menuId.equals(authValue.getMenuId())) {
+                if (funName != null && funName.equals(authValue.getFunName())) {
                     isExist = true;
                 }
             }
 
-            if (menuId != null && !isExist) {
+            if (funName != null && !isExist) {
                 AuthValue authValue = new AuthValue();
                 authValue.setValue(1);
                 authValue.setGroupId(groupId);
-                authValue.setMenuId(menuId);
+                authValue.setMenuId(userMapper.getMenuIdByFunName(funName));
+                authValue.setFunName(funName);
                 authValues.add(authValue);
             }
         }
-
 
         for (AuthValue authValue : authValues) {
             authValue.setUpdateUser(user.getUid());
         }
 
-
         // save operation
         return authValueRepository.saveAll(authValues);
     }
 
-    @Override
-    public Integer[] getOpenAuth(Integer groupId) {
-        QAuthValue qAuthValue = QAuthValue.authValue;
-        List<AuthValue> authValues = getQueryFactory().selectFrom(qAuthValue)
-                .where(qAuthValue.groupId.eq(groupId))
-                .where(qAuthValue.value.eq(1))
-                .fetch();
-        Integer[] resultIds = new Integer[authValues.size()];
-        final int[] i = {0};
-        authValues.forEach(authValue -> {
-            resultIds[i[0]] = authValue.getMenuId();
-            i[0]++;
-        });
 
-        return resultIds;
+    /**
+     * 得到此权限组的方法名集合
+     */
+    @Override
+    public String[] getOpenAuth(Integer groupId) {
+
+        List<String> authList = userMapper.getOpenAuth(groupId);
+
+        String[] functionNames = new String[authList.size()];
+        for (int i = 0; i < authList.size(); i++) {
+            functionNames[i] = authList.get(i);
+        }
+        return functionNames;
     }
 
+
+
+    /**
+     * 根据token,compid判断该用户是否具有访问此methodName的权限
+     */
     @Override
-    public boolean isPermission(String token, Integer enterprise, String uri) throws ErpException {
+    public boolean isPermission(String token, Integer enterprise, String methodName) throws ErpException {
         // get user
 
         User user = userService.tokenGetUser(token);
@@ -307,36 +286,23 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
             return true;
         }
 
-        if (userService.gerEnterprisesById(user.getUid()).stream()
-                .filter(enterprise1 -> enterprise1.getEid().equals(enterprise)).count() <= 0) {
-            return false;
+        //根据uid和compid查询出用户的权限组id
+        Integer authGroupID=userService.getAuthGroupByUserAndCompid(user.getUid(), enterprise);
+
+        //根据authGrouID和methodName从auth_value中查询是否存在数据
+        Integer authCount=userService.judgementAuth(authGroupID, methodName);
+
+        if (authCount >= 1) {
+            return true;
         }
 
-
-        QUserAuth qUserAuth = QUserAuth.userAuth;
-        // get auth group id
-        UserAuth userAuth = queryFactory.selectFrom(qUserAuth)
-                .where(qUserAuth.user.uid.eq(user.getUid()))
-                .where(qUserAuth.enterprise.eid.eq(enterprise))
-                .fetchOne();
-        if (userAuth == null) {
-            return false;
-        }
-
-        Integer authGroupId = userAuth.getAuthGroup().getAgid();
-
-        // get auth group permission
-        List<AuthValueVO> authValueVOS = this.getAuthValue(authGroupId);
-
-        for (AuthValueVO authValueVO : authValueVOS) {
-            if (authValueVO.getMenuApi().equals(uri)
-                    && authValueVO.getValue() != 0) {
-                return true;
-            }
-        }
 
         return false;
     }
+
+
+
+
 
     private void makeDropDown(
             List<AuthGroupDropDownVO> result, AuthGroup authGroup) {

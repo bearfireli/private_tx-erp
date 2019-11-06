@@ -23,6 +23,8 @@ import com.hntxrj.txerp.util.PageInfoUtil;
 import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.hntxrj.txerp.entity.base.QUserAccount;
+import com.hntxrj.txerp.vo.PageVO;
+import com.hntxrj.txerp.vo.UserVO;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -1022,6 +1024,33 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         return userAuthVOS;
     }
+
+/*
+* 获取该用户的权限组
+* */
+    @Override
+    public Integer getAuthGroupByUserAndCompid(Integer uid, Integer enterprise) {
+       return userMapper.getAuthGroupByUserAndCompid(uid, enterprise);
+    }
+
+    /*
+    * 判断此权限组是否包含此方法
+    * */
+    @Override
+    public Integer judgementAuth(Integer authGroupID, String methodName) {
+        return userMapper.judgementAuth(authGroupID, methodName);
+    }
+
+
+    /**
+     * 从auth_value_new表中查询出该权限组的所有信息
+     * */
+    @Override
+    public List<AuthValue> getAuthValue(Integer groupId,Integer pid) {
+
+        return userMapper.getAuthValueByGroupId(groupId,pid);
+    }
+
 
 
 

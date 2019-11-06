@@ -9,6 +9,7 @@ import com.hntxrj.txerp.entity.base.AuthGroup;
 import com.hntxrj.txerp.entity.base.Menu;
 import com.hntxrj.txerp.service.AuthGroupService;
 import com.hntxrj.txerp.service.MenuService;
+import com.hntxrj.txerp.vo.MenuListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -152,21 +153,22 @@ public class AuthGroupController {
 
     @PostMapping("/openAuth")
     public String getOpenAuth(Integer groupId) {
-        resultVO.setData(Arrays.toString(authGroupService.getOpenAuth(groupId)));
+        resultVO.setData(JSON.toJSONString(authGroupService.getOpenAuth(groupId)));
         return JSON.toJSONString(resultVO);
     }
 
 
     @PostMapping("/saveAuthValue")
     public String saveAuthValue(String authValues, Integer groupId, Integer pid, String token) throws ErpException {
+
         String[] avs;
         if (authValues != null) {
             avs = authValues.split("\\|");
-            List<Integer> menuIds = Arrays.asList(new Integer[avs.length]);
+            List<String> funNames = Arrays.asList(new String[avs.length]);
             int i = 0;
-            for (String authValueId : avs) {
-                if (!authValueId.equals("")) {
-                    menuIds.set(i, Integer.valueOf(authValueId));
+            for (String funName : avs) {
+                if (!funName.equals("")) {
+                    funNames.set(i, funName);
                     i++;
                 }
             }
@@ -175,15 +177,15 @@ public class AuthGroupController {
             mapData.put("openAuth", JSON.toJSONString(
                     authGroupService.getOpenAuth(groupId)));
             mapData.put("authValue", JSON.toJSONString(
-                    authGroupService.saveAuthValue(menuIds, groupId, token, pid)));
+                    authGroupService.saveAuthValue(funNames, groupId, token, pid)));
 
         } else {
             resultVO.setData(JSON.toJSONString(new ArrayList<>()));
         }
 
+
+
         return JSON.toJSONString(resultVO);
-
-
     }
 
 

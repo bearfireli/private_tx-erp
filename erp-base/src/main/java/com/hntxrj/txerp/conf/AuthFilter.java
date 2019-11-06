@@ -1,3 +1,4 @@
+/*
 package com.hntxrj.txerp.conf;
 
 import com.hntxrj.txerp.core.exception.ErpException;
@@ -77,6 +78,10 @@ public class AuthFilter implements Filter {
             chain.doFilter(req, resp);
             return;
         }
+
+
+
+
         HttpServletResponse response = (HttpServletResponse) resp;
         String token = request.getParameter("token");
         if (token == null || "".equals(token)) {
@@ -138,3 +143,4 @@ public class AuthFilter implements Filter {
         }
     }
 }
+*/
