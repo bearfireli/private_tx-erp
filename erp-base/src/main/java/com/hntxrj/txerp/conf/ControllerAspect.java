@@ -168,7 +168,7 @@ public class ControllerAspect {
     //得到发送请求的的项目的app名称
     private String getProjectName(String pid) {
         Map<String, String> projectName = new HashMap<>();
-        projectName.put("1", "erpPhone");
+        projectName.put("2", "erpPhone");
         projectName.put("3", "erpBase");
         projectName.put("25", "erpDriver");
 
