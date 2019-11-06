@@ -24,6 +24,8 @@ public class TaskSaleInvoiceDriverListVO {
     private Date sendTime;
     private String eppName;
     private String builderName;
+    private String eppCode;
+    private String builderCode;
     private String stgId;
     private String placeStyleName;
 
@@ -44,6 +46,9 @@ public class TaskSaleInvoiceDriverListVO {
     private double totalNum;// 累计方量
     private double numberOfSignings; // 签收方量
     private double saleNum; // 销售方量
+
+    private String receiptMan;   //签收人
+    private String saleFileImage;   //签收人签名
 
     private String jumpVehicleID; // 泵车号
 }

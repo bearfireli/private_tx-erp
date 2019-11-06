@@ -20,8 +20,7 @@ import com.hntxrj.txerp.core.util.EntityTools;
 import com.hntxrj.txerp.core.util.IpUtil;
 import com.hntxrj.txerp.core.util.TimeUtil;
 import com.hntxrj.txerp.util.PageInfoUtil;
-import com.hntxrj.txerp.vo.AuthGroupVO;
-import com.hntxrj.txerp.vo.UserListVO;
+import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.hntxrj.txerp.entity.base.QUserAccount;
 import com.hntxrj.txerp.vo.PageVO;
@@ -137,7 +136,20 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         UserVO userVO = userToUserVO(user, true);
         QUserAuth qUserAuth = QUserAuth.userAuth;
-        userVO.setUserAuths(queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(userVO.getUid())).fetch());
+        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(userVO.getUid())).fetch();
+
+        //用userauthvos代替userauths进行数据传递
+        List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
+
+
+        QAuthValue qAuthValue = QAuthValue.authValue;
+        QMenu qMenu = QMenu.menu;
+        for (UserAuthVO userAuthVO : userAuthVOS) {
+            List<Menu> menuList = queryFactory.selectFrom(qMenu).rightJoin(qAuthValue).on(qAuthValue.menuId.eq(qMenu.mid)).where(qAuthValue.groupId.eq(userAuthVO.getAuthGroup().getAgid()).and(qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
+            userAuthVO.setMenuVOS(menuList);
+        }
+
+        userVO.setUserAuths(userAuthVOS);
         userVO.setToken(userLogin.getUserToken());
         log.info("【登录对象】userVO={}", userVO);
         return userVO;
@@ -171,7 +183,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             throw new ErpException(ErrEumn.USER_CANNOT_LOGIN);
         }
         QUserAuth qUserAuth = QUserAuth.userAuth;
-        userVO.setUserAuths(queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(userVO.getUid())).fetch());
+        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(userVO.getUid())).fetch();
+        //用userAuthVOS代替userAuths向前台传递数据
+        List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
+        userVO.setUserAuths(userAuthVOS);
         userVO.setToken(userLogin.getUserToken());
         log.info("【登录对象】userVO={}", userVO);
         return userVO;
@@ -297,7 +312,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         //将新添加的用户存入数据库
         try {
-            User saveUser= userRepository.save(user);
+            User saveUser = userRepository.save(user);
             data.put("uid", saveUser.getUid());
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_USER_ERR);
@@ -416,14 +431,19 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
-    public PageVO<UserAuth> getUser(User user, String token, Integer enterpriseId, HttpServletRequest request,
-                                    int page, int pageSize) throws ErpException {
+    public PageVO<UserAuthVO> getUser(User user, String token, Integer enterpriseId, HttpServletRequest request,
+                                      int page, int pageSize) throws ErpException {
 
         log.info("【user】user={}", user);
 
         PageHelper.startPage(page, pageSize);
 
+
         List<UserAuth> userAuths = userMapper.selectUserList(enterpriseId, user.getUsername(), user.getPhone(), user.getEmail());
+
+        //用userAuthVOS代替userAuths进行数据传递
+        List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
+
         List<UserListVO> userList = userMapper.getUserList(enterpriseId, user.getUsername(), user.getPhone(), user.getEmail());
         StringBuilder driverCodes = new StringBuilder();
         for (UserListVO userListVO : userList) {
@@ -437,7 +457,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         baseUrl = url + "/driver/getDriverNames";
         Map<String, Object> map = new HashMap<>();
         map.put("driverCodes", driverCodes.toString());
-        map.put("compid", enterpriseId.toString());
+        map.put("compid", enterpriseId);
         Header[] headers = HttpHeader.custom()
                 .other("version", "1")
                 .other("token", token)
@@ -454,19 +474,17 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         try {
             String result = HttpClientUtil.post(config);
             JSONObject data1 = JSONObject.parseObject(result);
-
-
             if (data1 != null) {
                 JSONObject data = data1.getJSONObject("data");
 
-                for (UserAuth userAuth : userAuths) {
+                for (UserAuthVO userAuthVO1 : userAuthVOS) {
                     for (UserListVO userListVO : userList) {
-                        if ((int) userAuth.getUser().getUid() == (int) userListVO.getUid()) {
+                        if ( userAuthVO1.getUser().getUid().equals(userListVO.getUid()) ) {
                             //把司机姓名赋值给userAuth
                             if (data.get(userListVO.getDriverCode()) != null) {
-                                userAuth.setDriverName((String) data.get(userListVO.getDriverCode()));
+                                userAuthVO1.setDriverName( data.getString(userListVO.getDriverCode()));
                             } else {
-                                userAuth.setDriverName("");
+                                userAuthVO1.setDriverName("");
                             }
 
                         }
@@ -478,9 +496,13 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             e.printStackTrace();
         }
 
-        PageInfo<UserAuth> pageInfo = new PageInfo<>(userAuths);
+        //把userAuths的分页查询总数赋值给userAuthVO的pageInfo中
+        PageInfo<UserAuthVO> pageInfo = new PageInfo<>(userAuthVOS);
+        PageInfo<UserAuth> userAuthPageInfo = new PageInfo<>(userAuths);
+        long total = userAuthPageInfo.getTotal();
 
-        PageInfoUtil<UserAuth> pageInfoUtil = new PageInfoUtil<>();
+        pageInfo.setTotal(total);
+        PageInfoUtil<UserAuthVO> pageInfoUtil = new PageInfoUtil<>();
 
         return pageInfoUtil.init(pageInfo);
 
@@ -820,14 +842,18 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         List<UserVO> userVOS = userToUserVO(users, showPhoneNumber);
         UserVO userVo = userVOS.get(0);
         List<UserAuth> userAuths = userAuthRepository.findAllByUser(user);
+
+        List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
+
         QAuthValue qAuthValue = QAuthValue.authValue;
         QMenu qMenu = QMenu.menu;
-        for (UserAuth userAuth : userAuths) {
-            List<Menu> menuList = queryFactory.selectFrom(qMenu).rightJoin(qAuthValue).on(qAuthValue.menuId.eq(qMenu.mid)).where(qAuthValue.groupId.eq(userAuth.getAuthGroup().getAgid()).and(qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
-            userAuth.setMenuVOS(menuList);
+        //根据用户权限获取用户所拥有的权限菜单集合
+        for (UserAuthVO userAuthVO : userAuthVOS) {
+            List<Menu> menuList = queryFactory.selectFrom(qMenu).rightJoin(qAuthValue).on(qAuthValue.menuId.eq(qMenu.mid)).where(qAuthValue.groupId.eq(userAuthVO.getAuthGroup().getAgid()).and(qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
+            userAuthVO.setMenuVOS(menuList);
         }
-        userVo.setUserAuths(userAuths);
-        for (UserAuth userAuth : userAuths) {
+        userVo.setUserAuths(userAuthVOS);
+        for (UserAuthVO userAuth : userAuthVOS) {
             if (userVo.getEnterprises() == null) {
                 userVo.setEnterprises(new ArrayList<>());
             }
@@ -985,6 +1011,18 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             this.userBindDriverRepository.delete(oldBindDriver);
         }
         this.userBindDriverRepository.save(userBindDriver);
+    }
+
+    //把userAuths赋值给userAuthVO进行数值传递
+    private List<UserAuthVO> replaceUserAuth(List<UserAuth> userAuths) {
+        List<UserAuthVO> userAuthVOS = new ArrayList<>();
+        for (UserAuth userAuth : userAuths) {
+            UserAuthVO userAuthVO = new UserAuthVO();
+            BeanUtils.copyProperties(userAuth, userAuthVO);
+            userAuthVOS.add(userAuthVO);
+
+        }
+        return userAuthVOS;
     }
 
 /*

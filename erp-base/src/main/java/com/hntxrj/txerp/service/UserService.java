@@ -3,6 +3,7 @@ package com.hntxrj.txerp.service;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.PageVO;
+import com.hntxrj.txerp.vo.UserAuthVO;
 import com.hntxrj.txerp.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,8 +57,8 @@ public interface UserService {
      * @param page page number, page size default 10
      * @return UserVO list and pagination data
      */
-    PageVO<UserAuth> getUser(User user, String token, Integer enterpriseId, HttpServletRequest request,
-                             int page, int pageSize) throws ErpException;
+    PageVO<UserAuthVO> getUser(User user, String token, Integer enterpriseId, HttpServletRequest request,
+                               int page, int pageSize) throws ErpException;
 
 
     /**

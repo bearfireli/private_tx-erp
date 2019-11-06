@@ -55,7 +55,7 @@ public class UserVO {
      */
     private String header;
 
-    List<UserAuth> userAuths;
+    List<UserAuthVO> userAuths;
     List<AuthGroupVO> authGroups;
 
 //    /**

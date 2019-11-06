@@ -235,7 +235,6 @@
           and VehicleStatus is not null
     </select>
     <select id="getSendCarTodayNum" resultType="com.hntxrj.txerp.vo.SendCarTotalNumVO">
-
         select sum(ti.ProduceNum) as todayTotalNum
         from PT_TaskSaleInvoice as ti
         where ti.compid = #{compid}

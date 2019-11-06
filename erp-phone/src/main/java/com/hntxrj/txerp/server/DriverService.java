@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.vo.DriverVO;
 import com.hntxrj.txerp.vo.TaskJumpVO;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +38,13 @@ public interface DriverService {
                                 String jumpVehicle, String sign, String invoiceId);
 
     Map<String, String> getDriverName(String compid, String driverCode);
+
     String getDriverNames(String compid, String driverCode);
+/**
+ * 获取签收人手写图片
+ **/
+    void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath, String fileName, HttpServletResponse response) throws IOException;
+
 }
 
 
