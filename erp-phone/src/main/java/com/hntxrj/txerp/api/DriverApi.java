@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -104,7 +105,9 @@ public class DriverApi {
         return ResultVO.create();
     }
 
-
+    /**
+     * 保存小票签收签收图片
+     */
     @RequestMapping("/uploadTaskSaleInvoiceReceiptSign")
     public ResultVO uploadTaskSaleInvoiceReceiptSign(MultipartFile image, String invoiceId) throws IOException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
@@ -117,6 +120,15 @@ public class DriverApi {
         Map<String, String> out = new HashMap<>();
         out.put("fileName", invoiceId + ".png");
         return ResultVO.create(out);
+    }
+
+
+    /**
+     * 获取签收人签名图片
+     */
+    @RequestMapping("/getTaskSaleInvoiceReceiptSign")
+    public void getTaskSaleInvoiceReceiptSign(String fileName, HttpServletResponse response) throws IOException {
+        driverService.getTaskSaleInvoiceReceiptSign(taskSaleInvoiceUploadPath, fileName, response);
     }
 
     @PostMapping("/getDriverName")
