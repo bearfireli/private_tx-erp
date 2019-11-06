@@ -157,6 +157,8 @@
                                    count(VehiceNumber) VehiceNumber
                             from PT_TaskSaleInvoice
                             where InvoiceType != 6
+                             and VehicleStatus not in ('8', '9', '10', '11')
+                            and VehicleStatus is not null
                             group by TaskId, compid, VehicleStatus) pp
                            on pt.compid = pp.compid and pt.TaskId = pp.TaskId
                  left join(select PI_TypeName, PI_Values, compid
@@ -170,8 +172,6 @@
           and pt.RecStatus = 1
           and pt.TaskStatus = 1
           and DeleteMark = 0
-          and VehicleStatus not in ('8', '9', '10', '11')
-          and VehicleStatus is not null
         order by pt.TaskId
     </select>
 
