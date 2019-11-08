@@ -143,10 +143,8 @@ public class AuthGroupController {
     @PostMapping("/getAuthValue")
     public String getAuthValue(Integer groupId) {
         Map<String, String> mapData = new HashMap<>();
-        mapData.put("openAuth", JSON.toJSONString(
-                authGroupService.getOpenAuth(groupId)));
-        mapData.put("authValue", JSON.toJSONString(
-                authGroupService.getAuthValue(groupId)));
+        mapData.put("openAuth", JSON.toJSONString(authGroupService.getOpenAuth(groupId)));
+        mapData.put("authValue", JSON.toJSONString(authGroupService.getAuthValue(groupId)));
         resultVO.setData(JSON.toJSONString(mapData));
         return JSON.toJSONString(resultVO);
     }

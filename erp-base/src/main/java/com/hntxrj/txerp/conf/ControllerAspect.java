@@ -48,8 +48,8 @@ public class ControllerAspect {
     private static final String JOURNALISM_SELECT_LIST = "/journalism/selectJournalism";
     private static final String JOURNALISM_BYID = "/journalism/getJournalism";
     private static final String GETAUTHVALUE = "/auth/getAuthValue";
-    private static final String USER_SETUSERFAVORITE = "/user/setUserFavorite ";
-    private static final String USER_GETUSERFAVORITE = "/user/getUserFavorite ";
+    private static final String USER_SETUSERFAVORITE = "/user/setUserFavorite";
+    private static final String USER_GETUSERFAVORITE = "/user/getUserFavorite";
 
 
     private static final String DOCUMENT_URI = "/swagger";

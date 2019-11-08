@@ -392,7 +392,7 @@
     <select id="selectid" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
         select TaskId
         from PT_TaskPlan
-        where TaskId like #{taskid} + '%'
+        where TaskId like #{taskid} + '%' and len(TaskId)=10
     </select>
 
     <!--任务单生产配比日志查询-->
@@ -697,6 +697,40 @@
           and RecStatus = 1
           and compid = #{compid}
     </select>
+
+    <select id="getTaskIdCount" resultType="integer">
+       select count(*) from PT_TaskPlan
+       where compid=#{compid} and TaskId=#{taskId}
+    </select>
+
+    <select id="getPriceMarkup" resultType="com.hntxrj.txerp.vo.PriceMarkupVO">
+        select * from SM_PriceMarkup where compid=#{compid}
+    </select>
+
+    <select id="getPriceMarkupByPPCode" resultType="com.hntxrj.txerp.vo.PriceMarkupVO">
+        select * from SM_PriceMarkup where  compid=#{compid} and PPCode=#{ppCode}
+    </select>
+
+    <insert id="addTaskPriceMarkup">
+        insert into PT_TASKPRICEMARKUP(compid, TaskId, PPCode,UnitPrice,SelfDiscPrice,JumpPrice,TowerCranePrice,OtherPrice)
+        values (
+        #{compid},
+        #{taskId},
+        #{ppCode},
+        #{unitPrice},
+        #{selfDiscPrice},
+        #{jumpPrice},
+        #{towerCranePrice},
+        #{otherPrice}
+        )
+    </insert>
+
+
+    <select id="getPPCodeBytaskId" resultType="string">
+        select PPCode from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
+    </select>
+
+
 
 
 </mapper>

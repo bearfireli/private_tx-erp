@@ -4,6 +4,7 @@ import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -160,4 +161,14 @@ public interface TaskPlanMapper {
     QueryTimeSetVO queryTimeTask(String compid);
 
     List<TodayTaskVO> todayTask(String compid, String beginTime, String endTime);
+
+    Integer getTaskIdCount(String compid, String taskId);
+
+    List<PriceMarkupVO> getPriceMarkup(String compid);
+
+    PriceMarkupVO getPriceMarkupByPPCode(String compid,String ppCode);
+
+    void addTaskPriceMarkup(String compid, String taskId, String ppCode, BigDecimal unitPrice, BigDecimal selfDiscPrice, BigDecimal jumpPrice, BigDecimal towerCranePrice, BigDecimal otherPrice);
+
+    List<String> getPPCodeBytaskId(String compid, String taskId);
 }
