@@ -5,6 +5,7 @@ import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.server.TaskPlanService;
 import com.hntxrj.txerp.server.TaskSaleInvoiceService;
+import com.hntxrj.txerp.vo.PriceMarkupVO;
 import com.hntxrj.txerp.vo.ResultVO;
 import com.hntxrj.txerp.vo.SquareQuantityVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/taskPlan")
@@ -71,6 +74,33 @@ public class TaskPlanApi {
     public ResultVO addTaskPlan(TaskPlan taskPlan) throws ErpException {
         taskPlanService.addTaskPlan(taskPlan);
         return ResultVO.create();
+    }
+
+
+    /**
+     * 添加任务单和加价项目
+     *
+     *  @param taskId       任务单id
+     *  @param compid       企业id
+     *  @param ppCodes      加价项目编号
+     */
+    @PostMapping("/addTaskPriceMarkup")
+    public ResultVO addTaskPriceMarkup(String compid, String taskId, String ppCodes) throws ErpException {
+        if (ppCodes != "" && ppCodes != null) {
+            String[] ppCodeArray = ppCodes.split(",");
+            for (String ppCode : ppCodeArray) {
+                //根据ppCode从加价从加价项目表中查询出数据
+                PriceMarkupVO priceMarkupVO = taskPlanService.getPriceMarkupByPPCode(compid, ppCode);
+                //插入任务单加价项目表中
+                taskPlanService.addTaskPriceMarkup(compid, taskId, priceMarkupVO);
+            }
+            return ResultVO.create();
+        }
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(1);
+        resultVO.setMsg("未选择加价项目");
+        return resultVO;
+
     }
 
 
@@ -457,6 +487,34 @@ public class TaskPlanApi {
     @RequestMapping("/todayTask")
     public String todayTask(String compid, String beginTime, String endTime) throws SQLException {
         return JSON.toJSONString(taskPlanService.todayTask(compid, beginTime, endTime));
+    }
+
+
+    /**
+     * 生成任务单Id
+     */
+    @PostMapping("/makeAutoTaskPlanId")
+    public ResultVO makeAutoTaskPlanId(String compid) throws SQLException {
+        return ResultVO.create(taskPlanService.makeAutoTaskPlanId(compid));
+    }
+
+
+    /**
+     * 校验用户输入的任务单号是否存在
+     */
+    @PostMapping("/isExistence")
+    public ResultVO isExistence(String compid, String taskId) {
+        boolean existence = taskPlanService.isExistence(compid, taskId);
+        return ResultVO.create(existence);
+    }
+
+    /**
+     * 获取特殊加价项目列表
+     */
+    @PostMapping("/getPriceMarkup")
+    public ResultVO getPriceMarkup(String compid) {
+        List<PriceMarkupVO> priceMarkupVOs = taskPlanService.getPriceMarkup(compid);
+        return ResultVO.create(priceMarkupVOs);
     }
 
 }

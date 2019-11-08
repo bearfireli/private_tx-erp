@@ -9,6 +9,7 @@ import com.hntxrj.txerp.vo.*;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 任务单服务
@@ -182,7 +183,7 @@ public interface TaskPlanService {
     PageVO<ProductionRatioVO> getTheoreticalproportioning(String compid, String beginTime, String endTime,
                                                           String formulaCode,
                                                           String stgId, String stirId, String eppCode, String placing,
-                                                          String taskId,Integer page,
+                                                          String taskId, Integer page,
                                                           Integer pageSize);
 
 
@@ -190,5 +191,32 @@ public interface TaskPlanService {
 
     JSONArray phoneStatistics(String compid, String beginTime, String endTime) throws SQLException;
 
-    JSONArray todayTask(String compid, String beginTime, String endTime)throws SQLException;
+    JSONArray todayTask(String compid, String beginTime, String endTime) throws SQLException;
+
+    /**
+     * 获取默认的任务单号
+     */
+    Map<String, String> makeAutoTaskPlanId(String compid) throws SQLException;
+
+    /**
+     * 判断任务单编号是否存在
+     */
+    boolean isExistence(String compid, String taskId);
+
+    /**
+     * 得到所有加价项目下拉
+     */
+    List<PriceMarkupVO> getPriceMarkup(String compid);
+
+
+    /**
+     * 通过加价项目编号得到加价项目数据
+     */
+    PriceMarkupVO getPriceMarkupByPPCode(String compid, String ppCode);
+
+
+    /**
+     * 添加任务单和加价项目
+     */
+    void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO);
 }

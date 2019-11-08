@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 public class TaskPlanVO {
@@ -48,4 +49,6 @@ public class TaskPlanVO {
     private String placeStyleName;
     private String preRemark;
     private boolean receiptStatus;
+
+    private List<String> ppCodes;
 }

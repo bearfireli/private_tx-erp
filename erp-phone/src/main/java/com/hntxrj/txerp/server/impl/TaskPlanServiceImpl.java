@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class TaskPlanServiceImpl implements TaskPlanService {
@@ -38,7 +35,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final ConcreteMapper concreteMapper;
 
     @Autowired
-    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository,StockMapper stockMapper,ConcreteMapper concreteMapper) {
+    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
@@ -67,7 +64,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     @Override
     public TaskPlanVO getTaskPlanDetail(String compid, String taskId) {
-        return taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
+        List<String> ppCodes = taskPlanMapper.getPPCodeBytaskId(compid, taskId);
+        TaskPlanVO taskPlanVO = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
+        taskPlanVO.setPpCodes(ppCodes);
+        return taskPlanVO;
     }
 
 
@@ -127,21 +127,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
             /*
              * *****************拼接TaskId******start****************/
-            int page = 0;
-            int pageSize = 1;
-            //获取年
-            SimpleDateFormat sdf2 = new SimpleDateFormat("yy");
-            Date date = new Date();
-            String year = sdf2.format(date);
-            String taskid = "P" + taskPlan.getCompid() + year;
-            PageHelper.startPage(page, pageSize, "TaskId desc");
-            TaskPlanListVO selectid = taskPlanMapper.selectid(taskid);
-            if (selectid != null) {
-                taskid = makeTaskId(taskPlan.getCompid(), selectid.getTaskId());
-            } else {
-                taskid = "p" + taskPlan.getCompid() + year + "00001";
-            }
-
+            String taskid = taskPlanSplicing(taskPlan.getCompid());
             taskPlan.setTaskId(taskid);
         }
 
@@ -641,7 +627,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime, endTime);
 
         //根据compid、beginTime、endTime从生产消耗表中查询出生产方量。
-        BigDecimal productNum = concreteMapper.getProductConcreteSum(compid,  beginTime, endTime);
+        BigDecimal productNum = concreteMapper.getProductConcreteSum(compid, beginTime, endTime);
 
         if (vehicleWorkloadDetailVOS != null) {
             vehicleWorkloadDetailVOS.setSale_num(vehicleWorkloadDetailVOS.getSaleNum());
@@ -724,6 +710,75 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         array.add(todayTaskVO1);
         System.out.println(array.size());
         return array;
+    }
+
+    /**
+     * 给前台返回一个默认的任务单号
+     */
+    @Override
+    public Map<String,String> makeAutoTaskPlanId(String compid) {
+        Map<String, String> taskPlanIdMap = new HashMap<>();
+        taskPlanIdMap.put("taskId", taskPlanSplicing(compid));
+        return taskPlanIdMap;
+    }
+
+    /**
+     *判断任务单编号是否存在
+     * */
+    @Override
+    public boolean isExistence(String compid, String taskId) {
+        Integer taskIdCount=taskPlanMapper.getTaskIdCount(compid, taskId);
+        if (taskIdCount != null && taskIdCount != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 得到所有加价项目下拉
+     * */
+    @Override
+    public List<PriceMarkupVO> getPriceMarkup(String compid) {
+        return  taskPlanMapper.getPriceMarkup(compid);
+    }
+
+
+    /**
+     * 通过加价项目编号得到加价项目数据
+     * */
+    @Override
+    public PriceMarkupVO getPriceMarkupByPPCode(String compid,String ppCode) {
+        return taskPlanMapper.getPriceMarkupByPPCode(compid,ppCode);
+    }
+
+    /**
+     * 添加任务单和加价项目
+     * */
+    @Override
+    public void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO) {
+        taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(),priceMarkupVO.getUnitPrice(),priceMarkupVO.getSelfDiscPrice(),priceMarkupVO.getJumpPrice(),priceMarkupVO.getTowerCranePrice(),priceMarkupVO.getOtherPrice());
+    }
+
+
+
+    private String taskPlanSplicing(String compid) {
+        int page = 0;
+        int pageSize = 1;
+        //获取年
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yy");
+        Date date = new Date();
+        String year = sdf2.format(date);
+        String taskid = "P" + compid + year;
+        PageHelper.startPage(page, pageSize, "TaskId desc");
+        TaskPlanListVO selectid = taskPlanMapper.selectid(taskid);
+        if (selectid != null) {
+            taskid = makeTaskId(compid, selectid.getTaskId());
+        } else {
+            taskid = "p" + compid + year + "00001";
+        }
+
+        return taskid;
     }
 
 
