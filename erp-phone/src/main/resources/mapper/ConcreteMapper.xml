@@ -146,5 +146,11 @@
     <select id="getProductConcreteByTaskId" resultType="java.math.BigDecimal">
         select sum(PanNum) from PT_ProduceConsume where RecStatus=1
         and compid=#{compid} and taskId = #{taskId}
+        <if test="produceBeginTime != null and produceBeginTime != ''">
+            and ProduceTime <![CDATA[ >= ]]>  #{produceBeginTime}
+        </if>
+        <if test="produceEndTime != null and produceEndTime != ''">
+            and ProduceTime <![CDATA[ <= ]]> #{produceEndTime}
+        </if>
     </select>
 </mapper>
