@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.DriverLocationMapper">
+    <select id="getLastDriverLocationByCompid" resultType="com.hntxrj.txerp.entity.DriverLocation">
+        select * from driver_location where  dl_id in (select max(dl_id) from  driver_location GROUP BY dl_driver_code)
+    </select>
 </mapper>
