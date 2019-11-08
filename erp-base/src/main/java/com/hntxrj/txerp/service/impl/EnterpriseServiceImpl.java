@@ -195,7 +195,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             if (optionalEnterprise.isPresent()) {
                 enterpriseOld = optionalEnterprise.get();
                 throw new ErpException(ErrEumn.ENTERPRISE_id_EXIST);
-            } else {
+                 } else {
                 //判断新ｉｄ是否为空
                 if (eidCode != null && !"".equals(eidCode)) {
                     enterprise.setEid(eidCode);

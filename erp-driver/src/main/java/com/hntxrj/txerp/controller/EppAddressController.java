@@ -65,4 +65,10 @@ public class EppAddressController {
         eppAddressService.saveDriverLocation(id, compid, location, token);
         return ResultVO.create();
     }
+
+
+    @PostMapping("/getDriverLocals")
+    public ResultVO getDriverLocals(String compid, String token){
+        return ResultVO.create(eppAddressService.getDriverLocals(compid));
+    }
 }

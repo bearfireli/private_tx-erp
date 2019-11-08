@@ -4,6 +4,7 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.entity.DriverLocation;
 import com.hntxrj.txerp.entity.EppAddress;
+import com.hntxrj.txerp.mapper.DriverLocationMapper;
 import com.hntxrj.txerp.mapper.EppAddressMapper;
 import com.hntxrj.txerp.repository.DriverLocationRepository;
 import com.hntxrj.txerp.repository.EppAddressRepository;
@@ -26,13 +27,18 @@ public class EppAddressServiceImpl implements EppAddressService {
     private final TaskSaleInvoiceService taskSaleInvoiceService;
 
     private final DriverLocationRepository driverLocationRepository;
+    private final DriverLocationMapper driverLocationMapper;
 
     @Autowired
-    public EppAddressServiceImpl(EppAddressMapper eppAddressMapper, EppAddressRepository eppAddressRepository, TaskSaleInvoiceService taskSaleInvoiceService, DriverLocationRepository driverLocationRepository) {
+    public EppAddressServiceImpl(EppAddressMapper eppAddressMapper, EppAddressRepository eppAddressRepository,
+                                 TaskSaleInvoiceService taskSaleInvoiceService,
+                                 DriverLocationRepository driverLocationRepository,
+                                 DriverLocationMapper driverLocationMapper) {
         this.eppAddressMapper = eppAddressMapper;
         this.eppAddressRepository = eppAddressRepository;
         this.taskSaleInvoiceService = taskSaleInvoiceService;
         this.driverLocationRepository = driverLocationRepository;
+        this.driverLocationMapper = driverLocationMapper;
     }
 
 
@@ -82,6 +88,11 @@ public class EppAddressServiceImpl implements EppAddressService {
         driverLocation.setDlEppCode(taskSaleInvoiceDetailVO.getEppCode());
         driverLocation.setCreateTime(new Timestamp(System.currentTimeMillis()));
         driverLocationRepository.save(driverLocation);
+    }
+
+    @Override
+    public List<DriverLocation> getDriverLocals(String compid) {
+        return driverLocationMapper.getLastDriverLocationByCompid(compid);
     }
 
 }

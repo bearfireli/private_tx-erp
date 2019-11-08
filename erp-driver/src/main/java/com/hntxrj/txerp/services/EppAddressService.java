@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.services;
 
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.entity.DriverLocation;
 import com.hntxrj.txerp.entity.EppAddress;
 
 import java.util.List;
@@ -46,4 +47,6 @@ public interface EppAddressService {
      * @param token             令牌
      */
     void saveDriverLocation(Integer taskSaleInvoiceId, String compid, String location, String token) throws ErpException;
+
+    List<DriverLocation> getDriverLocals(String compid);
 }
