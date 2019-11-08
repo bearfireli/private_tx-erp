@@ -52,5 +52,5 @@ public interface ConcreteMapper {
      * @param compid　企业
      * @param taskId　　任务单号
      * */
-    BigDecimal getProductConcreteByTaskId(String compid,String taskId);
+    BigDecimal getProductConcreteByTaskId(String compid,String taskId,String produceBeginTime,String produceEndTime);
 }
