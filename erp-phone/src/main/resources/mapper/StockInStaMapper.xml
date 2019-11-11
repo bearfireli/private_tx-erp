@@ -196,7 +196,7 @@
 
     <!--原材料过磅统计。材料名称-->
     <select id="getWeightByMatParent" resultType="com.hntxrj.txerp.vo.WeightMatParentNameVO">
-        SELECT SUM(ClWeight) AS ClWeight,  dp.PI_TypeName
+        SELECT SUM(ClWeight) AS tlWeight,  dp.PI_TypeName
         FROM V_MP_StockInQuery sl
         left join DD_PublicInfo dp on sl.MatParent = dp.PI_Values and sl.compid = dp.compid and PI_Class = 64
         where dp.compid=#{compid}
