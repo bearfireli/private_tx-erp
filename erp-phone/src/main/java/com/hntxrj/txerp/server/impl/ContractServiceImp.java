@@ -421,7 +421,7 @@ public class ContractServiceImp implements ContractService {
 
     @Override
     public PageVO<ContractListVO> getContractList(Long startTime, Long endTime, String contractCode,
-                                                  String eppCode, String buildCode, String salesMan, String compId,
+                                                  String eppCode, String buildCode, String salesMan, String compId,String verifyStatus,
                                                   Integer page, Integer pageSize) {
        
         PageHelper.startPage(page, pageSize, "SignDate desc");
@@ -429,12 +429,12 @@ public class ContractServiceImp implements ContractService {
         String startTimeStr = startTime == null ? null : sdf.format(new Date(startTime));
         String endTimeStr = endTime == null ? null : sdf.format(new Date(endTime));
         log.info("【合同列表】startTime:{}, endTime:{}, contractCode:{}, " +
-                        "eppCode:{}, buildCode:{}, salesMan:{}, compid:{}, page:{}, pageSize:{}",
-                startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId, page, pageSize);
-        String verifyStatus = null;
+                        "eppCode:{}, buildCode:{}, salesMan:{}, compid:{},verifyStatus:{} page:{}, pageSize:{}",
+                startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId, verifyStatus,page, pageSize);
+        /*String verifyStatus = null;
         if(null ==startTime && null ==endTime){
             verifyStatus ="true";
-        }
+        }*/
         List<ContractListVO> contractListVOList = contractMapper.getContractList(
                 startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId,verifyStatus);
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);

@@ -43,13 +43,14 @@ public class ContractApi {
     public ResultVO getContractList(String startTime, String endTime,
                                     String contractCode, String eppCode,
                                     String buildCode, String salesMan, String compid,
+                                    @RequestParam(required = false) String verifyStatus ,
                                     @RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(defaultValue = "10") Integer pageSize) {
 
         return ResultVO.create(contractService.getContractList(
                 startTime == null ? null : Long.parseLong(startTime),
                 endTime == null ? null : Long.parseLong(endTime), contractCode,
-                eppCode, buildCode, salesMan, compid, page, pageSize));
+                eppCode, buildCode, salesMan, compid, verifyStatus,page, pageSize));
     }
 
     /**

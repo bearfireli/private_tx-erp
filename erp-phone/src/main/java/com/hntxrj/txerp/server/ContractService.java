@@ -329,7 +329,7 @@ public interface ContractService {
      */
     PageVO<ContractListVO> getContractList(Long startTime, Long endTime, String contractCode,
                                            String eppCode, String buildCode, String salesMan,
-                                           String compId, Integer page, Integer pageSize);
+                                           String compId, String verifyStatus,Integer page, Integer pageSize);
 
     /**
      * 获取合同详情
