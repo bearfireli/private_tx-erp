@@ -196,17 +196,14 @@
 
     <!--原材料过磅统计。材料名称-->
     <select id="getWeightByMatParent" resultType="com.hntxrj.txerp.vo.WeightMatParentNameVO">
-       select sum(si.ClWeight) AS tlWeight, dp.PI_TypeName as matName
-        from MP_StockIn si
-         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
-         left join DD_PublicInfo dp on sl.MatParent=dp.PI_Values and sl.compid=dp.compid and PI_Class=64
-        where si.compid = #{compid}
-        and si.RecStatus = 1  and si.SaleType='0'
+        SELECT SUM(ClWeight) AS ClWeight,  dp.PI_TypeName
+        FROM V_MP_StockInQuery sl
+        left join DD_PublicInfo dp on sl.MatParent = dp.PI_Values and sl.compid = dp.compid and PI_Class = 64
+        where dp.compid=#{compid}
         <if test="beginTime != null and endTime != null">
-            and si.SecondTime between #{beginTime} and #{endTime}
+            and SecondTime between #{beginTime} and #{endTime}
         </if>
-        group by dp.PI_TypeName
-        order by dp.PI_TypeName
+        GROUP BY dp.PI_TypeName
     </select>
 
 
