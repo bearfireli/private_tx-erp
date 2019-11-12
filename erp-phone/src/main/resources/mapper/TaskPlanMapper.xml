@@ -30,7 +30,9 @@
         dd.PI_TypeName AS stoneAskName,
         bi.BuilderName,
         Placing,
-        ConcreteMark
+        ConcreteMark,
+        tp.placeStyle,
+        tp.OpenTime
         from PT_TaskPlan AS tp
         left join PT_TaskSaleInvoice pt on tp.compid = pt.compid and tp.TaskId = pt.TaskId
         and pt.InvoiceType !=6
@@ -61,6 +63,9 @@
         </if>
         <if test="taskStatus != null">
             and tp.taskStatus = #{taskStatus}
+        </if>
+        <if test="verifyStatus != null">
+            and tp.VerifyStatus = #{verifyStatus}
         </if>
         and tp.compid = #{compid}
         group by tp.compid, DD_PublicInfo_3.PI_TypeName, tp.TaskId, tp.CreateTime, tp.PreTime, tp.TaskOverTime,

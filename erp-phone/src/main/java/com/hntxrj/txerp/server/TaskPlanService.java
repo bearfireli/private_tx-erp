@@ -33,7 +33,7 @@ public interface TaskPlanService {
      */
     PageVO<TaskPlanListVO> getTaskPlanList(String beginTime, String endTime, String eppCode,
                                            String builderCode, String placing, String taskId,
-                                           Integer taskStatus, String compid, Integer page, Integer pageSize);
+                                           Integer taskStatus, String compid, Integer verifyStatus,Integer page, Integer pageSize);
 
 
     TaskPlanVO getTaskPlanDetail(String compid, String taskId);

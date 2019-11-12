@@ -46,10 +46,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public PageVO<TaskPlanListVO> getTaskPlanList(String beginTime, String endTime,
                                                   String eppCode, String builderCode,
                                                   String placing, String taskId, Integer taskStatus,
-                                                  String compid, Integer page, Integer pageSize) {
+                                                  String compid, Integer verifyStatus,Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.getTaskPlanList(beginTime, endTime, eppCode,
-                builderCode, placing, taskId, taskStatus, compid);
+                builderCode, placing, taskId, taskStatus, compid,verifyStatus);
         //循环截取preTime，格式为年月日
         for (TaskPlanListVO t : taskPlanListVOList) {
             if (!"".equals(t.getPreTime())) {

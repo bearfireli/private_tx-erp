@@ -17,30 +17,26 @@ public class TaskPlanVO {
     private String eppName;
     private String builderCode;
     private String builderName;
-    private String grade;
+    private String grade;          //抗折等级
     private String stgId;
-    // 完成方量
-    private BigDecimal overNum;
-    private String attribute;
-    private String technicalRequirements;
-    private String stoneyAsk;
+    private BigDecimal overNum;     // 完成方量
+    private String attribute;      //特性
+    private String technicalRequirements;  //技术要求
+    private String stoneyAsk;        //石料要求
     private String distance;
-    private String address;
+    private String address;      //交货地址
     private String placing;
-    private String preNum;
+    private String preNum;       //预计方量
     private String concreteMark;
     private String preCarNum;
-    private Timestamp preTime;
+    private Timestamp preTime;    //预计时间
     private String linkTel;
-    private String linkMan;
+    private String linkMan;       //现场人员
     private String stoneAsk;
     private String stoneAskName;
-    // 石子粒径
-    private String stoneDia;
-    // 塌落度
-    private String slump;
-    // 水泥品种
-    private String cementVariety;
+    private String stoneDia;       // 石子粒径
+    private String slump;           // 塌落度
+    private String cementVariety;     // 水泥品种
     private String cementVarietyName;
     private boolean verifyStatus;
     private Integer taskStatus;

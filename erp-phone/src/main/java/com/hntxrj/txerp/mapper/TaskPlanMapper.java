@@ -13,7 +13,7 @@ public interface TaskPlanMapper {
 
     List<TaskPlanListVO> getTaskPlanList(String beginTime, String endTime, String eppCode,
                                          String builderCode, String placing, String taskId,
-                                         Integer taskStatus, String compid);
+                                         Integer taskStatus, String compid,Integer verifyStatus);
 
 
     void verifyTaskPlan(String taskId, String compid, Integer verifyStatus, Date verifyTime);
