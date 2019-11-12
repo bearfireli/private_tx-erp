@@ -65,4 +65,48 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
         pageVO.format(pageInfo);
         return pageVO;
     }
+
+
+    /**
+     * 编辑砼标号
+     *
+     * @param compid          企业id
+     * @param stgId           砼标号
+     * @param grade           强度等级
+     * @param pumpPrice       泵送价格
+     * @param notPumpPrice    自卸价格
+     * @param towerCranePrice 塔吊价格
+     */
+    @Override
+    public void updateStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice, String towerCranePrice) {
+        stgIdMangeMapper.updateStgIdManage(grade, pumpPrice, notPumpPrice, towerCranePrice, compid, stgId);
+    }
+
+
+    /**
+     * 添加砼标号
+     *
+     * @param compid          企业id
+     * @param stgId           砼标号
+     * @param grade           强度等级
+     * @param pumpPrice       泵送价格
+     * @param notPumpPrice    自卸价格
+     * @param towerCranePrice 塔吊价格
+     */
+    @Override
+    public void insertStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice, String towerCranePrice) {
+        stgIdMangeMapper.insertStgIdManage(compid, stgId, grade, pumpPrice, notPumpPrice, towerCranePrice);
+    }
+
+
+    /**
+     * 删除砼标号
+     *
+     * @param compid          企业id
+     * @param stgId           砼标号
+     */
+    @Override
+    public void deleteStgManage(String compid, String stgId) {
+        stgIdMangeMapper.deleteStgIdManage(compid, stgId);
+    }
 }

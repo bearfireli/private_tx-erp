@@ -16,4 +16,20 @@ public interface StgIdMangeMapper {
      * @return
      */
     List<StgidManageVO> getStgidManage(String compid, String stgId, String grade);
+
+    /**
+     * 编辑砼标号
+     */
+    void updateStgIdManage(String grade, String pumpPrice, String notPumpPrice, String towerCranePrice, String compid, String stgId);
+
+    /**
+     *添加砼标号
+     */
+    void insertStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice, String towerCranePrice);
+
+
+    /**
+     *删除砼标号
+     */
+    void deleteStgIdManage(String compid, String stgId);
 }
