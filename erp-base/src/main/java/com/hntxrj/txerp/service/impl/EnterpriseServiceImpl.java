@@ -5,16 +5,16 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.entity.base.AuthGroup;
 import com.hntxrj.txerp.mapper.EnterpriseMapper;
 import com.hntxrj.txerp.entity.base.Enterprise;
 import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.repository.EnterpriseRepository;
+import com.hntxrj.txerp.service.AuthGroupService;
 import com.hntxrj.txerp.service.EnterpriseService;
 import com.hntxrj.txerp.service.UserService;
-import com.hntxrj.txerp.vo.EnterpriseDropDownVO;
-import com.hntxrj.txerp.vo.PageVO;
-import com.hntxrj.txerp.vo.UserVO;
+import com.hntxrj.txerp.vo.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -41,6 +41,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     private final EnterpriseRepository enterpriseRepository;
     private JPAQueryFactory queryFactory;
     private final UserService userService;
+    private final AuthGroupService authGroupService;
     @Value("${app.pay.imgFilePath}")
     private String imgFilePath;
 
@@ -49,9 +50,10 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
 
     @Autowired
     public EnterpriseServiceImpl(EnterpriseRepository enterpriseRepository
-            , EntityManager entityManager, UserService userService, EnterpriseMapper enterpriseMapper) {
+            , EntityManager entityManager, UserService userService,AuthGroupService authGroupService, EnterpriseMapper enterpriseMapper) {
         super(entityManager);
         this.userService = userService;
+        this.authGroupService = authGroupService;
         this.enterpriseMapper = enterpriseMapper;
         queryFactory = getQueryFactory();
         this.enterpriseRepository = enterpriseRepository;
@@ -136,13 +138,49 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public Enterprise addEnterprise(Enterprise enterprise) throws ErpException {
+    public Enterprise addEnterprise(String token,Enterprise enterprise) throws ErpException {
         // 查询企业简称或企业全称是否在数据库中为删除内容中存在，如果存在就抛出异常
         if (enterpriseNameExist(enterprise.getEpName(), enterprise.getEpShortName())) {
             throw new ErpException(ErrEumn.ENTERPRISE_NAME_EXIST);
         }
 
         Enterprise savedEnterprise = enterpriseRepository.save(enterprise);
+
+        /**
+         * @Description 初始化添加企业的权限组
+         * @Author 陈世强
+         * @e-mail chenshiqiang@wisfaith.net
+         * @Date 15:48 2019-11-11
+         **/
+        //查询默认的权限组并添加
+        List<AuthGroupVO> initList=authGroupService.getInitAuthGroup();
+        //遍历初始化权限组
+        if(initList!=null){
+            for (int i = 0; i <initList.size()-1; i++) {
+                AuthGroupVO authGroupvo=initList.get(i);
+                AuthGroup authGroup=new AuthGroup();
+                authGroup.setAgName(authGroupvo.getAgName());//权限组名称
+                authGroup.setUpdateUser(authGroupvo.getUpdateUser());
+                authGroup.setProject(authGroupvo.getProject());//项目ID
+                authGroup.setAgStatus(0);//权限组启停状态
+                authGroup.setEnterprise(enterprise.getEid());//权限组企业ID
+                authGroup.setCreateTime(new Date());//创建时间
+                authGroup.setUpdateTime(new Date());//更新时间
+                //添加权限组
+                AuthGroup AuthGroupTem= authGroupService.editAuthGroup(authGroup);
+                //获取初始权限组的权限
+                String[]  openAuth=authGroupService.getOpenAuth(authGroupvo.getAgid());
+                if(openAuth.length!=0 && openAuth != null) {
+                    List<String> funNames = new ArrayList<>(openAuth.length);
+                    for (int j = 0; j < openAuth.length - 1; j++) {
+                        funNames.add(openAuth[j]);
+                    }
+                    //为企业初始化的权限组添加初始化的权限
+                    authGroupService.saveAuthValue(funNames, AuthGroupTem.getAgid(), token, AuthGroupTem.getProject());
+                }
+            }
+        }
+
         // 添加spterp中的企业
         OkHttpClient client = new OkHttpClient();
         String url = "https://dev.erp.hntxrj.com/comp/addComp";
@@ -195,7 +233,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             if (optionalEnterprise.isPresent()) {
                 enterpriseOld = optionalEnterprise.get();
                 throw new ErpException(ErrEumn.ENTERPRISE_id_EXIST);
-                 } else {
+            } else {
                 //判断新ｉｄ是否为空
                 if (eidCode != null && !"".equals(eidCode)) {
                     enterprise.setEid(eidCode);

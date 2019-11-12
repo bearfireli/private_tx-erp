@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.AuthGroupMapper">
+    <select id="getInitAuthGroup" resultType="com.hntxrj.txerp.vo.AuthGroupVO">
+    select
+        agid as agid,
+        ag_name as agName,
+        ag_status as agStatus,
+        enterprise as enterprise,
+        project as project,
+        create_time as createTime,
+        update_user as updateUser,
+        update_time as updateTime
+     from auth_group
+     where enterprise=-1
+    </select>
+</mapper>
