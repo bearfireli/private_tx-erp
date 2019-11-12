@@ -365,5 +365,21 @@ public class ContractApi {
         return ResultVO.create(contractService.selectPumpTruckList(compid, page, pageSize, builderName));
     }
 
+    /**
+     * 添加任务单时根据工程名称或者施工单位查询合同列表
+     *
+     * @param compid     站别代号
+     * @param searchName 搜索添加，可能是施工名称或者是施工单位
+     * @param page       页码
+     * @param pageSize   每页数量
+     * @return 合同列表
+     */
+    @PostMapping("/getContractListByEppOrBuild")
+    public ResultVO getContractListByEppOrBuild(String compid, String searchName,
+                                                @RequestParam(defaultValue = "1") Integer page,
+                                                @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(contractService.getContractListByEppOrBuild(compid,searchName,page,pageSize));
+    }
+
 
 }

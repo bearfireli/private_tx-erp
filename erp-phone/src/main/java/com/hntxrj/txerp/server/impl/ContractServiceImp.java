@@ -823,6 +823,27 @@ public class ContractServiceImp implements ContractService {
     }
 
 
+    /**
+     * 添加任务单时根据工程名称或者施工单位查询合同列表
+     *
+     * @param compid     站别代号
+     * @param searchName 搜索添加，可能是施工名称或者是施工单位
+     * @param page       页码
+     * @param pageSize   每页数量
+     * @return 合同列表
+     */
+    @Override
+    public PageVO<ContractListVO> getContractListByEppOrBuild(String compid, String searchName, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize, "SignDate desc");
+
+        List<ContractListVO> contractListVOList = contractMapper.getContractListByEppOrBuild(compid,searchName);
+        PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
+        PageVO<ContractListVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+
 }
 
 

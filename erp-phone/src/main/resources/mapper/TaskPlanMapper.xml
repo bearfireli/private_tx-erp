@@ -45,7 +45,12 @@
         where tp.DeleteMark = 0
         and tp.RecStatus = 1
         <if test="beginTime != null and endTime != null">
-            and (taskStatus = 1 or tp.preTime between #{beginTime} and #{endTime})
+            <if test="taskStatus == null">
+                and (taskStatus = 1 or tp.preTime between #{beginTime} and #{endTime})
+            </if>
+            <if test="taskStatus != null">
+                and tp.preTime between #{beginTime} and #{endTime}
+            </if>
         </if>
         <if test="eppCode != null">
             and tp.eppCode = #{eppCode}
@@ -729,8 +734,6 @@
     <select id="getPPCodeBytaskId" resultType="string">
         select PPCode from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
     </select>
-
-
 
 
 </mapper>
