@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.service.impl;
 
 import com.hntxrj.txerp.entity.base.*;
+import com.hntxrj.txerp.mapper.AuthGroupMapper;
 import com.hntxrj.txerp.mapper.UserMapper;
 import com.hntxrj.txerp.service.AuthGroupService;
 import com.hntxrj.txerp.service.MenuService;
@@ -44,10 +45,11 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
     private JPAQueryFactory queryFactory;
 
     private final UserMapper userMapper;
+    private final AuthGroupMapper authGroupMapper;
 
     @Autowired
     public AuthGroupServiceImpl(AuthGroupRepository authGroupRepository,
-                                AuthValueRepository authValueRepository, MenuRepository menuRepository,
+                                AuthValueRepository authValueRepository, MenuRepository menuRepository,AuthGroupMapper authGroupMapper,
                                 EntityManager entityManager, UserService userService, MenuService menuService, UserMapper userMapper) {
         super(entityManager);
         this.authGroupRepository = authGroupRepository;
@@ -55,6 +57,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
         this.menuRepository = menuRepository;
         this.userService = userService;
         this.userMapper = userMapper;
+        this.authGroupMapper=authGroupMapper;
         this.queryFactory = getQueryFactory();
     }
 
@@ -299,9 +302,18 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
 
         return false;
     }
-
-
-
+    /**
+     * @Description 获得初始化的权限组列表
+     * @Author 陈世强
+     * @e-mail chenshiqiang@wisfaith.net
+     * @Date 16:34 2019-11-11
+     * @Param
+     * @return
+     **/
+    @Override
+    public List<AuthGroupVO> getInitAuthGroup() {
+        return  authGroupMapper.getInitAuthGroup();
+    }
 
 
     private void makeDropDown(

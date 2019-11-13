@@ -81,7 +81,7 @@ public class EnterpriseController {
     }
 
     @PostMapping("/addEnterprise")
-    public String addEnterprise(Enterprise enterprise) throws ErpException {
+    public String addEnterprise(@RequestHeader String token, Enterprise enterprise) throws ErpException {
         log.info("【添加企业】enterprise={}", enterprise);
         if (enterprise == null) {
             throw new ErpException(ErrEumn.ADD_ENTERPRISE_NULL);
@@ -97,7 +97,7 @@ public class EnterpriseController {
             enterprise.setEpStatus(0);
         }
 
-        resultVO.setData(JSON.toJSONString(enterpriseService.addEnterprise(enterprise)));
+        resultVO.setData(JSON.toJSONString(enterpriseService.addEnterprise(token, enterprise)));
         return JSON.toJSONString(resultVO);
 
     }
@@ -143,10 +143,11 @@ public class EnterpriseController {
     public ResultVO uploadPicture(MultipartFile image) throws ErpException {
         return ResultVO.create(enterpriseService.uploadFeedbackImg(image));
     }
+
     //读取图片
     @GetMapping("/getFeedboackPicture")
-    public void getFeedbackPicture(Integer eid, Integer type,HttpServletResponse response) throws ErpException {
-        enterpriseService.getFeedbackImg(eid,type, response);
+    public void getFeedbackPicture(Integer eid, Integer type, HttpServletResponse response) throws ErpException {
+        enterpriseService.getFeedbackImg(eid, type, response);
     }
 
     //上传成功回显图片
@@ -158,7 +159,7 @@ public class EnterpriseController {
     //保存收款码
     @PostMapping("/saveCollectionCode")
     public ResultVO saveCollectionCode(Integer eid, String imageFile,
-                                      Integer type) throws ErpException {
+                                       Integer type) throws ErpException {
         resultVO.setData(enterpriseService.saveCollectionCode(eid, imageFile, type));
         return resultVO;
     }
