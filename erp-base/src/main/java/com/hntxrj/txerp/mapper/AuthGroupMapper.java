@@ -17,7 +17,8 @@ import java.util.List;
 public interface AuthGroupMapper {
     /**
      * 获取初始化权限组
+     *
      * @return
      */
-List<AuthGroupVO> getInitAuthGroup();
+    List<AuthGroupVO> getInitAuthGroup();
 }
