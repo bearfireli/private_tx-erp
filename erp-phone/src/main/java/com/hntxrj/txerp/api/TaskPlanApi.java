@@ -181,8 +181,9 @@ public class TaskPlanApi {
     @PostMapping("/getSendCarList")
     public ResultVO getSendCarList(String compid,
                                    @RequestParam(defaultValue = "1") Integer page,
-                                   @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(taskPlanService.getSendCarList(compid, page, pageSize));
+                                   @RequestParam(defaultValue = "10") Integer pageSize,
+                                   @RequestParam(required = false) String searchName) {
+        return ResultVO.create(taskPlanService.getSendCarList(compid, searchName,page, pageSize));
     }
 
     /**
@@ -335,9 +336,10 @@ public class TaskPlanApi {
      */
     @PostMapping("/getSendCarCountNum")
     public ResultVO getSendCarCountNum(String compid,
+                                       @RequestParam(required = false) String searchName,
                                        @RequestParam(defaultValue = "1") Integer page,
                                        @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(taskPlanService.getSendCarCountNum(compid, page, pageSize));
+        return ResultVO.create(taskPlanService.getSendCarCountNum(compid,searchName, page, pageSize));
     }
 
     /**
@@ -463,9 +465,10 @@ public class TaskPlanApi {
      */
     @PostMapping("/getSquareQuantitySum")
     public ResultVO getConcreteSum(String compid,
-                                   String beginTime, String endTime, int type) {
+                                   String beginTime, String endTime, int type,
+                                   @RequestParam(required = false) String searchName) {
         SquareQuantityVO squareQuantityVO = taskPlanService.getSquareQuantitySum(compid, beginTime,
-                endTime, type);
+                endTime, type,searchName);
         return ResultVO.create(squareQuantityVO);
     }
 

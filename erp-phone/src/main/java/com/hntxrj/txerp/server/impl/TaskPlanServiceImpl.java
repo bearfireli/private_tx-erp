@@ -185,10 +185,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     @Override
-    public PageVO<SendCarListVO> getSendCarList(String compid, Integer page, Integer pageSize) {
+    public PageVO<SendCarListVO> getSendCarList(String compid,String searchName, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         // TODO: 司机只能查询自己的信息
-        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid);
+        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid,searchName);
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -219,8 +219,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * @return 调度派车列表
      */
     @Override
-    public PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, Integer page, Integer pageSize) {
-        List<SendCarTotalNumVO> sendCarList = taskPlanMapper.getSendCarCountNum(compid);
+    public PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid,String searchName, Integer page, Integer pageSize) {
+        List<SendCarTotalNumVO> sendCarList = taskPlanMapper.getSendCarCountNum(compid,searchName);
         PageInfo<SendCarTotalNumVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarTotalNumVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -574,7 +574,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
 
     @Override
-    public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type) {
+    public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type,String searchName) {
         //根据传递过来的type，判断查询的是今日，昨日还是本月的方量。
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if (type == 3) {
@@ -624,7 +624,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 }
             }
         }
-        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime, endTime);
+        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime, endTime,searchName);
 
         //根据compid、beginTime、endTime从生产消耗表中查询出生产方量。
         BigDecimal productNum = concreteMapper.getProductConcreteSum(compid, beginTime, endTime);

@@ -27,7 +27,7 @@ public interface TaskPlanMapper {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    List<SendCarListVO> getSendCarList(String compid);
+    List<SendCarListVO> getSendCarList(String compid,String searchName);
 
 
     /**
@@ -109,7 +109,7 @@ public interface TaskPlanMapper {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    List<SendCarTotalNumVO> getSendCarCountNum(String compid);
+    List<SendCarTotalNumVO> getSendCarCountNum(String compid,String searchName);
 
     /**
      * 调度派车今日方量
@@ -148,7 +148,7 @@ public interface TaskPlanMapper {
                                                         String taskId);
 
 
-    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime);
+    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime,String searchName);
 
     QueryTimeSetVO getQueryTime(String compid, int queryType);
 

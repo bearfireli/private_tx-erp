@@ -51,7 +51,7 @@ public interface TaskPlanService {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    PageVO<SendCarListVO> getSendCarList(String compid, Integer page, Integer pageSize);
+    PageVO<SendCarListVO> getSendCarList(String compid, String searchName,Integer page, Integer pageSize);
 
 
 
@@ -78,7 +78,7 @@ public interface TaskPlanService {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, Integer page, Integer pageSize);
+    PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, String searchName,Integer page, Integer pageSize);
 
     /**
      * 调度派车昨日方量
@@ -187,7 +187,7 @@ public interface TaskPlanService {
                                                           Integer pageSize);
 
 
-    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type);
+    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type,String searchName);
 
     JSONArray phoneStatistics(String compid, String beginTime, String endTime) throws SQLException;
 
