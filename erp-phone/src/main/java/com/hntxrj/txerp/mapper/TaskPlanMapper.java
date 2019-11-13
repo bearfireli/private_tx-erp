@@ -171,4 +171,8 @@ public interface TaskPlanMapper {
     void addTaskPriceMarkup(String compid, String taskId, String ppCode, BigDecimal unitPrice, BigDecimal selfDiscPrice, BigDecimal jumpPrice, BigDecimal towerCranePrice, BigDecimal otherPrice);
 
     List<String> getPPCodeBytaskId(String compid, String taskId);
+
+    SystemVarInitVO getSystemVarInit(String compid);
+
+    void updateTechnicalRequirements(String compid, String taskId, String pPName);
 }
