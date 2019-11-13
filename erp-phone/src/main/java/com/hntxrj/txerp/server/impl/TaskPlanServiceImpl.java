@@ -757,6 +757,17 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * */
     @Override
     public void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO) {
+        //根据compid查询系统变量
+        SystemVarInitVO systemVarInitVO = taskPlanMapper.getSystemVarInit(compid);
+        String pPName =priceMarkupVO.getPPName();
+        if (systemVarInitVO !=null){
+            if (systemVarInitVO.getVarValue()==1){
+                if (!("").equals(pPName)){
+                    //把选择的特殊材料名称添加到技术要求里面
+                    taskPlanMapper.updateTechnicalRequirements(compid,taskId,pPName);
+                }
+            }
+        }
         taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(),priceMarkupVO.getUnitPrice(),priceMarkupVO.getSelfDiscPrice(),priceMarkupVO.getJumpPrice(),priceMarkupVO.getTowerCranePrice(),priceMarkupVO.getOtherPrice());
     }
 

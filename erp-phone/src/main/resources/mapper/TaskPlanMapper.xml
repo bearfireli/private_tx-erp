@@ -399,6 +399,9 @@
         where compid = #{compid}
           and ID = #{id}
     </update>
+    <update id="updateTechnicalRequirements">
+        update PT_TaskPlan set TechnicalRequirements = #{pPName} where compid =#{compid} and taskid =#{taskId}
+    </update>
 
     <select id="selectid" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
         select TaskId
@@ -745,8 +748,9 @@
     <select id="getPPCodeBytaskId" resultType="string">
         select PPCode from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
     </select>
-
-
+    <select id="getSystemVarInit" resultType="com.hntxrj.txerp.vo.SystemVarInitVO">
+        select * from De_SystemVarInit where compid =#{compid}  and SystemVar ='TaskMarkupToTR' and RecStatus =1
+    </select>
 
 
 </mapper>
