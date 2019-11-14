@@ -219,4 +219,9 @@ public interface TaskPlanService {
      * 添加任务单和加价项目
      */
     void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO);
+    /**
+     *
+     * 修改任务单加价项目状态为0
+    * */
+    void deletePPCodeStatus(String compid, String taskId);
 }
