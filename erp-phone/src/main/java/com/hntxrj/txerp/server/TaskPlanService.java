@@ -219,4 +219,6 @@ public interface TaskPlanService {
      * 添加任务单和加价项目
      */
     void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO);
+
+    void updateTechnicalRequirements(String compid,String taskId, String pPNames);
 }

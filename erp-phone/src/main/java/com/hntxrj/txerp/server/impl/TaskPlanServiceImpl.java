@@ -755,22 +755,40 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     /**
      * 添加任务单和加价项目
      * */
-    @Override
     public void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO) {
-        //根据compid查询系统变量
-        SystemVarInitVO systemVarInitVO = taskPlanMapper.getSystemVarInit(compid);
-        String pPName =priceMarkupVO.getPPName();
-        if (systemVarInitVO !=null){
-            if (systemVarInitVO.getVarValue()==1){
-                if (!("").equals(pPName)){
-                    //把选择的特殊材料名称添加到技术要求里面
-                    taskPlanMapper.updateTechnicalRequirements(compid,taskId,pPName);
-                }
-            }
-        }
         taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(),priceMarkupVO.getUnitPrice(),priceMarkupVO.getSelfDiscPrice(),priceMarkupVO.getJumpPrice(),priceMarkupVO.getTowerCranePrice(),priceMarkupVO.getOtherPrice());
     }
 
+    @Override
+    public void updateTechnicalRequirements(String compid,String taskId, String pPNames) {
+        //根据compid查询系统变量
+        SystemVarInitVO systemVarInitVO = taskPlanMapper.getSystemVarInit(compid);
+        TaskPlanVO taskPlan = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
+        String markFlag = "A";
+        String stgId = taskPlan.getStgId();
+        String slump = taskPlan.getSlump();
+        String slumps = slump.replaceAll("[^0-9]", "|");
+        String[] a = slumps.split("\\|");
+        String x = a[0];
+        int y = Integer.parseInt(x);
+        String slumpFlag = "";
+        if (y <= 90) {
+            slumpFlag = "(S2)";
+        } else if (y < 160) {
+            slumpFlag = "(S3)";
+        } else {
+            slumpFlag = "(S4)";
+        }
+        if (systemVarInitVO !=null){
+            if (systemVarInitVO.getVarValue()==1){
+                if (!("").equals(pPNames)){
+                    String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag +"-"+ pPNames +"-GB/T14902";
+                    //把选择的特殊材料名称添加到技术要求里面
+                    taskPlanMapper.updateTechnicalRequirements(compid,taskId,pPNames,concreteMark);
+                }
+            }
+        }
+    }
 
 
     private String taskPlanSplicing(String compid) {
