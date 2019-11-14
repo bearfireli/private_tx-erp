@@ -65,7 +65,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
         this.authValueOldRepository = authValueOldRepository;
         this.menuService = menuService1;
         this.userMapper = userMapper;
-        this.authGroupMapper=authGroupMapper;
+        this.authGroupMapper = authGroupMapper;
         this.queryFactory = getQueryFactory();
     }
 
@@ -199,7 +199,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
     }
 
     /**
-     *获取权限组的方法，名称等信息
+     * 获取权限组的方法，名称等信息
      */
     @Override
     public List<AuthValueVO> getAuthValue(Integer groupId) {
@@ -217,7 +217,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
                                          Integer pid) throws ErpException {
         User user = userService.tokenGetUser(token);
         //获取权限修改之前的权限
-        List<AuthValue> authValues=userService.getAuthValue(groupId,pid);
+        List<AuthValue> authValues = userService.getAuthValue(groupId, pid);
 
         // 对菜单项进行对比
         for (AuthValue authValue : authValues) {
@@ -226,6 +226,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
             for (String funName : funNames) {
                 if (funName != null && funName.equals(authValue.getFunName())) {
                     isExist = true;
+                    break;
                 }
             }
             if (!isExist) {
@@ -241,6 +242,7 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
             for (AuthValue authValue : authValues) {
                 if (funName != null && funName.equals(authValue.getFunName())) {
                     isExist = true;
+                    break;
                 }
             }
 
@@ -257,63 +259,71 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
         for (AuthValue authValue : authValues) {
             authValue.setUpdateUser(user.getUid());
         }
-            saveOldAll( funNames, groupId, token,pid);
+        saveOldAll(funNames, groupId, token, pid);
         // save operation
         return authValueRepository.saveAll(authValues);
     }
+
     /**
      * @Description 更改权限时兼容旧版本
      * @Author 陈世强
      * @e-mail chenshiqiang@wisfaith.net
      * @Date 15:54 2019-11-13
-     * @Param
-     * @return
      **/
     private void saveOldAll(List<String> funNames, Integer groupId, String token, Integer pid) throws ErpException {
         //旧版本表获取权限修改之前的权限
-        List<AuthValueOld> authValueOlds=userService.getAuthValueOld(groupId,pid);
-        List<Integer> midLIst=new ArrayList<>();
-        for (String  funcName:funNames) {
-            Menu TempMenu =menuService.getMenuByfuncNameAndPid(funcName,pid);
+        List<AuthValueOld> authValueOlds = userService.getAuthValueOld(groupId, pid);
+        List<Integer> midLIst = new ArrayList<>();
+        //遍历funName得到相应的menuID数组
+        for (String funcName : funNames) {
+            Menu TempMenu = menuService.getMenuByfuncNameAndPid(funcName, pid);
             midLIst.add(TempMenu.getMid());
         }
 
-        // 对菜单项进行对比
+        // 遍历修改之前的已有的权限
         for (AuthValueOld authValueOld : authValueOlds) {
-            //Used to control whether menuId still exists in this save.
+            //已有权限修改后是否存在，默认为不存在
             boolean isExist = false;
+            //遍历修改后存在的权限
             for (Integer midTemp : midLIst) {
+                //修改后的权限存在于已有权限中，改变默认值
                 if (midTemp != null && midTemp.equals(authValueOld.getMenuId())) {
                     isExist = true;
+                    break;
                 }
             }
-            if (!isExist) {
+            if (!isExist) {//修改后没有状态值为禁用
                 // This save operation does not have this menu
                 authValueOld.setValue(0);
-            } else {
+            } else {//修改后仍然有状态值为启用
                 authValueOld.setValue(1);
             }
         }
-
+        //遍历修改后的菜单ID
         for (Integer midTemp : midLIst) {
+            //默认修改后的权限在修改前不存在
             boolean isExist = false;
+            //遍历修改之前的权限
             for (AuthValueOld authValueOld : authValueOlds) {
+                //修改后的权限存在于原来已有的权限列表中，改变默认值
                 if (midTemp != null && midTemp.equals(authValueOld.getMenuId())) {
                     isExist = true;
+                    break;
                 }
             }
-
+            //修改之前不存在的权限，创建一个对象状态为启用并添加到列表中
             if (midTemp != null && !isExist) {
                 AuthValueOld authValueOld = new AuthValueOld();
-                authValueOld.setValue(1);
-                authValueOld.setGroupId(groupId);
-                authValueOld.setMenuId(midTemp);
-                authValueOld.setUpdateUser(userService.tokenGetUser(token).getUid());
-                authValueOld.setUpdateTime(new Date());
+                authValueOld.setValue(1);//启用
+                authValueOld.setGroupId(groupId);//权限ID
+                authValueOld.setMenuId(midTemp);//菜单ID
+                authValueOld.setUpdateUser(userService.tokenGetUser(token).getUid());//当前用户ID
+                authValueOld.setUpdateTime(new Date());//当前时间戳
                 authValueOld.setCreateTime(new Date());
                 authValueOlds.add(authValueOld);
             }
         }
+        //使用jpa持久化数据
         authValueOldRepository.saveAll(authValueOlds);
     }
 
@@ -334,7 +344,6 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
     }
 
 
-
     /**
      * 根据token,compid判断该用户是否具有访问此methodName的权限
      */
@@ -352,10 +361,10 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
         }
 
         //根据uid和compid查询出用户的权限组id
-        Integer authGroupID=userService.getAuthGroupByUserAndCompid(user.getUid(), enterprise);
+        Integer authGroupID = userService.getAuthGroupByUserAndCompid(user.getUid(), enterprise);
 
         //根据authGrouID和methodName从auth_value中查询是否存在数据
-        Integer authCount=userService.judgementAuth(authGroupID, methodName);
+        Integer authCount = userService.judgementAuth(authGroupID, methodName);
 
         if (authCount >= 1) {
             return true;
@@ -364,17 +373,16 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
 
         return false;
     }
+
     /**
      * @Description 获得初始化的权限组列表
      * @Author 陈世强
      * @e-mail chenshiqiang@wisfaith.net
      * @Date 16:34 2019-11-11
-     * @Param
-     * @return
      **/
     @Override
     public List<AuthGroupVO> getInitAuthGroup() {
-        return  authGroupMapper.getInitAuthGroup();
+        return authGroupMapper.getInitAuthGroup();
     }
 
 

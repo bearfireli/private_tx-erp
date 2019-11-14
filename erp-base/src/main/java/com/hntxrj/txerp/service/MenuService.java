@@ -26,7 +26,7 @@ public interface MenuService {
     Menu saveMenu(Menu menu);
 
     /*
-     * @Description 通过funcName获取menu
+     * @Description 通过funcName，pid获取menu
      * @Author 陈世强
      * @e-mail chenshiqiang@wisfaith.net
      * @Date 14:06 2019-11-13
