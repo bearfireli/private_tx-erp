@@ -3,6 +3,7 @@ package com.hntxrj.txerp.service.impl;
 import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.mapper.AuthGroupMapper;
 import com.hntxrj.txerp.mapper.UserMapper;
+import com.hntxrj.txerp.repository.AuthValueOldRepository;
 import com.hntxrj.txerp.service.AuthGroupService;
 import com.hntxrj.txerp.service.MenuService;
 import com.hntxrj.txerp.service.UserService;
@@ -28,6 +29,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 
@@ -38,7 +40,11 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
 
     private final AuthValueRepository authValueRepository;
 
+    private final AuthValueOldRepository authValueOldRepository;
+
     private final MenuRepository menuRepository;
+
+    private final MenuService menuService;
 
     private final UserService userService;
 
@@ -49,13 +55,15 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
 
     @Autowired
     public AuthGroupServiceImpl(AuthGroupRepository authGroupRepository,
-                                AuthValueRepository authValueRepository, MenuRepository menuRepository,AuthGroupMapper authGroupMapper,
-                                EntityManager entityManager, UserService userService, MenuService menuService, UserMapper userMapper) {
+                                AuthValueRepository authValueRepository, MenuRepository menuRepository, AuthGroupMapper authGroupMapper,
+                                EntityManager entityManager, UserService userService, MenuService menuService, AuthValueOldRepository authValueOldRepository, MenuService menuService1, UserMapper userMapper) {
         super(entityManager);
         this.authGroupRepository = authGroupRepository;
         this.authValueRepository = authValueRepository;
         this.menuRepository = menuRepository;
         this.userService = userService;
+        this.authValueOldRepository = authValueOldRepository;
+        this.menuService = menuService1;
         this.userMapper = userMapper;
         this.authGroupMapper=authGroupMapper;
         this.queryFactory = getQueryFactory();
@@ -208,9 +216,8 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
                                          Integer groupId, String token,
                                          Integer pid) throws ErpException {
         User user = userService.tokenGetUser(token);
-
+        //获取权限修改之前的权限
         List<AuthValue> authValues=userService.getAuthValue(groupId,pid);
-
 
         // 对菜单项进行对比
         for (AuthValue authValue : authValues) {
@@ -250,9 +257,64 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
         for (AuthValue authValue : authValues) {
             authValue.setUpdateUser(user.getUid());
         }
-
+            saveOldAll( funNames, groupId, token,pid);
         // save operation
         return authValueRepository.saveAll(authValues);
+    }
+    /**
+     * @Description 更改权限时兼容旧版本
+     * @Author 陈世强
+     * @e-mail chenshiqiang@wisfaith.net
+     * @Date 15:54 2019-11-13
+     * @Param
+     * @return
+     **/
+    private void saveOldAll(List<String> funNames, Integer groupId, String token, Integer pid) throws ErpException {
+        //旧版本表获取权限修改之前的权限
+        List<AuthValueOld> authValueOlds=userService.getAuthValueOld(groupId,pid);
+        List<Integer> midLIst=new ArrayList<>();
+        for (String  funcName:funNames) {
+            Menu TempMenu =menuService.getMenuByfuncNameAndPid(funcName,pid);
+            midLIst.add(TempMenu.getMid());
+        }
+
+        // 对菜单项进行对比
+        for (AuthValueOld authValueOld : authValueOlds) {
+            //Used to control whether menuId still exists in this save.
+            boolean isExist = false;
+            for (Integer midTemp : midLIst) {
+                if (midTemp != null && midTemp.equals(authValueOld.getMenuId())) {
+                    isExist = true;
+                }
+            }
+            if (!isExist) {
+                // This save operation does not have this menu
+                authValueOld.setValue(0);
+            } else {
+                authValueOld.setValue(1);
+            }
+        }
+
+        for (Integer midTemp : midLIst) {
+            boolean isExist = false;
+            for (AuthValueOld authValueOld : authValueOlds) {
+                if (midTemp != null && midTemp.equals(authValueOld.getMenuId())) {
+                    isExist = true;
+                }
+            }
+
+            if (midTemp != null && !isExist) {
+                AuthValueOld authValueOld = new AuthValueOld();
+                authValueOld.setValue(1);
+                authValueOld.setGroupId(groupId);
+                authValueOld.setMenuId(midTemp);
+                authValueOld.setUpdateUser(userService.tokenGetUser(token).getUid());
+                authValueOld.setUpdateTime(new Date());
+                authValueOld.setCreateTime(new Date());
+                authValueOlds.add(authValueOld);
+            }
+        }
+        authValueOldRepository.saveAll(authValueOlds);
     }
 
 

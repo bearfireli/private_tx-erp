@@ -1051,6 +1051,11 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         return userMapper.getAuthValueByGroupId(groupId,pid);
     }
 
+    @Override
+    public List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid) {
+        return userMapper.getAuthValueOld(groupId,pid);
+    }
+
 
 
 

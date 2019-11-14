@@ -190,5 +190,17 @@
         where av.group_id=#{groupId} and me.project=#{pid} and value=1
     </select>
 
+    <select id="getAuthValueOld" resultType="com.hntxrj.txerp.entity.base.AuthValueOld">
+       select av.group_id  groupId  ,
+        av.menu_id menuId,
+        av.value,
+        av.create_time  createTime,
+        av.update_time updateTime,
+        av.update_user updateUser
+        from auth_value av
+        where av.group_id=#{groupId}  and av.value=1
+    </select>
+
+
 
 </mapper>
