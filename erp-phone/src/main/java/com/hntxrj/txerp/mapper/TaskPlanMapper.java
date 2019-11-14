@@ -174,7 +174,6 @@ public interface TaskPlanMapper {
 
     SystemVarInitVO getSystemVarInit(String compid);
 
-    void updateTechnicalRequirements(String compid, String taskId, String pPName);
-
     void deletePPCodeStatus(String compid, String taskId);
+    void updateTechnicalRequirements(String compid, String taskId, String pPNames,String concreteMark);
 }

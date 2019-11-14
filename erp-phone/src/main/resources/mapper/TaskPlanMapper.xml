@@ -389,7 +389,7 @@
           and ID = #{id}
     </update>
     <update id="updateTechnicalRequirements">
-        update PT_TaskPlan set TechnicalRequirements = #{pPName} where compid =#{compid} and taskid =#{taskId}
+        update PT_TaskPlan set TechnicalRequirements = #{pPNames},concreteMark =#{concreteMark} where compid =#{compid} and taskid =#{taskId}
     </update>
 
     <select id="selectid" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
