@@ -789,7 +789,13 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             }
         }
     }
-
+    /**
+     * 删除任务单加价项目
+     * */
+    @Override
+    public void deletePPCodeStatus(String compid, String taskId) {
+        taskPlanMapper.deletePPCodeStatus(compid, taskId);
+    }
 
     private String taskPlanSplicing(String compid) {
         int page = 0;
