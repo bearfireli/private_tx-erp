@@ -86,6 +86,10 @@ public class TaskPlanApi {
      */
     @PostMapping("/addTaskPriceMarkup")
     public ResultVO addTaskPriceMarkup(String compid, String taskId, String ppCodes) throws ErpException {
+
+        //删除任务单加价项目
+        taskPlanService.deletePPCodeStatus(compid, taskId);
+
         if (ppCodes != "" && ppCodes != null) {
             String[] ppCodeArray = ppCodes.split(",");
             for (String ppCode : ppCodeArray) {

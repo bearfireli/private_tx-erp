@@ -770,7 +770,13 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
         taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(),priceMarkupVO.getUnitPrice(),priceMarkupVO.getSelfDiscPrice(),priceMarkupVO.getJumpPrice(),priceMarkupVO.getTowerCranePrice(),priceMarkupVO.getOtherPrice());
     }
-
+    /**
+     * 删除任务单加价项目
+     * */
+    @Override
+    public void deletePPCodeStatus(String compid, String taskId) {
+        taskPlanMapper.deletePPCodeStatus(compid, taskId);
+    }
 
 
     private String taskPlanSplicing(String compid) {

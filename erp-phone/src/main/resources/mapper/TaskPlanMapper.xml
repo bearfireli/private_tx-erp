@@ -707,7 +707,7 @@
     </select>
 
     <select id="getPriceMarkup" resultType="com.hntxrj.txerp.vo.PriceMarkupVO">
-        select * from SM_PriceMarkup where compid=#{compid}
+        select * from SM_PriceMarkup where compid=#{compid} and RecStatus=1
     </select>
 
     <select id="getPriceMarkupByPPCode" resultType="com.hntxrj.txerp.vo.PriceMarkupVO">
@@ -735,6 +735,10 @@
     <select id="getSystemVarInit" resultType="com.hntxrj.txerp.vo.SystemVarInitVO">
         select * from De_SystemVarInit where compid =#{compid}  and SystemVar ='TaskMarkupToTR' and RecStatus =1
     </select>
+
+    <delete id="deletePPCodeStatus">
+        delete from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
+    </delete>
 
 
 </mapper>
