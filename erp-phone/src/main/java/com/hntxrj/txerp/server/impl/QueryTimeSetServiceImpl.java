@@ -40,9 +40,10 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
 
     /**
      * 查询时间设置列表
-     * @param compid  站别代号
+     *
+     * @param compid   站别代号
      * @param page     当前页
-     * @param pageSize  每页显示多少条
+     * @param pageSize 每页显示多少条
      * @return 返回json
      */
     @Override
@@ -65,16 +66,18 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
                 //设置初始化值
                 boolean s = false;
                 for (QueryTimeSetVO time : queryTimeSetVO) {
-                    if (!time.getQueryStartTime().equals("")&&time.getQueryStopTime() !=null){
-                        time.setQueryStartTime(time.getQueryStartTime().substring(0,5));
-                        time.setQueryStopTime(time.getQueryStopTime().substring(0,5));
+                    if (!time.getQueryStartTime().equals("") && time.getQueryStartTime() != null) {
+                        time.setQueryStartTime(time.getQueryStartTime().substring(0, 5));
+                    }
+                    if (!time.getQueryStopTime().equals("") && time.getQueryStopTime() != null) {
+                        time.setQueryStopTime(time.getQueryStopTime().substring(0, 5));
                     }
                     if (menu.equals(time.getQueryName())) {
                         s = true;
                         break;
                     }
                 }
-                if (!s){
+                if (!s) {
                     //判断有新增功能，添加到queryTimeSet表中
                     QueryTimeSetVO queryTimeSet = new QueryTimeSetVO();
                     queryTimeSet.setQueryName(menu);
@@ -95,7 +98,7 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
      * @return 返回是否通过
      */
     private List<String> checkTokenIsNormal() {
-        String baseUrl ="";
+        String baseUrl = "";
         baseUrl = url + "/v1/menu/functionmenulist";
         Header[] headers = HttpHeader.custom()
                 .other("version", "1")
