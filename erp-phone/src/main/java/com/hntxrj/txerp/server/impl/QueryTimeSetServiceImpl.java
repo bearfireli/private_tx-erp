@@ -51,6 +51,14 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
         PageHelper.startPage(page, pageSize);
         //根据compid查询，设置的时间表
         List<QueryTimeSetVO> queryTimeSetVO = queryTimeSetMapper.getQueryTimeSetList(compid);
+        for (QueryTimeSetVO q:queryTimeSetVO) {
+            if (q.getQueryStartTime()!=null){
+                q.setQueryStartTime(q.getQueryStartTime().substring(0,5));
+            }
+            if (q.getQueryStopTime()!=null){
+                q.setQueryStopTime(q.getQueryStopTime().substring(0,5));
+            }
+        }
         //查询menu表中的功能名称
         List<String> menuList = checkTokenIsNormal();
         //当没设置时间表时，把功能名称添加到集合中
@@ -66,12 +74,6 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
                 //设置初始化值
                 boolean s = false;
                 for (QueryTimeSetVO time : queryTimeSetVO) {
-                    if (!time.getQueryStartTime().equals("") && time.getQueryStartTime() != null) {
-                        time.setQueryStartTime(time.getQueryStartTime().substring(0, 5));
-                    }
-                    if (!time.getQueryStopTime().equals("") && time.getQueryStopTime() != null) {
-                        time.setQueryStopTime(time.getQueryStopTime().substring(0, 5));
-                    }
                     if (menu.equals(time.getQueryName())) {
                         s = true;
                         break;
