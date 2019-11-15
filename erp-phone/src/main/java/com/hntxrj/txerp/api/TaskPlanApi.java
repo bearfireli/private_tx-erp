@@ -140,6 +140,7 @@ public class TaskPlanApi {
      * @param beginTime   开始时间
      * @param endTime     结束时间
      * @param eppCode     工程代号
+     * @param upStatus    签收状态
      * @param builderCode 施工单位代号
      * @param taskId      任务单id
      * @param placing     浇筑部位

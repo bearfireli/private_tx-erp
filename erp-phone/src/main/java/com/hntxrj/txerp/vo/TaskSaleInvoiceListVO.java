@@ -23,7 +23,7 @@ public class TaskSaleInvoiceListVO {
     private String eppName;
     private String builderName;
     private String stgId;
-    private String placeStyleName;
+    private String placeStyleName;  //浇筑方式
 
     //签收状态
     private int upStatus;
