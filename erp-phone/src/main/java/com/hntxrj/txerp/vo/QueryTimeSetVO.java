@@ -15,6 +15,7 @@ public class QueryTimeSetVO {
     private String queryName;
     private int queryCode;
     private int queryType;
+    private String querytime;
     private String queryStartTime;
     private String queryStopTime;
     private int recStatus;

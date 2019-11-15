@@ -26,4 +26,5 @@ public interface MenuService {
     Menu saveMenu(Menu menu);
 
 
+    List<Menu> getFunctionMenuList();
 }

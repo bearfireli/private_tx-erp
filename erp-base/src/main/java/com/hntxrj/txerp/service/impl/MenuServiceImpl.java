@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.service.impl;
 
 
+import com.hntxrj.txerp.mapper.MenuMapper;
 import com.hntxrj.txerp.service.MenuService;
 import com.hntxrj.txerp.entity.base.Menu;
 import com.hntxrj.txerp.entity.base.QMenu;
@@ -23,11 +24,13 @@ public class MenuServiceImpl extends BaseServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
     private JPAQueryFactory queryFactory;
+    private final MenuMapper menuMapper;
 
     @Autowired
     public MenuServiceImpl(MenuRepository menuRepository,
-                           EntityManager entityManager) {
+                           EntityManager entityManager, MenuMapper menuMapper) {
         super(entityManager);
+        this.menuMapper = menuMapper;
         queryFactory = getQueryFactory();
         this.menuRepository = menuRepository;
     }
@@ -140,6 +143,11 @@ public class MenuServiceImpl extends BaseServiceImpl implements MenuService {
 
         menu.setModelName("");
         return menuRepository.save(menu);
+    }
+
+    @Override
+    public List<Menu> getFunctionMenuList() {
+        return menuMapper.getFunctionMenuList();
     }
 
     private void addTopMenu(List<MenuListVO> menuListVOS, Menu menu) {
