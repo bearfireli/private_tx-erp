@@ -65,8 +65,10 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
                 //设置初始化值
                 boolean s = false;
                 for (QueryTimeSetVO time : queryTimeSetVO) {
-                    time.setQueryStartTime(time.getQueryStartTime().substring(0,5));
-                    time.setQueryStopTime(time.getQueryStopTime().substring(0,5));
+                    if (!time.getQueryStartTime().equals("")&&time.getQueryStopTime() !=null){
+                        time.setQueryStartTime(time.getQueryStartTime().substring(0,5));
+                        time.setQueryStopTime(time.getQueryStopTime().substring(0,5));
+                    }
                     if (menu.equals(time.getQueryName())) {
                         s = true;
                         break;
