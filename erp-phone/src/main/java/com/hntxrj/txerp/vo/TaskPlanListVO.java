@@ -25,5 +25,8 @@ public class TaskPlanListVO {
     private String taskStatusName;
     private double produceNum;
     private String OpenTime;  //开盘时间
+    private String stgId;   //砼标号
+    private String slump;   //坍塌度
+    private String attribute;  //砼特性
 
 }
