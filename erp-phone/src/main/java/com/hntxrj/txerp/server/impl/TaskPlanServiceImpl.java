@@ -343,64 +343,59 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         driverLEDListVO.setStatus(3);
         driverLEDListVO.setStatusName("正在生产");
         vehicleStatus = "3";
-        driverLEDListVO.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO);
+
+        list.add(getDirverLEDListVO(driverLEDListVO,compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVOs = new DirverLEDListVO();
         driverLEDListVOs.setStatus(1);
         driverLEDListVOs.setStatusName("等待生产");
         vehicleStatus = "1";
-        driverLEDListVOs.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVOs);
+        list.add(getDirverLEDListVO(driverLEDListVOs,compid, stirId, vehicleStatus, vehicleClass));
+
 
         DirverLEDListVO driverLEDListVO1 = new DirverLEDListVO();
         driverLEDListVO1.setStatus(4);
         driverLEDListVO1.setStatusName("维修");
         vehicleStatus = "4";
-        driverLEDListVO1.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO1);
+
+        list.add(getDirverLEDListVO(driverLEDListVO1,compid, stirId, vehicleStatus, vehicleClass));
+
 
         DirverLEDListVO driverLEDListVO2 = new DirverLEDListVO();
         driverLEDListVO2.setStatus(5);
         driverLEDListVO2.setStatusName("休息");
         vehicleStatus = "5";
-        driverLEDListVO2.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO2);
+        list.add(getDirverLEDListVO(driverLEDListVO2,compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO3 = new DirverLEDListVO();
         driverLEDListVO3.setStatus(8);
         driverLEDListVO3.setStatusName("工地脱水");
         vehicleStatus = "8";
-        driverLEDListVO3.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO3);
+        list.add(getDirverLEDListVO(driverLEDListVO3,compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO4 = new DirverLEDListVO();
         driverLEDListVO4.setStatus(9);
         driverLEDListVO4.setStatusName("工地拖泵");
         vehicleStatus = "9";
-        driverLEDListVO4.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO4);
+        list.add(getDirverLEDListVO(driverLEDListVO4,compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO5 = new DirverLEDListVO();
         driverLEDListVO5.setStatus(10);
         driverLEDListVO5.setStatusName("工地拖水拖泵");
         vehicleStatus = "10";
-        driverLEDListVO5.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO5);
+        list.add(getDirverLEDListVO(driverLEDListVO5,compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO6 = new DirverLEDListVO();
         driverLEDListVO6.setStatus(11);
         driverLEDListVO6.setStatusName("场内托水");
         vehicleStatus = "11";
-        driverLEDListVO6.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO6);
+        list.add(getDirverLEDListVO(driverLEDListVO6,compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO7 = new DirverLEDListVO();
         driverLEDListVO7.setStatus(16);
         driverLEDListVO7.setStatusName("自动回厂");
         vehicleStatus = "16";
-        driverLEDListVO7.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO7);
+        list.add(getDirverLEDListVO(driverLEDListVO7,compid, stirId, vehicleStatus, vehicleClass));
 
         return list;
     }
@@ -790,6 +785,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
 
         return taskid;
+    }
+
+    //根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
+    private DirverLEDListVO getDirverLEDListVO(DirverLEDListVO driverLEDListVO,String compid, String stirId, String vehicleStatus, String vehicleClass) {
+        List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
+        if (driverShiftLED != null) {
+            driverLEDListVO.setCars(driverShiftLED);
+            driverLEDListVO.setCarNum(driverShiftLED.size());
+        }
+        return driverLEDListVO;
     }
 
 

@@ -21,4 +21,6 @@ public class DirverLEDListVO {
 
     List<DriverShiftLEDVO> cars;
 
+    private Integer carNum;
+
 }
