@@ -21,6 +21,7 @@
         tsi.Arrive_STTime arriveSttime,
         tp.Slump,
         tp.Placing,
+        tp.Attribute,
         ps.PI_TypeName placeStyleName,
         upStatus,
         vs.PI_TypeName VehicleStatusName,
@@ -61,6 +62,9 @@
         </if>
         <if test="builderCode != null and builderCode != '' ">
             and tp.builderCode = #{builderCode}
+        </if>
+        <if test="taskStatus != null and taskStatus != '' ">
+            and tp.taskStatus = #{taskStatus}
         </if>
         <if test="taskId != null and taskId != '' ">
             and tp.taskId like '%'+#{taskId}+'%'
@@ -143,113 +147,6 @@
         where compid = #{compid}
           and id = #{id}
     </update>
-    <select id="driverGetTaskSaleInvoiceList" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO">
-        select tsi.ID,
-        vv.VehicleStatus,
-        tsi.VehicleID,
-        tsi.PersonalCode,
-        vm.PersonalName,
-        tsi.VehiceNumber,
-        tp.Placing,
-        tp.TaskId,
-        tp.eppCode,
-        tp.builderCode,
-        tsi.ThreeProduceNum,
-        tsi.TaWeight,
-        tsi.GrWeight,
-        tsi.NetWeight,
-        tsi.SendTime,
-        tsi.totalNum,
-        tsi.NumberOfSignings,
-        tsi.SaleNum,
-        e.EPPName,
-        b.BuilderName,
-        tp.StgId,
-        tp.slump,
-        ps.PI_TypeName placeStyleName,
-        tsi.upStatus,
-        tsi.InvoiceType,
-        vs.PI_TypeName VehicleStatusName,
-        it.PI_TypeName invoiceTypeName,
-        tsi.VehicleID_Jump JumpVehicleID,
-        tsi.ReceiptMan  receiptMan,
-        tsi.SaleFileImage saleFileImage
-        from PT_TaskSaleInvoice tsi
-        left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
-        left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle and tsi.compid = ps.compid
-        left join SM_EPPInfo e on tp.EPPCode = e.EPPCode and e.compid = tsi.compid
-        left join SM_BuilderInfo b on tp.BuilderCode = b.BuilderCode and b.compid = tsi.compid
-        left join DD_PublicInfo vs on vs.PI_Class = 22 and tsi.VehicleStatus=vs.PI_Values and tsi.compid =vs.compid
-        left join DD_PublicInfo it on it.PI_Class = 51 and tsi.InvoiceType=it.PI_Values and tsi.compid = it.compid
-        left join VM_PersonalInfo vm on tsi.PersonalCode =vm.PersonalCode and tsi.compid =vm.compid
-        left join  VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
-        where tsi.compid=#{compid}
-        and tsi.PersonalCode=#{driverCode}
-        and tsi.InvoiceType != 6
-        and tsi.InvoiceType not in('1','2')
-        and tsi.recStatus = 1
-        <if test="eppCode != null and eppCode != ''">
-            and tp.EPPCode = #{eppCode}
-        </if>
-        <if test="upStatus != null">
-            and tsi.upStatus = #{upStatus}
-        </if>
-        <if test="builderCode != null and builderCode != '' ">
-            and tp.builderCode = #{builderCode}
-        </if>
-        <if test="placing != null and placing != '' ">
-            and tp.placing like '%'+#{placing}+'%'
-        </if>
-    </select>
-    <select id="driverGetTaskSaleInvoiceListById" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO">
-        select tsi.ID,
-               tsi.VehicleID,
-               tsi.PersonalCode,
-               vm.PersonalName,
-               tsi.VehiceNumber,
-               tp.Placing,
-               tp.TaskId,
-               tp.eppCode,
-               tp.builderCode,
-               tp.slump,
-               tsi.ThreeProduceNum,
-               tsi.TaWeight,
-               tsi.GrWeight,
-               tsi.NetWeight,
-               tsi.SendTime,
-               tsi.totalNum,
-               tsi.NumberOfSignings,
-               tsi.SaleNum,
-               e.EPPName,
-               b.BuilderName,
-               tp.StgId,
-               ps.PI_TypeName     placeStyleName,
-               tsi.upStatus,
-               tsi.InvoiceType,
-               vs.PI_TypeName     VehicleStatusName,
-               it.PI_TypeName     invoiceTypeName,
-               tsi.VehicleID_Jump JumpVehicleID,
-               tsi.ReceiptMan  receiptMan,
-               tsi.SaleFileImage saleFileImage
-        from PT_TaskSaleInvoice tsi
-                 left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
-                 left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
-            and tsi.compid = ps.compid
-                 left join SM_EPPInfo e on tp.EPPCode = e.EPPCode and e.compid = tsi.compid
-                 left join SM_BuilderInfo b on tp.BuilderCode = b.BuilderCode and b.compid = tsi.compid
-                 left join DD_PublicInfo vs on vs.PI_Class = 22 and tsi.VehicleStatus = vs.PI_Values
-            and tsi.compid = vs.compid
-                 left join DD_PublicInfo it on it.PI_Class = 51 and tsi.InvoiceType = it.PI_Values
-            and tsi.compid = it.compid
-                 left join VM_PersonalInfo vm on tsi.PersonalCode = vm.PersonalCode and tsi.compid = vm.compid
-                 left join VM_VehicleWeight vw on tsi.compid = vw.compid and tsi.taskid = vw.taskid
-                 left join DD_PublicInfo it2 on it2.PI_Class = 53 and vw.WeightType = it2.PI_Values
-            and tsi.compid = it2.compid
-        where tsi.id = #{id}
-          and tsi.PersonalCode = #{driverCode}
-          and tsi.InvoiceType != 6
-          and tsi.InvoiceType not in('1','2')
-          and tsi.recStatus = 1
-    </select>
+
 
 </mapper>

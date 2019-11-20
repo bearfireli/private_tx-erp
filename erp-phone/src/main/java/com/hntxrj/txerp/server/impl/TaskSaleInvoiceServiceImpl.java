@@ -32,44 +32,17 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
     @Override
     public PageVO<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(String compid, String beginTime, String endTime,
                                                                 String eppCode, Byte upStatus, String builderCode, String taskId,
-                                                                String placing, Integer page, Integer pageSize) {
+                                                                String placing, String taskStatus,Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize, "SendTime desc");
         List<TaskSaleInvoiceListVO> taskSaleInvoiceLists = taskSaleInvoiceMapper.getTaskSaleInvoiceList(compid, beginTime,
-                endTime, eppCode, upStatus, builderCode, taskId, placing);
+                endTime, eppCode, upStatus, builderCode, taskId, placing,taskStatus);
         PageInfo<TaskSaleInvoiceListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
         PageVO<TaskSaleInvoiceListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
     }
 
-    @Override
-    public PageVO<TaskSaleInvoiceDriverListVO> getTaskSaleInvoiceList(Integer id, String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode) {
-        PageHelper.startPage(page, pageSize, "SendTime desc");
-        List<TaskSaleInvoiceDriverListVO> taskSaleInvoiceLists = null;
-        List<TaskSaleInvoiceDriverListVO> taskInvoicelist = new ArrayList<>();
-        if (id != null) {
-            taskSaleInvoiceLists = taskSaleInvoiceMapper.driverGetTaskSaleInvoiceListById(id, driverCode);
-        } else {
-            taskSaleInvoiceLists =
-                    taskSaleInvoiceMapper.driverGetTaskSaleInvoiceList(compid, beginTime,
-                            endTime, eppCode, upStatus, builderCode, placing, driverCode);
-            if (driverCode!=null){
-                for (TaskSaleInvoiceDriverListVO t :taskSaleInvoiceLists) {
-                    if(t.getInvoiceType()==4 && t.getVehicleStatus()==3){
-                        break;
-                    }
-                    taskInvoicelist.add(t);
-                }
-                taskSaleInvoiceLists = taskInvoicelist;
-            }
-        }
 
-
-        PageInfo<TaskSaleInvoiceDriverListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
-        PageVO<TaskSaleInvoiceDriverListVO> pageVO = new PageVO<>();
-        pageVO.format(pageInfo);
-        return pageVO;
-    }
 
     @Override
     public TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetail(String compid, Integer id) {

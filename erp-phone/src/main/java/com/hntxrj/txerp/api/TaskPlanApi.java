@@ -155,14 +155,14 @@ public class TaskPlanApi {
      */
     @PostMapping("/getTaskSaleInvoiceList")
     public ResultVO getTaskSaleInvoiceList(String compid, Long beginTime, Long endTime, String eppCode, Byte upStatus,
-                                           String builderCode, String taskId, String placing,
+                                           String builderCode, String taskId, String placing,String taskStatus,
                                            @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
-                eppCode, upStatus == -1 ? null : upStatus, builderCode, taskId, placing, page, pageSize));
+                eppCode, upStatus == -1 ? null : upStatus, builderCode, taskId, placing, taskStatus,page, pageSize));
     }
 
     /**

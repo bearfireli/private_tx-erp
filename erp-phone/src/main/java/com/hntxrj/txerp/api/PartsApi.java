@@ -107,7 +107,7 @@ public class PartsApi {
     public ResultVO getPartsList(String compid,Long beginTime, Long endTime,String goodsName,
                                                    String buyer,String specification,String department,
                                            String requestNumber,String requestStatus,
-                                           String requestDep,
+                                           String requestDep,String verifyStatusOne,
                                            @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -115,7 +115,7 @@ public class PartsApi {
                 compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),goodsName,
-                buyer, specification, department,requestNumber,requestStatus,requestDep,
+                buyer, specification, department,requestNumber,requestStatus,requestDep,verifyStatusOne,
                  page, pageSize));
     }
 

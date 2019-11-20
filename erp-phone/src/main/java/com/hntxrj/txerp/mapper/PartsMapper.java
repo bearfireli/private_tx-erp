@@ -12,7 +12,7 @@ public interface PartsMapper {
                                String endTime, String goodsName,
                                String buyer, String specification,
                                String department, String requestNumber,
-                               String requestStatus, String requestDep);
+                               String requestStatus, String requestDep,String verifyStatusOne);
 
     List<UserVO> getBuyerList(String compid);
 

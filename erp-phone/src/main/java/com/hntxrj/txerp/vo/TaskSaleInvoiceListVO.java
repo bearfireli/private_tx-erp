@@ -45,4 +45,5 @@ public class TaskSaleInvoiceListVO {
     private double qianNum;
     private double saleNum;
     private  String vehicleStatus;
+    private  String attribute;
 }
