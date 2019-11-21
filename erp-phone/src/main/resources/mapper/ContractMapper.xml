@@ -319,7 +319,7 @@
         where cd.compid = #{compid}
         and cm.RecStatus=1
         and cd.RecStatus=1
-        <if test="searchName != null">
+        <if test="searchName != null and searchName!='' ">
             and epp.EPPName like '%'+#{searchName}+'%' or bu.BuilderShortName like '%'+#{searchName}+'%'
         </if>
 
