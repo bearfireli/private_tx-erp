@@ -23,4 +23,10 @@ public class DirverLEDListVO {
 
     private Integer carNum;
 
+    List<DriverShiftLEDVO> zeroStirIdCars;    //0号线所有车辆
+    List<DriverShiftLEDVO> firstStirIdCars;    //一号线所有车辆
+    List<DriverShiftLEDVO> secondStirIdCars;   //二号线所有车辆
+    List<DriverShiftLEDVO> thirdStirIdCars;    //三号线所有车辆
+
+
 }

@@ -18,6 +18,8 @@ public class Feedback implements Serializable {
     private Integer fbId;
     /* 用户id */
     private Integer uid;
+    /*反馈人姓名*/
+    private String linkName;
     /* 项目id */
     private Integer pid;
     /* 问题 */

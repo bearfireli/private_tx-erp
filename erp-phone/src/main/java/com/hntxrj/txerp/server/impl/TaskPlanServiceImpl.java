@@ -46,16 +46,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public PageVO<TaskPlanListVO> getTaskPlanList(String beginTime, String endTime,
                                                   String eppCode, String builderCode,
                                                   String placing, String taskId, Integer taskStatus,
-                                                  String compid, Integer verifyStatus,Integer page, Integer pageSize) {
+                                                  String compid, Integer verifyStatus, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.getTaskPlanList(beginTime, endTime, eppCode,
-                builderCode, placing, taskId, taskStatus, compid,verifyStatus);
+                builderCode, placing, taskId, taskStatus, compid, verifyStatus);
         //循环截取preTime，格式为年月日
-        /*for (TaskPlanListVO t : taskPlanListVOList) {
+        for (TaskPlanListVO t : taskPlanListVOList) {
             if (!"".equals(t.getPreTime())) {
-                t.setPreTime(t.getPreTime().substring(0, 10));
+                t.setPreTime(t.getPreTime().substring(0, 16));
             }
-        }*/
+        }
         PageInfo<TaskPlanListVO> pageInfo = new PageInfo<>(taskPlanListVOList);
         PageVO<TaskPlanListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -185,10 +185,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     @Override
-    public PageVO<SendCarListVO> getSendCarList(String compid,String searchName, Integer page, Integer pageSize) {
+    public PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         // TODO: 司机只能查询自己的信息
-        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid,searchName);
+        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -219,8 +219,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * @return 调度派车列表
      */
     @Override
-    public PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid,String searchName, Integer page, Integer pageSize) {
-        List<SendCarTotalNumVO> sendCarList = taskPlanMapper.getSendCarCountNum(compid,searchName);
+    public PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, String searchName, Integer page, Integer pageSize) {
+        List<SendCarTotalNumVO> sendCarList = taskPlanMapper.getSendCarCountNum(compid, searchName);
         PageInfo<SendCarTotalNumVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarTotalNumVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -339,18 +339,42 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass) {
         List<DirverLEDListVO> list = new ArrayList<>();
 
-        DirverLEDListVO driverLEDListVO = new DirverLEDListVO();
+        DirverLEDListVO driverLEDListVO = new DirverLEDListVO();   //所有正在生产中的车辆集合
+        List<DriverShiftLEDVO> zeroStirIdCars = new ArrayList<>();    //所有0号线正在生产的集合
+        List<DriverShiftLEDVO> firstStirIdCars = new ArrayList<>();  //所有1号线正在生产的集合
+        List<DriverShiftLEDVO> secondStirIdCars = new ArrayList<>();  //所有2号线正在生产的集合
+        List<DriverShiftLEDVO> thirdStirIdCars = new ArrayList<>();  //所有3号线正在生产的集合
         driverLEDListVO.setStatus(3);
         driverLEDListVO.setStatusName("正在生产");
         vehicleStatus = "3";
 
-        list.add(getDirverLEDListVO(driverLEDListVO,compid, stirId, vehicleStatus, vehicleClass));
+        List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
+        if (driverShiftLED != null) {
+            driverLEDListVO.setCars(driverShiftLED);
+            driverLEDListVO.setCarNum(driverShiftLED.size());
+            for (DriverShiftLEDVO driverShiftLEDVO : driverShiftLED) {
+                if ("0".equals(driverShiftLEDVO.getStirId())) {
+                    zeroStirIdCars.add(driverShiftLEDVO);
+                } else if ("1".equals(driverShiftLEDVO.getStirId())) {
+                    firstStirIdCars.add(driverShiftLEDVO);
+                } else if ("2".equals(driverShiftLEDVO.getStirId())) {
+                    secondStirIdCars.add(driverShiftLEDVO);
+                } else if ("3".equals(driverShiftLEDVO.getStirId())) {
+                    thirdStirIdCars.add(driverShiftLEDVO);
+                }
+            }
+        }
+        driverLEDListVO.setZeroStirIdCars(zeroStirIdCars);
+        driverLEDListVO.setFirstStirIdCars(firstStirIdCars);
+        driverLEDListVO.setSecondStirIdCars(secondStirIdCars);
+        driverLEDListVO.setThirdStirIdCars(thirdStirIdCars);
+        list.add(driverLEDListVO);
 
         DirverLEDListVO driverLEDListVOs = new DirverLEDListVO();
         driverLEDListVOs.setStatus(1);
         driverLEDListVOs.setStatusName("等待生产");
         vehicleStatus = "1";
-        list.add(getDirverLEDListVO(driverLEDListVOs,compid, stirId, vehicleStatus, vehicleClass));
+        list.add(getDirverLEDListVO(driverLEDListVOs, compid, stirId, vehicleStatus, vehicleClass));
 
 
         DirverLEDListVO driverLEDListVO1 = new DirverLEDListVO();
@@ -358,44 +382,44 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         driverLEDListVO1.setStatusName("维修");
         vehicleStatus = "4";
 
-        list.add(getDirverLEDListVO(driverLEDListVO1,compid, stirId, vehicleStatus, vehicleClass));
+        list.add(getDirverLEDListVO(driverLEDListVO1, compid, stirId, vehicleStatus, vehicleClass));
 
 
         DirverLEDListVO driverLEDListVO2 = new DirverLEDListVO();
         driverLEDListVO2.setStatus(5);
         driverLEDListVO2.setStatusName("休息");
         vehicleStatus = "5";
-        list.add(getDirverLEDListVO(driverLEDListVO2,compid, stirId, vehicleStatus, vehicleClass));
+        list.add(getDirverLEDListVO(driverLEDListVO2, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO3 = new DirverLEDListVO();
         driverLEDListVO3.setStatus(8);
         driverLEDListVO3.setStatusName("工地脱水");
         vehicleStatus = "8";
-        list.add(getDirverLEDListVO(driverLEDListVO3,compid, stirId, vehicleStatus, vehicleClass));
+        list.add(getDirverLEDListVO(driverLEDListVO3, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO4 = new DirverLEDListVO();
         driverLEDListVO4.setStatus(9);
         driverLEDListVO4.setStatusName("工地拖泵");
         vehicleStatus = "9";
-        list.add(getDirverLEDListVO(driverLEDListVO4,compid, stirId, vehicleStatus, vehicleClass));
+        list.add(getDirverLEDListVO(driverLEDListVO4, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO5 = new DirverLEDListVO();
         driverLEDListVO5.setStatus(10);
         driverLEDListVO5.setStatusName("工地拖水拖泵");
         vehicleStatus = "10";
-        list.add(getDirverLEDListVO(driverLEDListVO5,compid, stirId, vehicleStatus, vehicleClass));
+        list.add(getDirverLEDListVO(driverLEDListVO5, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO6 = new DirverLEDListVO();
         driverLEDListVO6.setStatus(11);
         driverLEDListVO6.setStatusName("场内托水");
         vehicleStatus = "11";
-        list.add(getDirverLEDListVO(driverLEDListVO6,compid, stirId, vehicleStatus, vehicleClass));
+        list.add(getDirverLEDListVO(driverLEDListVO6, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO7 = new DirverLEDListVO();
         driverLEDListVO7.setStatus(16);
         driverLEDListVO7.setStatusName("自动回厂");
         vehicleStatus = "16";
-        list.add(getDirverLEDListVO(driverLEDListVO7,compid, stirId, vehicleStatus, vehicleClass));
+        list.add(getDirverLEDListVO(driverLEDListVO7, compid, stirId, vehicleStatus, vehicleClass));
 
         return list;
     }
@@ -569,7 +593,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
 
     @Override
-    public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type,String searchName) {
+    public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type, String searchName) {
         //根据传递过来的type，判断查询的是今日，昨日还是本月的方量。
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if (type == 3) {
@@ -619,7 +643,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 }
             }
         }
-        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime, endTime,searchName);
+        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime, endTime, searchName);
 
         //根据compid、beginTime、endTime从生产消耗表中查询出生产方量。
         BigDecimal productNum = concreteMapper.getProductConcreteSum(compid, beginTime, endTime);
@@ -711,18 +735,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * 给前台返回一个默认的任务单号
      */
     @Override
-    public Map<String,String> makeAutoTaskPlanId(String compid) {
+    public Map<String, String> makeAutoTaskPlanId(String compid) {
         Map<String, String> taskPlanIdMap = new HashMap<>();
         taskPlanIdMap.put("taskId", taskPlanSplicing(compid));
         return taskPlanIdMap;
     }
 
     /**
-     *判断任务单编号是否存在
-     * */
+     * 判断任务单编号是否存在
+     */
     @Override
     public boolean isExistence(String compid, String taskId) {
-        Integer taskIdCount=taskPlanMapper.getTaskIdCount(compid, taskId);
+        Integer taskIdCount = taskPlanMapper.getTaskIdCount(compid, taskId);
         if (taskIdCount != null && taskIdCount != 0) {
             return true;
         } else {
@@ -732,40 +756,39 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     /**
      * 得到所有加价项目下拉
-     * */
+     */
     @Override
     public List<PriceMarkupVO> getPriceMarkup(String compid) {
-        return  taskPlanMapper.getPriceMarkup(compid);
+        return taskPlanMapper.getPriceMarkup(compid);
     }
 
 
     /**
      * 通过加价项目编号得到加价项目数据
-     * */
+     */
     @Override
-    public PriceMarkupVO getPriceMarkupByPPCode(String compid,String ppCode) {
-        return taskPlanMapper.getPriceMarkupByPPCode(compid,ppCode);
+    public PriceMarkupVO getPriceMarkupByPPCode(String compid, String ppCode) {
+        return taskPlanMapper.getPriceMarkupByPPCode(compid, ppCode);
     }
 
     /**
      * 添加任务单和加价项目
-     * */
+     */
     @Override
     public void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO) {
         //根据compid查询系统变量
         SystemVarInitVO systemVarInitVO = taskPlanMapper.getSystemVarInit(compid);
-        String pPName =priceMarkupVO.getPPName();
-        if (systemVarInitVO !=null){
-            if (systemVarInitVO.getVarValue()==1){
-                if (!("").equals(pPName)){
+        String pPName = priceMarkupVO.getPPName();
+        if (systemVarInitVO != null) {
+            if (systemVarInitVO.getVarValue() == 1) {
+                if (!("").equals(pPName)) {
                     //把选择的特殊材料名称添加到技术要求里面
-                    taskPlanMapper.updateTechnicalRequirements(compid,taskId,pPName);
+                    taskPlanMapper.updateTechnicalRequirements(compid, taskId, pPName);
                 }
             }
         }
-        taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(),priceMarkupVO.getUnitPrice(),priceMarkupVO.getSelfDiscPrice(),priceMarkupVO.getJumpPrice(),priceMarkupVO.getTowerCranePrice(),priceMarkupVO.getOtherPrice());
+        taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(), priceMarkupVO.getUnitPrice(), priceMarkupVO.getSelfDiscPrice(), priceMarkupVO.getJumpPrice(), priceMarkupVO.getTowerCranePrice(), priceMarkupVO.getOtherPrice());
     }
-
 
 
     private String taskPlanSplicing(String compid) {
@@ -788,7 +811,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     //根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
-    private DirverLEDListVO getDirverLEDListVO(DirverLEDListVO driverLEDListVO,String compid, String stirId, String vehicleStatus, String vehicleClass) {
+    private DirverLEDListVO getDirverLEDListVO(DirverLEDListVO driverLEDListVO, String compid, String stirId, String vehicleStatus, String vehicleClass) {
         List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
         if (driverShiftLED != null) {
             driverLEDListVO.setCars(driverShiftLED);
