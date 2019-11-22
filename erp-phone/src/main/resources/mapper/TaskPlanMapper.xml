@@ -52,7 +52,7 @@
         where tp.DeleteMark = 0
         and tp.RecStatus = 1
         <if test="beginTime != null and endTime != null">
-            and tp.preTime between #{beginTime} and #{endTime}
+            and (taskStatus = 1 or tp.preTime between #{beginTime} and #{endTime})
         </if>
         <if test="eppCode != null">
             and tp.eppCode = #{eppCode}
