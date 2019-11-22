@@ -34,7 +34,7 @@ public interface EnterpriseService {
                                         long pageSize) throws ErpException;
 
 
-    Enterprise addEnterprise(Enterprise enterprise) throws ErpException;
+    Enterprise addEnterprise(String token,Enterprise enterprise) throws ErpException;
 
     Enterprise updateEnterprise(Enterprise enterprise, Integer eidCode) throws ErpException;
 
@@ -55,7 +55,7 @@ public interface EnterpriseService {
     /*读取地址
      * @param eid       企业id
      * @param type      收款码类型，1微信，2支付宝
-      * */
+     * */
     void getCollectionCode(Integer eid, Integer type, HttpServletResponse response) throws ErpException;
 
 

@@ -735,18 +735,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * 给前台返回一个默认的任务单号
      */
     @Override
-    public Map<String, String> makeAutoTaskPlanId(String compid) {
+    public Map<String,String> makeAutoTaskPlanId(String compid) {
         Map<String, String> taskPlanIdMap = new HashMap<>();
         taskPlanIdMap.put("taskId", taskPlanSplicing(compid));
         return taskPlanIdMap;
     }
 
     /**
-     * 判断任务单编号是否存在
-     */
+     *判断任务单编号是否存在
+     * */
     @Override
     public boolean isExistence(String compid, String taskId) {
-        Integer taskIdCount = taskPlanMapper.getTaskIdCount(compid, taskId);
+        Integer taskIdCount=taskPlanMapper.getTaskIdCount(compid, taskId);
         if (taskIdCount != null && taskIdCount != 0) {
             return true;
         } else {
@@ -756,40 +756,65 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     /**
      * 得到所有加价项目下拉
-     */
+     * */
     @Override
     public List<PriceMarkupVO> getPriceMarkup(String compid) {
-        return taskPlanMapper.getPriceMarkup(compid);
+        return  taskPlanMapper.getPriceMarkup(compid);
     }
 
 
     /**
      * 通过加价项目编号得到加价项目数据
-     */
+     * */
     @Override
-    public PriceMarkupVO getPriceMarkupByPPCode(String compid, String ppCode) {
-        return taskPlanMapper.getPriceMarkupByPPCode(compid, ppCode);
+    public PriceMarkupVO getPriceMarkupByPPCode(String compid,String ppCode) {
+        return taskPlanMapper.getPriceMarkupByPPCode(compid,ppCode);
     }
 
     /**
      * 添加任务单和加价项目
-     */
-    @Override
+     * */
     public void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO) {
+        taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(),priceMarkupVO.getUnitPrice(),priceMarkupVO.getSelfDiscPrice(),priceMarkupVO.getJumpPrice(),priceMarkupVO.getTowerCranePrice(),priceMarkupVO.getOtherPrice());
+    }
+
+    @Override
+    public void updateTechnicalRequirements(String compid,String taskId, String pPNames) {
         //根据compid查询系统变量
         SystemVarInitVO systemVarInitVO = taskPlanMapper.getSystemVarInit(compid);
-        String pPName = priceMarkupVO.getPPName();
-        if (systemVarInitVO != null) {
-            if (systemVarInitVO.getVarValue() == 1) {
-                if (!("").equals(pPName)) {
+        TaskPlanVO taskPlan = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
+        String markFlag = "A";
+        String stgId = taskPlan.getStgId();
+        String slump = taskPlan.getSlump();
+        String slumps = slump.replaceAll("[^0-9]", "|");
+        String[] a = slumps.split("\\|");
+        String x = a[0];
+        int y = Integer.parseInt(x);
+        String slumpFlag = "";
+        if (y <= 90) {
+            slumpFlag = "(S2)";
+        } else if (y < 160) {
+            slumpFlag = "(S3)";
+        } else {
+            slumpFlag = "(S4)";
+        }
+        if (systemVarInitVO !=null){
+            if (systemVarInitVO.getVarValue()==1){
+                if (!("").equals(pPNames)){
+                    String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag +"-"+ pPNames +"-GB/T14902";
                     //把选择的特殊材料名称添加到技术要求里面
-                    taskPlanMapper.updateTechnicalRequirements(compid, taskId, pPName);
+                    taskPlanMapper.updateTechnicalRequirements(compid,taskId,pPNames,concreteMark);
                 }
             }
         }
-        taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(), priceMarkupVO.getUnitPrice(), priceMarkupVO.getSelfDiscPrice(), priceMarkupVO.getJumpPrice(), priceMarkupVO.getTowerCranePrice(), priceMarkupVO.getOtherPrice());
     }
-
+    /**
+     * 删除任务单加价项目
+     * */
+    @Override
+    public void deletePPCodeStatus(String compid, String taskId) {
+        taskPlanMapper.deletePPCodeStatus(compid, taskId);
+    }
 
     private String taskPlanSplicing(String compid) {
         int page = 0;

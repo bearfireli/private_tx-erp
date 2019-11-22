@@ -88,4 +88,14 @@ public interface AuthGroupService {
      */
     boolean isPermission(String token, Integer enterprise, String methodName) throws ErpException;
 
+
+    /**
+     * @Description 获得初始化的权限组列表
+     * @Author 陈世强
+     * @e-mail chenshiqiang@wisfaith.net
+     * @Date 16:33 2019-11-11
+     * @Param
+     * @return
+     **/
+    List<AuthGroupVO> getInitAuthGroup();
 }

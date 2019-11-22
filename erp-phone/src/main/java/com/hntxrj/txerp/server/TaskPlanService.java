@@ -51,7 +51,7 @@ public interface TaskPlanService {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    PageVO<SendCarListVO> getSendCarList(String compid, String searchName,Integer page, Integer pageSize);
+    PageVO<SendCarListVO> getSendCarList(String compid,String searchName,Integer page, Integer pageSize);
 
 
 
@@ -219,4 +219,11 @@ public interface TaskPlanService {
      * 添加任务单和加价项目
      */
     void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO);
+
+    void updateTechnicalRequirements(String compid,String taskId, String pPNames);
+    /**
+     *
+     * 修改任务单加价项目状态为0
+    * */
+    void deletePPCodeStatus(String compid, String taskId);
 }
