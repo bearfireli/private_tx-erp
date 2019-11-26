@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.mapper.ConcreteMapper;
 import com.hntxrj.txerp.server.ConcreteService;
+import com.hntxrj.txerp.vo.ConcreteHistogram;
 import com.hntxrj.txerp.vo.ConcreteVO;
 import com.hntxrj.txerp.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,5 +118,21 @@ public class ConcreteServiceImpl implements ConcreteService {
         PageInfo<ConcreteVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+    @Override
+    public List<ConcreteHistogram> getConcreteSaleNum(String compid, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus) {
+        if (timeStatus == null) {
+            timeStatus = 1;
+        }
+        List<ConcreteHistogram> concreteHistogramList = concreteMapper.getConcreteSaleNum(compid, eppCode, placing, taskId, stgId, beginTime, endTime, timeStatus);
+        for (ConcreteHistogram concreteHistogram : concreteHistogramList) {
+            if (concreteHistogram != null) {
+                String saleNum = concreteHistogram.getSaleNum();
+                saleNum = saleNum.substring(0, saleNum.indexOf(".") + 3);
+                concreteHistogram.setSaleNum(saleNum);
+            }
+        }
+        return concreteHistogramList;
     }
 }

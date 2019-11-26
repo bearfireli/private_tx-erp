@@ -32,7 +32,8 @@ public class ConcreteApi {
     }
 
 
-    /**getConcreteCount
+    /**
+     * getConcreteCount
      * 砼产量统计
      *
      * @param compid    　企业
@@ -84,7 +85,23 @@ public class ConcreteApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(concreteService.getConcreteSum(compid, eppCode, placing, taskId,
                 stgId, beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime)),timeStatus, page, pageSize));
+                endTime == null ? null : sdf.format(new Date(endTime)), timeStatus, page, pageSize));
     }
+
+    /**
+     * 产销统计中的柱状图
+     */
+    @PostMapping("/getConcreteSaleNum")
+    public ResultVO getConcreteSaleNum(String compid, String eppCode, String placing,
+                                       String taskId, String stgId,
+                                       Long beginTime, Long endTime,
+                                       Integer timeStatus) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(concreteService.getConcreteSaleNum(compid,eppCode,placing,taskId,stgId,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)), timeStatus));
+    }
+
 
 }
