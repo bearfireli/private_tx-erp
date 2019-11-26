@@ -17,6 +17,7 @@ public class SendCarListVO {
     private String builderName;
     /*预计方量*/
     private double preNum;
+    //总销售量(从小票表中查询出来的)
     private double saleNumTotal;
     private String placing;
     private String concreteMark;
@@ -38,9 +39,13 @@ public class SendCarListVO {
     private String totalProduceNum;
     private double num;
     private String attribute;
+    //签收车数
     private String vehiceNumber;
     //塌落度
     private String slump;
+    //签收方量
+    private String numberOfSignings;
+
 
 
 }

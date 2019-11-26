@@ -191,11 +191,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
         for (SendCarListVO sendCarListVO : sendCarList) {
             //获取每个任务单下的所有搅拌车车辆
-            taskPlanMapper.getCarsBytaskId(compid, sendCarListVO.getTaskId());
+            List<DriverShiftLEDVO> cars = taskPlanMapper.getCarsByTaskId(compid, sendCarListVO.getTaskId());
+            sendCarListVO.setCars(cars);
         }
-
-
-
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -823,8 +821,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlanMapper.deletePPCodeStatus(compid, taskId);
     }
 
+    /**
+     * 调度派车中获取所有正在生产的搅拌车车辆
+     * */
     @Override
-    public DirverLEDListVO getProduceCars(String compid) {
+    public List<DriverShiftLEDVO> getProduceCars(String compid) {
        return taskPlanMapper.getProduceCars(compid);
     }
 

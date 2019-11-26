@@ -148,11 +148,12 @@
         BuilderName,
         Placing,
         PreNum,
-        VehiceNumber,
         PI_TypeName as PlaceStyleName,
-        pt.TotalNum SaleNumTotal,
+        pp.totalSaleNum SaleNumTotal,
+        pp.vehiceNumber,
         VehicleStatus,
         pp.RemnantNum remnantNum,
+        pp.numberOfSignings,
         pt.adjustmentTime,
         pt.concreteMark,
         pt.defaultJump,
@@ -166,9 +167,12 @@
         sum(RemnantNum)RemnantNum,
         sum(ProduceNum) as totalProduceNum,
         sum(ScrapNum) as ScrapNum,
-        count(VehiceNumber) VehiceNumber
+        sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) totalSaleNum,
+        max(VehiceNumber) vehiceNumber,
+        sum(NumberOfSignings) numberOfSignings
         from PT_TaskSaleInvoice
         where InvoiceType != 6
+        and upStatus=1
         and VehicleStatus not in ('8', '9', '10', '11')
         and VehicleStatus is not null
         group by TaskId, compid, VehicleStatus) pp
@@ -317,20 +321,17 @@
         order by vm.CreateTime
     </select>
 
-    <!--调度派车中每个任务单下的所有车辆-->
-    <select id="getCarsBytaskId" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
-        select
-        vm.CarID,
-        vm.StirId,
-        dd.StirName,
-        vm.VehicleStatus,
-        dp.PI_TypeName as statusName
-        from VM_VehicelManagement vm
-        left join DD_StirInfoSet dd on vm.compid =dd.compid and vm.StirId =dd.StirId
-        left join  DD_PublicInfo dp on vm.compid=dp.compid and PI_Class=45 and vm.VehicleStatus=dp.PI_Values
-        where vm.compid=#{compid} vm.RecStatus=1 and dd.RecStatus=1
-        and VehicleClass ='1'
-        order by vm.CreateTime
+
+    <!--查询出单个任务单下所有的车辆-->
+    <select id="getCarsByTaskId" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
+        select pt.VehicleID as carID,
+               pt.VehicleStatus,
+               dp.PI_TypeName  as statusName
+        from PT_TaskSaleInvoice pt
+                    left join  DD_PublicInfo dp on pt.compid=dp.compid and PI_Class=22 and pt.VehicleStatus=dp.PI_Values
+        where pt.compid = #{compid}
+         and TaskId=#{taskId}
+          and pt.InvoiceType!=6
     </select>
 
     <!--施工方App使用的LED功能，只查询生产中的车辆-->

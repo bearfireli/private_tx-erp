@@ -177,7 +177,7 @@ public interface TaskPlanMapper {
     void deletePPCodeStatus(String compid, String taskId);
     void updateTechnicalRequirements(String compid, String taskId, String pPNames,String concreteMark);
 
-    DirverLEDListVO getProduceCars(String compid);
+    List<DriverShiftLEDVO> getProduceCars(String compid);
 
-    List<DriverShiftLEDVO> getCarsBytaskId(String compid, String taskId);
+    List<DriverShiftLEDVO> getCarsByTaskId(String compid, String taskId);
 }

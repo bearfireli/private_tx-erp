@@ -227,5 +227,5 @@ public interface TaskPlanService {
     * */
     void deletePPCodeStatus(String compid, String taskId);
 
-    DirverLEDListVO getProduceCars(String compid);
+    List<DriverShiftLEDVO> getProduceCars(String compid);
 }
