@@ -7,12 +7,12 @@ import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.mapper.ConcreteMapper;
+import com.hntxrj.txerp.mapper.PublicInfoMapper;
 import com.hntxrj.txerp.mapper.StockMapper;
 import com.hntxrj.txerp.mapper.TaskPlanMapper;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
 import com.hntxrj.txerp.util.EntityTools;
-import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -33,13 +33,15 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     private final StockMapper stockMapper;
     private final ConcreteMapper concreteMapper;
+    private final PublicInfoMapper publicInfoMapper;
 
     @Autowired
-    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper) {
+    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
         this.concreteMapper = concreteMapper;
+        this.publicInfoMapper = publicInfoMapper;
     }
 
     @Override
@@ -440,18 +442,25 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * @return 司机排班列表信息
      */
     @Override
-    public PageVO<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode,
+    public List<ShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode,
                                                         String personalName,
                                                         String workClass,
                                                         String beginTime, String endTime,
                                                         Integer page, Integer pageSize) {
-        PageHelper.startPage(page, pageSize, "WorkStarTime DESC");
-        List<DriverShiftListVO> sendCarList = taskPlanMapper.getDriverShiftList(compid, vehicleId,
-                personalCode, personalName, workClass, beginTime, endTime);
-        PageInfo<DriverShiftListVO> pageInfo = new PageInfo<>(sendCarList);
-        PageVO<DriverShiftListVO> pageVO = new PageVO<>();
-        pageVO.format(pageInfo);
-        return pageVO;
+        List<ShiftListVO> list = new ArrayList<>();
+        List<DropDownVO> dropDownVOS= publicInfoMapper.getDropDown(16,compid);
+        if (dropDownVOS!=null){
+            for (DropDownVO d:dropDownVOS) {
+                ShiftListVO shiftListVO =new ShiftListVO();
+                shiftListVO.setWorkClass(d.getCode());
+                shiftListVO.setWorkName(d.getName());
+                workClass =d.getCode();
+                shiftListVO.setShiftList(taskPlanMapper.getDriverShiftList(compid, vehicleId,
+                        personalCode, personalName, workClass, beginTime, endTime));
+                list.add(shiftListVO);
+            }
+        }
+        return list;
     }
 
     /**

@@ -40,7 +40,6 @@ public class LoginCOnstructionImpl implements LoginConstructionService {
             System.out.println("是不是空:" + loginClibationVO);
             if (loginClibationVO != null) {
                 System.out.println("TOkens" + loginClibationVO.getSupplierToKen());
-                return loginClibationVO;
             }
         } else {
             passWord = getMd5Password(passWord);
@@ -51,13 +50,12 @@ public class LoginCOnstructionImpl implements LoginConstructionService {
                 loginClibationVO.setSupplierToKen(Code.saltEncoderMd5(UUID.randomUUID().toString()));
                 String token = loginClibationVO.getSupplierToKen();
                 redisUtil.redisSetKey(token, loginClibationVO);
-                return loginClibationVO;
             } else {
                 System.out.println("返回来的数据是空，都为null");
                 throw new ErpException(ErrEumn.USER_LOGIN_ERROR);
             }
         }
-        return null;
+        return loginClibationVO;
     }
 
     @Override
