@@ -187,7 +187,7 @@ public interface TaskPlanService {
                                                           Integer pageSize);
 
 
-    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type,String searchName);
+    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type);
 
     JSONArray phoneStatistics(String compid, String beginTime, String endTime) throws SQLException;
 
@@ -226,4 +226,6 @@ public interface TaskPlanService {
      * 修改任务单加价项目状态为0
     * */
     void deletePPCodeStatus(String compid, String taskId);
+
+    DirverLEDListVO getProduceCars(String compid);
 }

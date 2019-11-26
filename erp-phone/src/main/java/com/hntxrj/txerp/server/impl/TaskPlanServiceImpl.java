@@ -189,6 +189,13 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         PageHelper.startPage(page, pageSize);
         // TODO: 司机只能查询自己的信息
         List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
+        for (SendCarListVO sendCarListVO : sendCarList) {
+            //获取每个任务单下的所有搅拌车车辆
+            taskPlanMapper.getCarsBytaskId(compid, sendCarListVO.getTaskId());
+        }
+
+
+
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -593,7 +600,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
 
     @Override
-    public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type, String searchName) {
+    public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type) {
         //根据传递过来的type，判断查询的是今日，昨日还是本月的方量。
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if (type == 3) {
@@ -643,7 +650,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 }
             }
         }
-        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime, endTime, searchName);
+        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime, endTime);
 
         //根据compid、beginTime、endTime从生产消耗表中查询出生产方量。
         BigDecimal productNum = concreteMapper.getProductConcreteSum(compid, beginTime, endTime);
@@ -814,6 +821,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public void deletePPCodeStatus(String compid, String taskId) {
         taskPlanMapper.deletePPCodeStatus(compid, taskId);
+    }
+
+    @Override
+    public DirverLEDListVO getProduceCars(String compid) {
+       return taskPlanMapper.getProduceCars(compid);
     }
 
     private String taskPlanSplicing(String compid) {

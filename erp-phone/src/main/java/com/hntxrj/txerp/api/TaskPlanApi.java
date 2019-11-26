@@ -473,10 +473,9 @@ public class TaskPlanApi {
      */
     @PostMapping("/getSquareQuantitySum")
     public ResultVO getConcreteSum(String compid,
-                                   String beginTime, String endTime, int type,
-                                   @RequestParam(required = false) String searchName) {
+                                   String beginTime, String endTime, int type) {
         SquareQuantityVO squareQuantityVO = taskPlanService.getSquareQuantitySum(compid, beginTime,
-                endTime, type,searchName);
+                endTime, type);
         return ResultVO.create(squareQuantityVO);
     }
 
@@ -527,4 +526,13 @@ public class TaskPlanApi {
         return ResultVO.create(priceMarkupVOs);
     }
 
+    /**
+     * 调度派车中查询正在生产的搅拌车
+     *  @param compid
+     * */
+
+    @PostMapping("/getProduceCars")
+    public ResultVO getProduceCars(String compid){
+        return ResultVO.create(taskPlanService.getProduceCars(compid));
+    }
 }

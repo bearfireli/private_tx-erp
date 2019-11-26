@@ -148,7 +148,7 @@ public interface TaskPlanMapper {
                                                         String taskId);
 
 
-    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime,String searchName);
+    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime);
 
     QueryTimeSetVO getQueryTime(String compid, int queryType);
 
@@ -176,4 +176,8 @@ public interface TaskPlanMapper {
 
     void deletePPCodeStatus(String compid, String taskId);
     void updateTechnicalRequirements(String compid, String taskId, String pPNames,String concreteMark);
+
+    DirverLEDListVO getProduceCars(String compid);
+
+    List<DriverShiftLEDVO> getCarsBytaskId(String compid, String taskId);
 }

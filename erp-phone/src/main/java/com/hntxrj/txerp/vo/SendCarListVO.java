@@ -39,6 +39,8 @@ public class SendCarListVO {
     private double num;
     private String attribute;
     private String vehiceNumber;
+    //塌落度
+    private String slump;
 
 
 }
