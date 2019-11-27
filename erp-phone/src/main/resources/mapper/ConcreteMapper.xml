@@ -206,6 +206,41 @@
 
     <!--产销统计中的饼状图-->
     <select id="getConcreteStgIdNum" resultType="com.hntxrj.txerp.vo.ConcretePieChart">
-
+        select pp.StgId stgId, sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum from
+        PT_TaskSaleInvoice tsi
+        left join PT_TaskPlan pp on tsi.compid=pp.compid and pp.TaskId =tsi.TaskId
+        where tsi.compid=#{compid}
+        and (VehiceNumber > '0')
+        and (VehicleStatus = '3')
+        and tsi.InvoiceType != 6
+        <if test="eppCode != null and eppCode != ''">
+            and pp.eppCode=#{eppCode}
+        </if>
+        <if test="placing != null and placing != ''">
+            and pp.placing like '%'+#{placing}+'%'
+        </if>
+        <if test="taskId != null and taskId != ''">
+            and pp.taskId like '%'+#{taskId}+'%'
+        </if>
+        <if test="stgId != null and stgId != ''">
+            and pp.stgid like '%'+#{stgId}+'%'
+        </if>
+        <if test="timeStatus ==1">
+            <if test="beginTime != null and beginTime != ''">
+                and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </if>
+        <if test="timeStatus ==0">
+            <if test="beginTime != null and beginTime != ''">
+                and tsi.Leave_STTime <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </if>
+        group by stgId order by saleNum desc
     </select>
 </mapper>
