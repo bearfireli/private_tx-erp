@@ -155,10 +155,11 @@
         </if>
     </select>
 
-
+    <!--产销统计中的柱状图-->
     <select id="getConcreteSaleNum" resultType="com.hntxrj.txerp.vo.ConcreteHistogram">
         <if test="timeStatus ==1">
-            select convert(char(10),SendTime,120) dateTime, sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) saleNum from
+            select convert(char(10),SendTime,120) dateTime, sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) saleNum
+            from
             (select * from PT_TaskSaleInvoice where SendTime between #{beginTime} and #{endTime}
             and (VehiceNumber > '0')
             and (VehicleStatus = '3')
@@ -179,7 +180,8 @@
             group by convert(char(10),SendTime,120) order by dateTime desc
         </if>
         <if test="timeStatus ==0">
-            select convert(char(10),Leave_STTime,120) dateTime, sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) saleNum from
+            select convert(char(10),Leave_STTime,120) dateTime, sum(SaleNum - ReturnNum - SeparateNum - ScrapNum)
+            saleNum from
             (select * from PT_TaskSaleInvoice where Leave_STTime between #{beginTime} and #{endTime}
             and (VehiceNumber > '0')
             and (VehicleStatus = '3')
@@ -200,7 +202,10 @@
             group by convert(char(10),Leave_STTime,120) order by dateTime desc
 
         </if>
+    </select>
 
+    <!--产销统计中的饼状图-->
+    <select id="getConcreteStgIdNum" resultType="com.hntxrj.txerp.vo.ConcretePieChart">
 
     </select>
 </mapper>

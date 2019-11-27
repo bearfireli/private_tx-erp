@@ -103,5 +103,20 @@ public class ConcreteApi {
                 endTime == null ? null : sdf.format(new Date(endTime)), timeStatus));
     }
 
+    /**
+     * 产销统计中的饼状图
+     */
+    @PostMapping("/getConcreteStgIdNum")
+    public ResultVO getConcreteStgIdNum(String compid, String eppCode, String placing,
+                                       String taskId, String stgId,
+                                       Long beginTime, Long endTime,
+                                       Integer timeStatus) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(concreteService.getConcreteStgIdNum(compid,eppCode,placing,taskId,stgId,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)), timeStatus));
+    }
+
 
 }

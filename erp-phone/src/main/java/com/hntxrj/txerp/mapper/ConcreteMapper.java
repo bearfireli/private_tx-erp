@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.mapper;
 
 import com.hntxrj.txerp.vo.ConcreteHistogram;
+import com.hntxrj.txerp.vo.ConcretePieChart;
 import com.hntxrj.txerp.vo.ConcreteVO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -59,4 +60,9 @@ public interface ConcreteMapper {
      * 产销统计中柱状图数据
      * */
     List<ConcreteHistogram> getConcreteSaleNum(String compid, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
+
+    /**
+     * 产销统计中饼状图数据
+     * */
+    List<ConcretePieChart> getConcreteStgIdNum(String compid, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
 }
