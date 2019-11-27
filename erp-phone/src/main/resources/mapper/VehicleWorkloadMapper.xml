@@ -95,7 +95,7 @@
             and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
         </if>
         group by tsi.VehicleID
-        order by tsi.VehicleID
+        order by num desc
     </select>
 
     <!--搅拌车砼运输汇总合计-->
