@@ -16,7 +16,8 @@
         placing,
         ps.PI_TypeName placeStyleName,
         SaleNum,
-        tp.StgId
+        tp.StgId as stgId,
+        vmpi.personalName as personalName
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
@@ -54,7 +55,7 @@
         EPPName, VehicleID, tp.compid, Leave_STTime, concreteMark,
         placing,
         ps.PI_TypeName, Arrive_STTime, SaleNum, SendTime,
-        ReturnNum, RemnantNum, InvoiceType, VehicleStatus,tp.StgId
+        ReturnNum, RemnantNum, InvoiceType, VehicleStatus,tp.StgId,personalName
         order by tsi.TaskId,SendTime
 
     </select>
@@ -284,7 +285,8 @@
         concreteMark,
         placing,
         ps.PI_TypeName placeStyleName,
-        (SaleNum - ReturnNum - ScrapNum) as saleNum
+        (SaleNum - ReturnNum - ScrapNum) as saleNum,
+        tp.StgId as stgId
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
@@ -308,7 +310,7 @@
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
         <if test="personalName != null and personalName != ''">
-            and vm.personalName like '%'+#{personalName}+'%'
+            and vm.personalName =#{personalName}
         </if>
         <if test="beginTime != null and beginTime != ''">
             and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
@@ -497,6 +499,7 @@
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
         group by pc.VehicleID, tsi.PlaceStyle, dd.PI_TypeName
+        order by  num desc
     </select>
 
     <!--泵工汇总统计-->
