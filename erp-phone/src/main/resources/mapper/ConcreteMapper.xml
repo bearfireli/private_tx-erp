@@ -163,19 +163,20 @@
             (select * from PT_TaskSaleInvoice where SendTime between #{beginTime} and #{endTime}
             and (VehiceNumber > '0')
             and (VehicleStatus = '3')
-            and InvoiceType != 6) t1
-            where compid=#{compid}
+            and InvoiceType != 6) pt
+            left join  PT_TaskPlan pp on pp.compid=pt.compid and pp.TaskId=pt.TaskId
+            where pt.compid=#{compid}
             <if test="eppCode != null and eppCode != ''">
-                and pt.eppCode=#{eppCode}
+                and pp.eppCode=#{eppCode}
             </if>
             <if test="placing != null and placing != ''">
-                and pt.placing like '%'+#{placing}+'%'
+                and pp.placing like '%'+#{placing}+'%'
             </if>
             <if test="taskId != null and taskId != ''">
-                and pt.taskId like '%'+#{taskId}+'%'
+                and pp.taskId like '%'+#{taskId}+'%'
             </if>
             <if test="stgId != null and stgId != ''">
-                and pt.stgid like '%'+#{stgId}+'%'
+                and pp.stgid like '%'+#{stgId}+'%'
             </if>
             group by convert(char(10),SendTime,120) order by dateTime desc
         </if>
@@ -185,19 +186,20 @@
             (select * from PT_TaskSaleInvoice where Leave_STTime between #{beginTime} and #{endTime}
             and (VehiceNumber > '0')
             and (VehicleStatus = '3')
-            and InvoiceType != 6) t1
-            where compid=#{compid}
+            and InvoiceType != 6) pt
+            left join  PT_TaskPlan pp on pp.compid=pt.compid and pp.TaskId=pt.TaskId
+            where pt.compid=#{compid}
             <if test="eppCode != null and eppCode != ''">
-                and pt.eppCode=#{eppCode}
+                and pp.eppCode=#{eppCode}
             </if>
             <if test="placing != null and placing != ''">
-                and pt.placing like '%'+#{placing}+'%'
+                and pp.placing like '%'+#{placing}+'%'
             </if>
             <if test="taskId != null and taskId != ''">
-                and pt.taskId like '%'+#{taskId}+'%'
+                and pp.taskId like '%'+#{taskId}+'%'
             </if>
             <if test="stgId != null and stgId != ''">
-                and pt.stgid like '%'+#{stgId}+'%'
+                and pp.stgid like '%'+#{stgId}+'%'
             </if>
             group by convert(char(10),Leave_STTime,120) order by dateTime desc
 
