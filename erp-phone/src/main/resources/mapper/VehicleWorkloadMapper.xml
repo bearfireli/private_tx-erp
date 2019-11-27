@@ -15,7 +15,8 @@
         concreteMark,
         placing,
         ps.PI_TypeName placeStyleName,
-        SaleNum
+        SaleNum,
+        tp.StgId,
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
@@ -53,7 +54,7 @@
         EPPName, VehicleID, tp.compid, Leave_STTime, concreteMark,
         placing,
         ps.PI_TypeName, Arrive_STTime, SaleNum, SendTime,
-        ReturnNum, RemnantNum, InvoiceType, VehicleStatus
+        ReturnNum, RemnantNum, InvoiceType, VehicleStatus,tp.StgId
         order by tsi.TaskId,SendTime
 
     </select>
@@ -102,7 +103,8 @@
     <select id="getVehicleWorkloadSummaryCount" resultType="com.hntxrj.txerp.vo.VehicleWorkloadSummaryVO">
         select
         sum(SaleNum) numList,
-        count(tsi.VehiceNumber)carNumList
+        count(tsi.VehiceNumber)carNumList,
+        sum(tsi.Distance) distance,
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
@@ -319,7 +321,6 @@
     <!--司机砼运输汇总-->
     <select id="getDriverTransportationCount" resultType="com.hntxrj.txerp.vo.DriverTransportationCountVO">
         select vm.PersonalName personalName,
-        tsi.VehicleID vehicleId,
         (sum(SaleNum) - sum(ReturnNum) - sum(ScrapNum)) as num,
         count(VehiceNumber) as carNum,
         sum(tsi.Distance) as distance
@@ -352,8 +353,8 @@
         <if test="endTime != null and endTime != ''">
             and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
         </if>
-        GROUP BY PersonalName, VehicleID
-        order by VehicleID
+        GROUP BY PersonalName
+        order by num desc
     </select>
 
     <!--司机砼运产量合计-->
