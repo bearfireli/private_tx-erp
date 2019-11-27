@@ -90,6 +90,15 @@ public class ConcreteApi {
 
     /**
      * 产销统计中的柱状图
+     *
+     * @param compid    　企业
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　任务单号
+     * @param stgId     　砼标记
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param timeStatus  时间类型：1 派车时间；0离场时间
      */
     @PostMapping("/getConcreteSaleNum")
     public ResultVO getConcreteSaleNum(String compid, String eppCode, String placing,
@@ -105,6 +114,14 @@ public class ConcreteApi {
 
     /**
      * 产销统计中的饼状图
+     * @param compid    　企业
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　任务单号
+     * @param stgId     　砼标记
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param timeStatus  时间类型：1 派车时间；0离场时间
      */
     @PostMapping("/getConcreteStgIdNum")
     public ResultVO getConcreteStgIdNum(String compid, String eppCode, String placing,
