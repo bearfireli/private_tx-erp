@@ -16,7 +16,7 @@
         placing,
         ps.PI_TypeName placeStyleName,
         SaleNum,
-        tp.StgId,
+        tp.StgId
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
