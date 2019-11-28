@@ -191,7 +191,7 @@ public interface VehicleWorkloadMapper {
      * @param endTime      结束时间
      */
     List<PumpTruckDetailsVO> getPumpTruckDetails(String compid, String eppCode, String personalName,
-                                                 String stirId, String vehicleId,
+                                                 String stirId, String vehicleId,String typeName,
                                                  String beginTime, String endTime);
 
     /**

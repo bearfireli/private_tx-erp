@@ -445,4 +445,9 @@ public class StockInApi {
                 endTime == null ? null : sdf.format(new Date(endTime)));
         return ResultVO.create(weightByMatParent);
     }
+
+    /**
+     * 材料统计中材料名称柱状图
+     *
+     * */
 }
