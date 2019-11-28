@@ -73,4 +73,14 @@ public interface ContractMapper {
                                     String pPName,BigDecimal unitPrice, BigDecimal jumpPrice,
                                     BigDecimal selfDiscPrice, BigDecimal towerCranePrice,
                                     BigDecimal otherPrice, boolean isDefault);
+
+
+    /**
+     * 添加任务单时根据工程名称或者施工单位查询合同列表
+     *
+     * @param compid     站别代号
+     * @param searchName 搜索添加，可能是施工名称或者是施工单位
+     * @return 合同列表
+     */
+    List<ContractListVO> getContractListByEppOrBuild(String compid, String searchName);
 }
