@@ -15,6 +15,12 @@ public class PumpTruckCountVO {
      *泵车号
      */
     private  String vehicleId;
+
+    /**
+    * 当泵车号为空时，用泵车类型代替泵车号
+     */
+
+    private  String typeName;
     /**
      *砼产量
      */
@@ -27,5 +33,5 @@ public class PumpTruckCountVO {
      *司机名称
      */
     private  String personalName;
-    private  String typeName;
+
 }

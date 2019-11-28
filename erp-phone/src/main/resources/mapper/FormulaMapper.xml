@@ -6,7 +6,7 @@
         select TaskId, pi.PI_TypeName placeStyleName, dd.PI_TypeName TaskStatusName,
         sm.EPPName,Placing,ConcreteMark,PreNum,PreTime,TechnicalRequirements,Slump,
         dd1.PI_TypeName StoneAskName,dd2.PI_TypeName CementVarietyName,PreRemark,StgId,
-        FormulaStatus
+        FormulaStatus,Attribute
         from PT_TaskPlan pf
         left join  SM_EPPInfo sm on pf.EPPCode=sm.EPPCode and pf.compid =sm.compid
         left join DD_PublicInfo pi on pi.PI_Class = 24 and pf.PlaceStyle = pi.PI_Values and pf.compid = pi.compid
@@ -17,6 +17,9 @@
         and pf.compid = #{compid}
         <if test="taskStatus != null">
             and (taskstatus = #{taskStatus})
+        </if>
+        <if test="formulaStatus != null">
+            and (FormulaStatus = #{formulaStatus})
         </if>
         <if test="eppCode != null">
             and (sm.eppCode = #{eppCode})

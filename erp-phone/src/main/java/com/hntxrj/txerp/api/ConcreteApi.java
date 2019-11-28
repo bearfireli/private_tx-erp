@@ -32,7 +32,8 @@ public class ConcreteApi {
     }
 
 
-    /**getConcreteCount
+    /**
+     * getConcreteCount
      * 砼产量统计
      *
      * @param compid    　企业
@@ -84,7 +85,55 @@ public class ConcreteApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(concreteService.getConcreteSum(compid, eppCode, placing, taskId,
                 stgId, beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime)),timeStatus, page, pageSize));
+                endTime == null ? null : sdf.format(new Date(endTime)), timeStatus, page, pageSize));
     }
+
+    /**
+     * 产销统计中的柱状图
+     *
+     * @param compid    　企业
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　任务单号
+     * @param stgId     　砼标记
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param timeStatus  时间类型：1 派车时间；0离场时间
+     */
+    @PostMapping("/getConcreteSaleNum")
+    public ResultVO getConcreteSaleNum(String compid, String eppCode, String placing,
+                                       String taskId, String stgId,
+                                       Long beginTime, Long endTime,
+                                       Integer timeStatus) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(concreteService.getConcreteSaleNum(compid,eppCode,placing,taskId,stgId,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)), timeStatus));
+    }
+
+    /**
+     * 产销统计中的饼状图
+     * @param compid    　企业
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　任务单号
+     * @param stgId     　砼标记
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param timeStatus  时间类型：1 派车时间；0离场时间
+     */
+    @PostMapping("/getConcreteStgIdNum")
+    public ResultVO getConcreteStgIdNum(String compid, String eppCode, String placing,
+                                       String taskId, String stgId,
+                                       Long beginTime, Long endTime,
+                                       Integer timeStatus) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(concreteService.getConcreteStgIdNum(compid,eppCode,placing,taskId,stgId,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)), timeStatus));
+    }
+
 
 }

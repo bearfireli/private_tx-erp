@@ -9,7 +9,7 @@ import java.util.Map;
 public interface FormulaMapper {
 
     List<Map<String, Object>> getFormulaList(String compid, String eppCode, String builderCode,
-                                             String placing, String taskId, Integer taskStatus,
+                                             String placing, String taskId, Integer taskStatus,Integer formulaStatus,
                                              String startTime, String endTime);
 
 

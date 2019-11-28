@@ -215,7 +215,7 @@
                tsi.InvoiceType,
                vs.PI_TypeName     VehicleStatusName,
                it.PI_TypeName     invoiceTypeName,
-               tsi.VehicleID_Jump JumpVehicleID
+               tsi.VehicleID_Jump JumpVehicleID,
                tsi.ReceiptMan  receiptMan,
                tsi.SaleFileImage saleFileImage
         from PT_TaskSaleInvoice tsi
@@ -235,6 +235,7 @@
         where tsi.id = #{id}
           and tsi.PersonalCode = #{driverCode}
           and tsi.InvoiceType != 6
+          and tsi.InvoiceType not in('1','2')
           and tsi.recStatus = 1
     </select>
 

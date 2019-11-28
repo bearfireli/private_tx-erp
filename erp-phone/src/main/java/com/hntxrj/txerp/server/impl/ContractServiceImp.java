@@ -421,7 +421,7 @@ public class ContractServiceImp implements ContractService {
 
     @Override
     public PageVO<ContractListVO> getContractList(Long startTime, Long endTime, String contractCode,
-                                                  String eppCode, String buildCode, String salesMan, String compId,
+                                                  String eppCode, String buildCode, String salesMan, String compId,String verifyStatus,
                                                   Integer page, Integer pageSize) {
        
         PageHelper.startPage(page, pageSize, "SignDate desc");
@@ -429,12 +429,12 @@ public class ContractServiceImp implements ContractService {
         String startTimeStr = startTime == null ? null : sdf.format(new Date(startTime));
         String endTimeStr = endTime == null ? null : sdf.format(new Date(endTime));
         log.info("【合同列表】startTime:{}, endTime:{}, contractCode:{}, " +
-                        "eppCode:{}, buildCode:{}, salesMan:{}, compid:{}, page:{}, pageSize:{}",
-                startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId, page, pageSize);
-        String verifyStatus = null;
+                        "eppCode:{}, buildCode:{}, salesMan:{}, compid:{},verifyStatus:{} page:{}, pageSize:{}",
+                startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId, verifyStatus,page, pageSize);
+        /*String verifyStatus = null;
         if(null ==startTime && null ==endTime){
             verifyStatus ="true";
-        }
+        }*/
         List<ContractListVO> contractListVOList = contractMapper.getContractList(
                 startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId,verifyStatus);
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
@@ -818,6 +818,27 @@ public class ContractServiceImp implements ContractService {
         List<PumpTruckListVO> pumpTruckListVOList=contractMapper.selectPumpTruckList(compid,builderName);
         PageInfo<PumpTruckListVO> pageInfo=new PageInfo<>(pumpTruckListVOList);
         PageVO<PumpTruckListVO> pageVO=new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+
+    /**
+     * 添加任务单时根据工程名称或者施工单位查询合同列表
+     *
+     * @param compid     站别代号
+     * @param searchName 搜索添加，可能是施工名称或者是施工单位
+     * @param page       页码
+     * @param pageSize   每页数量
+     * @return 合同列表
+     */
+    @Override
+    public PageVO<ContractListVO> getContractListByEppOrBuild(String compid, String searchName, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize, "SignDate desc");
+
+        List<ContractListVO> contractListVOList = contractMapper.getContractListByEppOrBuild(compid,searchName);
+        PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
+        PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
     }
