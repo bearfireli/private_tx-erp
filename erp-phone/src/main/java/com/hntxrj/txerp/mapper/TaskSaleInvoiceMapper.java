@@ -24,12 +24,7 @@ public interface TaskSaleInvoiceMapper {
      */
     List<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(String compid, String beginTime, String endTime,
                                                        String eppCode, Byte upStatus, String builderCode,
-                                                       String taskId, String placing);
-    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceListById(Integer id, String driverCode);
-
-    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceList(String compid, String beginTime, String endTime,
-                                                                   String eppCode, Byte upStatus, String builderCode,
-                                                                   String placing, String driverCode);
+                                                       String taskId, String placing,String taskStatus);
 
     /**
      * 获取小票需求

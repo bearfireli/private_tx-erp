@@ -39,6 +39,11 @@ public class TaskSaleInvoiceListVO {
     private double netWeight;
     private int  WeightType;
     private String WeightTypeName;
-
-
+    private String slump;
+    private String  placing;
+    private String arriveSttime;
+    private double qianNum;
+    private double saleNum;
+    private  String vehicleStatus;
+    private  String attribute;
 }

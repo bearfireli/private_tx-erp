@@ -65,4 +65,5 @@ public class TaskSaleInvoiceDetailVO {
     private String weightTypeName;
     private  String invoiceTypeName;
     private String eppCode;
+    private double qianNum;
 }

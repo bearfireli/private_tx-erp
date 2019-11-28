@@ -43,12 +43,12 @@ public class PartsServiceImpl implements PartsService {
     public PageVO<PartsVO> getPartsList(String compid, String beginTime, String endTime, String goodsName,
                                         String buyer, String specification, String department,
                                         String requestNumber, String requestStatus,
-                                        String requestDep, Integer page, Integer pageSize) {
+                                        String requestDep,String verifyStatusOne, Integer page, Integer pageSize) {
         PageVO<PartsVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize, "CreateTime desc");
         List<PartsVO> partsVOS = partsMapper.getPartsList(
                 compid, beginTime, endTime, goodsName, buyer, specification, department,
-                requestNumber, requestStatus, requestDep);
+                requestNumber, requestStatus, requestDep,verifyStatusOne);
         PageInfo<PartsVO> pageInfo = new PageInfo<>(partsVOS);
         pageVO.format(pageInfo);
         return pageVO;
