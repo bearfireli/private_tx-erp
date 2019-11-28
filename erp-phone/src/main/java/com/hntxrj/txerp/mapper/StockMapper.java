@@ -133,4 +133,19 @@ public interface StockMapper {
     List<WeightChartVO> getPieChartBySupName(String compid, String empName, String vehicleId, String stoName, String supName, String beginTime, String endTime);
 
     List<WeightChartVO> getHistogramByStoName(String compid, String empName, String vehicleId, String stoName, String supName, String beginTime, String endTime);
+
+
+    /**
+     * 材料统计中按照材料名称查询的柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param supName   供货商
+     * @param empName   过磅员
+     * @param stoName   入库库位
+     * @param matType   材料分类  1:骨料  2：粉料  3：其他
+     */
+    List<WeightChartVO> getHistogramByMat(String compid, String empName, String vehicleId, String stoName, String supName, String beginTime, String endTime, Integer matType);
 }

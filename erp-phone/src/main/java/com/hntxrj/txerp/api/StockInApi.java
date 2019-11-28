@@ -448,13 +448,25 @@ public class StockInApi {
 
 
     /**
-     * 材料统计中按照材料名称查询的柱状图  todo
+     * 材料统计中按照材料名称查询的柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param supName   供货商
+     * @param empName   过磅员
+     * @param stoName   入库库位
+     * @param matType   材料分类  1:骨料  2：粉料  3：其他
      */
     @PostMapping("/getHistogramByMat")
     public ResultVO getHistogramByMat(String empName, String compid, String vehicleId,
-                                      String stoName, String supName, Long beginTime, Long endTime) {
+                                      String stoName, String supName, Long beginTime, Long endTime,
+                                      @RequestParam(defaultValue = "1") Integer matType) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create();
+        return ResultVO.create(stockInServer.getHistogramByMat(compid, empName, vehicleId, stoName, supName,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)),matType));
     }
 
 
@@ -472,14 +484,13 @@ public class StockInApi {
      */
     @PostMapping("/getPieChartBySupName")
     public ResultVO getPieChartBySupName(String empName, String compid, String vehicleId,
-                                      String stoName, String supName, Long beginTime, Long endTime) {
+                                         String stoName, String supName, Long beginTime, Long endTime) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        return ResultVO.create(stockInServer.getPieChartBySupName(compid,empName,vehicleId,stoName,supName,
+        return ResultVO.create(stockInServer.getPieChartBySupName(compid, empName, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }
-
 
 
     /**
@@ -496,10 +507,10 @@ public class StockInApi {
      */
     @PostMapping("/getHistogramByStoName")
     public ResultVO getHistogramByStoName(String empName, String compid, String vehicleId,
-                                         String stoName, String supName, Long beginTime, Long endTime) {
+                                          String stoName, String supName, Long beginTime, Long endTime) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        return ResultVO.create(stockInServer.getHistogramByStoName(compid,empName,vehicleId,stoName,supName,
+        return ResultVO.create(stockInServer.getHistogramByStoName(compid, empName, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }
