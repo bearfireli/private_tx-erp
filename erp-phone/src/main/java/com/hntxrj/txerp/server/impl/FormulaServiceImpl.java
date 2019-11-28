@@ -8,9 +8,11 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.dao.LaboratroyDao;
 import com.hntxrj.txerp.mapper.FormulaMapper;
 import com.hntxrj.txerp.mapper.StockMapper;
+import com.hntxrj.txerp.mapper.TaskPlanMapper;
 import com.hntxrj.txerp.server.FormulaService;
 import com.hntxrj.txerp.util.PageInfoUtil;
 import com.hntxrj.txerp.vo.PageVO;
+import com.hntxrj.txerp.vo.PriceMarkupVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -32,12 +34,14 @@ public class FormulaServiceImpl implements FormulaService {
     private final LaboratroyDao laboratroyDao;
     private final FormulaMapper formulaMapper;
     private final StockMapper stockMapper;
+    private final TaskPlanMapper taskPlanMapper;
 
     @Autowired
-    public FormulaServiceImpl(LaboratroyDao laboratroyDao, FormulaMapper formulaMapper, StockMapper stockMapper) {
+    public FormulaServiceImpl(LaboratroyDao laboratroyDao, FormulaMapper formulaMapper, StockMapper stockMapper, TaskPlanMapper taskPlanMapper) {
         this.laboratroyDao = laboratroyDao;
         this.formulaMapper = formulaMapper;
         this.stockMapper = stockMapper;
+        this.taskPlanMapper = taskPlanMapper;
     }
 
     /**
@@ -133,6 +137,18 @@ public class FormulaServiceImpl implements FormulaService {
         return JSONObject.parseObject(JSON.toJSONString(resultMap));
     }
 
+
+    /**
+     * 开具配比
+     *
+     * @param taskStatus    任务单生产状态  0:等待生产   1:正在生产  2:暂停  3:完成  4:删除
+     * @param eppCode       工程名称代号
+     * @param placing       浇筑部位
+     * @param builderCode   施工单位代号
+     * @param formulaStatus 配比审核状态
+     * @param opid          当前操作员
+     * @return jsoN
+     */
     @Override
     public PageVO<Map<String, Object>> getFormulaList(Integer taskStatus, String eppCode, String placing,
                                                       String taskId, String startTime, String endTime, String compid,
@@ -140,8 +156,26 @@ public class FormulaServiceImpl implements FormulaService {
                                                       String opid, Integer page, Integer pageSize) {
         log.info("【查询配比列表】startTime={}, endTime={}", startTime, endTime);
         PageHelper.startPage(page, pageSize, "formulastatus, TaskId desc");
-        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(formulaMapper.getFormulaList(
-                compid, eppCode, builderCode, placing, taskId, taskStatus, startTime, endTime));
+        List<Map<String, Object>> formulaList = formulaMapper.getFormulaList(
+                compid, eppCode, builderCode, placing, taskId, taskStatus, formulaStatus, startTime, endTime);
+        if (formulaList != null) {
+            for (Map<String, Object> map : formulaList) {
+                StringBuilder ppName = new StringBuilder();
+                //根据compid和taskId查询出每个任务单对应的加价项目编号集合。
+                List<String> ppCodes = taskPlanMapper.getPPCodeBytaskId(compid, String.valueOf(map.get("TaskId")));
+                for (String ppCode : ppCodes) {
+                    PriceMarkupVO priceMarkupVO = taskPlanMapper.getPriceMarkupByPPCode(compid, ppCode);
+                    ppName.append(priceMarkupVO.getPPName());
+                    ppName.append(",");
+                }
+                if (ppName.length() > 0) {
+                    ppName.deleteCharAt(ppName.length() - 1);
+                }
+                //把加价项目名称赋值给配比列表map集合传递到前台。
+                map.put("ppName", ppName);
+            }
+        }
+        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(formulaList);
         PageInfoUtil<Map<String, Object>> pageInfoListVO = new PageInfoUtil<>();
         PageVO<Map<String, Object>> resultObj = pageInfoListVO.init(pageInfo);
         List<Map<String, Object>> resultList = resultObj.getArr();
