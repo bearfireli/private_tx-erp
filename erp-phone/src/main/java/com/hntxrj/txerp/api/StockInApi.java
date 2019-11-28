@@ -445,4 +445,40 @@ public class StockInApi {
                 endTime == null ? null : sdf.format(new Date(endTime)));
         return ResultVO.create(weightByMatParent);
     }
+
+
+    /**
+     * 材料统计中按照材料名称查询的柱状图  todo
+     */
+    @PostMapping("/getHistogramByMat")
+    public ResultVO getHistogramByMat(String empName, String compid, String vehicleId,
+                                      String stoName, String supName, Long beginTime, Long endTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create();
+    }
+
+
+    /**
+     * 材料统计中按照供应商查询的饼状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param supName   供货商
+     * @param empName   过磅员
+     * @param stoName   入库库位
+     * @return 原材料统计汇总
+     */
+    @PostMapping("/getPieChartBySupName")
+    public ResultVO getPieChartBySupName(String empName, String compid, String vehicleId,
+                                      String stoName, String supName, Long beginTime, Long endTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(stockInServer.getPieChartBySupName(compid,empName,vehicleId,stoName,supName,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
+    }
+
+
 }

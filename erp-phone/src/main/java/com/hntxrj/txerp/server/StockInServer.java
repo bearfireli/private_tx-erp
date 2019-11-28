@@ -207,4 +207,9 @@ public interface StockInServer {
 
 
     List<WeightMatParentNameVO> getWeightByMatParent(String compid,String beginTime, String endTime);
+
+    List<SupNamePieChartVO> getPieChartBySupName(String compid, String empName, String vehicleId,
+                                                 String stoName, String supName,String beginTime,String endTime);
+
+
 }

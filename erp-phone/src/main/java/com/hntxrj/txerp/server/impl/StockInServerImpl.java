@@ -365,4 +365,10 @@ public class StockInServerImpl implements StockInServer {
         return weightMatParentNameVOList;
     }
 
+    @Override
+    public List<SupNamePieChartVO> getPieChartBySupName(String compid, String empName, String vehicleId, String stoName, String supName, String beginTime, String endTime) {
+       return stockInWeighmatNsMapper.getPieChartBySupName(compid, empName, vehicleId, stoName, supName, beginTime, endTime);
+
+    }
+
 }
