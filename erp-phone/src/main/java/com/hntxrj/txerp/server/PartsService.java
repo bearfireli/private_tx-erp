@@ -25,7 +25,7 @@ public interface PartsService {
     PageVO<PartsVO> getPartsList(String compid, String  beginTime, String endTime, String goodsName,
                                  String buyer, String specification, String department,
                                  String requestNumber, String requestStatus,
-                                 String requestDep,
+                                 String requestDep,String verifyStatusOne,
                                  Integer page,
                                  Integer pageSize);
 

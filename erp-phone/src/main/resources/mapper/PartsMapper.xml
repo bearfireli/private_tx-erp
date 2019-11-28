@@ -64,6 +64,9 @@
         <if test="department != null and department != '' ">
             and w.department = #{department}
         </if>
+        <if test="verifyStatusOne != null and verifyStatusOne != '' ">
+            and w.verifyStatusOne = #{verifyStatusOne}
+        </if>
         <if test="requestNumber != null and requestNumber != '' ">
             and w.requestNumber like '%'+#{requestNumber}+'%'
         </if>
