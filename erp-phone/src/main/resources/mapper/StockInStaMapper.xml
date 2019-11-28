@@ -208,9 +208,8 @@
 
 
     <!--材料统计中按照公司名称分类的饼状图-->
-    <select id="getPieChartBySupName" resultType="com.hntxrj.txerp.vo.SupNamePieChartVO">
-        select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as
-        Proportion,mt.MatName,sl.Sup_Name
+    <select id="getPieChartBySupName" resultType="com.hntxrj.txerp.vo.WeightChartVO">
+        select sum(si.ClWeight) AS tlWeight, sl.Sup_Name as supName
         from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
@@ -233,8 +232,35 @@
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
-        group by mt.MatName, sl.Sup_Name
-        ORDER BY sl.Sup_Name,mt.MatName
+        group by  sl.Sup_Name
+        ORDER BY tlWeight desc
+    </select>
+
+
+    <!--材料统计中按照入库库位分类的柱状图-->
+    <select id="getHistogramByStoName" resultType="com.hntxrj.txerp.vo.WeightChartVO">
+        select sum(si.ClWeight) AS tlWeight, mk.Sto_Name as stoName
+        from MP_StockIn si
+        left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="empName != null">
+            and sl.empName like '%'+#{empName}+'%'
+        </if>
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="stoName != null">
+            and Sto_Name like '%'+#{stoName}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        group by mk.Sto_Name
+        ORDER BY tlWeight desc
     </select>
 
 

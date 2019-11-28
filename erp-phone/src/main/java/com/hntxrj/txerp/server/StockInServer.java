@@ -208,7 +208,23 @@ public interface StockInServer {
 
     List<WeightMatParentNameVO> getWeightByMatParent(String compid,String beginTime, String endTime);
 
-    List<SupNamePieChartVO> getPieChartBySupName(String compid, String empName, String vehicleId,
+    List<WeightChartVO> getPieChartBySupName(String compid, String empName, String vehicleId,
+                                                 String stoName, String supName,String beginTime,String endTime);
+
+
+    /**
+     * 材料统计中按照入库库位查询的柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param supName   供货商
+     * @param empName   过磅员
+     * @param stoName   入库库位
+     * @return 原材料统计汇总
+     */
+    List<WeightChartVO> getHistogramByStoName(String compid, String empName, String vehicleId,
                                                  String stoName, String supName,String beginTime,String endTime);
 
 

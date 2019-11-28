@@ -481,4 +481,28 @@ public class StockInApi {
     }
 
 
+
+    /**
+     * 材料统计中按照入库库位查询的柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param supName   供货商
+     * @param empName   过磅员
+     * @param stoName   入库库位
+     * @return 原材料统计汇总
+     */
+    @PostMapping("/getHistogramByStoName")
+    public ResultVO getHistogramByStoName(String empName, String compid, String vehicleId,
+                                         String stoName, String supName, Long beginTime, Long endTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(stockInServer.getHistogramByStoName(compid,empName,vehicleId,stoName,supName,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
+    }
+
+
 }
