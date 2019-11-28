@@ -2,7 +2,8 @@ package com.hntxrj.txerp.vo;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
+
 
 /**
  * @author qyb
@@ -12,7 +13,7 @@ import java.sql.Timestamp;
  * @Version 1.0
  **/
 @Data
-public class PumpTruckDetailsVO {
+public class PumpTruckDetailsVO implements Serializable {
     /**
      *施工单位
      */
@@ -36,7 +37,7 @@ public class PumpTruckDetailsVO {
     /**
      *任务单号
      */
-    private String taskid;
+    private String taskId;
     /**
      *单价
      */

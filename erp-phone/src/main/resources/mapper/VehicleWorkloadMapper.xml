@@ -34,7 +34,7 @@
             and tp.placing like '%'+#{placing}+'%'
         </if>
         <if test="vehicleId != null and vehicleId != ''">
-            and vehicleId like '%'+#{vehicleId}+'%'
+            and VehicleID =#{vehicleId}
         </if>
         <if test="personalName != null and personalName != ''">
             and vmpi.personalName like '%'+#{personalName}+'%'
@@ -494,6 +494,9 @@
         <if test="stirId != null ">
             and tsi.stirid like '%'+#{stirId}+'%'
         </if>
+        <if test="taskId != null ">
+            and tsi.TaskId like '%'+#{taskId}+'%'
+        </if>
         <if test="vehicleId != null ">
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
@@ -534,6 +537,9 @@
         <if test="stirId != null ">
             and tsi.stirid like '%'+#{stirId}+'%'
         </if>
+        <if test="taskId != null">
+            and tsi.TaskId like '%'+#{taskId}+'%'
+        </if>
         <if test="vehicleId != null ">
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
@@ -545,7 +551,7 @@
     <select id="getPumpTruckDetails" resultType="com.hntxrj.txerp.vo.PumpTruckDetailsVO">
         select pt.TaskId,
         jvs.VehicleID,
-        convert(varchar(20), min(jvs.SendTime), 102) as SendTime,
+        convert(varchar(20), min(jvs.SendTime), 120) as SendTime,
         sm.BuilderShortName,
         epp.EPPName,
         Placing,
@@ -576,11 +582,14 @@
         <if test="stirId != null and stirId != ''">
             and tsi.stirid like '%'+#{stirId}+'%'
         </if>
+        <if test="taskId != null and taskId != ''">
+            and tsi.TaskId like '%'+#{taskId}+'%'
+        </if>
         <if test="vehicleId != null and vehicleId != ''">
             and jvs.vehicleID = #{vehicleId}
         </if>
         group by pt.TaskId, jvs.VehicleID, sm.BuilderShortName, epp.EPPName, Placing
-        order by convert(varchar(20), min(jvs.SendTime), 102)
+        order by convert(varchar(20), min(jvs.SendTime), 120)
     </select>
 
     <!--工作方量统计-->
@@ -609,6 +618,9 @@
         </if>
         <if test="stirId  != null">
             and tsi.stirid like '%'+#{stirId}+'%'
+        </if>
+        <if test="taskId  != null">
+            and tsi.TaskId like '%'+#{taskId}+'%'
         </if>
         <if test="vehicleId != null">
             and tsi.vehicleID like '%'+#{vehicleId}+'%'

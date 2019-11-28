@@ -305,12 +305,11 @@ public interface VehicleService {
      * @param vehicleId    车号
      * @param beginTime    开始时间
      * @param endTime      结束时间
-     * @param isNewVersion  判断是否为新版本
      * @param page         分页
      * @param pageSize     每页显示条数
      */
     PageVO<PumpTruckCountVO> getPumpTruckCount(String compid, String eppCode, String personalName,
-                                               String stirId, String vehicleId, String beginTime,
+                                               String stirId, String vehicleId, String taskId,String beginTime,
                                                String endTime, Integer page, Integer pageSize) throws ErpException;
 
     /**
@@ -328,7 +327,7 @@ public interface VehicleService {
      */
     PageVO<PumpTruckCountVO> getPumpOperatorTruckCount(String compid, String eppCode,
                                                        String personalName,
-                                                       String stirId, String vehicleId,
+                                                       String stirId, String vehicleId,String taskId,
                                                        String beginTime, String endTime,
                                                        Integer page, Integer pageSize) throws ErpException;
 
@@ -346,7 +345,7 @@ public interface VehicleService {
      * @param pageSize     每页显示条数
      */
     PageVO<PumpTruckDetailsVO> getPumpTruckDetails(String compid, String eppCode, String personalName,
-                                                   String stirId, String vehicleId,String typeName,
+                                                   String stirId, String vehicleId,String typeName,String taskId,
                                                    String beginTime, String endTime,
                                                    Integer page, Integer pageSize);
 

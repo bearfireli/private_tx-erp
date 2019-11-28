@@ -460,13 +460,12 @@ public class VehicleServiceImpl implements VehicleService {
      * @param vehicleId    车号
      * @param beginTime    开始时间
      * @param endTime      结束时间
-     * @param isNewVersion 判断是否为新版本
      * @param page         分页
      * @param pageSize     每页显示条数
      */
     @Override
     public PageVO<PumpTruckCountVO> getPumpTruckCount(String compid, String eppCode, String personalName,
-                                                      String stirId, String vehicleId,
+                                                      String stirId, String vehicleId,String taskId,
                                                       String beginTime, String endTime,
                                                       Integer page, Integer pageSize) throws ErpException {
         PageVO<PumpTruckCountVO> pageVO = new PageVO<>();
@@ -474,7 +473,7 @@ public class VehicleServiceImpl implements VehicleService {
         try {
             List<PumpTruckCountVO> vehicleWorkloadSummaryVOS =
                     vehicleWorkloadMapper.getPumpTruckCount(compid, eppCode, personalName,
-                            stirId, vehicleId,
+                            stirId, vehicleId,taskId,
                             beginTime, endTime);
             for (PumpTruckCountVO ptc : vehicleWorkloadSummaryVOS) {
                 if (ptc.getVehicleId() == null) {
@@ -509,7 +508,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public PageVO<PumpTruckCountVO> getPumpOperatorTruckCount(String compid, String eppCode,
                                                               String personalName, String stirId,
-                                                              String vehicleId,
+                                                              String vehicleId,String taskId,
                                                               String beginTime, String endTime,
                                                               Integer page, Integer pageSize) throws ErpException {
         PageVO<PumpTruckCountVO> pageVO = new PageVO<>();
@@ -517,7 +516,7 @@ public class VehicleServiceImpl implements VehicleService {
         try {
             List<PumpTruckCountVO> vehicleWorkloadSummaryVOS =
                     vehicleWorkloadMapper.getPumpOperatorTruckCount(compid, eppCode,
-                            personalName, stirId, vehicleId,
+                            personalName, stirId, vehicleId,taskId,
                             beginTime, endTime);
             for (PumpTruckCountVO ptc : vehicleWorkloadSummaryVOS) {
                 if (ptc.getVehicleId() == null) {
@@ -550,14 +549,14 @@ public class VehicleServiceImpl implements VehicleService {
      */
     @Override
     public PageVO<PumpTruckDetailsVO> getPumpTruckDetails(String compid, String eppCode, String personalName,
-                                                          String stirId, String vehicleId,String typeName,
+                                                          String stirId, String vehicleId,String typeName,String taskId,
                                                           String beginTime, String endTime,
                                                           Integer page, Integer pageSize) {
         PageVO<PumpTruckDetailsVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<PumpTruckDetailsVO> vehicleWorkloadSummaryVOS =
                 vehicleWorkloadMapper.getPumpTruckDetails(compid, eppCode, personalName,
-                        stirId, vehicleId,typeName,
+                        stirId, vehicleId,typeName,taskId,
                         beginTime, endTime);
 
         if (vehicleWorkloadSummaryVOS == null) {

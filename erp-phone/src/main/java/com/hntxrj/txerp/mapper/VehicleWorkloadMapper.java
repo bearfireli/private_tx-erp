@@ -161,7 +161,7 @@ public interface VehicleWorkloadMapper {
      * @param endTime    结束时间
      */
     List<PumpTruckCountVO> getPumpTruckCount(String compid, String eppCode, String personalName,
-                                             String stirId, String vehicleId,
+                                             String stirId, String vehicleId,String taskId,
                                              String beginTime, String endTime);
 
     /**
@@ -176,7 +176,7 @@ public interface VehicleWorkloadMapper {
      */
     List<PumpTruckCountVO> getPumpOperatorTruckCount(String compid, String eppCode,
                                                      String personalName, String stirId,
-                                                     String vehicleId,
+                                                     String vehicleId,String taskId,
                                                      String beginTime, String endTime);
 
     /**
@@ -191,7 +191,7 @@ public interface VehicleWorkloadMapper {
      * @param endTime      结束时间
      */
     List<PumpTruckDetailsVO> getPumpTruckDetails(String compid, String eppCode, String personalName,
-                                                 String stirId, String vehicleId,String typeName,
+                                                 String stirId, String vehicleId,String typeName,String taskId,
                                                  String beginTime, String endTime);
 
     /**
