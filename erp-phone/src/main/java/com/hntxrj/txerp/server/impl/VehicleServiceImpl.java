@@ -135,7 +135,7 @@ public class VehicleServiceImpl implements VehicleService {
         PageVO<VehicleWorkloadDetailVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<VehicleWorkloadDetailVO> vehicleWorkloadDetailVOS =
-                vehicleWorkloadMapper.getVehicleWorkloadDetail(compid,personalName, eppCode, placing, taskId,
+                vehicleWorkloadMapper.getVehicleWorkloadDetail(compid, personalName, eppCode, placing, taskId,
                         vehicleId, beginTime, endTime);
         PageInfo<VehicleWorkloadDetailVO> pageInfo = new PageInfo<>(vehicleWorkloadDetailVOS);
         pageVO.format(pageInfo);
@@ -165,7 +165,7 @@ public class VehicleServiceImpl implements VehicleService {
         PageVO<VehicleWorkloadSummaryVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<VehicleWorkloadSummaryVO> vehicleWorkloadSummaryVOS =
-                vehicleWorkloadMapper.getVehicleWorkloadSummary(compid, personalName,eppCode, placing, taskId,
+                vehicleWorkloadMapper.getVehicleWorkloadSummary(compid, personalName, eppCode, placing, taskId,
                         vehicleId, beginTime, endTime);
         PageInfo<VehicleWorkloadSummaryVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
@@ -187,7 +187,7 @@ public class VehicleServiceImpl implements VehicleService {
      * @return 乔亚北
      */
     @Override
-    public PageVO<VehicleWorkloadSummaryVO> getVehicleWorkloadSummaryCount(String compid,String personalName, String eppCode,
+    public PageVO<VehicleWorkloadSummaryVO> getVehicleWorkloadSummaryCount(String compid, String personalName, String eppCode,
                                                                            String placing, String taskId,
                                                                            String vehicleId,
                                                                            String beginTime, String endTime,
@@ -195,7 +195,7 @@ public class VehicleServiceImpl implements VehicleService {
         PageVO<VehicleWorkloadSummaryVO> pageVO = new PageVO<>();
 //        PageHelper.startPage(page, pageSize);
         List<VehicleWorkloadSummaryVO> vehicleWorkloadSummaryVOS =
-                vehicleWorkloadMapper.getVehicleWorkloadSummaryCount(compid, personalName,eppCode, placing, taskId,
+                vehicleWorkloadMapper.getVehicleWorkloadSummaryCount(compid, personalName, eppCode, placing, taskId,
                         vehicleId, beginTime, endTime);
         PageInfo<VehicleWorkloadSummaryVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
@@ -224,7 +224,7 @@ public class VehicleServiceImpl implements VehicleService {
         PageVO<VehicleWorkTowingPumpDetailVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize, "SendTime,taskId Desc");
         List<VehicleWorkTowingPumpDetailVO> vehicleWorkloadSummaryVOS =
-                vehicleWorkloadMapper.getVehicleWorkTowingPumpDetail(compid,personalName, eppCode, placing, taskId,
+                vehicleWorkloadMapper.getVehicleWorkTowingPumpDetail(compid, personalName, eppCode, placing, taskId,
                         vehicleId, beginTime, endTime);
         PageInfo<VehicleWorkTowingPumpDetailVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
@@ -253,7 +253,7 @@ public class VehicleServiceImpl implements VehicleService {
         PageVO<VehicleWorkTowingPumpCountVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<VehicleWorkTowingPumpCountVO> vehicleWorkloadSummaryVOS =
-                vehicleWorkloadMapper.getVehicleWorkTowingPumpCount(compid,personalName, eppCode, placing, taskId,
+                vehicleWorkloadMapper.getVehicleWorkTowingPumpCount(compid, personalName, eppCode, placing, taskId,
                         vehicleId, beginTime, endTime);
         PageInfo<VehicleWorkTowingPumpCountVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
@@ -460,6 +460,7 @@ public class VehicleServiceImpl implements VehicleService {
      * @param vehicleId    车号
      * @param beginTime    开始时间
      * @param endTime      结束时间
+     * @param isNewVersion 判断是否为新版本
      * @param page         分页
      * @param pageSize     每页显示条数
      */
@@ -475,8 +476,8 @@ public class VehicleServiceImpl implements VehicleService {
                     vehicleWorkloadMapper.getPumpTruckCount(compid, eppCode, personalName,
                             stirId, vehicleId,
                             beginTime, endTime);
-            for (PumpTruckCountVO ptc:vehicleWorkloadSummaryVOS) {
-                if (ptc.getVehicleId()==null){
+            for (PumpTruckCountVO ptc : vehicleWorkloadSummaryVOS) {
+                if (ptc.getVehicleId() == null) {
                     ptc.setVehicleId(ptc.getTypeName());
                 }
             }
@@ -518,8 +519,8 @@ public class VehicleServiceImpl implements VehicleService {
                     vehicleWorkloadMapper.getPumpOperatorTruckCount(compid, eppCode,
                             personalName, stirId, vehicleId,
                             beginTime, endTime);
-            for (PumpTruckCountVO ptc:vehicleWorkloadSummaryVOS) {
-                if (ptc.getVehicleId()==null){
+            for (PumpTruckCountVO ptc : vehicleWorkloadSummaryVOS) {
+                if (ptc.getVehicleId() == null) {
                     ptc.setVehicleId(ptc.getTypeName());
                 }
             }
@@ -549,15 +550,19 @@ public class VehicleServiceImpl implements VehicleService {
      */
     @Override
     public PageVO<PumpTruckDetailsVO> getPumpTruckDetails(String compid, String eppCode, String personalName,
-                                                          String stirId, String vehicleId,
+                                                          String stirId, String vehicleId,String typeName,
                                                           String beginTime, String endTime,
                                                           Integer page, Integer pageSize) {
         PageVO<PumpTruckDetailsVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<PumpTruckDetailsVO> vehicleWorkloadSummaryVOS =
                 vehicleWorkloadMapper.getPumpTruckDetails(compid, eppCode, personalName,
-                        stirId, vehicleId,
+                        stirId, vehicleId,typeName,
                         beginTime, endTime);
+
+        if (vehicleWorkloadSummaryVOS == null) {
+
+        }
         PageInfo<PumpTruckDetailsVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
         return pageVO;
