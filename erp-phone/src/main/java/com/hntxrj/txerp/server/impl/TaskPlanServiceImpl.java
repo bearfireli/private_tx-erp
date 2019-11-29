@@ -34,14 +34,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final StockMapper stockMapper;
     private final ConcreteMapper concreteMapper;
     private final PublicInfoMapper publicInfoMapper;
+    private StirInfoSetServiceImpl stirInfoSetMapper;
 
     @Autowired
-    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper) {
+    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
         this.concreteMapper = concreteMapper;
         this.publicInfoMapper = publicInfoMapper;
+        this.stirInfoSetMapper = stirInfoSetMapper;
     }
 
     @Override
@@ -834,8 +836,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * 调度派车中获取所有正在生产的搅拌车车辆
      * */
     @Override
-    public List<DriverShiftLEDVO> getProduceCars(String compid) {
-       return taskPlanMapper.getProduceCars(compid);
+    public List<DirverLEDListVO> getProduceCars(String compid) {
+        List<StirInfoSetVO> stirInfoSet= stirInfoSetMapper.getStirInfoSet(compid);
+        List<DirverLEDListVO> list = new ArrayList<>();
+        for (StirInfoSetVO stir:stirInfoSet) {
+            DirverLEDListVO dirverLEDListVO =new DirverLEDListVO();
+            String stirId =stir.getStirId();
+            dirverLEDListVO.setStatus(Integer.valueOf(stirId));
+            dirverLEDListVO.setStatusName(stir.getStirName());
+            dirverLEDListVO.setCars(taskPlanMapper.getProduceCars(compid,stirId));
+            list.add(dirverLEDListVO);
+        }
+       return list;
     }
 
     private String taskPlanSplicing(String compid) {
