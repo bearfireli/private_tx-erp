@@ -363,8 +363,43 @@
         order by vm.CreateTime
     </select>
 
-    <!--司机排班列表信息-->
+    <!--司机排班列表信息(老版本)-->
     <select id="getDriverShiftList" resultType="com.hntxrj.txerp.vo.DriverShiftListVO">
+        SELECT vs.id,
+        VehicleID,
+        vs.PersonalCode,
+        PersonalName,
+        WorkStarTime,
+        WorkOverTime,
+        vs.WorkClass,
+        PI_TypeName as WorkClassName,
+        Remarks
+        FROM VM_PERSONALWORKCLASS vs
+        left join VM_PersonalInfo vo ON vs.PersonalCode = vo.PersonalCode and vs.compid = vo.compid
+        left join (
+        SELECT PI_TypeName, PI_Values,compid FROM DD_PublicInfo where PI_Class = 16) pu on vs.WorkClass = pu.PI_Values
+        and vs.compid = pu.compid
+        where vs.compid = #{compid}
+        and vs.recstatus = 1
+        <if test="vehicleId !=null and vehicleId != '' ">
+            and VehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="workClass !=null and workClass != '' ">
+            and vs.Workclass = #{workClass}
+        </if>
+        <if test="personalName !=null and personalName != '' ">
+            and PersonalName like '%'+#{personalName}+'%'
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            and vs.WorkStarTime <![CDATA[ >= ]]>  #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and vs.WorkOverTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+    </select>
+    <!--司机排班列表信息(新版本)-->
+    <select id="getDriverShiftListNew" resultType="com.hntxrj.txerp.vo.DriverShiftListVO">
         SELECT vs.id,
         VehicleID,
         vs.PersonalCode,
@@ -387,12 +422,6 @@
         <if test="personalName !=null or vehicleId !=null ">
             and (PersonalName like '%'+#{personalName}+'%' or VehicleId like '%'+#{vehicleId}+'%')
         </if>
-<!--        <if test="beginTime != null and beginTime != ''">-->
-<!--            and vs.WorkStarTime <![CDATA[ >= ]]>  #{beginTime}-->
-<!--        </if>-->
-<!--        <if test="endTime != null and endTime != ''">-->
-<!--            and vs.WorkOverTime <![CDATA[ <= ]]> #{endTime}-->
-<!--        </if>-->
 
     </select>
 

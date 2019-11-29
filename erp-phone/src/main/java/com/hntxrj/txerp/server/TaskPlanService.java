@@ -131,7 +131,10 @@ public interface TaskPlanService {
      * @param pageSize     每页显示条数
      * @return 司机排班列表信息
      */
-    List<ShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalName,
+    PageVO<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalName,
+                                                 String personalCode, String workClass,
+                                                 String beginTime, String endTime, Integer page, Integer pageSize);
+    List<ShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalName,
                                                  String personalCode, String workClass,
                                                  String beginTime, String endTime, Integer page, Integer pageSize);
 

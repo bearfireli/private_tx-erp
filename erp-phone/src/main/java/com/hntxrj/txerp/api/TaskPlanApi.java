@@ -253,7 +253,7 @@ public class TaskPlanApi {
 
 
     /**
-     * 司机排班列表信息
+     * 司机排班列表信息(老版本)
      *
      * @param compid       企业ｉｄ
      * @param vehicleId    车号
@@ -273,6 +273,32 @@ public class TaskPlanApi {
                                        @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskPlanService.getDriverShiftList(compid, vehicleId, personalCode, personalName,
+                workClass,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
+    }
+
+    /**
+     * 司机排班列表信息(新版本)
+     *
+     * @param compid       企业ｉｄ
+     * @param vehicleId    车号
+     * @param personalCode 司机编号
+     * @param personalName 司机名称
+     * @param workClass    班次状态
+     * @param beginTime    　　　　　开始时间
+     * @param endTime      结束时间
+     * @param page         分页
+     * @param pageSize     每页显示条数
+     */
+    @PostMapping("getDriverShiftListNew")
+    public ResultVO getDriverShiftListNew(String compid, String vehicleId,
+                                       String personalCode, String personalName, String workClass,
+                                       Long beginTime, Long endTime,
+                                       @RequestParam(defaultValue = "1") Integer page,
+                                       @RequestParam(defaultValue = "10") Integer pageSize) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(taskPlanService.getDriverShiftListNew(compid, vehicleId, personalCode, personalName,
                 workClass,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
