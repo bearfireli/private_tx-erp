@@ -195,6 +195,28 @@ public class TaskPlanApi {
     }
 
     /**
+     * 调度派车中每个车辆的今日调度
+     *
+     * @param compid 企业代号
+     * @param vehicleId 车号
+     * @param beginTime
+     * @param endTime
+     * @param page
+     * @param pageSize
+     * @return 调度派车列表
+     */
+    @PostMapping("/getSendDetail")
+    public ResultVO getSendDetail(String compid,String vehicleId,Long beginTime,Long endTime,
+                                   @RequestParam(defaultValue = "1") Integer page,
+                                   @RequestParam(defaultValue = "10") Integer pageSize) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(taskPlanService.getSendDetail(compid, vehicleId,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)), page,pageSize));
+    }
+
+    /**
      * 小票签收审核
      *
      * @param compid  　企业id

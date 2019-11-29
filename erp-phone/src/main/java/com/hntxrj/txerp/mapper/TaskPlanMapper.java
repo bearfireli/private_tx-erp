@@ -180,4 +180,6 @@ public interface TaskPlanMapper {
     List<DriverShiftLEDVO> getProduceCars(String compid,String stirId);
 
     List<DriverShiftLEDVO> getCarsByTaskId(String compid, String taskId);
+
+    List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
 }

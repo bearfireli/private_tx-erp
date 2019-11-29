@@ -5,9 +5,13 @@ import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +37,7 @@ public interface TaskPlanService {
      */
     PageVO<TaskPlanListVO> getTaskPlanList(String beginTime, String endTime, String eppCode,
                                            String builderCode, String placing, String taskId,
-                                           Integer taskStatus, String compid, Integer verifyStatus,Integer page, Integer pageSize);
+                                           Integer taskStatus, String compid, Integer verifyStatus, Integer page, Integer pageSize);
 
 
     TaskPlanVO getTaskPlanDetail(String compid, String taskId);
@@ -51,9 +55,22 @@ public interface TaskPlanService {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    PageVO<SendCarListVO> getSendCarList(String compid,String searchName,Integer page, Integer pageSize);
+    PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize);
 
-
+    /**
+     * 调度派车中每个车辆的今日调度
+     *
+     * @param compid    企业代号
+     * @param vehicleId 车号
+     * @param beginTime
+     * @param endTime
+     * @param page
+     * @param pageSize
+     * @return 调度派车列表
+     */
+    PageVO<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime,
+                           Integer page,
+                           Integer pageSize);
 
 
     /**
@@ -78,7 +95,7 @@ public interface TaskPlanService {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, String searchName,Integer page, Integer pageSize);
+    PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, String searchName, Integer page, Integer pageSize);
 
     /**
      * 调度派车昨日方量
@@ -113,7 +130,7 @@ public interface TaskPlanService {
     /**
      * 司机App中的司机排班LED
      *
-     * @param compid        企业id
+     * @param compid 企业id
      * @return 司机排班LED
      */
     List<ProductDriverLEDListVO> getProductDriverShiftLED(String compid);
@@ -132,8 +149,8 @@ public interface TaskPlanService {
      * @return 司机排班列表信息
      */
     List<ShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalName,
-                                                 String personalCode, String workClass,
-                                                 String beginTime, String endTime, Integer page, Integer pageSize);
+                                         String personalCode, String workClass,
+                                         String beginTime, String endTime, Integer page, Integer pageSize);
 
     /**
      * 查询司机
@@ -220,11 +237,11 @@ public interface TaskPlanService {
      */
     void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO);
 
-    void updateTechnicalRequirements(String compid,String taskId, String pPNames);
+    void updateTechnicalRequirements(String compid, String taskId, String pPNames);
+
     /**
-     *
      * 修改任务单加价项目状态为0
-    * */
+     */
     void deletePPCodeStatus(String compid, String taskId);
 
     List<DirverLEDListVO> getProduceCars(String compid);
