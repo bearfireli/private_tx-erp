@@ -128,6 +128,24 @@ public interface ConsumeService {
                                                     String vehicleId, String stgId, String taskId, String stirId,
                                                     Integer page, Integer pageSize);
 
+
+
+/*    *//**
+     * 标号消耗汇总
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param taskId    任务单号
+     * @param stirId    站别代号
+     * @param page      页数
+     * @param pageSize  每页数量
+     * @return 标号消耗汇总
+     *//*
+    PageVO<ConsumeptionTotalVO> getConsumptionHistogram(String compid, String beginTime, String endTime,
+                                                    String vehicleId, String stgId, String taskId, String stirId,
+                                                    Integer page, Integer pageSize);*/
     /**
      * 原材料统计汇总
      *

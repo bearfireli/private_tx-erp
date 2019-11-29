@@ -208,6 +208,7 @@
            pp.totalSaleNum saleNumTotal,
            pp.vehiceNumber,
            pp.StirId,
+        ds.StirName as stirName,
         pp.VehicleID as vehicleID
         from PT_TaskPlan pt
          left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
@@ -238,6 +239,7 @@
                    group by PI_TypeName, PI_Values, compid) p
                   on p.PI_Values = pt.PlaceStyle
                       and pt.compid = p.compid
+        left join DD_StirInfoSet ds on ds.compid=pt.compid and ds.StirId=pp.StirId
         where pt.compid = #{compid}
         <if test="vehicleId !=null and vehicleId != '' ">
             and pp.vehicleID =#{vehicleId}
