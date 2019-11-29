@@ -623,6 +623,8 @@ public class VehicleServiceImpl implements VehicleService {
                 vehicleWorkloadMapper.getPumpTruckSum(compid, eppCode, personalName,
                         stirId, vehicleId,
                         beginTime, endTime);
+
+
         PageInfo<PumpTruckWorkloadStatisticsVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
         return pageVO;

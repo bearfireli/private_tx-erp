@@ -220,6 +220,7 @@ public class StockInServerImpl implements StockInServer {
         for (WeightSupNameVO raw : stockInWeighSupNameVOS) {
             raw.setTlWeight(Double.valueOf(raw.getTlWeight()) / 1000);
             raw.setProportion(Double.valueOf(raw.getProportion() / 1000));
+            raw.setMatName("");
             /*if(raw.getProportion()!=0){
                 String getProportion = String.valueOf(raw.getProportion());
                 getProportion = getProportion.substring(0,getProportion.indexOf(".") +3);

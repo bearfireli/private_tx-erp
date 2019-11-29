@@ -19,8 +19,4 @@ public class WeightChartVO implements Serializable {
     private String stoName;
 
 
-
-
-
-
 }

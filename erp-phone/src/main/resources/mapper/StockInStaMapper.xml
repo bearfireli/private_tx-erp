@@ -58,7 +58,7 @@
     <!--原材料过磅统计。供应商名-->
     <select id="getWeightByStoName" resultType="com.hntxrj.txerp.vo.WeightSupNameVO">
         select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as
-        Proportion,mt.MatName,sl.Sup_Name
+        Proportion,sl.Sup_Name
         from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
@@ -81,8 +81,8 @@
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
-        group by mt.MatName, sl.Sup_Name
-        ORDER BY sl.Sup_Name,mt.MatName
+        group by sl.Sup_Name
+        ORDER BY tlWeight desc
     </select>
     <!--原材料过磅统计。入库库位-->
     <select id="getWeightBySupName" resultType="com.hntxrj.txerp.vo.WeightStorageVO">

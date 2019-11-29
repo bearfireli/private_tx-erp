@@ -204,6 +204,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         return pageVO;
     }
 
+    @Override
+    public PageVO<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        // TODO: 司机只能查询自己的信息
+        List<SendCarDetailVO> sendCarDetailVOS = taskPlanMapper.getSendDetail(compid, vehicleId,beginTime,endTime);
+
+        PageInfo<SendCarDetailVO> pageInfo = new PageInfo<>(sendCarDetailVOS);
+        PageVO<SendCarDetailVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
 
     /**
      * 调度派车详情

@@ -22,6 +22,25 @@ public class FormulaApi {
         this.formulaService = formulaService;
     }
 
+
+
+
+
+    /**
+     * 任务单列表
+     * @param compid 企业id
+     * @param taskStatus 任务状态
+     * @param eppCode 工程名称代号
+     * @param placing 浇筑部位
+     * @param taskId 任务单号
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param builderCode 施工单位代号
+     * @param formulaStatus 配比开配状态    1:已开配  0：未开配
+     * @param opid 操作员
+     * @param page 当前页码
+     * @param pageSize 每页条数
+     * */
     @PostMapping("/getFormulaList")
     public ResultVO getFormulaList(Integer taskStatus,
                                    String eppCode,
