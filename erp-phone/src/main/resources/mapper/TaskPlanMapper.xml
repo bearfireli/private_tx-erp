@@ -329,6 +329,9 @@
         where vm.compid = #{compid} and vm.RecStatus=1 and dd.RecStatus=1
         and VehicleClass ='1'
         and vm.VehicleStatus = 3
+        <if test="stirId !=null and stirId != '' ">
+            and vm.StirId =#{stirId}
+        </if>
         order by vm.CreateTime
     </select>
 
