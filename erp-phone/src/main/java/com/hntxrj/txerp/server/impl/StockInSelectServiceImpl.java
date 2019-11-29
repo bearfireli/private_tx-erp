@@ -28,7 +28,7 @@ public class StockInSelectServiceImpl implements StockInSelectService {
     }
 
     /**
-     /*原材料过磅查询
+     *原材料过磅查询
      * @param compid    企业id
      * @param beginTime 开始时间
      * @param endTime   结束时间

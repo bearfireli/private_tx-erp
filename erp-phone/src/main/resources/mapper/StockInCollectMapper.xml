@@ -3,15 +3,15 @@
 <mapper namespace="com.hntxrj.txerp.mapper.StockInCollectMapper">
     <!--原材料明细汇总-->
     <select id="getMatDetailsList" resultType="com.hntxrj.txerp.vo.StockInCollectVO">
-        select mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,sum(si.ClWeight) as clWeight,si.TaWeight,mt.MatSpecs
+        select mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,sum(si.ClWeight) as clWeight,si.TaWeight,mt.MatSpecs,si.NetWeight as netWeight
         from MP_StockIn si left join MP_MaterialInfor mt on si.compid = mt.compid and si.MatCode = mt.MatCode
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         where si.compid = #{compid} and si.RecStatus=1
         <if test="vehicleId != null">
             and vehicleId like '%'+#{vehicleId}+'%'
         </if>
-        <if test="MatName != null">
-            and MatName like '%'+#{MatName}+'%'
+        <if test="matName != null">
+            and MatName = #{matName}
         </if>
         <if test="supName != null">
             and Sup_Name like '%'+#{supName}+'%'
@@ -22,7 +22,7 @@
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
-        group by mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,si.TaWeight,mt.MatSpecs
+        group by mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,si.TaWeight,mt.MatSpecs,si.NetWeight
     </select>
     <!--原材料明细汇总合计入库量-->
     <select id="getStockInCollectClose" resultType="com.hntxrj.txerp.vo.StockInCollectCloseVO">
