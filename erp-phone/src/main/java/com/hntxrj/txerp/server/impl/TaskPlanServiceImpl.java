@@ -465,9 +465,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     }
 
-
     /**
-     * 司机排班列表信息
+     * 司机排班列表信息(老版本)
      *
      * @param compid       企业ｉｄ
      * @param vehicleId    车号
@@ -480,7 +479,35 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * @return 司机排班列表信息
      */
     @Override
-    public List<ShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode,
+    public PageVO<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode,
+                                                        String personalName,
+                                                        String workClass,
+                                                        String beginTime, String endTime,
+                                                        Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize, "WorkStarTime DESC");
+        List<DriverShiftListVO> sendCarList = taskPlanMapper.getDriverShiftList(compid, vehicleId,
+                personalCode, personalName, workClass, beginTime, endTime);
+        PageInfo<DriverShiftListVO> pageInfo = new PageInfo<>(sendCarList);
+        PageVO<DriverShiftListVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    /**
+     * 司机排班列表信息(新版本)
+     *
+     * @param compid       企业ｉｄ
+     * @param vehicleId    车号
+     * @param personalCode 司机
+     * @param workClass    班次状态
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     * @param page         分页
+     * @param pageSize     每页显示条数
+     * @return 司机排班列表信息
+     */
+    @Override
+    public List<ShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode,
                                                         String personalName,
                                                         String workClass,
                                                         String beginTime, String endTime,
@@ -493,7 +520,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 shiftListVO.setWorkClass(d.getCode());
                 shiftListVO.setWorkName(d.getName());
                 workClass =d.getCode();
-                shiftListVO.setShiftList(taskPlanMapper.getDriverShiftList(compid, vehicleId,
+                shiftListVO.setShiftList(taskPlanMapper.getDriverShiftListNew(compid, vehicleId,
                         personalCode, personalName, workClass, beginTime, endTime));
                 list.add(shiftListVO);
             }

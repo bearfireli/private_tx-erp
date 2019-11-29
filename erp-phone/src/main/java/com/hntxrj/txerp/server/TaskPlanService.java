@@ -148,9 +148,12 @@ public interface TaskPlanService {
      * @param pageSize     每页显示条数
      * @return 司机排班列表信息
      */
-    List<ShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalName,
-                                         String personalCode, String workClass,
-                                         String beginTime, String endTime, Integer page, Integer pageSize);
+    PageVO<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalName,
+                                                 String personalCode, String workClass,
+                                                 String beginTime, String endTime, Integer page, Integer pageSize);
+    List<ShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalName,
+                                                 String personalCode, String workClass,
+                                                 String beginTime, String endTime, Integer page, Integer pageSize);
 
     /**
      * 查询司机
@@ -237,11 +240,11 @@ public interface TaskPlanService {
      */
     void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO);
 
-    void updateTechnicalRequirements(String compid, String taskId, String pPNames);
-
+    void updateTechnicalRequirements(String compid,String taskId, String pPNames);
     /**
+     *
      * 修改任务单加价项目状态为0
-     */
+    * */
     void deletePPCodeStatus(String compid, String taskId);
 
     List<DirverLEDListVO> getProduceCars(String compid);

@@ -60,7 +60,7 @@ public interface TaskPlanMapper {
      * @param beginTime    　　　　　开始时间
      * @param endTime      结束时间
      */
-    List<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode, String personalName,
+    List<DriverShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode, String personalName,
                                                String workClass, String beginTime, String endTime);
 
     /**
@@ -181,5 +181,5 @@ public interface TaskPlanMapper {
 
     List<DriverShiftLEDVO> getCarsByTaskId(String compid, String taskId);
 
-    List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
+    List<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode, String personalName, String workClass, String beginTime, String endTime);
 }
