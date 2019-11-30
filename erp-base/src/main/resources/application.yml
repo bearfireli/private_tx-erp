@@ -43,7 +43,7 @@ pagehelper:
 
 
 app:
-  workspace: /home/css/IdeaProjects
+  workspace: /home/qyb/IdeaProjects
   afterSaleLog:
     upload:
       path: ${app.workspace}/upload/
@@ -52,8 +52,7 @@ app:
   pay:
     imgFilePath: ${app.workspace}/upload/payImgPath/
   feedback:
-    imgFilePath: ${app.workspace}/pic
-  host: http://192.168.31.198:8088
+    imgFilePath: ${app.workspace}/upload/feedbackImgPath/
+  host: https://dev.erp.hntxrj.com
 server:
   port: 9501
-
