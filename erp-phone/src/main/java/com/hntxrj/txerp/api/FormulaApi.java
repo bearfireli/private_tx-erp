@@ -27,7 +27,7 @@ public class FormulaApi {
 
 
     /**
-     * 任务单列表
+     * 生活配比列表
      * @param compid 企业id
      * @param taskStatus 任务状态
      * @param eppCode 工程名称代号

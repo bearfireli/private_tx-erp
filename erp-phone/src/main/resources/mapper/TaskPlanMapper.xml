@@ -324,9 +324,6 @@
           and pt.RecStatus = 1
           and pt.TaskStatus = 1
           and DeleteMark = 0
-        <if test="searchName != null and searchName != '' ">
-          and pt.TaskId like '%'+#{searchName}+'%' or pt.Placing like '%'+#{searchName}+'%' or sm.EPPName like '%'+#{searchName}+'%'
-        </if>
     </select>
     <select id="getSendCarTodayNum" resultType="com.hntxrj.txerp.vo.SendCarTotalNumVO">
         select sum(ti.ProduceNum) as todayTotalNum

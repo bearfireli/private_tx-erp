@@ -95,7 +95,7 @@ public interface TaskPlanService {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, String searchName, Integer page, Integer pageSize);
+    PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, Integer page, Integer pageSize);
 
     /**
      * 调度派车昨日方量

@@ -240,8 +240,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * @return 调度派车列表
      */
     @Override
-    public PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, String searchName, Integer page, Integer pageSize) {
-        List<SendCarTotalNumVO> sendCarList = taskPlanMapper.getSendCarCountNum(compid, searchName);
+    public PageVO<SendCarTotalNumVO> getSendCarCountNum(String compid, Integer page, Integer pageSize) {
+        List<SendCarTotalNumVO> sendCarList = taskPlanMapper.getSendCarCountNum(compid);
         PageInfo<SendCarTotalNumVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarTotalNumVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

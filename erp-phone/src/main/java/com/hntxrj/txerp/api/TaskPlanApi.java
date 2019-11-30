@@ -392,10 +392,9 @@ public class TaskPlanApi {
      */
     @PostMapping("/getSendCarCountNum")
     public ResultVO getSendCarCountNum(String compid,
-                                       @RequestParam(required = false) String searchName,
                                        @RequestParam(defaultValue = "1") Integer page,
                                        @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(taskPlanService.getSendCarCountNum(compid,searchName, page, pageSize));
+        return ResultVO.create(taskPlanService.getSendCarCountNum(compid,page, pageSize));
     }
 
     /**

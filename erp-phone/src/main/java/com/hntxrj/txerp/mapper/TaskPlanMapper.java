@@ -109,7 +109,7 @@ public interface TaskPlanMapper {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    List<SendCarTotalNumVO> getSendCarCountNum(String compid,String searchName);
+    List<SendCarTotalNumVO> getSendCarCountNum(String compid);
 
     /**
      * 调度派车今日方量
