@@ -558,10 +558,6 @@ public class VehicleServiceImpl implements VehicleService {
                 vehicleWorkloadMapper.getPumpTruckDetails(compid, eppCode, personalName,
                         stirId, vehicleId,typeName,taskId,
                         beginTime, endTime);
-
-        if (vehicleWorkloadSummaryVOS == null) {
-
-        }
         PageInfo<PumpTruckDetailsVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
         return pageVO;

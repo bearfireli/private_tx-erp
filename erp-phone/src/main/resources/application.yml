@@ -47,14 +47,13 @@ app:
     # erp 企业类型(用于判断是否走第三方接口的存储过程)
     erptype: 1
     # 合同附件上传路径
-    contractAdjunctPath: /home/css/AndroidStudioProjects/spterp_driver_app/loadimage
+    contractAdjunctPath: /Users/haoranliu/MobleWebERP/SourceDirectory/spterp/log/
     # 任务单附件上传路径
-    taskPlanAdjunctPath: /home/css/AndroidStudioProjects/spterp_driver_app/loadimage
-#    taskSaleInvoiceUploadPath: /Users/haoranliu/IdeaProjects/spterp-phone/upload/
-    taskSaleInvoiceUploadPath: /home/css/AndroidStudioProjects/spterp_driver_app/loadimage
+    taskPlanAdjunctPath: /Users/haoranliu/MobleWebERP/SourceDirectory/spterp/log/
+    taskSaleInvoiceUploadPath: /Users/haoranliu/IdeaProjects/spterp-phone/upload/
   cloud:
     host: http://localhost:9501
-#    host: http://192.168.31.8:9501
+    #    host: http://192.168.31.8:9501
     auth: ${app.cloud.host}/user/tokenUse
 logging:
   file:

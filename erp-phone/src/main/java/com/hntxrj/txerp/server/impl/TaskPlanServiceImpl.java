@@ -916,7 +916,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         return taskid;
     }
 
-    //根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
+    //派车LED模块：根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
     private DirverLEDListVO getDirverLEDListVO(DirverLEDListVO driverLEDListVO, String compid, String stirId, String vehicleStatus, String vehicleClass) {
         List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
         if (driverShiftLED != null) {
