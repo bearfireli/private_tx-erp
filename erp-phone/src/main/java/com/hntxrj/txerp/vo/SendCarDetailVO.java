@@ -28,5 +28,6 @@ public class SendCarDetailVO implements Serializable {
     private String arriveTime;
 
     private String vehicleID;
+
     private String stirName;
 }

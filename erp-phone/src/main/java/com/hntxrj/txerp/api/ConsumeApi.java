@@ -95,7 +95,7 @@ public class ConsumeApi {
     }
 
 
-   /* *//**
+    /**
      * 标号消耗汇总柱状图
      *
      * @param compid    企业id
@@ -105,21 +105,19 @@ public class ConsumeApi {
      * @param taskId    任务单号
      * @param stgId     砼标号
      * @param stirId    站别代号
-     * @param page      页数
-     * @param pageSize  每页数量
      * @return 标号消耗汇总
-     *//*
+     */
     @PostMapping("/getConsumptionHistogram")
     public ResultVO getConsumptionHistogram(String compid, Long beginTime, Long endTime,
-                                        String vehicleId, String stgId, String taskId, String stirId,
-                                        Integer page, Integer pageSize) {
+                                        String vehicleId, String stgId, String taskId, String stirId
+                                       ) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getConsumptionHistogram(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
-                vehicleId,stgId , taskId, stirId, page, pageSize));
+                vehicleId,stgId , taskId, stirId));
 
-    }*/
+    }
 
     /**
      * 查询材料名

@@ -197,6 +197,27 @@ public class ConsumeServiceImpl implements ConsumeService {
         return pageVO;
     }
 
+
+    /**
+     * 标号消耗汇总柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param taskId    任务单号
+     * @param stirId    站别代号
+     * @return 标号消耗汇总
+     */
+    @Override
+    public List<ConsumptionHistogram> getConsumptionHistogram(String compid, String beginTime, String endTime, String vehicleId, String stgId, String taskId, String stirId) {
+
+        List<ConsumptionHistogram> consumptionHistograms = consumeMapper.getConsumptionHistogram(compid, beginTime, endTime,
+                vehicleId, stgId, taskId, stirId);
+
+        return consumptionHistograms;
+    }
+
     /**
      * 原材料统计汇总
      *

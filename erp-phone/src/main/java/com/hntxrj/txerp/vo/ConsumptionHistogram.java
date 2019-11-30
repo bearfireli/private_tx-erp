@@ -9,4 +9,10 @@ import java.io.Serializable;
 @Data
 public class ConsumptionHistogram implements Serializable {
 
+    //标号
+    private String stgId;
+
+    //方量
+    private double num;
+
 }

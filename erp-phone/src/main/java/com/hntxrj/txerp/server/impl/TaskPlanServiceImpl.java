@@ -365,6 +365,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         List<DriverShiftLEDVO> firstStirIdCars = new ArrayList<>();  //所有1号线正在生产的集合
         List<DriverShiftLEDVO> secondStirIdCars = new ArrayList<>();  //所有2号线正在生产的集合
         List<DriverShiftLEDVO> thirdStirIdCars = new ArrayList<>();  //所有3号线正在生产的集合
+        List<DriverShiftLEDVO> fourthStirIdCars = new ArrayList<>();  //所有4号线正在生产的集合
+        List<DriverShiftLEDVO> fifthStirIdCars = new ArrayList<>();  //所有5号线正在生产的集合
         driverLEDListVO.setStatus(3);
         driverLEDListVO.setStatusName("正在生产");
         vehicleStatus = "3";
@@ -382,6 +384,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     secondStirIdCars.add(driverShiftLEDVO);
                 } else if ("3".equals(driverShiftLEDVO.getStirId())) {
                     thirdStirIdCars.add(driverShiftLEDVO);
+                }else if ("4".equals(driverShiftLEDVO.getStirId())) {
+                    fourthStirIdCars.add(driverShiftLEDVO);
+                }else if ("5".equals(driverShiftLEDVO.getStirId())) {
+                    fifthStirIdCars.add(driverShiftLEDVO);
                 }
             }
         }
@@ -389,6 +395,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         driverLEDListVO.setFirstStirIdCars(firstStirIdCars);
         driverLEDListVO.setSecondStirIdCars(secondStirIdCars);
         driverLEDListVO.setThirdStirIdCars(thirdStirIdCars);
+        driverLEDListVO.setFourthStirIdCars(fourthStirIdCars);
+        driverLEDListVO.setFifthStirIdCars(fifthStirIdCars);
         list.add(driverLEDListVO);
 
         DirverLEDListVO driverLEDListVOs = new DirverLEDListVO();
