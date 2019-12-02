@@ -149,7 +149,7 @@
         Placing,
         PreNum,
         PI_TypeName as PlaceStyleName,
-        pp.totalSaleNum SaleNumTotal,
+        pp.totalSaleNum saleNumTotal,
         pp.vehiceNumber,
         VehicleStatus,
         pp.RemnantNum remnantNum,
