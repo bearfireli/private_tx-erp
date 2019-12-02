@@ -59,6 +59,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             if (!"".equals(t.getPreTime())) {
                 t.setPreTime(t.getPreTime().substring(0, 16));
             }
+            if (t.getOverNum() == null) {
+                t.setOverNum(new BigDecimal(0.0));
+            }
         }
         PageInfo<TaskPlanListVO> pageInfo = new PageInfo<>(taskPlanListVOList);
         PageVO<TaskPlanListVO> pageVO = new PageVO<>();

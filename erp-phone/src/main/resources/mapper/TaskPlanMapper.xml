@@ -19,7 +19,7 @@
         tp.PreTime,
         tp.TaskOverTime,
         tp.PreNum,
-        sum(ProduceNum)overNum,
+        sum(ProduceNum) overNum,
         tp.ContractUID,
         tp.CContractCode,
         tp.TaskStatus,
