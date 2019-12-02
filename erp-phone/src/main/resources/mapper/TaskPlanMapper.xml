@@ -172,7 +172,6 @@
         sum(NumberOfSignings) numberOfSignings
         from PT_TaskSaleInvoice
         where InvoiceType != 6
-        and upStatus=1
         and VehicleStatus not in ('8', '9', '10', '11')
         and VehicleStatus is not null
         group by TaskId, compid, VehicleStatus) pp
