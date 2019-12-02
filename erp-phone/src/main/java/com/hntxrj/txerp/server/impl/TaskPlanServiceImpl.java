@@ -197,6 +197,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             //获取每个任务单下的所有搅拌车车辆
             List<DriverShiftLEDVO> cars = taskPlanMapper.getCarsByTaskId(compid, sendCarListVO.getTaskId());
             sendCarListVO.setCars(cars);
+            if (sendCarListVO.getTotalProduceNum() == null) {
+                sendCarListVO.setTotalProduceNum("0.0");
+            }
         }
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarListVO> pageVO = new PageVO<>();
