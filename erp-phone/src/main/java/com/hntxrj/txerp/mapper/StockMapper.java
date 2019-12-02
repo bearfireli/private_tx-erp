@@ -52,7 +52,7 @@ public interface StockMapper {
     List<WeightVechicIdVO> getWeightByVechicId(String empName, String compid, String vehicleId, String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize);
 
     /**
-     /*原材料过磅统计。供应商名
+     /*原材料过磅统计。供应商名（老版本）
      * @param empName    过磅员
      * @param compid    企业id
      * @param vehicleId 车号
@@ -65,6 +65,22 @@ public interface StockMapper {
      * @return 原材料统计汇总
      */
     List<WeightSupNameVO> getWeightByStoName(String empName, String compid, String vehicleId, String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize);
+
+
+    /**
+     /*原材料过磅统计。供应商名(新版本)
+     * @param empName    过磅员
+     * @param compid    企业id
+     * @param vehicleId 车号
+     * @param stoName  入库库位
+     * @param supName    供货商
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param page      页数
+     * @param pageSize  每页数量
+     * @return 原材料统计汇总
+     */
+    List<WeightSupNameVO> getWeightByStoNameNew(String empName, String compid, String vehicleId, String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize);
 
     /**
      /*原材料过磅统计。入库库位

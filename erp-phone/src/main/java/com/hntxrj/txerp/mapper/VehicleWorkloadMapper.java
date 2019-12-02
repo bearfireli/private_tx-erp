@@ -117,7 +117,7 @@ public interface VehicleWorkloadMapper {
                                                                     String beginTime, String endTime);
 
     /**
-     * 司机砼运输汇总
+     * 司机砼运输汇总（老版本）
      *
      * @param compid       企业
      * @param eppCode      工程代码
@@ -133,8 +133,26 @@ public interface VehicleWorkloadMapper {
                                                                    String vehicleId, String personalName,
                                                                    String beginTime, String endTime);
 
+
     /**
-     * 司机拖水拖泵汇总
+     * 司机砼运输汇总(新版本)
+     *
+     * @param compid       企业
+     * @param eppCode      工程代码
+     * @param placing      浇筑部位
+     * @param taskId       任务单号
+     * @param vehicleId    车号
+     * @param personalName 司机
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     */
+    List<DriverTransportationCountVO> getDriverTransportationCountNew(String compid, String eppCode,
+                                                                   String placing, String taskId,
+                                                                   String vehicleId, String personalName,
+                                                                   String beginTime, String endTime);
+
+    /**
+     * 司机拖水拖泵汇总（老版本）
      *
      * @param compid       企业
      * @param eppCode      工程代码
@@ -146,6 +164,23 @@ public interface VehicleWorkloadMapper {
      * @param endTime      结束时间
      */
     List<DriverTransportationCountVO> getDriverDragPumpCount(String compid, String eppCode, String placing,
+                                                             String taskId, String vehicleId,
+                                                             String personalName,
+                                                             String beginTime, String endTime);
+
+    /**
+     * 司机拖水拖泵汇总(新版本)
+     *
+     * @param compid       企业
+     * @param eppCode      工程代码
+     * @param placing      浇筑部位
+     * @param taskId       任务单号
+     * @param vehicleId    车号
+     * @param personalName 司机
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     */
+    List<DriverTransportationCountVO> getDriverDragPumpCountNew(String compid, String eppCode, String placing,
                                                              String taskId, String vehicleId,
                                                              String personalName,
                                                              String beginTime, String endTime);
@@ -165,7 +200,7 @@ public interface VehicleWorkloadMapper {
                                              String beginTime, String endTime);
 
     /**
-     * 泵工汇总统计
+     * 泵工汇总统计（老版本）
      * @param compid  企业
      * @param eppCode  工程代码
      * @param personalName 司机
@@ -175,6 +210,22 @@ public interface VehicleWorkloadMapper {
      * @param endTime    结束时间
      */
     List<PumpTruckCountVO> getPumpOperatorTruckCount(String compid, String eppCode,
+                                                     String personalName, String stirId,
+                                                     String vehicleId,String taskId,
+                                                     String beginTime, String endTime);
+
+
+    /**
+     * 泵工汇总统计(新版本)
+     * @param compid  企业
+     * @param eppCode  工程代码
+     * @param personalName 司机
+     * @param stirId    楼号
+     * @param vehicleId  车号
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
+     */
+    List<PumpTruckCountVO> getPumpOperatorTruckCountNew(String compid, String eppCode,
                                                      String personalName, String stirId,
                                                      String vehicleId,String taskId,
                                                      String beginTime, String endTime);
@@ -205,7 +256,7 @@ public interface VehicleWorkloadMapper {
      * @param endTime      结束时间
      */
     List<PumpTruckWorkloadStatisticsVO> getPumpTruckWorkloadStatistics(String compid, String eppCode,
-                                                                       String personalName, String stirId,
+                                                                       String personalName,String taskId, String stirId,
                                                                        String vehicleId,
                                                                        String beginTime, String endTime);
 

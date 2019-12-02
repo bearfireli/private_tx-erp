@@ -207,7 +207,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public PageVO<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        // TODO: 司机只能查询自己的信息
         List<SendCarDetailVO> sendCarDetailVOS = taskPlanMapper.getSendDetail(compid, vehicleId,beginTime,endTime);
 
         PageInfo<SendCarDetailVO> pageInfo = new PageInfo<>(sendCarDetailVOS);
@@ -659,6 +658,14 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type) {
         //根据传递过来的type，判断查询的是今日，昨日还是本月的方量。
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        // TODO: 前台处理月份累加机制。
+        String _tmpMo = endTime.substring(5,7);
+        if("13".equals(_tmpMo)){
+            Integer year = Integer.parseInt(endTime.substring(0,4));
+            endTime = endTime.replace(year.toString() + "-13", String.valueOf(year +1) + "-01");
+        }
+
         if (type == 3) {
             int queryType = 2;
             QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);

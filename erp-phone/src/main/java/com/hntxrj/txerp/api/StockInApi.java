@@ -334,14 +334,16 @@ public class StockInApi {
      * @param page      页数
      * @param pageSize  每页数量
      * @param stoName   入库库位
+     * @param isNewVersion   是否是新版本。 0：不是新版本， 1：是新版本
      * @return 原材料统计汇总
      */
     @PostMapping("/getWeightByStoName")
     public ResultVO getWeighByStoName(String empName, String compid, String vehicleId,
-                                      String stoName, String supName, Long beginTime, Long endTime, @RequestParam(defaultValue = "1") Integer page,
+                                      String stoName, String supName, Long beginTime, Long endTime,
+                                      @RequestParam(defaultValue = "0") String isNewVersion,@RequestParam(defaultValue = "1") Integer page,
                                       @RequestParam(defaultValue = "10")Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(stockInServer.getWeightByStoName(empName, compid, vehicleId, stoName, supName,
+        return ResultVO.create(stockInServer.getWeightByStoName(empName, compid, vehicleId, stoName, supName,isNewVersion,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
@@ -460,7 +462,7 @@ public class StockInApi {
      * @param supName   供货商
      * @param empName   过磅员
      * @param stoName   入库库位
-     * @param matType   材料分类  1:骨料  2：粉料  3：其他
+     * @param matType   材料分类  1:骨料  2：粉料  3：外加剂
      */
     @PostMapping("/getHistogramByMat")
     public ResultVO getHistogramByMat(String empName, String compid, String vehicleId,

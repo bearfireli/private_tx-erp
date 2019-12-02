@@ -37,7 +37,7 @@ public class PumpTruckDetailsVO implements Serializable {
     /**
      *任务单号
      */
-    private String taskId;
+    private String taskid;
     /**
      *单价
      */

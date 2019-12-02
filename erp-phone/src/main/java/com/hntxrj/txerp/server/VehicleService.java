@@ -231,7 +231,7 @@ public interface VehicleService {
      */
     PageVO<DriverTransportationCountVO> getDriverTransportationCount(String compid, String eppCode,
                                                                      String placing, String taskId,
-                                                                     String vehicleId, String personalName,
+                                                                     String vehicleId, String personalName,String isNewVersion,
                                                                      String beginTime, String endTime,
                                                                      Integer page, Integer pageSize);
 
@@ -291,7 +291,7 @@ public interface VehicleService {
      */
     PageVO<DriverTransportationCountVO> getDriverDragPumpCount(String compid, String eppCode,
                                                                String placing, String taskId,
-                                                               String vehicleId, String personalName,
+                                                               String vehicleId, String personalName,String isNewVersion,
                                                                String beginTime, String endTime,
                                                                Integer page, Integer pageSize);
 
@@ -327,7 +327,7 @@ public interface VehicleService {
      */
     PageVO<PumpTruckCountVO> getPumpOperatorTruckCount(String compid, String eppCode,
                                                        String personalName,
-                                                       String stirId, String vehicleId,String taskId,
+                                                       String stirId, String vehicleId,String taskId,String isNewVersion,
                                                        String beginTime, String endTime,
                                                        Integer page, Integer pageSize) throws ErpException;
 
@@ -364,7 +364,7 @@ public interface VehicleService {
      */
     PageVO<PumpTruckWorkloadStatisticsVO> getPumpTruckWorkloadStatistics(String compid,
                                                                          String eppCode,
-                                                                         String personalName,
+                                                                         String personalName,String taskId,
                                                                          String stirId, String vehicleId,
                                                                          String beginTime, String endTime,
                                                                          Integer page, Integer pageSize);

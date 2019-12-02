@@ -55,8 +55,41 @@
         group by si.VehicleID
         ORDER BY si.VehicleID
     </select>
-    <!--原材料过磅统计。供应商名-->
+    <!--原材料过磅统计。供应商名（老版本）-->
     <select id="getWeightByStoName" resultType="com.hntxrj.txerp.vo.WeightSupNameVO">
+        select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as
+        Proportion,mt.MatName,sl.Sup_Name
+        from MP_StockIn si
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+        left join (select   MatName + '(' +MatSpecs+ ')' AS matName,compid,MatCode,empName from MP_MaterialInfor )
+        mt on si.compid =mt.compid and si.MatCode =mt.MatCode
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="empName != null">
+            and mt.empName like '%'+#{empName}+'%'
+        </if>
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="stoName != null">
+            and Sto_Name like '%'+#{stoName}+'%'
+        </if>
+
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        group by mt.MatName, sl.Sup_Name
+        ORDER BY sl.Sup_Name,mt.MatName
+    </select>
+
+
+
+
+    <!--原材料过磅统计。供应商名(新版本)-->
+    <select id="getWeightByStoNameNew" resultType="com.hntxrj.txerp.vo.WeightSupNameVO">
         select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as
         Proportion,sl.Sup_Name
         from MP_StockIn si

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,30 +19,32 @@ import java.util.List;
 public class StockInServerImpl implements StockInServer {
     private final StockInDao stockInDao;
     private final StockMapper stockInWeighmatNsMapper;
+
     @Autowired
-    public StockInServerImpl(StockInDao stockInDao,StockMapper stockInWeighmatNsMapper) {
+    public StockInServerImpl(StockInDao stockInDao, StockMapper stockInWeighmatNsMapper) {
         this.stockInDao = stockInDao;
         this.stockInWeighmatNsMapper = stockInWeighmatNsMapper;
     }
 
     /**
      * 材料过磅统计
+     *
      * @param mark
-     * @param sup_linkMan  联系人
-     * @param mu 母公司
-     * @param empName  过磅员
-     * @param vehicleID 车号
-     * @param for_name 运输商
-     * @param matNS 入库库位
-     * @param matNS 材料名称
-     * @param sup_name 供货商
-     * @param stI_status 记录状态
-     * @param beginTime 开始时间
-     * @param endTime 结束时间
-     * @param compid 当前登录用户的企业
-     * @param opid  登录用户
-     * @param currPage 当前页
-     * @param pageSize 页长度
+     * @param sup_linkMan 联系人
+     * @param mu          母公司
+     * @param empName     过磅员
+     * @param vehicleID   车号
+     * @param for_name    运输商
+     * @param matNS       入库库位
+     * @param matNS       材料名称
+     * @param sup_name    供货商
+     * @param stI_status  记录状态
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param compid      当前登录用户的企业
+     * @param opid        登录用户
+     * @param currPage    当前页
+     * @param pageSize    页长度
      * @return json
      */
     @Override
@@ -214,9 +217,17 @@ public class StockInServerImpl implements StockInServer {
      * @return 原材料统计汇总
      */
     @Override
-    public PageVO<WeightSupNameVO> getWeightByStoName(String empName, String compid, String vehicleId, String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize) {
-        PageHelper.startPage(page, pageSize);
-        List<WeightSupNameVO> stockInWeighSupNameVOS = stockInWeighmatNsMapper.getWeightByStoName(empName, compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
+    public PageVO<WeightSupNameVO> getWeightByStoName(String empName, String compid, String vehicleId, String stoName, String supName, String isNewVersion, String beginTime, String endTime, Integer page, Integer pageSize) {
+        List<WeightSupNameVO> stockInWeighSupNameVOS;
+        if ("1".equals(isNewVersion)) {
+            //说明是版本材料统计
+            PageHelper.startPage(page, pageSize);
+            stockInWeighSupNameVOS = stockInWeighmatNsMapper.getWeightByStoNameNew(empName, compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
+        } else {
+            PageHelper.startPage(page, pageSize);
+            stockInWeighSupNameVOS = stockInWeighmatNsMapper.getWeightByStoName(empName, compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
+        }
+
         for (WeightSupNameVO raw : stockInWeighSupNameVOS) {
             raw.setTlWeight(Double.valueOf(raw.getTlWeight()) / 1000);
             raw.setProportion(Double.valueOf(raw.getProportion() / 1000));
