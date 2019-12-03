@@ -37,7 +37,7 @@
     <!--删除砼标号-->
     <delete id="deleteStgIdManage">
        update SM_GradePriceInfo
-       set RecStatus=0 and UpDownMark=0
+       set RecStatus=0 , UpDownMark=0
        where compid=#{compid} and StgId=#{stgId}
     </delete>
 </mapper>
