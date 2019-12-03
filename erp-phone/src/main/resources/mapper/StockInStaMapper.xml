@@ -325,13 +325,13 @@
         </if>
         <if test="matType != null">
             <if test="matType == 1">
-            and dd.PI_Values='S' or dd.PI_Values='G'
+            and (dd.PI_Values='S' or dd.PI_Values='G')
             </if>
             <if test="matType == 2">
-                and dd.PI_Values='C' or dd.PI_Values='P' or dd.PI_Values='F' or dd.PI_Values='CY'
+                and (dd.PI_Values='C' or dd.PI_Values='P' or dd.PI_Values='F' or dd.PI_Values='CY')
             </if>
             <if test="matType == 3">
-                and dd.PI_Values='AE'
+                and (dd.PI_Values='AE')
             </if>
 
         </if>
