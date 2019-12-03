@@ -10,11 +10,11 @@
         <if test="vehicleId != null">
             and vehicleId like '%'+#{vehicleId}+'%'
         </if>
-        <if test="matName != null">
+        <if test="matName != null and matName!=''">
             and MatName = #{matName}
         </if>
         <if test="supName != null">
-            and Sup_Name like '%'+#{supName}+'%'
+            and Sup_Name = #{supName}
         </if>
         <if test="matSpecs != null">
             and MatSpecs like '%'+#{matSpecs}+'%'

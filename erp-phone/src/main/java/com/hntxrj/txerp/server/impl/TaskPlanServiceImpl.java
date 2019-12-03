@@ -59,6 +59,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             if (!"".equals(t.getPreTime())) {
                 t.setPreTime(t.getPreTime().substring(0, 16));
             }
+            if (t.getOverNum() == null) {
+                t.setOverNum(new BigDecimal(0.0));
+            }
         }
         PageInfo<TaskPlanListVO> pageInfo = new PageInfo<>(taskPlanListVOList);
         PageVO<TaskPlanListVO> pageVO = new PageVO<>();
@@ -197,6 +200,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             //获取每个任务单下的所有搅拌车车辆
             List<DriverShiftLEDVO> cars = taskPlanMapper.getCarsByTaskId(compid, sendCarListVO.getTaskId());
             sendCarListVO.setCars(cars);
+            if (sendCarListVO.getTotalProduceNum() == null) {
+                sendCarListVO.setTotalProduceNum("0.0");
+            }
         }
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarListVO> pageVO = new PageVO<>();
