@@ -14,7 +14,7 @@ public interface PartsMapper {
                                String department, String requestNumber,
                                String requestStatus, String requestDep,String verifyStatusOne);
 
-    List<UserVO> getBuyerList(String compid);
+    List<UserVO> getBuyerList(String compid,String searchName);
 
     List<DepartmentVO> getDepartmentList(String compid);
 

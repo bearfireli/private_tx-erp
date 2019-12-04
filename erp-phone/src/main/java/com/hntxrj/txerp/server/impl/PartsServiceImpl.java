@@ -61,11 +61,11 @@ public class PartsServiceImpl implements PartsService {
      * @return 申请人列表
      */
     @Override
-    public PageVO<UserVO> getBuyerList(String compid, Integer page, Integer pageSize) {
+    public PageVO<UserVO> getBuyerList(String compid, String searchName,Integer page, Integer pageSize) {
         PageVO<UserVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<UserVO> buyerVOS = partsMapper.getBuyerList(
-                compid);
+                compid,searchName);
         PageInfo<UserVO> pageInfo = new PageInfo<>(buyerVOS);
         pageVO.format(pageInfo);
         return pageVO;

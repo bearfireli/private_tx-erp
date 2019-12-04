@@ -36,7 +36,7 @@ public interface PartsService {
      * @param pageSize     每页显示条数
      * @return        申请人列表
      */
-    PageVO<UserVO> getBuyerList(String compid, Integer page, Integer pageSize);
+    PageVO<UserVO> getBuyerList(String compid,String searchName, Integer page, Integer pageSize);
 
     PageVO<DepartmentVO> getDepartmentList(String compid, Integer page, Integer pageSize);
 
