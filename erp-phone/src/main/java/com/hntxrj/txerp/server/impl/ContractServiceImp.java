@@ -490,7 +490,7 @@ public class ContractServiceImp implements ContractService {
     }
 
     @Override
-    public void addContract(String contractId, String salesman, Date signDate, Date effectDate,
+    public void addContract(String contractId, String salesman, Date signDate, Date expiresDate,
                             Integer contractType, Integer priceStyle, String eppCode,
                             String builderCode, BigDecimal contractNum, BigDecimal preNum,
                             BigDecimal preMoney, String remarks, String compid) throws ErpException {
@@ -520,7 +520,7 @@ public class ContractServiceImp implements ContractService {
         contractMaster.setContractStatus(0);
         contractMaster.setContractType(contractType);
         contractMaster.setSalesman(salesman);
-        contractMaster.setEffectDate(effectDate);
+        contractMaster.setExpiresDate(expiresDate);
         contractMaster.setSignDate(signDate);
         contractMaster.setPriceStyle(priceStyle);
         //TODO: 更换操作员

@@ -380,7 +380,7 @@ public interface ContractService {
      */
     List<DropDownVO> getPriceTypeDropDown(String compid);
 
-    void addContract(String contractId, String salesman, Date signDate, Date effectDate,
+    void addContract(String contractId, String salesman, Date signDate, Date expiresDate,
                      Integer contractType, Integer priceStyle, String eppCode,
                      String builderCode, BigDecimal contractNum, BigDecimal preNum,
                      BigDecimal preMoney, String remarks, String compid) throws ErpException;
