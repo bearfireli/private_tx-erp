@@ -35,4 +35,7 @@ public class StockInCollectVO {
     /*材料规格*/
     private String matSpecs;
 
+    /*联系人*/
+    private String linkMan;
+
 }

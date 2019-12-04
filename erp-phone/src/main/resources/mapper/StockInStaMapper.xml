@@ -58,7 +58,7 @@
     <!--原材料过磅统计。供应商名（老版本）-->
     <select id="getWeightByStoName" resultType="com.hntxrj.txerp.vo.WeightSupNameVO">
         select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as
-        Proportion,mt.MatName,sl.Sup_Name
+        Proportion,mt.MatName,sl.Sup_Name,sl.Sup_LinkMan as supLinkMan
         from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
@@ -81,7 +81,7 @@
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
-        group by mt.MatName, sl.Sup_Name
+        group by mt.MatName, sl.Sup_Name,sl.Sup_LinkMan
         ORDER BY sl.Sup_Name,mt.MatName
     </select>
 
@@ -325,13 +325,13 @@
         </if>
         <if test="matType != null">
             <if test="matType == 1">
-            and dd.PI_Values='S' or dd.PI_Values='G'
+            and (dd.PI_Values='S' or dd.PI_Values='G')
             </if>
             <if test="matType == 2">
-                and dd.PI_Values='C' or dd.PI_Values='P' or dd.PI_Values='F' or dd.PI_Values='CY'
+                and (dd.PI_Values='C' or dd.PI_Values='P' or dd.PI_Values='F' or dd.PI_Values='CY')
             </if>
             <if test="matType == 3">
-                and dd.PI_Values='AE'
+                and (dd.PI_Values='AE')
             </if>
 
         </if>

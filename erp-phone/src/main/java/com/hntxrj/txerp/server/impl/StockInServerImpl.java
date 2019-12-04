@@ -220,7 +220,7 @@ public class StockInServerImpl implements StockInServer {
     public PageVO<WeightSupNameVO> getWeightByStoName(String empName, String compid, String vehicleId, String stoName, String supName, String isNewVersion, String beginTime, String endTime, Integer page, Integer pageSize) {
         List<WeightSupNameVO> stockInWeighSupNameVOS;
         if ("1".equals(isNewVersion)) {
-            //说明是版本材料统计
+            //说明是新版本材料统计
             PageHelper.startPage(page, pageSize);
             stockInWeighSupNameVOS = stockInWeighmatNsMapper.getWeightByStoNameNew(empName, compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
         } else {
