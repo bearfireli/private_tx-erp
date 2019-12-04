@@ -18,6 +18,17 @@ public interface StgIdMangeService {
 
 
     /**
+     * 砼标号详情
+     *
+     * @param compid    企业id
+     * @param stgId  砼标号
+     * @param grade  强度等级
+     * @return  砼标号管理
+     */
+    StgidManageVO getStgIdManageDetail(String compid, String stgId, String grade);
+
+
+    /**
      * 编辑砼标号
      *
      * @param compid          企业id

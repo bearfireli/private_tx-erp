@@ -18,6 +18,16 @@ public interface StgIdMangeMapper {
     List<StgidManageVO> getStgidManage(String compid, String stgId, String grade);
 
     /**
+     * 砼标号详情
+     *
+     * @param compid    企业id
+     * @param stgId  砼标号
+     * @param grade  强度等级
+     * @return
+     */
+    StgidManageVO getStgidManageDetail(String compid, String stgId, String grade);
+
+    /**
      * 编辑砼标号
      */
     void updateStgIdManage(String grade, String pumpPrice, String notPumpPrice, String towerCranePrice, String compid, String stgId);

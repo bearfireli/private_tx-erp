@@ -31,6 +31,22 @@ public class StgIdMangeApi {
         return ResultVO.create(stgIdMangeService.getStgidManage(compid,stgId,grade,page,pageSize));
     }
 
+
+
+
+    /**
+     * 砼标号详情
+     *
+     * @param compid    企业id
+     * @param stgId  砼标号
+     * @param grade  强度等级
+     * @return  砼标号管理
+     */
+    @PostMapping("/getStgIdManageDetail")
+    public ResultVO getStgIdManageDetail(String compid, String stgId, String grade) {
+        return ResultVO.create(stgIdMangeService.getStgIdManageDetail(compid,stgId,grade));
+    }
+
     /**
      * 编辑砼标号
      *
@@ -60,8 +76,18 @@ public class StgIdMangeApi {
 
     @PostMapping("/insertStgIdManage")
     public ResultVO insertStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice, String towerCranePrice) {
-        stgIdMangeService.insertStgIdManage(compid, stgId, grade, pumpPrice, notPumpPrice, towerCranePrice);
-        return ResultVO.create();
+        try {
+            stgIdMangeService.insertStgIdManage(compid, stgId, grade, pumpPrice, notPumpPrice, towerCranePrice);
+            return ResultVO.create();
+        } catch (Exception e) {
+
+            ResultVO resultVO = new ResultVO();
+            resultVO.setCode(1);
+            resultVO.setMsg("此标号已存在");
+            return resultVO;
+        }
+
+
     }
 
     /**

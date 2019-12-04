@@ -16,6 +16,20 @@
     </select>
 
 
+
+    <!-- 砼标号详情-->
+    <select id="getStgidManageDetail" resultType="com.hntxrj.txerp.vo.StgidManageVO">
+        select StgId,grade,pumpPrice,notPumpPrice,towerCranePrice,PriceDifference
+        from SM_GradePriceInfo
+        where compid =#{compid}
+        and RecStatus =1
+        and stgId = #{stgId}
+        <if test="grade !=null and grade !='' ">
+            and grade like '%'+#{grade}+'%'
+        </if>
+    </select>
+
+
     <!--编辑砼标号-->
     <update id="updateStgIdManage">
          update SM_GradePriceInfo set
