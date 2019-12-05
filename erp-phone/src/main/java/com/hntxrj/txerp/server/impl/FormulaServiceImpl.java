@@ -88,10 +88,10 @@ public class FormulaServiceImpl implements FormulaService {
     }
 
     @Override
-    public JSONObject getFormulaByTaskId(String compid, String taskId) {
+    public Map<String, Object> getFormulaByTaskId(String compid, String taskId) {
         Map<String, Object> formulaMap = formulaMapper.getFormulaByTaskId(compid, taskId);
         formulaMap.put("stirIdFormulaStatus", formulaMapper.getStirIdFormulaStatus(compid, taskId));
-        return JSONObject.parseObject(JSON.toJSONString(formulaMap));
+        return formulaMap;
     }
 
     @Override
@@ -155,9 +155,10 @@ public class FormulaServiceImpl implements FormulaService {
                                                       String builderCode, Integer formulaStatus,
                                                       String opid, Integer page, Integer pageSize) {
         log.info("【查询配比列表】startTime={}, endTime={}", startTime, endTime);
-        PageHelper.startPage(page, pageSize, "formulastatus, TaskId desc");
+        PageHelper.startPage(page, pageSize, "formulaStatus, TaskId desc");
         List<Map<String, Object>> formulaList = formulaMapper.getFormulaList(
                 compid, eppCode, builderCode, placing, taskId, taskStatus, formulaStatus, startTime, endTime);
+
         if (formulaList != null) {
             for (Map<String, Object> map : formulaList) {
                 StringBuilder ppName = new StringBuilder();
@@ -175,6 +176,8 @@ public class FormulaServiceImpl implements FormulaService {
                 map.put("ppName", ppName);
             }
         }
+
+
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(formulaList);
         PageInfoUtil<Map<String, Object>> pageInfoListVO = new PageInfoUtil<>();
         PageVO<Map<String, Object>> resultObj = pageInfoListVO.init(pageInfo);
