@@ -10,7 +10,7 @@ import java.util.Date;
 /*原材料明细汇总详情*/
 public class StockInCollectVO {
     /*材料名称*/
-    private  String matName;
+    private String matName;
     /*车号*/
     private String vehicleId;
     /*进场时间*/
@@ -19,6 +19,8 @@ public class StockInCollectVO {
     private Timestamp firstTime;
     /*入库量*/
     private double clWeight;
+
+
     /*进货代号*/
     private String stICode;
     /*供应商*/
@@ -27,6 +29,13 @@ public class StockInCollectVO {
     private String compid;
     /*皮重*/
     private double TaWeight;
-    private  String matSpecs;
+    /*净重*/
+    private double netWeight;
+
+    /*材料规格*/
+    private String matSpecs;
+
+    /*联系人*/
+    private String linkMan;
 
 }

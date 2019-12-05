@@ -41,9 +41,9 @@
         w.Amount
         from WM_ConFigureApply w
         left join DD_PublicInfo d1 on d1.PI_Class = '76' and w.RequestMode = d1.PI_Values
-            and w.compid =d1.compid
+        and w.compid =d1.compid
         left join DD_PublicInfo d2 on d2.PI_Class = '75' and w.RequestStatus = d2.PI_Values
-            and w.compid =d2.compid
+        and w.compid =d2.compid
         left join User_dept u on w.compid =u.compid and w.Department =u.deptid
         where w.compid =#{compid}
         <if test="beginTime != null and beginTime != ''">
@@ -64,6 +64,9 @@
         <if test="department != null and department != '' ">
             and w.department = #{department}
         </if>
+        <if test="verifyStatusOne != null and verifyStatusOne != '' ">
+            and w.verifyStatusOne = #{verifyStatusOne}
+        </if>
         <if test="requestNumber != null and requestNumber != '' ">
             and w.requestNumber like '%'+#{requestNumber}+'%'
         </if>
@@ -81,7 +84,11 @@
         select OpId, empname
         from User_employee
         where compid = #{compid}
-          and useing = 'true'
+        and useing = 'true'
+        <if test="searchName != null and searchName != '' ">
+            and empname like '%'+#{searchName}+'%'
+        </if>
+
     </select>
 
     <!--部门列表-->
@@ -179,23 +186,23 @@
         UPDATE WM_ConFigureApply
         set
         <if test="requestStatus != null and requestStatus != ''">
-            RequestStatus  = #{requestStatus}
+            RequestStatus = #{requestStatus}
         </if>
         <if test="verifyIdOne != null and verifyIdOne != ''">
-            , VerifyIdOne  = #{verifyIdOne}
+            , VerifyIdOne = #{verifyIdOne}
         </if>
-            , VerifyStatusOne  = #{verifyStatusOne}
+        , VerifyStatusOne = #{verifyStatusOne}
 
-          <if test="verifyTimeOne != null and verifyTimeOne != ''">
-            , VerifyTimeOne  = #{verifyTimeOne}
+        <if test="verifyTimeOne != null and verifyTimeOne != ''">
+            , VerifyTimeOne = #{verifyTimeOne}
         </if>
         <if test="auditResultOne != null and auditResultOne != ''">
-            , AuditResultOne  = #{auditResultOne}
+            , AuditResultOne = #{auditResultOne}
         </if>
 
 
         where compid = #{compid}
-          and RequestNumber = #{requestNumber}
+        and RequestNumber = #{requestNumber}
     </update>
 
     <update id="cancelRequestStatus">

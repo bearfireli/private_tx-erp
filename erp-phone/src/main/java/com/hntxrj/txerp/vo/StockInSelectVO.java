@@ -10,6 +10,7 @@ import java.util.Date;
 /*原材料过磅查询详情*/
 public class StockInSelectVO {
 
+    /*过磅单号*/
     private String stiCode;
     /*车号*/
     private String vehicleId;
@@ -41,7 +42,7 @@ public class StockInSelectVO {
     private double clWeight;
     /*出厂油升量*/
     private BigDecimal supOilNum;
-    /*称重次数*/
+    /*供货商出场时间*/
     private Date supExFactory;
     /*供货商*/
     private String supName;

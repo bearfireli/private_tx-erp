@@ -61,7 +61,7 @@ public class DriverApi {
                                            @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize, String driverCode) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(id, compid,
+        return ResultVO.create(driverService.getTaskSaleInvoiceList(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 eppCode, upStatus == -1 ? null : upStatus, builderCode, placing, page, pageSize, driverCode));

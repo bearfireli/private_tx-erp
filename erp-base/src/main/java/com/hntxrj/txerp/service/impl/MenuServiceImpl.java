@@ -24,16 +24,15 @@ public class MenuServiceImpl extends BaseServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
     private JPAQueryFactory queryFactory;
-    private MenuMapper menuMapper;
+    private final MenuMapper menuMapper;
 
     @Autowired
     public MenuServiceImpl(MenuRepository menuRepository,
-                           EntityManager entityManager,
-                           MenuMapper menuMapper) {
+                           EntityManager entityManager, MenuMapper menuMapper) {
         super(entityManager);
+        this.menuMapper = menuMapper;
         queryFactory = getQueryFactory();
         this.menuRepository = menuRepository;
-        this.menuMapper = menuMapper;
     }
 
 
@@ -144,6 +143,11 @@ public class MenuServiceImpl extends BaseServiceImpl implements MenuService {
 
         menu.setModelName("");
         return menuRepository.save(menu);
+    }
+
+    @Override
+    public List<Menu> getFunctionMenuList() {
+        return menuMapper.getFunctionMenuList();
     }
 
     @Override

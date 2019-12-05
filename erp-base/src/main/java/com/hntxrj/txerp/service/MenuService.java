@@ -32,4 +32,6 @@ public interface MenuService {
      * @Date 14:06 2019-11-13
      */
     Menu getMenuByfuncNameAndPid(String funcName,int pid);
+
+    List<Menu> getFunctionMenuList();
 }

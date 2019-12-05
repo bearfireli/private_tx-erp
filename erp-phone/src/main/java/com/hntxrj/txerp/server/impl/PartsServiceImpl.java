@@ -43,12 +43,12 @@ public class PartsServiceImpl implements PartsService {
     public PageVO<PartsVO> getPartsList(String compid, String beginTime, String endTime, String goodsName,
                                         String buyer, String specification, String department,
                                         String requestNumber, String requestStatus,
-                                        String requestDep, Integer page, Integer pageSize) {
+                                        String requestDep,String verifyStatusOne, Integer page, Integer pageSize) {
         PageVO<PartsVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize, "CreateTime desc");
         List<PartsVO> partsVOS = partsMapper.getPartsList(
                 compid, beginTime, endTime, goodsName, buyer, specification, department,
-                requestNumber, requestStatus, requestDep);
+                requestNumber, requestStatus, requestDep,verifyStatusOne);
         PageInfo<PartsVO> pageInfo = new PageInfo<>(partsVOS);
         pageVO.format(pageInfo);
         return pageVO;
@@ -61,11 +61,11 @@ public class PartsServiceImpl implements PartsService {
      * @return 申请人列表
      */
     @Override
-    public PageVO<UserVO> getBuyerList(String compid, Integer page, Integer pageSize) {
+    public PageVO<UserVO> getBuyerList(String compid, String searchName,Integer page, Integer pageSize) {
         PageVO<UserVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<UserVO> buyerVOS = partsMapper.getBuyerList(
-                compid);
+                compid,searchName);
         PageInfo<UserVO> pageInfo = new PageInfo<>(buyerVOS);
         pageVO.format(pageInfo);
         return pageVO;

@@ -64,4 +64,9 @@ public class DriverworkloadStatisticsVO {
      *车号
      */
     private String vehicleId;
+
+    /**
+     * 砼标号
+     * */
+    private String stgId;
 }

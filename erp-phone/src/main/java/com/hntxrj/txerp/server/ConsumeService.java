@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
 
+import java.util.List;
+
 public interface ConsumeService {
 
     /**
@@ -128,6 +130,21 @@ public interface ConsumeService {
                                                     String vehicleId, String stgId, String taskId, String stirId,
                                                     Integer page, Integer pageSize);
 
+
+
+    /**
+     * 标号消耗汇总柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param taskId    任务单号
+     * @param stirId    站别代号
+     * @return 标号消耗汇总
+     */
+    List<ConsumptionHistogram> getConsumptionHistogram(String compid, String beginTime, String endTime,
+                                                       String vehicleId, String stgId, String taskId, String stirId);
     /**
      * 原材料统计汇总
      *

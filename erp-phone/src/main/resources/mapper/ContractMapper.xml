@@ -282,9 +282,7 @@
                 #{isDefault})
     </insert>
 
-    <!--
-    查询泵车列表
-    -->
+    <!--查询泵车列表-->
     <select id="selectPumpTruckList" resultType="com.hntxrj.txerp.vo.PumpTruckListVO">
         select SM.PumpTypeName, SM.Pumptype
         from SM_PumpPublicPriceSet AS SM
@@ -294,6 +292,38 @@
             and SM.PumpTypeName like '%'+#{builderName}+'%'
         </if>
         group by SM.PumpTypeName, SM.Pumptype
+    </select>
+
+
+    <select id="getContractListByEppOrBuild" resultType="com.hntxrj.txerp.vo.ContractListVO">
+        select cd.EPPCode,
+        cd.BuilderCode,
+        epp.EPPName,
+        bu.BuilderShortName builderName,
+        cm.ContractUID,
+        cm.ContractId,
+        cd.CContractCode contractDetailCode,
+        cm.compid,
+        cd.Address,
+        cd.ContractNum,
+        cd.ContractStatus,
+        cm.SignDate,
+        cm.Salesman,
+        bg.ScaleName,
+        cd.VerifyStatus
+        from SM_ContractMaster cm
+        left join SM_ContractDetail cd on cm.ContractUID = cd.ContractUID and cm.compid=cd.compid
+        left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid=epp.compid
+        left join SM_BuilderInfo bu on cd.BuilderCode = bu.BuilderCode and cd.compid=bu.compid
+        left join (select * from SM_BusinessGroup where compid = #{compid}) bg on bg.SalesmanCode = cm.Salesman
+        where cd.compid = #{compid}
+        and cm.RecStatus=1
+        and cd.RecStatus=1
+        and cd.verifyStatus = 1
+        <if test="searchName != null and searchName!='' ">
+            and epp.EPPName like '%'+#{searchName}+'%' or bu.BuilderShortName like '%'+#{searchName}+'%'
+        </if>
+
     </select>
 
 </mapper>

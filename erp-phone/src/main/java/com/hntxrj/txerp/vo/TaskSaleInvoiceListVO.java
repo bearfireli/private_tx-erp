@@ -23,7 +23,7 @@ public class TaskSaleInvoiceListVO {
     private String eppName;
     private String builderName;
     private String stgId;
-    private String placeStyleName;
+    private String placeStyleName;  //浇筑方式
 
     //签收状态
     private int upStatus;
@@ -39,6 +39,11 @@ public class TaskSaleInvoiceListVO {
     private double netWeight;
     private int  WeightType;
     private String WeightTypeName;
-
-
+    private String slump;
+    private String  placing;
+    private String arriveSttime;
+    private double qianNum;
+    private double saleNum;
+    private  String vehicleStatus;
+    private  String attribute;
 }

@@ -20,10 +20,10 @@ public interface StockInCollectMapper {
      * @param endTime   结束时间
      * @param page      页数
      * @param pageSize  每页数量
-     * @param MatName   材料名称
+     * @param matName   材料名称
      * @return 原材料统计汇总
      */
-    List<StockInCollectVO> getMatDetailsList(String vehicleId, String supName, String matSpecs, String compid, String beginTime, String endTime, Integer page, Integer pageSize, String MatName);
+    List<StockInCollectVO> getMatDetailsList(String vehicleId, String supName, String matSpecs, String compid, String beginTime, String endTime, Integer page, Integer pageSize, String matName);
 
     /**
      * /*原材料明细汇总合计入库量

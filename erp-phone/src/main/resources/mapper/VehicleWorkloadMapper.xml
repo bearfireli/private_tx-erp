@@ -15,7 +15,9 @@
         concreteMark,
         placing,
         ps.PI_TypeName placeStyleName,
-        SaleNum
+        SaleNum,
+        tp.StgId as stgId,
+        vmpi.personalName as personalName
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
@@ -32,7 +34,7 @@
             and tp.placing like '%'+#{placing}+'%'
         </if>
         <if test="vehicleId != null and vehicleId != ''">
-            and vehicleId like '%'+#{vehicleId}+'%'
+            and VehicleID =#{vehicleId}
         </if>
         <if test="personalName != null and personalName != ''">
             and vmpi.personalName like '%'+#{personalName}+'%'
@@ -53,7 +55,7 @@
         EPPName, VehicleID, tp.compid, Leave_STTime, concreteMark,
         placing,
         ps.PI_TypeName, Arrive_STTime, SaleNum, SendTime,
-        ReturnNum, RemnantNum, InvoiceType, VehicleStatus
+        ReturnNum, RemnantNum, InvoiceType, VehicleStatus,tp.StgId,personalName
         order by tsi.TaskId,SendTime
 
     </select>
@@ -95,14 +97,15 @@
             and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
         </if>
         group by tsi.VehicleID
-        order by tsi.VehicleID
+        order by num desc
     </select>
 
     <!--搅拌车砼运输汇总合计-->
     <select id="getVehicleWorkloadSummaryCount" resultType="com.hntxrj.txerp.vo.VehicleWorkloadSummaryVO">
         select
         sum(SaleNum) numList,
-        count(tsi.VehiceNumber)carNumList
+        count(tsi.VehiceNumber)carNumList,
+        sum(tsi.Distance) distance
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
@@ -282,7 +285,8 @@
         concreteMark,
         placing,
         ps.PI_TypeName placeStyleName,
-        (SaleNum - ReturnNum - ScrapNum) as saleNum
+        (SaleNum - ReturnNum - ScrapNum) as saleNum,
+        tp.StgId as stgId
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
@@ -306,7 +310,7 @@
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
         <if test="personalName != null and personalName != ''">
-            and vm.personalName like '%'+#{personalName}+'%'
+            and vm.personalName =#{personalName}
         </if>
         <if test="beginTime != null and beginTime != ''">
             and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
@@ -316,7 +320,7 @@
         </if>
     </select>
 
-    <!--司机砼运输汇总-->
+    <!--司机砼运输汇总（老版本）-->
     <select id="getDriverTransportationCount" resultType="com.hntxrj.txerp.vo.DriverTransportationCountVO">
         select vm.PersonalName personalName,
         tsi.VehicleID vehicleId,
@@ -354,6 +358,45 @@
         </if>
         GROUP BY PersonalName, VehicleID
         order by VehicleID
+    </select>
+
+    <!--司机砼运输汇总(新版本)-->
+    <select id="getDriverTransportationCountNew" resultType="com.hntxrj.txerp.vo.DriverTransportationCountVO">
+        select vm.PersonalName personalName,
+        (sum(SaleNum) - sum(ReturnNum) - sum(ScrapNum)) as num,
+        count(VehiceNumber) as carNum,
+        sum(tsi.Distance) as distance
+        from PT_TaskSaleInvoice tsi
+        left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
+        left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
+        left join VM_PersonalInfo vm on tsi.compid = vm.compid and tsi.PersonalCode = vm.PersonalCode
+        where vm.compid = #{compid}
+        and VehiceNumber <![CDATA[ <> ]]> '0'
+        and ( InvoiceType not in(1,2,6) )
+        and (VehicleStatus not in ('8','9','10','11'))
+        <if test="placing != null and placing != ''">
+            and tp.placing like '%'+#{placing}+'%'
+        </if>
+        <if test="eppCode != null and eppCode != ''">
+            and tp.eppCode=#{eppCode}
+        </if>
+        <if test="taskId != null and taskId != ''">
+            and tsi.taskId like '%'+#{taskId}+'%'
+        </if>
+        <if test="vehicleId != null and vehicleId != ''">
+            and tsi.vehicleID like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="personalName != null and personalName != ''">
+            and vm.personalName like '%'+#{personalName}+'%'
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+        GROUP BY PersonalName
+        order by num desc
     </select>
 
     <!--司机砼运产量合计-->
@@ -422,7 +465,7 @@
         </if>
     </select>
 
-    <!--司机拖水拖泵汇总-->
+    <!--司机拖水拖泵汇总（老版本）-->
     <select id="getDriverDragPumpCount" resultType="com.hntxrj.txerp.vo.DriverTransportationCountVO">
         select vm.PersonalName personalName,
         tsi.VehicleID vehicleId,
@@ -459,9 +502,49 @@
         GROUP BY PersonalName, VehicleID
         ORDER BY VehicleID
     </select>
+
+
+
+
+    <!--司机拖水拖泵汇总(新版本)-->
+    <select id="getDriverDragPumpCountNew" resultType="com.hntxrj.txerp.vo.DriverTransportationCountVO">
+        select vm.PersonalName personalName,
+        count(VehicleID) as carNum,
+        sum(tsi.Distance) as distance
+        from PT_TaskSaleInvoice tsi
+        left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
+        left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
+        left join SM_BuilderInfo bi on tp.BuilderCode = bi.BuilderCode and bi.compid = tp.compid
+        left join VM_PersonalInfo vm on tsi.compid = vm.compid and tsi.PersonalCode = vm.PersonalCode
+        where vm.compid = #{compid}
+        and (VehicleStatus in ('8','9','10','11'))
+        <if test="placing != null and placing != ''">
+            and tp.placing like '%'+#{placing}+'%'
+        </if>
+        <if test="eppCode != null and eppCode != ''">
+            and tp.eppCode=#{eppCode}
+        </if>
+        <if test="taskId != null and taskId != ''">
+            and tsi.taskId=#{taskId}
+        </if>
+        <if test="vehicleId != null and vehicleId != ''">
+            and tsi.vehicleID like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="personalName != null and personalName != ''">
+            and vm.personalName like '%'+#{personalName}+'%'
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+        GROUP BY PersonalName
+        ORDER BY carNum
+    </select>
     <!--泵车汇总统计-->
     <select id="getPumpTruckCount" resultType="com.hntxrj.txerp.vo.PumpTruckCountVO">
-        select pc.VehicleID, dd.PI_TypeName typeName,
+        select jvs.VehicleID,
         count(jvs.VehicleID)                                       carNum,
         sum(tsi.SaleNum) - sum(tsi.ReturnNum) - sum(tsi.ScrapNum) num
         from PT_JumpVehicleSendDetail jvs
@@ -492,13 +575,17 @@
         <if test="stirId != null ">
             and tsi.stirid like '%'+#{stirId}+'%'
         </if>
+        <if test="taskId != null ">
+            and tsi.TaskId like '%'+#{taskId}+'%'
+        </if>
         <if test="vehicleId != null ">
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
-        group by pc.VehicleID, tsi.PlaceStyle, dd.PI_TypeName
+        group by jvs.VehicleID
+        order by  num desc
     </select>
 
-    <!--泵工汇总统计-->
+    <!--泵工汇总统计（老版本）-->
     <select id="getPumpOperatorTruckCount" resultType="com.hntxrj.txerp.vo.PumpTruckCountVO">
         select pc.VehicleID, dd.PI_TypeName as    typeName,
         count(jvs.VehicleID)                                       carNum,
@@ -538,11 +625,57 @@
         group by pc.VehicleID, mm.PersonalName,dd.PI_TypeName
     </select>
 
+
+
+
+    <!--泵工汇总统计(新版本)-->
+    <select id="getPumpOperatorTruckCountNew" resultType="com.hntxrj.txerp.vo.PumpTruckCountVO">
+        select count(jvs.VehicleID)                                       carNum,
+        sum(tsi.SaleNum) - sum(tsi.ReturnNum) - sum(tsi.ScrapNum) num,
+        mm.PersonalName
+        from PT_JumpVehicleSendDetail jvs
+        left join PT_TaskSaleInvoice tsi
+        on jvs.compid = tsi.compid and jvs.TaskId = tsi.TaskId and jvs.VehicleID = tsi.VehicleID_Jump
+        left join VM_VehicelManagement vm on jvs.compid = vm.compid and jvs.VehicleID = vm.CarID
+        left join DD_PublicInfo dd1 on vm.VehicleClass = dd1.PI_Values and vm.compid = dd1.compid and dd1.PI_Class = 33
+        left join VM_PersonalWorkClass pc on vm.compid = pc.compid and vm.CarID = pc.VehicleID
+        left join PT_TaskPlan pt on jvs.compid = pt.compid and jvs.TaskId = pt.TaskId
+        left join VM_PersonalInfo mm on jvs.PersonalCode = mm.PersonalCode and jvs.compid = mm.compid
+        left join DD_PublicInfo dd on tsi.compid = dd.compid and tsi.PlaceStyle = dd.PI_Values and dd.PI_Class = 24
+        where jvs.compid =#{compid}
+        and VehicleID_Jump <![CDATA[ <> ]]> '' and VehicleID_Jump is not null
+        and jvs.VehicleID <![CDATA[ <> ]]> '' and jvs.VehicleID is not null
+        and (InvoiceType in (3, 4, 5) and tsi.VehicleStatus = 3)
+        <if test="beginTime != null and beginTime != ''">
+            and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="eppCode != null and eppCode != ''">
+            and pt.eppCode=#{eppCode}
+        </if>
+        <if test="personalName != null and personalName != ''">
+            and mm.personalname like '%'+#{personalName}+'%'
+        </if>
+        <if test="stirId != null ">
+            and tsi.stirid like '%'+#{stirId}+'%'
+        </if>
+        <if test="taskId != null">
+            and tsi.TaskId like '%'+#{taskId}+'%'
+        </if>
+        <if test="vehicleId != null ">
+            and tsi.vehicleID like '%'+#{vehicleId}+'%'
+        </if>
+        group by  mm.PersonalName
+        order by num desc
+    </select>
+
     <!--泵车明细-->
     <select id="getPumpTruckDetails" resultType="com.hntxrj.txerp.vo.PumpTruckDetailsVO">
         select pt.TaskId,
         jvs.VehicleID,
-        convert(varchar(20), min(jvs.SendTime), 102) as SendTime,
+        convert(varchar(20), min(jvs.SendTime), 120) as SendTime,
         sm.BuilderShortName,
         epp.EPPName,
         Placing,
@@ -553,6 +686,7 @@
         left join  VM_PersonalInfo vm on jvs.PersonalCode =vm.PersonalCode and jvs.compid =vm.compid
         left join SM_BuilderInfo sm on  pt.compid =sm.compid and pt.BuilderCode =sm.BuilderCode
         left join  SM_EPPInfo epp on pt.compid =epp.compid and pt.EPPCode =epp.EPPCode
+        left join DD_PublicInfo dd on tsi.compid = dd.compid and tsi.PlaceStyle = dd.PI_Values and dd.PI_Class = 24
         where jvs.compid = #{compid}
         and VehicleID_Jump <![CDATA[ <> ]]> '' and VehicleID_Jump is not null
         and jvs.VehicleID <![CDATA[ <> ]]> '' and jvs.VehicleID is not null
@@ -572,11 +706,14 @@
         <if test="stirId != null and stirId != ''">
             and tsi.stirid like '%'+#{stirId}+'%'
         </if>
+        <if test="taskId != null and taskId != ''">
+            and tsi.TaskId like '%'+#{taskId}+'%'
+        </if>
         <if test="vehicleId != null and vehicleId != ''">
-            and tsi.vehicleID like '%'+#{vehicleId}+'%'
+            and jvs.vehicleID = #{vehicleId}
         </if>
         group by pt.TaskId, jvs.VehicleID, sm.BuilderShortName, epp.EPPName, Placing
-        order by convert(varchar(20), min(jvs.SendTime), 102)
+        order by convert(varchar(20), min(jvs.SendTime), 120)
     </select>
 
     <!--工作方量统计-->
@@ -606,6 +743,9 @@
         <if test="stirId  != null">
             and tsi.stirid like '%'+#{stirId}+'%'
         </if>
+        <if test="taskId  != null">
+            and tsi.TaskId like '%'+#{taskId}+'%'
+        </if>
         <if test="vehicleId != null">
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
@@ -615,7 +755,9 @@
 
     <!--泵车合计-->
     <select id="getPumpTruckSum" resultType="com.hntxrj.txerp.vo.PumpTruckWorkloadStatisticsVO">
-        select sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) numList
+        select sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) numList,
+        count(tsi.VehiceNumber) carNumList,
+        sum(tsi.Distance) distance
         from PT_JumpVehicleSendDetail jvs
         left join PT_TaskSaleInvoice tsi on jvs.compid = tsi.compid and jvs.TaskId = tsi.TaskId
         left join PT_TaskPlan pt on jvs.compid = pt.compid and jvs.TaskId = pt.TaskId

@@ -10,4 +10,5 @@ public class WeightMatParentNameVO {
     private String matName;
     /*入库量*/
     private double tlWeight;
+
 }

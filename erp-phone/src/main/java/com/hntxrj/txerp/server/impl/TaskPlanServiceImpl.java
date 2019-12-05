@@ -7,12 +7,12 @@ import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.mapper.ConcreteMapper;
+import com.hntxrj.txerp.mapper.PublicInfoMapper;
 import com.hntxrj.txerp.mapper.StockMapper;
 import com.hntxrj.txerp.mapper.TaskPlanMapper;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
 import com.hntxrj.txerp.util.EntityTools;
-import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -33,27 +33,34 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     private final StockMapper stockMapper;
     private final ConcreteMapper concreteMapper;
+    private final PublicInfoMapper publicInfoMapper;
+    private StirInfoSetServiceImpl stirInfoSetMapper;
 
     @Autowired
-    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper) {
+    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
         this.concreteMapper = concreteMapper;
+        this.publicInfoMapper = publicInfoMapper;
+        this.stirInfoSetMapper = stirInfoSetMapper;
     }
 
     @Override
     public PageVO<TaskPlanListVO> getTaskPlanList(String beginTime, String endTime,
                                                   String eppCode, String builderCode,
                                                   String placing, String taskId, Integer taskStatus,
-                                                  String compid, Integer page, Integer pageSize) {
+                                                  String compid, Integer verifyStatus, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.getTaskPlanList(beginTime, endTime, eppCode,
-                builderCode, placing, taskId, taskStatus, compid);
+                builderCode, placing, taskId, taskStatus, compid, verifyStatus);
         //循环截取preTime，格式为年月日
         for (TaskPlanListVO t : taskPlanListVOList) {
             if (!"".equals(t.getPreTime())) {
-                t.setPreTime(t.getPreTime().substring(0, 10));
+                t.setPreTime(t.getPreTime().substring(0, 16));
+            }
+            if (t.getOverNum() == null) {
+                t.setOverNum(new BigDecimal(0.0));
             }
         }
         PageInfo<TaskPlanListVO> pageInfo = new PageInfo<>(taskPlanListVOList);
@@ -185,12 +192,31 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     @Override
-    public PageVO<SendCarListVO> getSendCarList(String compid, Integer page, Integer pageSize) {
+    public PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         // TODO: 司机只能查询自己的信息
-        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid);
+        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
+        for (SendCarListVO sendCarListVO : sendCarList) {
+            //获取每个任务单下的所有搅拌车车辆
+            List<DriverShiftLEDVO> cars = taskPlanMapper.getCarsByTaskId(compid, sendCarListVO.getTaskId());
+            sendCarListVO.setCars(cars);
+            if (sendCarListVO.getTotalProduceNum() == null) {
+                sendCarListVO.setTotalProduceNum("0.0");
+            }
+        }
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarListVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    @Override
+    public PageVO<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<SendCarDetailVO> sendCarDetailVOS = taskPlanMapper.getSendDetail(compid, vehicleId,beginTime,endTime);
+
+        PageInfo<SendCarDetailVO> pageInfo = new PageInfo<>(sendCarDetailVOS);
+        PageVO<SendCarDetailVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
     }
@@ -339,68 +365,95 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass) {
         List<DirverLEDListVO> list = new ArrayList<>();
 
-        DirverLEDListVO driverLEDListVO = new DirverLEDListVO();
+        DirverLEDListVO driverLEDListVO = new DirverLEDListVO();   //所有正在生产中的车辆集合
+        List<DriverShiftLEDVO> zeroStirIdCars = new ArrayList<>();    //所有0号线正在生产的集合
+        List<DriverShiftLEDVO> firstStirIdCars = new ArrayList<>();  //所有1号线正在生产的集合
+        List<DriverShiftLEDVO> secondStirIdCars = new ArrayList<>();  //所有2号线正在生产的集合
+        List<DriverShiftLEDVO> thirdStirIdCars = new ArrayList<>();  //所有3号线正在生产的集合
+        List<DriverShiftLEDVO> fourthStirIdCars = new ArrayList<>();  //所有4号线正在生产的集合
+        List<DriverShiftLEDVO> fifthStirIdCars = new ArrayList<>();  //所有5号线正在生产的集合
         driverLEDListVO.setStatus(3);
         driverLEDListVO.setStatusName("正在生产");
         vehicleStatus = "3";
-        driverLEDListVO.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
+
+        List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
+        if (driverShiftLED != null) {
+            driverLEDListVO.setCars(driverShiftLED);
+            driverLEDListVO.setCarNum(driverShiftLED.size());
+            for (DriverShiftLEDVO driverShiftLEDVO : driverShiftLED) {
+                if ("0".equals(driverShiftLEDVO.getStirId())) {
+                    zeroStirIdCars.add(driverShiftLEDVO);
+                } else if ("1".equals(driverShiftLEDVO.getStirId())) {
+                    firstStirIdCars.add(driverShiftLEDVO);
+                } else if ("2".equals(driverShiftLEDVO.getStirId())) {
+                    secondStirIdCars.add(driverShiftLEDVO);
+                } else if ("3".equals(driverShiftLEDVO.getStirId())) {
+                    thirdStirIdCars.add(driverShiftLEDVO);
+                }else if ("4".equals(driverShiftLEDVO.getStirId())) {
+                    fourthStirIdCars.add(driverShiftLEDVO);
+                }else if ("5".equals(driverShiftLEDVO.getStirId())) {
+                    fifthStirIdCars.add(driverShiftLEDVO);
+                }
+            }
+        }
+        driverLEDListVO.setZeroStirIdCars(zeroStirIdCars);
+        driverLEDListVO.setFirstStirIdCars(firstStirIdCars);
+        driverLEDListVO.setSecondStirIdCars(secondStirIdCars);
+        driverLEDListVO.setThirdStirIdCars(thirdStirIdCars);
+        driverLEDListVO.setFourthStirIdCars(fourthStirIdCars);
+        driverLEDListVO.setFifthStirIdCars(fifthStirIdCars);
         list.add(driverLEDListVO);
 
         DirverLEDListVO driverLEDListVOs = new DirverLEDListVO();
         driverLEDListVOs.setStatus(1);
         driverLEDListVOs.setStatusName("等待生产");
         vehicleStatus = "1";
-        driverLEDListVOs.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVOs);
+        list.add(getDirverLEDListVO(driverLEDListVOs, compid, stirId, vehicleStatus, vehicleClass));
+
 
         DirverLEDListVO driverLEDListVO1 = new DirverLEDListVO();
         driverLEDListVO1.setStatus(4);
         driverLEDListVO1.setStatusName("维修");
         vehicleStatus = "4";
-        driverLEDListVO1.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO1);
+
+        list.add(getDirverLEDListVO(driverLEDListVO1, compid, stirId, vehicleStatus, vehicleClass));
+
 
         DirverLEDListVO driverLEDListVO2 = new DirverLEDListVO();
         driverLEDListVO2.setStatus(5);
         driverLEDListVO2.setStatusName("休息");
         vehicleStatus = "5";
-        driverLEDListVO2.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO2);
+        list.add(getDirverLEDListVO(driverLEDListVO2, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO3 = new DirverLEDListVO();
         driverLEDListVO3.setStatus(8);
         driverLEDListVO3.setStatusName("工地脱水");
         vehicleStatus = "8";
-        driverLEDListVO3.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO3);
+        list.add(getDirverLEDListVO(driverLEDListVO3, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO4 = new DirverLEDListVO();
         driverLEDListVO4.setStatus(9);
         driverLEDListVO4.setStatusName("工地拖泵");
         vehicleStatus = "9";
-        driverLEDListVO4.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO4);
+        list.add(getDirverLEDListVO(driverLEDListVO4, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO5 = new DirverLEDListVO();
         driverLEDListVO5.setStatus(10);
         driverLEDListVO5.setStatusName("工地拖水拖泵");
         vehicleStatus = "10";
-        driverLEDListVO5.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO5);
+        list.add(getDirverLEDListVO(driverLEDListVO5, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO6 = new DirverLEDListVO();
         driverLEDListVO6.setStatus(11);
         driverLEDListVO6.setStatusName("场内托水");
         vehicleStatus = "11";
-        driverLEDListVO6.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO6);
+        list.add(getDirverLEDListVO(driverLEDListVO6, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO7 = new DirverLEDListVO();
         driverLEDListVO7.setStatus(16);
         driverLEDListVO7.setStatusName("自动回厂");
         vehicleStatus = "16";
-        driverLEDListVO7.setCars(taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
-        list.add(driverLEDListVO7);
+        list.add(getDirverLEDListVO(driverLEDListVO7, compid, stirId, vehicleStatus, vehicleClass));
 
         return list;
     }
@@ -425,9 +478,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     }
 
-
     /**
-     * 司机排班列表信息
+     * 司机排班列表信息(老版本)
      *
      * @param compid       企业ｉｄ
      * @param vehicleId    车号
@@ -452,6 +504,41 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         PageVO<DriverShiftListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+    /**
+     * 司机排班列表信息(新版本)
+     *
+     * @param compid       企业ｉｄ
+     * @param vehicleId    车号
+     * @param personalCode 司机
+     * @param workClass    班次状态
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     * @param page         分页
+     * @param pageSize     每页显示条数
+     * @return 司机排班列表信息
+     */
+    @Override
+    public List<ShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode,
+                                                        String personalName,
+                                                        String workClass,
+                                                        String beginTime, String endTime,
+                                                        Integer page, Integer pageSize) {
+        List<ShiftListVO> list = new ArrayList<>();
+        List<DropDownVO> dropDownVOS= publicInfoMapper.getDropDown(16,compid);
+        if (dropDownVOS!=null){
+            for (DropDownVO d:dropDownVOS) {
+                ShiftListVO shiftListVO =new ShiftListVO();
+                shiftListVO.setWorkClass(d.getCode());
+                shiftListVO.setWorkName(d.getName());
+                workClass =d.getCode();
+                shiftListVO.setShiftList(taskPlanMapper.getDriverShiftListNew(compid, vehicleId,
+                        personalCode, personalName, workClass, beginTime, endTime));
+                list.add(shiftListVO);
+            }
+        }
+        return list;
     }
 
     /**
@@ -577,6 +664,14 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type) {
         //根据传递过来的type，判断查询的是今日，昨日还是本月的方量。
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        // TODO: 前台处理月份累加机制。
+        String _tmpMo = endTime.substring(5,7);
+        if("13".equals(_tmpMo)){
+            Integer year = Integer.parseInt(endTime.substring(0,4));
+            endTime = endTime.replace(year.toString() + "-13", String.valueOf(year +1) + "-01");
+        }
+
         if (type == 3) {
             int queryType = 2;
             QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
@@ -797,6 +892,24 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlanMapper.deletePPCodeStatus(compid, taskId);
     }
 
+    /**
+     * 调度派车中获取所有正在生产的搅拌车车辆
+     * */
+    @Override
+    public List<DirverLEDListVO> getProduceCars(String compid) {
+        List<StirInfoSetVO> stirInfoSet= stirInfoSetMapper.getStirInfoSet(compid);
+        List<DirverLEDListVO> list = new ArrayList<>();
+        for (StirInfoSetVO stir:stirInfoSet) {
+            DirverLEDListVO dirverLEDListVO =new DirverLEDListVO();
+            String stirId =stir.getStirId();
+            dirverLEDListVO.setStatus(Integer.valueOf(stirId));
+            dirverLEDListVO.setStatusName(stir.getStirName());
+            dirverLEDListVO.setCars(taskPlanMapper.getProduceCars(compid,stirId));
+            list.add(dirverLEDListVO);
+        }
+       return list;
+    }
+
     private String taskPlanSplicing(String compid) {
         int page = 0;
         int pageSize = 1;
@@ -814,6 +927,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
 
         return taskid;
+    }
+
+    //派车LED模块：根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
+    private DirverLEDListVO getDirverLEDListVO(DirverLEDListVO driverLEDListVO, String compid, String stirId, String vehicleStatus, String vehicleClass) {
+        List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
+        if (driverShiftLED != null) {
+            driverLEDListVO.setCars(driverShiftLED);
+            driverLEDListVO.setCarNum(driverShiftLED.size());
+        }
+        return driverLEDListVO;
     }
 
 

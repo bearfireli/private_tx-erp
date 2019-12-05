@@ -32,4 +32,10 @@ public class MenuControllerV1 {
         resultVO.setData(JSON.toJSONString(menuService.getMenuTree(enterprise, status)));
         return JSON.toJSONString(resultVO);
     }
+
+    @RequestMapping(value = "/functionmenulist", method = RequestMethod.POST)
+    public String getFunctionMenuList() {
+        resultVO.setData(JSON.toJSONString(menuService.getFunctionMenuList()));
+        return JSON.toJSONString(resultVO);
+    }
 }

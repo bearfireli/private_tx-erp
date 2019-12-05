@@ -34,6 +34,7 @@ public class VehicleWorkloadSummaryVO {
      * 车数汇总
      */
     private Integer carNumList;
+
     private String personalName;
 
 }

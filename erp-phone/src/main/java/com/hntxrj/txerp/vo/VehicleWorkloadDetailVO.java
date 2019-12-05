@@ -18,7 +18,7 @@ public class VehicleWorkloadDetailVO {
     private String eppCode;
     private String eppName;
     /**
-     * 方量
+     * 累计方量
      */
     private Double num;
     /**
@@ -50,5 +50,7 @@ public class VehicleWorkloadDetailVO {
      */
     private BigDecimal saleNum;
     private  String personalName;
+
+    private String stgId;
 
 }
