@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 
 public interface LMTaskServer {
     //修改配比
-    JSONArray sp_insert_LM_TaskTheoryFormula(String taskid, String compid, String formulacode, String opid,
+    JSONArray upDateTaskTheoryFormula(String taskid, String compid, String formulacode, String opid,
                                              String stgid, String whisktime, String slump, Double wr1, Double wr2,
                                              Double wr3, Double wr4, Double wr5, Double wr6, Double wr7, Double wr8,
                                              String mat1, String mat2, String mat3, String mat4, String mat5,
