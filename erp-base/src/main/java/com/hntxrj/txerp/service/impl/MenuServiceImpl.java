@@ -150,6 +150,11 @@ public class MenuServiceImpl extends BaseServiceImpl implements MenuService {
         return menuMapper.getFunctionMenuList();
     }
 
+    @Override
+    public Menu getMenuByfuncNameAndPid(String funcName,int pid) {
+        return menuMapper.getMenuByfuncNameAndPid(funcName,pid);
+    }
+
     private void addTopMenu(List<MenuListVO> menuListVOS, Menu menu) {
         menuListVOS.add(makeMenuListVO(menu));
     }

@@ -43,14 +43,14 @@ public class ContractApi {
     public ResultVO getContractList(String startTime, String endTime,
                                     String contractCode, String eppCode,
                                     String buildCode, String salesMan, String compid,
-                                    @RequestParam(required = false) String verifyStatus ,
+                                    @RequestParam(required = false) String verifyStatus,
                                     @RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(defaultValue = "10") Integer pageSize) {
 
         return ResultVO.create(contractService.getContractList(
                 startTime == null ? null : Long.parseLong(startTime),
                 endTime == null ? null : Long.parseLong(endTime), contractCode,
-                eppCode, buildCode, salesMan, compid, verifyStatus,page, pageSize));
+                eppCode, buildCode, salesMan, compid, verifyStatus, page, pageSize));
     }
 
     /**
@@ -92,7 +92,7 @@ public class ContractApi {
      */
     @PostMapping("/getContractGradePrice")
     public ResultVO getContractGradePrice(String contractUid, String contractDetailCode, String compid) {
-        if(StringUtils.isEmpty(contractUid) && StringUtils.isEmpty(contractDetailCode)){
+        if (StringUtils.isEmpty(contractUid) && StringUtils.isEmpty(contractDetailCode)) {
             return ResultVO.create(contractService.getContractStgIdDropDown(compid));
         }
         return ResultVO.create(contractService.getContractGradePrice(contractUid, contractDetailCode, compid));
@@ -201,9 +201,9 @@ public class ContractApi {
     @PostMapping("/addContract")
     public ResultVO addContract(String contractId,
                                 String salesman,
-                                long signDate,
-                                long expiresDate,
-                                long effectDate,
+                                Long signDate,
+                                Long expiresDate,
+                                Long effectDate,
                                 Integer contractType,
                                 Integer priceStyle,
                                 String eppCode,
@@ -215,8 +215,8 @@ public class ContractApi {
         contractService.addContract(contractId,
                 salesman,
                 new Date(signDate),
-                new Date(expiresDate),
-                new Date(effectDate),
+                expiresDate == null ? null : new Date(expiresDate),
+                effectDate == null ? null : new Date(effectDate),
                 contractType,
                 priceStyle,
                 eppCode,
@@ -299,7 +299,7 @@ public class ContractApi {
     /**
      * 泵车类价格插入数据
      *
-     * @param compid        企业代号
+     * @param compid       企业代号
      * @param opid         操作员代号
      * @param contractUID  合同uid号
      * @param contractCode 子合同号
@@ -358,7 +358,7 @@ public class ContractApi {
     /**
      * 泵车列表查询
      *
-     * @param compid  企业代号
+     * @param compid 企业代号
      * @return 列表查询
      */
     @PostMapping("/selectPumpTruckList")
@@ -380,7 +380,7 @@ public class ContractApi {
     public ResultVO getContractListByEppOrBuild(String compid, String searchName,
                                                 @RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(contractService.getContractListByEppOrBuild(compid,searchName,page,pageSize));
+        return ResultVO.create(contractService.getContractListByEppOrBuild(compid, searchName, page, pageSize));
     }
 
 
