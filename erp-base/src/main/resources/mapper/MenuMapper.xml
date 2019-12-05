@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.MenuMapper">
+    <select id="getMenuByfuncNameAndPid" resultType="com.hntxrj.txerp.entity.base.Menu">
+    SELECT mid as mid,
+     menu_name as menuName,
+      menu_url as menuUrl,
+       menu_api as menuApi,
+        menu_fmid as menuFmid,
+         model_name as modelName,
+          func_name as funcName,
+           menu_status as menuStatus,
+            menu_level as menuLevel,
+             enterprise as enterprise,
+              project as project,
+               update_user as updateUser,
+                create_time as createTime,
+                 update_time as updateTime,
+                  alias_name as aliasNname
+    FROM menu
+    where func_name =#{funcName}
+    and project =#{pid}
+    </select>
+</mapper>
