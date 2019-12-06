@@ -151,7 +151,6 @@
         PI_TypeName as PlaceStyleName,
         pp.totalSaleNum saleNumTotal,
         pp.vehiceNumber,
-        VehicleStatus,
         pp.RemnantNum remnantNum,
         pp.numberOfSignings,
         pt.adjustmentTime,
@@ -163,7 +162,6 @@
         left join SM_BuilderInfo sb on pt.compid = sb.compid and pt.BuilderCode = sb.BuilderCode
         left join (select TaskId,
         compid,
-        VehicleStatus,
         sum(RemnantNum)RemnantNum,
         sum(ProduceNum) as totalProduceNum,
         sum(ScrapNum) as ScrapNum,
@@ -174,7 +172,7 @@
         where InvoiceType != 6
         and VehicleStatus not in ('8', '9', '10', '11')
         and VehicleStatus is not null
-        group by TaskId, compid, VehicleStatus) pp
+        group by TaskId, compid) pp
         on pt.compid = pp.compid and pt.TaskId = pp.TaskId
         left join(select PI_TypeName, PI_Values, compid
         from DD_PublicInfo
@@ -301,7 +299,6 @@
         left join SM_BuilderInfo sb on pt.compid = sb.compid and pt.BuilderCode = sb.BuilderCode
         left join (select TaskId,
         compid,
-        VehicleStatus,
         sum(RemnantNum)RemnantNum,
         sum(ProduceNum) as totalProduceNum,
         sum(ScrapNum) as ScrapNum,
@@ -310,7 +307,7 @@
         where InvoiceType != 6
         and VehicleStatus not in ('8', '9', '10', '11')
         and VehicleStatus is not null
-        group by TaskId, compid, VehicleStatus) pp
+        group by TaskId, compid) pp
         on pt.compid = pp.compid and pt.TaskId = pp.TaskId
         left join(select PI_TypeName, PI_Values, compid
         from DD_PublicInfo
