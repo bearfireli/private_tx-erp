@@ -83,4 +83,13 @@ public interface ContractMapper {
      * @return 合同列表
      */
     List<ContractListVO> getContractListByEppOrBuild(String compid, String searchName);
+
+    void updateContractDistance(String contractUID, String cContractCode, String compid, Double distance, String remarks, Integer recStatus);
+
+    Integer selectPumpTruck(String compid, Integer pumpType,String contractUID,String contractCode);
+
+    /*修改合同泵车价格*/
+    void updatePumpTruck(String compid, String opid, String contractUID, String contractCode, Integer pumptype, Double pumPrice, Double tableExpense, String createTime);
+
+    String getContractPriceMarkup(String compid, String contractUid, String contractDetailCode, String pPCode);
 }

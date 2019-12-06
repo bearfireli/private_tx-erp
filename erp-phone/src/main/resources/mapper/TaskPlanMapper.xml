@@ -183,8 +183,8 @@
         and pt.compid = p.compid
         where pt.compid = #{compid}
         <if test="searchName != null and searchName != '' ">
-            and pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
-            '%'+#{searchName}+'%'
+            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
+            '%'+#{searchName}+'%')
         </if>
         and pt.RecStatus = 1
         and pt.TaskStatus = 1

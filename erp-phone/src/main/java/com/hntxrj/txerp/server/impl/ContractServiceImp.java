@@ -708,10 +708,14 @@ public class ContractServiceImp implements ContractService {
                 BigDecimal towerCranePrice = p.getTowerCranePrice();
                 BigDecimal otherPrice = p.getOtherPrice();
                 boolean isDefault  =p.isDefault();
-                contractMapper.saveContractPriceMarkup(compid,contractUid,contractDetailCode,pPCode,pPName,
-                       unitPrice,jumpPrice,selfDiscPrice,
-                        towerCranePrice,otherPrice,isDefault);
-            log.info("【添加特殊材料】priceMarkupDropDowns={}", priceMarkupDropDowns);
+                String ppcode = contractMapper.getContractPriceMarkup(compid, contractUid, contractDetailCode, pPCode);
+                if (ppcode == null) {
+                    contractMapper.saveContractPriceMarkup(compid,contractUid,contractDetailCode,pPCode,pPName,
+                            unitPrice,jumpPrice,selfDiscPrice,
+                            towerCranePrice,otherPrice,isDefault);
+                    log.info("【添加特殊材料】priceMarkupDropDowns={}", priceMarkupDropDowns);
+                }
+
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -774,9 +778,18 @@ public class ContractServiceImp implements ContractService {
                                          Double distance, String remarks, Integer recStatus,
                                          Double upDown, Integer upDownMark) throws ErpException {
         try{
-            Integer integer = contractMapper.saveContractDistance(contractUID, cContractCode, compid,
-                    distance, remarks,recStatus,upDown, upDownMark);
-            log.info("【保存合同运距】saveContractDistance={}");
+
+            ContractDistanceVO contractDistance = contractMapper.getContractDistance(compid, contractUID, cContractCode);
+            if (contractDistance == null) {
+                //用户要新增合同运距
+                Integer integer = contractMapper.saveContractDistance(contractUID, cContractCode, compid,
+                        distance, remarks,recStatus,upDown, upDownMark);
+                log.info("【保存合同运距】saveContractDistance={}");
+            }else{
+                contractMapper.updateContractDistance(contractUID, cContractCode, compid,
+                        distance, remarks,recStatus);
+            }
+
         }catch (Exception e){
             throw new ErpException(ErrEumn.ADD_CONTRACTDISTANCESET_ERROR);
         }
@@ -804,11 +817,19 @@ public class ContractServiceImp implements ContractService {
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = sdf.format(date);
-            Integer row = contractMapper.insertPumpTruck(compid, opid, contractUID, contractCode,
-                    pumptype, pumPrice, tableExpense, createTime);
-            if (row == null || row == 0) {
-                throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
+
+            Integer pump= contractMapper.selectPumpTruck(compid, pumptype,contractUID,contractCode);
+            if (pump == null) {
+                Integer row = contractMapper.insertPumpTruck(compid, opid, contractUID, contractCode,
+                        pumptype, pumPrice, tableExpense, createTime);
+                if (row == null || row == 0) {
+                    throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
+                }
+            }else{
+                contractMapper.updatePumpTruck(compid, opid, contractUID, contractCode,
+                        pumptype, pumPrice, tableExpense, createTime);
             }
+
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
         }

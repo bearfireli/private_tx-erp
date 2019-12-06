@@ -85,7 +85,7 @@
         where cd.compid = #{compid}
         and cd.ContractUID = #{contractUid}
         <if test="contractDetailCode != null and contractDetailCode != ''">
-           and cd.CContractCode =#{contractDetailCode}
+            and cd.CContractCode =#{contractDetailCode}
         </if>
     </select>
     <select id="getContractGradePrice" resultType="com.hntxrj.txerp.vo.ContractGradePriceVO">
@@ -216,6 +216,30 @@
 
     </insert>
 
+    <!-- 查询泵车价格 -->
+    <select id="selectPumpTruck"  resultType="java.lang.Integer">
+        select Pumptype from SM_PumpPriceSet
+        where compid=#{compid}
+        and Pumptype=#{pumpType}
+        and contractUID=#{contractUID}
+        and CContractCode=#{contractCode}
+    </select>
+
+
+    <!-- 修改合同泵车价格 -->
+    <select id="updatePumpTruck" >
+        update SM_PumpPriceSet set
+          OpId=#{opid},
+          PumpPrice=#{pumPrice},
+          TableExpense=#{tableExpense},
+          CreateTime=#{createTime},
+          RecStatus=1,
+          UpDownMark=0,
+          UpDown=0
+        where compid=#{compid} and  Pumptype=#{pumptype}
+        and  ContractUID=#{contractUID} and CContractCode=#{contractCode}
+    </select>
+
 
     <!--/**
      * 合同运距
@@ -255,6 +279,20 @@
 
     </insert>
 
+    <!--修改合同运距-->
+
+    <insert id="updateContractDistance">
+       update SM_ContractDistanceSet set
+         Distance=#{distance},
+         RecStatus=#{recStatus},
+         Remarks=#{remarks},
+         UpDownMark=0,
+         UpDown=0
+        where compid=#{compid} and ContractUID=#{contractUID} and CContractCode=#{cContractCode}
+
+    </insert>
+
+
     <!--添加特殊材料-->
     <insert id="saveContractPriceMarkup" useGeneratedKeys="true">
         insert into SM_ContractPriceMarkup
@@ -281,6 +319,15 @@
                 #{otherPrice},
                 #{isDefault})
     </insert>
+
+    <!--查询特殊加价材料-->
+    <select id="getContractPriceMarkup"  resultType="java.lang.String">
+         select PPCode from SM_ContractPriceMarkup
+         where compid=#{compid}
+         and ContractUID=#{contractUid}
+         and CContractCode=#{contractDetailCode}
+         and PPCode=#{pPCode}
+    </select>
 
     <!--查询泵车列表-->
     <select id="selectPumpTruckList" resultType="com.hntxrj.txerp.vo.PumpTruckListVO">
