@@ -164,7 +164,7 @@ public class TaskPlanApi {
         return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
-                eppCode, upStatus == -1 ? null : upStatus, builderCode, taskId, placing, taskStatus,page, pageSize));
+                eppCode, upStatus, builderCode, taskId, placing, taskStatus,page, pageSize));
     }
 
     /**
