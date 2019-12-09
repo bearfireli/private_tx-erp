@@ -828,7 +828,7 @@ public class ContractServiceImp implements ContractService {
                                     Integer pumptype, Double pumPrice, Double tableExpense) throws ErpException {
 
         //判断合同是否审核，如果已经审核，则无法添加泵车价格。
-        if (getContractVerifyStatus(contractUID, contractUID, compid)) {
+        if (getContractVerifyStatus(contractUID, contractCode, compid)) {
             throw new ErpException(ErrEumn.VERIFY_CONTRACT_ERROR);
         }
         try {

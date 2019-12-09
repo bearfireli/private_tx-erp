@@ -402,7 +402,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     /**
-     * 司机砼运输车数合计
+     * 司机拖水拖泵运输车数合计
      *
      * @param compid       企业
      * @param eppCode      工程代码
