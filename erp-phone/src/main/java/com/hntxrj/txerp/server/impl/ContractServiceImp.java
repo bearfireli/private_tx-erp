@@ -272,7 +272,6 @@ public class ContractServiceImp implements ContractService {
 
     /**
      * spQueryPriceDDPublicInfo
-     *
      */
     @Override
     public JSONArray spQueryPriceDDPublicInfo() {
@@ -361,8 +360,8 @@ public class ContractServiceImp implements ContractService {
      * @param currPage     当前页
      * @param PageSize     页长度
      * @param mark         1  砼价格  2  特殊材料  3泵车车价格
-     * @param stgid         线号
-     * @param ppname     加价项目名称
+     * @param stgid        线号
+     * @param ppname       加价项目名称
      * @param pumptypename @return jsonArray
      */
     @Override
@@ -421,22 +420,22 @@ public class ContractServiceImp implements ContractService {
 
     @Override
     public PageVO<ContractListVO> getContractList(Long startTime, Long endTime, String contractCode,
-                                                  String eppCode, String buildCode, String salesMan, String compId,String verifyStatus,
+                                                  String eppCode, String buildCode, String salesMan, String compId, String verifyStatus,
                                                   Integer page, Integer pageSize) {
-       
+
         PageHelper.startPage(page, pageSize, "SignDate desc");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String startTimeStr = startTime == null ? null : sdf.format(new Date(startTime));
         String endTimeStr = endTime == null ? null : sdf.format(new Date(endTime));
         log.info("【合同列表】startTime:{}, endTime:{}, contractCode:{}, " +
                         "eppCode:{}, buildCode:{}, salesMan:{}, compid:{},verifyStatus:{} page:{}, pageSize:{}",
-                startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId, verifyStatus,page, pageSize);
+                startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId, verifyStatus, page, pageSize);
         /*String verifyStatus = null;
         if(null ==startTime && null ==endTime){
             verifyStatus ="true";
         }*/
         List<ContractListVO> contractListVOList = contractMapper.getContractList(
-                startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId,verifyStatus);
+                startTimeStr, endTimeStr, contractCode, eppCode, buildCode, salesMan, compId, verifyStatus);
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
         PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -445,7 +444,7 @@ public class ContractServiceImp implements ContractService {
 
     @Override
     public ContractVO getContractDetail(String contractDetailCode, String contractUid, String compid) {
-        return contractMapper.getContractDetail(contractDetailCode,contractUid, compid);
+        return contractMapper.getContractDetail(contractDetailCode, contractUid, compid);
     }
 
     @Override
@@ -481,19 +480,19 @@ public class ContractServiceImp implements ContractService {
 
     @Override
     public List<DropDownVO> getContractTypeDropDown(String compid) {
-        return publicInfoMapper.getDropDown(46,compid);
+        return publicInfoMapper.getDropDown(46, compid);
     }
 
     @Override
     public List<DropDownVO> getPriceTypeDropDown(String compid) {
-        return publicInfoMapper.getDropDown(47,compid);
+        return publicInfoMapper.getDropDown(47, compid);
     }
 
     @Override
     public void addContract(String contractId, String salesman, Date signDate, Date expiresDate, Date effectDate,
                             Integer contractType, Integer priceStyle, String eppCode,
                             String builderCode, BigDecimal contractNum, BigDecimal preNum,
-                            BigDecimal preMoney, String remarks, String compid) throws ErpException {
+                            BigDecimal preMoney, String remarks, String compid, String address) throws ErpException {
         if (compid == null) {
             throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_COMPID);
         }
@@ -522,11 +521,10 @@ public class ContractServiceImp implements ContractService {
         contractMaster.setSalesman(salesman);
 
 
-
-        if(expiresDate!=null){
+        if (expiresDate != null) {
             contractMaster.setExpiresDate(expiresDate);
         }
-        if(effectDate!=null){
+        if (effectDate != null) {
             contractMaster.setExpiresDate(effectDate);
         }
 
@@ -547,6 +545,7 @@ public class ContractServiceImp implements ContractService {
         contractDetail.setBuilderCode(builderCode);
         contractDetail.setEppCode(eppCode);
         contractDetail.setCompid(compid);
+        contractDetail.setAddress(address);
         //TODO: 更换操作员
         contractDetail.setOpId("0225");
 
@@ -566,7 +565,7 @@ public class ContractServiceImp implements ContractService {
             throw new ErpException(ErrEumn.ADD_CONTRACT_ADJUNCT_UPLOAD_FILE_CONNOT_NULL);
         }
         String localFileName = UUID.randomUUID().toString();
-        if(!new File(contractAdjunctPath).exists()){
+        if (!new File(contractAdjunctPath).exists()) {
             new File(contractAdjunctPath).mkdirs();
         }
         File localFile = new File(contractAdjunctPath + localFileName);
@@ -647,13 +646,17 @@ public class ContractServiceImp implements ContractService {
     @Override
     public List<StgIdDropDown> getContractStgIdDropDown(String compid) {
         return contractMapper.getStgIdDropDown(compid);
-}
+    }
 
     @Override
     public void saveContractGradePrice(String compid, String contractUid, String contractDetailCode, String gradePrice)
             throws ErpException {
         log.info("gradePrice={}", gradePrice);
         JSONArray array = JSONArray.parseArray(gradePrice);
+        //判断合同是否审核，如果已经审核，则无法增加砼价格。
+        if (getContractVerifyStatus(contractUid, contractDetailCode, compid)) {
+            throw new ErpException(ErrEumn.VERIFY_CONTRACT_ERROR);
+        }
         List<ContractGradePriceDetail> contractGradePriceDetails = new ArrayList<>();
         for (Object obj : array) {
             ContractGradePriceDetail contractGradePriceDetail = new ContractGradePriceDetail();
@@ -678,6 +681,7 @@ public class ContractServiceImp implements ContractService {
             EntityTools.setEntityDefaultValue(contractGradePriceDetail);
             contractGradePriceDetails.add(contractGradePriceDetail);
         }
+
         try {
             log.info("【保存合同砼价格】contractGradePriceDetails={}", contractGradePriceDetails);
             contractGradePriceDetailRepository.saveAll(contractGradePriceDetails);
@@ -696,28 +700,32 @@ public class ContractServiceImp implements ContractService {
     @Override
     public void saveContractPriceMarkup(String compid, String contractUid,
                                         String contractDetailCode, String priceMarkup) throws ErpException {
+        //判断合同是否审核，如果已经审核，则无法增加特殊材料。
+        if (getContractVerifyStatus(contractUid, contractDetailCode, compid)) {
+            throw new ErpException(ErrEumn.VERIFY_CONTRACT_ERROR);
+        }
 
         List<PriceMarkupDropDown> priceMarkupDropDowns = JSONArray.parseArray(priceMarkup, PriceMarkupDropDown.class);
         try {
-            for (PriceMarkupDropDown p:priceMarkupDropDowns) {
-                String pPCode= p.getPCode();
-                String pPName= p.getPName();
-                BigDecimal unitPrice=p.getUnitPrice();
-                BigDecimal jumpPrice= p.getJumpPrice();
-                BigDecimal selfDiscPrice= p.getSelfDiscPrice();
+            for (PriceMarkupDropDown p : priceMarkupDropDowns) {
+                String pPCode = p.getPCode();
+                String pPName = p.getPName();
+                BigDecimal unitPrice = p.getUnitPrice();
+                BigDecimal jumpPrice = p.getJumpPrice();
+                BigDecimal selfDiscPrice = p.getSelfDiscPrice();
                 BigDecimal towerCranePrice = p.getTowerCranePrice();
                 BigDecimal otherPrice = p.getOtherPrice();
-                boolean isDefault  =p.isDefault();
+                boolean isDefault = p.isDefault();
                 String ppcode = contractMapper.getContractPriceMarkup(compid, contractUid, contractDetailCode, pPCode);
                 if (ppcode == null) {
-                    contractMapper.saveContractPriceMarkup(compid,contractUid,contractDetailCode,pPCode,pPName,
-                            unitPrice,jumpPrice,selfDiscPrice,
-                            towerCranePrice,otherPrice,isDefault);
+                    contractMapper.saveContractPriceMarkup(compid, contractUid, contractDetailCode, pPCode, pPName,
+                            unitPrice, jumpPrice, selfDiscPrice,
+                            towerCranePrice, otherPrice, isDefault);
                     log.info("【添加特殊材料】priceMarkupDropDowns={}", priceMarkupDropDowns);
                 }
 
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.ADD_CONTRACTPRICEMARKUP_ERROR);
         }
@@ -777,20 +785,26 @@ public class ContractServiceImp implements ContractService {
     public ResultVO saveContractDistance(String contractUID, String cContractCode, String compid,
                                          Double distance, String remarks, Integer recStatus,
                                          Double upDown, Integer upDownMark) throws ErpException {
-        try{
+
+        //判断合同是否审核，如果已经审核，则无法添加合同运距。
+        if (getContractVerifyStatus(contractUID, cContractCode, compid)) {
+            throw new ErpException(ErrEumn.VERIFY_CONTRACT_ERROR);
+        }
+
+        try {
 
             ContractDistanceVO contractDistance = contractMapper.getContractDistance(compid, contractUID, cContractCode);
             if (contractDistance == null) {
                 //用户要新增合同运距
                 Integer integer = contractMapper.saveContractDistance(contractUID, cContractCode, compid,
-                        distance, remarks,recStatus,upDown, upDownMark);
+                        distance, remarks, recStatus, upDown, upDownMark);
                 log.info("【保存合同运距】saveContractDistance={}");
-            }else{
+            } else {
                 contractMapper.updateContractDistance(contractUID, cContractCode, compid,
-                        distance, remarks,recStatus);
+                        distance, remarks, recStatus);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_CONTRACTDISTANCESET_ERROR);
         }
         return null;
@@ -800,7 +814,7 @@ public class ContractServiceImp implements ContractService {
     /**
      * 泵车类添加
      *
-     * @param compid        企业代码
+     * @param compid       企业代码
      * @param opid         操作员代号
      * @param contractUID  合同uid号
      * @param contractCode 子合同号
@@ -811,21 +825,25 @@ public class ContractServiceImp implements ContractService {
     @Override
     @Transactional
     public ResultVO insertPumpTruck(String compid, String opid, String contractUID, String contractCode,
-                                   Integer pumptype, Double pumPrice, Double tableExpense) throws ErpException {
+                                    Integer pumptype, Double pumPrice, Double tableExpense) throws ErpException {
 
+        //判断合同是否审核，如果已经审核，则无法添加泵车价格。
+        if (getContractVerifyStatus(contractUID, contractUID, compid)) {
+            throw new ErpException(ErrEumn.VERIFY_CONTRACT_ERROR);
+        }
         try {
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = sdf.format(date);
 
-            Integer pump= contractMapper.selectPumpTruck(compid, pumptype,contractUID,contractCode);
+            Integer pump = contractMapper.selectPumpTruck(compid, pumptype, contractUID, contractCode);
             if (pump == null) {
                 Integer row = contractMapper.insertPumpTruck(compid, opid, contractUID, contractCode,
                         pumptype, pumPrice, tableExpense, createTime);
                 if (row == null || row == 0) {
                     throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
                 }
-            }else{
+            } else {
                 contractMapper.updatePumpTruck(compid, opid, contractUID, contractCode,
                         pumptype, pumPrice, tableExpense, createTime);
             }
@@ -836,18 +854,20 @@ public class ContractServiceImp implements ContractService {
         return null;
 
     }
+
     /**
      * 查询泵车列表
-     * @param compid        企业代码
-     * @param page 开始页
+     *
+     * @param compid   企业代码
+     * @param page     开始页
      * @param pageSize 结束页
      */
     @Override
-    public PageVO<PumpTruckListVO> selectPumpTruckList(String compid,Integer page,Integer pageSize,String builderName) {
-        PageHelper.startPage(page,pageSize);
-        List<PumpTruckListVO> pumpTruckListVOList=contractMapper.selectPumpTruckList(compid,builderName);
-        PageInfo<PumpTruckListVO> pageInfo=new PageInfo<>(pumpTruckListVOList);
-        PageVO<PumpTruckListVO> pageVO=new PageVO<>();
+    public PageVO<PumpTruckListVO> selectPumpTruckList(String compid, Integer page, Integer pageSize, String builderName) {
+        PageHelper.startPage(page, pageSize);
+        List<PumpTruckListVO> pumpTruckListVOList = contractMapper.selectPumpTruckList(compid, builderName);
+        PageInfo<PumpTruckListVO> pageInfo = new PageInfo<>(pumpTruckListVOList);
+        PageVO<PumpTruckListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
     }
@@ -866,13 +886,20 @@ public class ContractServiceImp implements ContractService {
     public PageVO<ContractListVO> getContractListByEppOrBuild(String compid, String searchName, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize, "SignDate desc");
 
-        List<ContractListVO> contractListVOList = contractMapper.getContractListByEppOrBuild(compid,searchName);
+        List<ContractListVO> contractListVOList = contractMapper.getContractListByEppOrBuild(compid, searchName);
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
         PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
     }
 
+
+    /**
+     * 判断合同审核状态
+     */
+    private Boolean getContractVerifyStatus(String contractUID, String cContractCode, String compid) {
+       return contractMapper.getContractVerifyStatus(contractUID, cContractCode, compid);
+    }
 
 }
 

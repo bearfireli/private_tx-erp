@@ -373,4 +373,13 @@
 
     </select>
 
+    <select id="getContractVerifyStatus" resultType="java.lang.Boolean">
+        select VerifyStatus from SM_ContractDetail
+        where ContractUID=#{contractUID}
+         and CContractCode=#{cContractCode}
+          and compid=#{compid}
+          and RecStatus=1
+
+    </select>
+
 </mapper>

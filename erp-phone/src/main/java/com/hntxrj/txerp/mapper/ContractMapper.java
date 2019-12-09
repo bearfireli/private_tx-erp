@@ -92,4 +92,7 @@ public interface ContractMapper {
     void updatePumpTruck(String compid, String opid, String contractUID, String contractCode, Integer pumptype, Double pumPrice, Double tableExpense, String createTime);
 
     String getContractPriceMarkup(String compid, String contractUid, String contractDetailCode, String pPCode);
+
+    /*查询合同的审核状态*/
+    Boolean getContractVerifyStatus(String contractUID, String cContractCode, String compid);
 }
