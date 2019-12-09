@@ -168,7 +168,7 @@ public class VehicleApi {
      */
     @PostMapping("/getWorkloadStatistics")
     public ResultVO getWorkloadStatistics(String compid, String eppCode, String empNameb,
-                                          Integer weightType,
+                                          @RequestParam(defaultValue = "0")Integer weightType,
                                           Long beginTime, Long endTime,
                                           @RequestParam(defaultValue = "1") Integer page,
                                           @RequestParam(defaultValue = "10") Integer pageSize) {

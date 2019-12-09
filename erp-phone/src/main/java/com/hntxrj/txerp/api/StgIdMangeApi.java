@@ -2,6 +2,7 @@ package com.hntxrj.txerp.api;
 
 import com.hntxrj.txerp.server.StgIdMangeService;
 import com.hntxrj.txerp.vo.ResultVO;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -79,11 +80,15 @@ public class StgIdMangeApi {
         try {
             stgIdMangeService.insertStgIdManage(compid, stgId, grade, pumpPrice, notPumpPrice, towerCranePrice);
             return ResultVO.create();
-        } catch (Exception e) {
-
+        } catch (DuplicateKeyException e) {
             ResultVO resultVO = new ResultVO();
             resultVO.setCode(1);
-            resultVO.setMsg("此标号已存在");
+            resultVO.setMsg("砼标号已存在");
+            return resultVO;
+        }catch (Exception e) {
+            ResultVO resultVO = new ResultVO();
+            resultVO.setCode(1);
+            resultVO.setMsg("砼标号添加失败");
             return resultVO;
         }
 
