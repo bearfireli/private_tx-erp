@@ -4,11 +4,11 @@
 
     <!--原材料过磅统计。材料名称-->
     <select id="getWeightByMat" resultType="com.hntxrj.txerp.vo.WeightMatNameVO">
-        select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as Proportion,mp.MatName
+        select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as Proportion,mp.MatName,mp.mat,mp.MatSpecs as matSpecs
         from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
-        left join (select MatName + '(' +MatSpecs+ ')' AS matName,compid,MatCode,empName from MP_MaterialInfor )
+        left join (select MatName + '(' +MatSpecs+ ')' AS matName,MatName as mat ,MatSpecs ,compid,MatCode,empName from MP_MaterialInfor )
         mp on si.compid =mp.compid and si.MatCode =mp.MatCode
         where si.compid = #{compid} and si.RecStatus=1
         <if test="empName != null">
@@ -26,7 +26,7 @@
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
-        group by mp.MatName
+        group by mp.MatName,mp.mat,mp.MatSpecs
         order by mp.MatName
     </select>
 

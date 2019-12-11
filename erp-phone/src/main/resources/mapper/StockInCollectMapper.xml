@@ -5,8 +5,10 @@
     <select id="getMatDetailsList" resultType="com.hntxrj.txerp.vo.StockInCollectVO">
         select mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,sum(si.ClWeight) as
         clWeight,si.TaWeight,mt.MatSpecs,si.NetWeight as netWeight,sl.Sup_LinkMan as linkMan
-        from MP_StockIn si left join MP_MaterialInfor mt on si.compid = mt.compid and si.MatCode = mt.MatCode
+        from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+        left join MP_MaterialInfor mt on si.compid = mt.compid and si.MatCode = mt.MatCode
         where si.compid = #{compid} and si.RecStatus=1
         <if test="vehicleId != null and vehicleId!='' ">
             and vehicleId like '%'+#{vehicleId}+'%'
@@ -18,7 +20,7 @@
             and Sup_Name = #{supName}
         </if>
         <if test="matSpecs != null and matSpecs !=''">
-            and MatSpecs like '%'+#{matSpecs}+'%'
+            and MatSpecs=#{matSpecs}
         </if>
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}

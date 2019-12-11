@@ -198,6 +198,24 @@ public class ContractApi {
     }
 
 
+    /**
+     * 添加合同
+     * @param contractId    主合同号
+     * @param salesman      业务员代号
+     * @param signDate      签订日期
+     * @param expiresDate   新版本到期时间
+     * @param effectDate    老版本到期时间
+     * @param contractType  合同类别
+     * @param priceStyle     价格执行方式
+     * @param eppCode        工程代号
+     * @param builderCode    施工单位代号
+     * @param contractNum    合同方量
+     * @param preNum         预付方量
+     * @param preMoney       预付金额
+     * @param remarks        备注
+     * @param compid         公司代号
+     * @param address        交货地址
+     * */
     @PostMapping("/addContract")
     public ResultVO addContract(String contractId,
                                 String salesman,
@@ -211,7 +229,9 @@ public class ContractApi {
                                 BigDecimal contractNum,
                                 BigDecimal preNum,
                                 BigDecimal preMoney,
-                                String remarks, String compid) throws ErpException {
+                                String remarks,
+                                String compid,
+                                String address) throws ErpException {
         contractService.addContract(contractId,
                 salesman,
                 new Date(signDate),
@@ -224,7 +244,9 @@ public class ContractApi {
                 contractNum,
                 preNum,
                 preMoney,
-                remarks, compid);
+                remarks,
+                compid,
+                address);
         return ResultVO.create();
     }
 

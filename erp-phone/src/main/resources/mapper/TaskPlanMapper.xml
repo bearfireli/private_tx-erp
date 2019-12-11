@@ -151,7 +151,6 @@
         PI_TypeName as PlaceStyleName,
         pp.totalSaleNum saleNumTotal,
         pp.vehiceNumber,
-        VehicleStatus,
         pp.RemnantNum remnantNum,
         pp.numberOfSignings,
         pt.adjustmentTime,
@@ -163,7 +162,6 @@
         left join SM_BuilderInfo sb on pt.compid = sb.compid and pt.BuilderCode = sb.BuilderCode
         left join (select TaskId,
         compid,
-        VehicleStatus,
         sum(RemnantNum)RemnantNum,
         sum(ProduceNum) as totalProduceNum,
         sum(ScrapNum) as ScrapNum,
@@ -174,7 +172,7 @@
         where InvoiceType != 6
         and VehicleStatus not in ('8', '9', '10', '11')
         and VehicleStatus is not null
-        group by TaskId, compid, VehicleStatus) pp
+        group by TaskId, compid) pp
         on pt.compid = pp.compid and pt.TaskId = pp.TaskId
         left join(select PI_TypeName, PI_Values, compid
         from DD_PublicInfo
@@ -185,8 +183,8 @@
         and pt.compid = p.compid
         where pt.compid = #{compid}
         <if test="searchName != null and searchName != '' ">
-            and pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
-            '%'+#{searchName}+'%'
+            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
+            '%'+#{searchName}+'%')
         </if>
         and pt.RecStatus = 1
         and pt.TaskStatus = 1
@@ -194,65 +192,39 @@
         order by pt.TaskId
     </select>
 
-    <!---->
+    <!--调度派车中今日调度-->
     <select id="getSendDetail" resultType="com.hntxrj.txerp.vo.SendCarDetailVO">
-        select totalProduceNum,
-           pt.Taskid,
-           stgid,
-           pt.Slump    as slump,
-           EPPName,
-           pp.SendTime as sendTime,
-           pp.Arrive_STTime as arriveTime,
-           Placing,
-           pp.totalSaleNum saleNumTotal,
-           pp.vehiceNumber,
-           pp.StirId,
+        select ps.ProduceNum totalProduceNum,
+        pt.Taskid,
+        stgid,
+        pt.Slump    as slump,
+        EPPName,
+        ps.SendTime as sendTime,
+        ps.Arrive_STTime as arriveTime,
+        Placing,
+        (SaleNum - ReturnNum - SeparateNum - ScrapNum) saleNumTotal,
+        ps.StirId,
         ds.StirName as stirName,
-        pp.VehicleID as vehicleID
+        ps.VehicleID as vehicleID
         from PT_TaskPlan pt
-         left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
-         left join SM_BuilderInfo sb on pt.compid = sb.compid and pt.BuilderCode = sb.BuilderCode
-         left join (select TaskId,
-                           compid,
-                           VehicleStatus,
-                           SendTime,
-                           Arrive_STTime,
-                           sum(RemnantNum)                                   RemnantNum,
-                           sum(ProduceNum) as                                totalProduceNum,
-                           sum(ScrapNum)   as                                ScrapNum,
-                           sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) totalSaleNum,
-                           max(VehiceNumber)                                 vehiceNumber,
-                           sum(NumberOfSignings)                             numberOfSignings,
-                            StirId, VehicleID as vehicleID
-                    from PT_TaskSaleInvoice
-                    where InvoiceType != 6
-                      and upStatus = 1
-                      and VehicleStatus not in ('8', '9', '10', '11')
-                      and VehicleStatus is not null
-                    group by TaskId, compid, VehicleStatus, StirId,SendTime,Arrive_STTime,VehicleID) pp
-                   on pt.compid = pp.compid and pt.TaskId = pp.TaskId
-         left join(select PI_TypeName, PI_Values, compid
-                   from DD_PublicInfo
-                   where PI_Class = 24
-                     and PI_Status = 1
-                   group by PI_TypeName, PI_Values, compid) p
-                  on p.PI_Values = pt.PlaceStyle
-                      and pt.compid = p.compid
-        left join DD_StirInfoSet ds on ds.compid=pt.compid and ds.StirId=pp.StirId
+        left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
+        left join  PT_TaskSaleInvoice ps on ps.compid=pt.compid and ps.TaskId=pt.TaskId
+        left join DD_StirInfoSet ds on ds.compid=pt.compid and ds.StirId=ps.StirId
         where pt.compid = #{compid}
         <if test="vehicleId !=null and vehicleId != '' ">
-            and pp.vehicleID =#{vehicleId}
+            and ps.vehicleID =#{vehicleId}
         </if>
         <if test="beginTime != null and beginTime != ''">
-            and pp.SendTime <![CDATA[ >= ]]>   #{beginTime}
+            and ps.SendTime <![CDATA[ >= ]]>   #{beginTime}
         </if>
         <if test="endTime != null and endTime != ''">
-            and pp.SendTime <![CDATA[ <= ]]>  #{endTime}
+            and ps.SendTime <![CDATA[ <= ]]>  #{endTime}
         </if>
-          and pt.RecStatus = 1
-          and pt.TaskStatus = 1
-          and DeleteMark = 0
-        order by pt.TaskId
+        and pt.RecStatus = 1
+        and DeleteMark = 0
+        and ps.InvoiceType != 6 and ps.VehicleStatus not in ('8', '9', '10', '11')
+        and ps.VehicleStatus is not null
+        order by ps.SendTime desc
     </select>
 
 
@@ -301,7 +273,6 @@
         left join SM_BuilderInfo sb on pt.compid = sb.compid and pt.BuilderCode = sb.BuilderCode
         left join (select TaskId,
         compid,
-        VehicleStatus,
         sum(RemnantNum)RemnantNum,
         sum(ProduceNum) as totalProduceNum,
         sum(ScrapNum) as ScrapNum,
@@ -310,7 +281,7 @@
         where InvoiceType != 6
         and VehicleStatus not in ('8', '9', '10', '11')
         and VehicleStatus is not null
-        group by TaskId, compid, VehicleStatus) pp
+        group by TaskId, compid) pp
         on pt.compid = pp.compid and pt.TaskId = pp.TaskId
         left join(select PI_TypeName, PI_Values, compid
         from DD_PublicInfo
