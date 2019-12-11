@@ -18,4 +18,7 @@ public class WeightMatNameVO {
     private double proportion;
     /*车数*/
     private int vCount;
+    /*规格*/
+    private String matSpecs;
+
 }

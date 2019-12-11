@@ -20,7 +20,7 @@
             and Sup_Name = #{supName}
         </if>
         <if test="matSpecs != null and matSpecs !=''">
-            and MatSpecs like '%'+#{matSpecs}+'%'
+            and MatSpecs=#{matSpecs}
         </if>
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
