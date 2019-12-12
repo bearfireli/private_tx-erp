@@ -6,10 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.mapper.ConcreteMapper;
-import com.hntxrj.txerp.mapper.PublicInfoMapper;
-import com.hntxrj.txerp.mapper.StockMapper;
-import com.hntxrj.txerp.mapper.TaskPlanMapper;
+import com.hntxrj.txerp.mapper.*;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
 import com.hntxrj.txerp.util.EntityTools;
@@ -35,15 +32,17 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final ConcreteMapper concreteMapper;
     private final PublicInfoMapper publicInfoMapper;
     private StirInfoSetServiceImpl stirInfoSetMapper;
+    private final SystemVarInitMapper systemVarInitMapper;
 
     @Autowired
-    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
+    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper, SystemVarInitMapper systemVarInitMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
         this.concreteMapper = concreteMapper;
         this.publicInfoMapper = publicInfoMapper;
         this.stirInfoSetMapper = stirInfoSetMapper;
+        this.systemVarInitMapper = systemVarInitMapper;
     }
 
     @Override
@@ -472,6 +471,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         waitingDriverList.setVehicleStatus(1);
         waitingDriverList.setVehicleStatusName("等待生产");
 
+        //从系统变量表中查询出用户的设置信息，包括是否显示等待派车，和显示几辆
+        DriverWaitLEDVO driverWaitLEDVO=systemVarInitMapper.getDriverWaitLED(compid);
+
 
         //获取全部线号
         List<StirIdVO> stirIds = stockMapper.getStirIds(compid);
@@ -482,12 +484,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
         for (StirIdVO stirId : stirIds) {
             //一号线等待生产的车辆
-            List<ProductDriverLEDVo> waitDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, stirId.getStirId(),1);
+            List<ProductDriverLEDVo> waitDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, stirId.getStirId(),1,3);
             if (waitDriverShiftLED.size() != 0) {
                 waitList.add(waitDriverShiftLED);
             }
 
-            List<ProductDriverLEDVo> produceDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, stirId.getStirId(),3);
+            List<ProductDriverLEDVo> produceDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, stirId.getStirId(),3,driverWaitLEDVO.getValue());
             if (produceDriverShiftLED.size() != 0) {
                 produceList.add(produceDriverShiftLED);
             }
@@ -496,7 +498,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         producingDriverList.setCars(produceList);
         waitingDriverList.setCars(waitList);
         ProductDriverList.add(producingDriverList);
-        ProductDriverList.add(waitingDriverList);
+        if (driverWaitLEDVO.getIsShow()) {
+            ProductDriverList.add(waitingDriverList);
+        }
+
         return ProductDriverList;
     }
 
