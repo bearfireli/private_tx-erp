@@ -25,9 +25,7 @@
         ps.PI_TypeName placeStyleName,
         upStatus,
         vs.PI_TypeName VehicleStatusName,
-        it.PI_TypeName invoiceTypeName,
-        vw.WeightType,
-        it2.PI_TypeName WeightTypeName
+        it.PI_TypeName invoiceTypeName
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
         left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
@@ -39,10 +37,6 @@
         left join DD_PublicInfo it on it.PI_Class = 51 and tsi.InvoiceType=it.PI_Values
         and tsi.compid = it.compid
         left join VM_PersonalInfo vm on tsi.PersonalCode =vm.PersonalCode and tsi.compid =vm.compid
-        left join VM_VehicleWeight vw on tsi.compid = vw.compid and tsi.taskid = vw.taskid and
-        tsi.VehicleID=vw.VehicleID and vw.WeightType=0 and tsi.StirId=vw.StirId
-        left join DD_PublicInfo it2 on it2.PI_Class = 53 and vw.WeightType = it2.PI_Values
-        and tsi.compid = it2.compid
         left join  VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
         where tsi.compid=#{compid}
         and tsi.RecStatus=1
