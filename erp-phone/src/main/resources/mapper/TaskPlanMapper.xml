@@ -367,7 +367,7 @@
     <!--查询出单个任务单下所有的车辆-->
     <select id="getCarsByTaskId" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
         select pt.VehicleID   as carID,
-               pt.VehicleStatus,
+               vm.VehicleStatus,
                dp.PI_TypeName as statusName
         from PT_TaskSaleInvoice pt
          left join VM_VehicelManagement vm on pt.compid = vm.compid and pt.VehicleID = vm.CarID
