@@ -112,7 +112,7 @@
 
     <!--司机App小票汇总-->
     <select id="getTaskSaleInvoiceSum" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceSumVO">
-        select count(*) as carNum, sum(SaleNum), sum(tsi.Distance) as distance
+        select count(*) as totalCarNum, sum(SaleNum) as produceNum, sum(tsi.Distance) as distance
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
         left join VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
