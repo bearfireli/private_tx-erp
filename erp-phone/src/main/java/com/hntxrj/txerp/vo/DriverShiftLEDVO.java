@@ -24,7 +24,7 @@ public class DriverShiftLEDVO {
      */
     private  String carID;
     /**
-     * 车状态  3 正在生产  1 等待生产
+     * 车状态  3 正在生产  2 运输
      */
     private String VehicleStatus;
 

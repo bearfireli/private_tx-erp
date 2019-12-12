@@ -366,14 +366,16 @@
 
     <!--查询出单个任务单下所有的车辆-->
     <select id="getCarsByTaskId" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
-        select pt.VehicleID as carID,
+        select pt.VehicleID   as carID,
                pt.VehicleStatus,
-               dp.PI_TypeName  as statusName
+               dp.PI_TypeName as statusName
         from PT_TaskSaleInvoice pt
-                    left join  DD_PublicInfo dp on pt.compid=dp.compid and PI_Class=22 and pt.VehicleStatus=dp.PI_Values
+         left join VM_VehicelManagement vm on pt.compid = vm.compid and pt.VehicleID = vm.CarID
+         left join DD_PublicInfo dp on pt.compid = dp.compid and PI_Class = 22 and vm.VehicleStatus = dp.PI_Values
         where pt.compid = #{compid}
-         and TaskId=#{taskId}
-          and pt.InvoiceType!=6
+          and pt.InvoiceType != 6
+          and (vm.VehicleStatus = 2 or vm.VehicleStatus = 3)
+          and pt.TaskId=#{taskId}
     </select>
 
     <!--施工方App使用的LED功能，只查询生产中的车辆-->
