@@ -4,8 +4,10 @@ package com.hntxrj.txerp.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class ProductDriverLEDVo {
+public class ProductDriverLEDVo implements Serializable {
 
 
     /**

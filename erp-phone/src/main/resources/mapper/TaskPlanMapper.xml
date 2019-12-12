@@ -376,7 +376,7 @@
           and pt.InvoiceType!=6
     </select>
 
-    <!--施工方App使用的LED功能，只查询生产中的车辆-->
+    <!--施工方App使用的LED功能，只查询生产中和等待中的车辆-->
     <select id="getProductDriverShiftLED" resultType="com.hntxrj.txerp.vo.ProductDriverLEDVo">
         select top 3
         vm.CarID,
@@ -386,7 +386,7 @@
         left join DD_StirInfoSet dd on vm.compid =dd.compid and vm.StirId =dd.StirId
         where vm.compid = #{compid} and vm.RecStatus=1 and dd.RecStatus=1
         and VehicleClass ='1'
-        and vm.VehicleStatus =3
+        and vm.VehicleStatus =#{vehicleStatus}
         and vm.StirId =#{stirId}
         order by vm.CreateTime
     </select>

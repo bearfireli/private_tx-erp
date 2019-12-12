@@ -50,6 +50,7 @@ public class DriverApi {
      * @param builderCode 施工单位代号
      * @param driverCode  司机代号
      * @param placing     浇筑部位
+     * @param upStatus    签收状态
      * @param page        页数
      * @param pageSize    每页数量
      * @return 小票签收列表
@@ -151,6 +152,36 @@ public class DriverApi {
         }
 
         return ResultVO.create((map));
+    }
+
+
+
+    /**
+     * 获取小票签收汇总
+     *
+     * @param compid      企业
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param eppCode     工程代号
+     * @param builderCode 施工单位代号
+     * @param driverCode  司机代号
+     * @param placing     浇筑部位
+     * @param upStatus    签收状态
+     * @param page        页数
+     * @param pageSize    每页数量
+     * @return 小票签收列表
+     */
+    @PostMapping("/getTaskSaleInvoiceSum")
+    public ResultVO getTaskSaleInvoiceSum( String compid, Long beginTime, Long endTime, String eppCode,
+                                           @RequestParam(defaultValue = "-1") Byte upStatus,
+                                           String builderCode, String placing,
+                                           @RequestParam(defaultValue = "1") Integer page,
+                                           @RequestParam(defaultValue = "10") Integer pageSize, String driverCode) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(driverService.getTaskSaleInvoiceSum( compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)),
+                eppCode, upStatus == -1 ? null : upStatus, builderCode, placing, page, pageSize, driverCode));
     }
 
 }

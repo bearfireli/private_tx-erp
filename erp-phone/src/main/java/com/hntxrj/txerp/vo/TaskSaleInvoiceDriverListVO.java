@@ -53,4 +53,5 @@ public class TaskSaleInvoiceDriverListVO {
     private String jumpVehicleID; // 泵车号
     private String slump;
     private int vehicleStatus;
+    private String attribute;  //特性
 }

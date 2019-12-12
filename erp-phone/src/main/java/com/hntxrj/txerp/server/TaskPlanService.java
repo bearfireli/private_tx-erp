@@ -133,7 +133,7 @@ public interface TaskPlanService {
      * @param compid 企业id
      * @return 司机排班LED
      */
-    List<ProductDriverLEDListVO> getProductDriverShiftLED(String compid);
+    List<ProductDriverListvo> getProductDriverShiftLED(String compid);
 
     /**
      * 司机排班列表信息

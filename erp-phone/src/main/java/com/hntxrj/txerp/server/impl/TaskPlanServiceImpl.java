@@ -458,24 +458,46 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         return list;
     }
 
-
+//3 ： 正在生产    1：等待生产
     @Override
-    public List<ProductDriverLEDListVO> getProductDriverShiftLED(String compid) {
-        List<ProductDriverLEDListVO> list = new ArrayList<>();
+    public List<ProductDriverListvo> getProductDriverShiftLED(String compid) {
+        //最终返回的集合，包括车辆状态和车辆集合。
+        List<ProductDriverListvo> ProductDriverList = new ArrayList<>();
+        //正在生产的车辆
+        ProductDriverListvo producingDriverList = new ProductDriverListvo();
+        producingDriverList.setVehicleStatus(3);
+        producingDriverList.setVehicleStatusName("正在生产");
+        //等待生产的车辆
+        ProductDriverListvo waitingDriverList = new ProductDriverListvo();
+        waitingDriverList.setVehicleStatus(1);
+        waitingDriverList.setVehicleStatusName("等待生产");
 
+
+        //获取全部线号
         List<StirIdVO> stirIds = stockMapper.getStirIds(compid);
+        //获取所有正在生产的车辆的集合，根据线号分类
+        List produceList = new ArrayList();
+        //获取所有等待生产的车辆的集合，根据线号分类
+        List waitList = new ArrayList();
+
         for (StirIdVO stirId : stirIds) {
-            ProductDriverLEDListVO productDriverLEDListVO = new ProductDriverLEDListVO();
-            productDriverLEDListVO.setStirID(stirId.getStirId());
-            productDriverLEDListVO.setStirName(stirId.getStirName());
-            List<ProductDriverLEDVo> productDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, stirId.getStirId());
-            productDriverLEDListVO.setCars(productDriverShiftLED);
+            //一号线等待生产的车辆
+            List<ProductDriverLEDVo> waitDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, stirId.getStirId(),1);
+            if (waitDriverShiftLED.size() != 0) {
+                waitList.add(waitDriverShiftLED);
+            }
 
-            list.add(productDriverLEDListVO);
+            List<ProductDriverLEDVo> produceDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, stirId.getStirId(),3);
+            if (produceDriverShiftLED.size() != 0) {
+                produceList.add(produceDriverShiftLED);
+            }
+
         }
-        return list;
-
-
+        producingDriverList.setCars(produceList);
+        waitingDriverList.setCars(waitList);
+        ProductDriverList.add(producingDriverList);
+        ProductDriverList.add(waitingDriverList);
+        return ProductDriverList;
     }
 
     /**

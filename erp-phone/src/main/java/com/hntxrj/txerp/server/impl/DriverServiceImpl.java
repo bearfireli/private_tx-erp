@@ -6,10 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.dao.DriverDao;
 import com.hntxrj.txerp.mapper.DriverMapper;
 import com.hntxrj.txerp.server.DriverService;
-import com.hntxrj.txerp.vo.DriverVO;
-import com.hntxrj.txerp.vo.PageVO;
-import com.hntxrj.txerp.vo.TaskJumpVO;
-import com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO;
+import com.hntxrj.txerp.vo.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -140,6 +137,13 @@ public class DriverServiceImpl implements DriverService {
         PageVO<TaskSaleInvoiceDriverListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+    @Override
+    public TaskSaleInvoiceSumVO getTaskSaleInvoiceSum( String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode) {
+      return   driverMapper.getTaskSaleInvoiceSum(compid, beginTime,
+                endTime, eppCode, upStatus, builderCode, placing, driverCode);
+
     }
 
 }

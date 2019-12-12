@@ -63,6 +63,7 @@ public interface DriverService {
                                                                Byte upStatus, String builderCode, String placing,
                                                                Integer page, Integer pageSize, String driverCode);
 
+    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum( String compid, String beginTime, String endTime, String eppCode, Byte aByte, String builderCode, String placing, Integer page, Integer pageSize, String driverCode);
 }
 
 
