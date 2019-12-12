@@ -29,5 +29,11 @@ public class DriverShiftLEDVO {
     private String VehicleStatus;
 
     private String statusName;
+
+    //任务单状态
+    private int taskStatus;
+
+    //小票类型
+    private int invoiceType;
 }
 

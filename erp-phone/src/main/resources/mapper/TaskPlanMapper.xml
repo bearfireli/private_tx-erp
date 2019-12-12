@@ -197,7 +197,7 @@
         select ps.ProduceNum totalProduceNum,
         pt.Taskid,
         stgid,
-        pt.Slump    as slump,
+        pt.Slump as slump,
         EPPName,
         ps.SendTime as sendTime,
         ps.Arrive_STTime as arriveTime,
@@ -208,7 +208,7 @@
         ps.VehicleID as vehicleID
         from PT_TaskPlan pt
         left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
-        left join  PT_TaskSaleInvoice ps on ps.compid=pt.compid and ps.TaskId=pt.TaskId
+        left join PT_TaskSaleInvoice ps on ps.compid=pt.compid and ps.TaskId=pt.TaskId
         left join DD_StirInfoSet ds on ds.compid=pt.compid and ds.StirId=ps.StirId
         where pt.compid = #{compid}
         <if test="vehicleId !=null and vehicleId != '' ">
@@ -366,16 +366,13 @@
 
     <!--查询出单个任务单下所有的车辆-->
     <select id="getCarsByTaskId" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
-        select pt.VehicleID   as carID,
-               vm.VehicleStatus,
-               dp.PI_TypeName as statusName
-        from PT_TaskSaleInvoice pt
-         left join VM_VehicelManagement vm on pt.compid = vm.compid and pt.VehicleID = vm.CarID
-         left join DD_PublicInfo dp on pt.compid = dp.compid and PI_Class = 22 and vm.VehicleStatus = dp.PI_Values
-        where pt.compid = #{compid}
-          and pt.InvoiceType != 6
-          and (vm.VehicleStatus = 2 or vm.VehicleStatus = 3)
-          and pt.TaskId=#{taskId}
+       select pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID
+            from PT_TaskSaleInvoice tsi
+        left join PT_TaskPlan pt on tsi.compid = pt.compid and tsi.TaskId = pt.TaskId
+        where tsi.InvoiceType in ('2', '3', '4')
+            and  tsi.compid=#{compid}
+            and tsi.TaskId = #{taskId}
+            and tsi.VehiceNumber != 0
     </select>
 
     <!--施工方App使用的LED功能，只查询生产中的车辆-->
@@ -452,12 +449,12 @@
         <if test="personalName !=null or vehicleId !=null ">
             and (PersonalName like '%'+#{personalName}+'%' or VehicleId like '%'+#{vehicleId}+'%')
         </if>
-<!--        <if test="beginTime != null and beginTime != ''">-->
-<!--            and vs.WorkStarTime <![CDATA[ >= ]]>  #{beginTime}-->
-<!--        </if>-->
-<!--        <if test="endTime != null and endTime != ''">-->
-<!--            and vs.WorkOverTime <![CDATA[ <= ]]> #{endTime}-->
-<!--        </if>-->
+        <!--        <if test="beginTime != null and beginTime != ''">-->
+        <!--            and vs.WorkStarTime <![CDATA[ >= ]]>  #{beginTime}-->
+        <!--        </if>-->
+        <!--        <if test="endTime != null and endTime != ''">-->
+        <!--            and vs.WorkOverTime <![CDATA[ <= ]]> #{endTime}-->
+        <!--        </if>-->
 
     </select>
 
