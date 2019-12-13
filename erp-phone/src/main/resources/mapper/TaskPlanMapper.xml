@@ -367,11 +367,12 @@
     <!--查询出单个任务单下所有的车辆-->
     <select id="getCarsByTaskId" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
        select pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
-       dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId
+       dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId,dd2.StirName
         from PT_TaskSaleInvoice tsi
          left join  PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
          left join VM_VehicelManagement vm on tsi.compid = vm.compid and tsi.VehicleID = vm.CarID
         left join  DD_PublicInfo dd on vm.VehicleStatus =dd.PI_Values and dd.compid =vm.compid and dd.PI_Class =22
+        left join DD_StirInfoSet dd2 on vm.compid =dd2.compid and vm.StirId =dd2.StirId
         where  tsi.compid =#{compid} and  tsi.TaskId = #{taskId}
         and InvoiceType in ('1', '2', '3', '4')
         and vm.VehicleStatus in ('2','3')
