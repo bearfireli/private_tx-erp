@@ -369,7 +369,7 @@
        select pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID
             from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan pt on tsi.compid = pt.compid and tsi.TaskId = pt.TaskId
-        where tsi.InvoiceType in ('2', '3', '4')
+        where tsi.InvoiceType in ('1','2', '3', '4')
             and  tsi.compid=#{compid}
             and tsi.TaskId = #{taskId}
             and tsi.VehiceNumber != 0
