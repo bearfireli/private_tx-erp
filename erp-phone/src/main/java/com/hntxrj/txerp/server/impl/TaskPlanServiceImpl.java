@@ -210,15 +210,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                         break;
                     }
                 }
-                if (car.getInvoiceType() == 4 || car.getInvoiceType() == 3) {
-                    car.setVehicleStatus("2");
-                    car.setStatusName("运输");
-                    break;
-                } else if (car.getInvoiceType() == 2  || car.getInvoiceType() == 1) {
-                    car.setVehicleStatus("3");
-                    car.setStatusName("生产");
-                    break;
-                }
             }
 
 
