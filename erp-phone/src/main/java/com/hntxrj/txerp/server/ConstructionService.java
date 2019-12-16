@@ -6,9 +6,10 @@ import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.bdBindVO;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 public interface ConstructionService {
-    InvitationVO getInvitationCode(String compid, Integer  opid, String buildCode) throws ErpException;
+    InvitationVO getInvitationCode(String compid, Integer  opid, String ccontractCodes) throws ErpException;
 
     PageVO<InvitationVO> getInvitationList(String compid, String buildCode, String useStatus, String createUser,
                                            String beginTime,String endTime,Integer page,Integer pageSize);
@@ -17,5 +18,5 @@ public interface ConstructionService {
 
     void saveInvitation(String buildId, String buildInvitationCode) throws ErpException, SQLException;
 
-    PageVO<bdBindVO>  selectBind(String buildId, Integer page, Integer pageSize);
+    Map<String,Boolean> selectBind(String buildId);
 }

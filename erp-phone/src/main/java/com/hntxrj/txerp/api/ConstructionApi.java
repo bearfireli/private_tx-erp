@@ -32,12 +32,13 @@ public class ConstructionApi {
      * 生成邀请码
      * @param compid   企业
      * @param opid     操作人
+     * @param ccontractCodes     子合同号集合
      * @return   生成邀请码
      */
     @PostMapping("/getInvitationCode")
-    public ResultVO getInvitationCode(String compid, Integer  opid, String buildCode) throws ErpException {
+    public ResultVO getInvitationCode(String compid, Integer  opid, String ccontractCodes) throws ErpException {
 
-        return ResultVO.create(constructionService.getInvitationCode(compid,opid,buildCode));
+        return ResultVO.create(constructionService.getInvitationCode(compid,opid,ccontractCodes));
     }
 
     /**
@@ -88,17 +89,13 @@ public class ConstructionApi {
 
 
     /**
-     * 查询绑定企业
+     * 查询绑定合同
      * @param buildId  用户id
-     * @param page              页码
-     * @param pageSize          每页数量
-     * @return        查询绑定企业
+     * @return        查询绑定合同
      */
     @PostMapping("/selectBind")
-    public ResultVO selectBind(String buildId,
-                                      @RequestParam(defaultValue = "1") Integer page,
-                                      @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(constructionService.selectBind(buildId, page, pageSize));
+    public ResultVO selectBind(String buildId) {
+        return ResultVO.create(constructionService.selectBind(buildId));
     }
 
 

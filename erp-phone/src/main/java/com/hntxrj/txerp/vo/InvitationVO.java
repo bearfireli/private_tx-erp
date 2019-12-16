@@ -2,7 +2,7 @@ package com.hntxrj.txerp.vo;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
 
 /**
  * @author qyb
@@ -12,14 +12,14 @@ import java.sql.Timestamp;
  * @Version 1.0
  **/
 @Data
-public class InvitationVO {
+public class InvitationVO implements Serializable {
 
-    private String buildinvitationcode;
-    private String compid;
-    private String buildcode;
-    private String usestatus;
-    private String createuser;
-    private String createtime;
-    private String builderName;
+    private String buildinvitationcode;  //施工方邀请码
+    private String compid;  //公司名称
+    private String usestatus;  //使用状态
+    private String createuser;  //创建人
+    private String createtime;  //创建时间
+    private String ccontractCode; //子合同号
+
 
 }

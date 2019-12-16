@@ -5,9 +5,10 @@
     <insert id="save" useGeneratedKeys="true">
         insert into bd_build_accounts
         (build_login_name,
-         build_password)
+         build_password,build_name)
         VALUES (#{userName},
-                #{passWord})
+                #{passWord},
+        #{buildName})
     </insert>
 
     <!--查询账户密码-->

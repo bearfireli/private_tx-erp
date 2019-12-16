@@ -12,6 +12,6 @@ public interface LoginConstructionMapper {
 
     InvitationVO findByid(String buildInvitationCode);
 
-    Integer save(String userName, String passWord);
+    Integer save(String userName, String passWord,String buildName);
 
 }

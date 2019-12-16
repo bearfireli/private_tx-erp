@@ -2,7 +2,7 @@ package com.hntxrj.txerp.vo;
 
 import lombok.Data;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * @author qyb
@@ -12,11 +12,9 @@ import java.util.List;
  * @Version 1.0
  **/
 @Data
-public class bdBindVO {
+public class bdBindVO implements Serializable {
 
-    private  String buildid;
-    private String compid;
-    private String buildCode;
-    private String epShortName;
-    private String builderName;
+    private String buildid;  //施工方Id
+    private String compid;    //公司代号
+    private String ccontractCode; //子合同号
 }

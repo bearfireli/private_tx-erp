@@ -59,14 +59,14 @@ public class LoginCOnstructionImpl implements LoginConstructionService {
     }
 
     @Override
-    public void addUser(String userName, String passWord) throws ErpException {
+    public void addUser(String userName, String passWord,String buildName) throws ErpException {
         BuildAccountsVO user = loginConstructionMapper.findBybuildId(userName);
         if (user != null) {
             throw new ErpException(ErrEumn.ADD_USER_PHONE_EXIST);
         }
         passWord =getMd5Password(passWord);
         try{
-            loginConstructionMapper.save(userName,passWord);
+            loginConstructionMapper.save(userName,passWord,buildName);
         }catch (Exception e){
             throw new ErpException(ErrEumn.ADD_ERROR);
         }

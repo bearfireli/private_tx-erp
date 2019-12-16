@@ -25,10 +25,11 @@ public class LoginConstructionApi {
      * 注册
      * @param userName          用户名
      * @param passWord          密码
+     * @param buildName         施工方名称
      */
     @RequestMapping("/addUser")
-    public ResultVO addUser(String userName,String passWord) throws ErpException {
-        loginConstructionService.addUser(userName,passWord);
+    public ResultVO addUser(String userName,String passWord,String buildName) throws ErpException {
+        loginConstructionService.addUser(userName,passWord,buildName);
         return  ResultVO.create();
     }
 

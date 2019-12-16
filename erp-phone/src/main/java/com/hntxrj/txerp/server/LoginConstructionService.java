@@ -11,5 +11,5 @@ public interface LoginConstructionService {
      */
     LoginClibationVO getAccountPassword(String userName, String passWord,String tokens) throws ErpException;
 
-    void addUser(String userName, String passWord) throws ErpException;
+    void addUser(String userName, String passWord,String buildName) throws ErpException;
 }

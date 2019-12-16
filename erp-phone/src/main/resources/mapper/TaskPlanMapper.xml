@@ -21,7 +21,7 @@
         tp.PreNum,
         sum(ProduceNum) overNum,
         tp.ContractUID,
-        tp.CContractCode,
+        tp.CContractCode as ccontractCode,
         tp.TaskStatus,
         tp.VerifyStatus,
         tp.EPPCode,
