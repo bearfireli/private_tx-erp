@@ -48,7 +48,7 @@ public interface TaskPlanMapper {
      */
     List<DriverShiftLEDVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass);
 
-    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId,int vehicleStatus,int num);
+    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId,int vehicleStatus);
 
     /**
      * 司机排班列表信息

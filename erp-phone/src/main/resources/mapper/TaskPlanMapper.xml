@@ -378,7 +378,7 @@
 
     <!--施工方App使用的LED功能，只查询生产中和等待中的车辆-->
     <select id="getProductDriverShiftLED" resultType="com.hntxrj.txerp.vo.ProductDriverLEDVo">
-        select top #{num}
+        select
         vm.CarID,
         vm.StirId,
         dd.StirName
@@ -387,7 +387,9 @@
         where vm.compid = #{compid} and vm.RecStatus=1 and dd.RecStatus=1
         and VehicleClass ='1'
         and vm.VehicleStatus =#{vehicleStatus}
-        and vm.StirId =#{stirId}
+        <if test="stirId !=null and stirId != '' ">
+            and vm.StirId =#{stirId}
+        </if>
         order by vm.CreateTime
     </select>
 
