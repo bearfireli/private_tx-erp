@@ -201,8 +201,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             List<DriverShiftLEDVO> cars = taskPlanMapper.getCarsByTaskId(compid, sendCarListVO.getTaskId());
 
             for (DriverShiftLEDVO car : cars) {
-                //这里不能加这个判断，有很多站都有askStatust=1并且invoiceType=4的情况，导致本来是运输状态的车，
-                // 结果成了生产的车。
                 if (compid.equals("24")){
                     if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
                         car.setVehicleStatus("3");
