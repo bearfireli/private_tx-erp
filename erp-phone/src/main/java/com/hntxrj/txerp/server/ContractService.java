@@ -507,4 +507,6 @@ public interface ContractService {
      * @return 合同列表
      */
     PageVO<ContractListVO> getContractListByEppOrBuild(String compid, String searchName, Integer page, Integer pageSize);
+
+    PageVO<ContractListVO> getBuildContractListByEppOrBuild(Integer buildId, String searchName, Integer page, Integer pageSize);
 }

@@ -10,44 +10,53 @@
          ccontract_code,
          use_status,
          create_user,
-         create_time)
+         create_time,
+         ContractUID)
         VALUES (#{build_Invitation_Code},
         #{compid},
         #{ccontractCode},
         #{use_Status},
         #{opid},
-        #{date})
+        #{date},
+        #{contractUID})
     </insert>
     <insert id="saveInvitation" useGeneratedKeys="true">
         insert into bd_bind
         (build_id,
          compid,
+         contractUID,
          ccontract_code)
         VALUES (#{buildId},
                 #{compid},
+                 #{contractUID},
                 #{ccontractCode})
     </insert>
 
     <update id="updateUseStatus" useGeneratedKeys="true">
         update bd_invitation_code
         set use_status=#{useStatus}
-        where ccontract_code =#{ccontractCode}
-        and build_invitation_code = #{buildInvitationCode}
+        where  build_invitation_code = #{buildInvitationCode}
+        and ccontract_code =#{ccontractCode}
+       and contractUID=#{contractUID}
     </update>
     <!--施工方邀请码列表-->
     <select id="getInvitationList" resultType="com.hntxrj.txerp.vo.InvitationVO">
         select bd.build_invitation_code buildinvitationcode,
         bd.compid,
-        bd.build_code buildcode,
-        sm.BuilderName,
-        bd.create_time createtime,
-        bd.create_user createuser,
-        bd.use_status usestatus
+        sm.BuilderName as        builderName,
+        se.EPPName as eppName,
+        se.ShortName as shortName,
+        bd.create_time           createtime,
+        bd.create_user           createuser,
+        bd.use_status            usestatus,
+        bd.ccontract_code
         from bd_invitation_code bd
-        left join SM_BuilderInfo sm on bd.compid = sm.compid and bd.build_code = sm.BuilderCode
-        where bd.compid =#{compid}
+        left join SM_ContractDetail sc on bd.ccontract_code = sc.CContractCode and bd.contractUID = sc.ContractUID
+        left join SM_BuilderInfo sm on bd.compid = sm.compid and sc.BuilderCode = sm.BuilderCode
+        left join SM_EPPInfo se on bd.compid = se.compid and sc.EPPCode = se.EPPCode
+        where bd.compid=#{compid}
         <if test="buildCode != null">
-            and build_code=#{buildCode}
+            and sc.BuilderCode=#{buildCode}
         </if>
         <if test="useStatus != null ">
             and use_status=#{useStatus}
@@ -68,24 +77,39 @@
                bd.ccontract_code            ccontractCode,
                bd.create_time           createtime,
                bd.create_user           createuser,
-               bd.use_status            usestatus
+               bd.use_status            usestatus,
+               bd.contractUID
         from bd_invitation_code bd
         where bd.build_invitation_code = #{buildInvitationCode}
     </select>
     <select id="selectBind" resultType="com.hntxrj.txerp.vo.bdBindVO">
         select build_id   buildid,
            bd.compid,
-           bd.ccontract_code as ccontractCode
+           bd.ccontract_code as ccontractCode,
+           bd.contractUID
         from bd_bind bd
         where build_id = #{buildId}
     </select>
     <select id="selectCompid" resultType="com.hntxrj.txerp.vo.bdBindVO">
         select build_id   buildid,
                compid,
-               ccontract_code as ccontractCode
+               ccontract_code as ccontractCode,
+               contractUID
         from bd_bind
         where ccontract_code=#{ccontractCode}
+        and contractUID=#{contractUID}
         and build_id = #{buildId}
+    </select>
+    <select id="getContractodeList" resultType="java.lang.String">
+        select ccontract_code
+        from bd_bind
+        where build_id=#{buildId}
+    </select>
+
+    <select id="getContractUID" resultType="java.lang.String">
+        select contractUID
+        from bd_bind
+        where build_id=#{buildId}
     </select>
 
 </mapper>

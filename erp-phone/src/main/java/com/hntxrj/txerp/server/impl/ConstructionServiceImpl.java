@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.mapper.ConstructionMapper;
+import com.hntxrj.txerp.mapper.ContractMapper;
 import com.hntxrj.txerp.server.ConstructionService;
 import com.hntxrj.txerp.vo.InvitationVO;
 import com.hntxrj.txerp.vo.PageVO;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author qyb
@@ -38,9 +38,12 @@ public class ConstructionServiceImpl implements ConstructionService {
 
     private final ConstructionMapper constructionMapper;
 
+    private final ContractMapper contractMapper;
 
-    public ConstructionServiceImpl(ConstructionMapper constructionMapper) {
+
+    public ConstructionServiceImpl(ConstructionMapper constructionMapper, ContractMapper contractMapper) {
         this.constructionMapper = constructionMapper;
+        this.contractMapper = contractMapper;
     }
 
     @Override
@@ -49,10 +52,12 @@ public class ConstructionServiceImpl implements ConstructionService {
         Date date = new Date();
         Integer use_Status = 0;
         String[] codes = ccontractCodes.split(",");
-
         try {
             for (String code : codes) {
-                constructionMapper.getInvitationCode(build_Invitation_Code, compid, code, use_Status, opid, date);
+                //先根据子合同号和compid从合同表中查询出每一个主合同号
+                String contractUID = contractMapper.getContractUID(compid, code);
+                //把邀请码，compid，子合同号，主合同号插入
+                constructionMapper.getInvitationCode(build_Invitation_Code, compid, code, use_Status, opid, date,contractUID);
             }
             InvitationVO invitationVO = new InvitationVO();
             invitationVO.setBuildinvitationcode(build_Invitation_Code);
@@ -82,10 +87,10 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     @Override
-    public void updateUseStatus(String compid, String buildInvitationCode) throws ErpException {
+    public void updateUseStatus(String contractUID,String ccontractCode, String buildInvitationCode) throws ErpException {
         try {
             int useStatus = 2;
-            constructionMapper.updateUseStatus(compid, buildInvitationCode, useStatus);
+            constructionMapper.updateUseStatus(contractUID,ccontractCode, buildInvitationCode, useStatus);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADJUNCT_UPDATE_ERROR);
         }
@@ -96,21 +101,23 @@ public class ConstructionServiceImpl implements ConstructionService {
     @Transactional
     public void saveInvitation(String buildId, String buildInvitationCode) throws ErpException {
         //获取此邀请码绑定的合同集合
+
         List<InvitationVO> invitationVOS = constructionMapper.selectInvitation(buildInvitationCode);
         if (invitationVOS != null && invitationVOS.size() > 0) {
             for (InvitationVO invitationVO : invitationVOS) {
                 //查询此施工单位是否绑定过此合同
-                bdBindVO bdBindVO = constructionMapper.selectCompid(invitationVO.getCcontractCode(), buildId);
+                bdBindVO bdBindVO = constructionMapper.selectCompid(invitationVO.getCcontractCode(),invitationVO.getContractUID(), buildId);
                 if (bdBindVO == null) {
                     //说明此用户没有绑定过此合同
                     if (Integer.parseInt(invitationVO.getUsestatus()) == 0) {
                         int usestatus = 1;
                         String compid = invitationVO.getCompid();
                         String ccontractCode = invitationVO.getCcontractCode();
+                        String contractUID = invitationVO.getContractUID();
                         //修改邀请码的使用状态为已使用
-                        constructionMapper.updateUseStatus(ccontractCode, buildInvitationCode, usestatus);
+                        constructionMapper.updateUseStatus(contractUID,ccontractCode, buildInvitationCode, usestatus);
                         //给此用户绑定合同
-                        constructionMapper.saveInvitation(buildId, compid, ccontractCode);
+                        constructionMapper.saveInvitation(buildId, compid, ccontractCode,contractUID);
                     } else if (Integer.parseInt(invitationVO.getUsestatus()) == 1) {
                         throw new ErpException(ErrEumn.INVITATION_USESTATUS_EXIST);
                     } else {

@@ -53,13 +53,15 @@ public class ContractServiceImp implements ContractService {
 
     private final ContractGradePriceDetailRepository contractGradePriceDetailRepository;
 
+    private final ConstructionMapper constructionMapper;
+
     @Value("${app.spterp.contractAdjunctPath}")
     private String contractAdjunctPath;
 
     @Autowired
     public ContractServiceImp(ContractDao dao, ContractMapper contractMapper, PublicInfoMapper publicInfoMapper,
                               ContractMasterMapper contractMasterMapper, ContractDetailMapper contractDetailMapper,
-                              AdjunctMapper adjunctMapper, ContractGradePriceDetailRepository contractGradePriceDetailRepository) {
+                              AdjunctMapper adjunctMapper, ContractGradePriceDetailRepository contractGradePriceDetailRepository, ConstructionMapper constructionMapper) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -67,6 +69,7 @@ public class ContractServiceImp implements ContractService {
         this.contractDetailMapper = contractDetailMapper;
         this.adjunctMapper = adjunctMapper;
         this.contractGradePriceDetailRepository = contractGradePriceDetailRepository;
+        this.constructionMapper = constructionMapper;
     }
 
 
@@ -887,6 +890,21 @@ public class ContractServiceImp implements ContractService {
         PageHelper.startPage(page, pageSize, "SignDate desc");
 
         List<ContractListVO> contractListVOList = contractMapper.getContractListByEppOrBuild(compid, searchName);
+        PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
+        PageVO<ContractListVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    @Override
+    public PageVO<ContractListVO> getBuildContractListByEppOrBuild(Integer buildId, String searchName, Integer page, Integer pageSize) {
+
+        //首先根据buildId查询出此施工方用户下的所有合同uid和所有子合同号
+        List<String>  ccontractCodes=constructionMapper.getContractodeList(buildId);
+        List<String> contractUIDList=constructionMapper.getContractUID(buildId);
+
+        PageHelper.startPage(page, pageSize, "SignDate desc");
+        List<ContractListVO> contractListVOList = contractMapper.getBuildContractListByEppOrBuild(ccontractCodes,contractUIDList, searchName);
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
         PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

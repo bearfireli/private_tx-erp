@@ -14,7 +14,7 @@ public interface ConstructionService {
     PageVO<InvitationVO> getInvitationList(String compid, String buildCode, String useStatus, String createUser,
                                            String beginTime,String endTime,Integer page,Integer pageSize);
 
-    void updateUseStatus(String compid, String buildInvitationCode) throws ErpException;
+    void updateUseStatus(String contractUID,String ccontractCode, String buildInvitationCode) throws ErpException;
 
     void saveInvitation(String buildId, String buildInvitationCode) throws ErpException, SQLException;
 

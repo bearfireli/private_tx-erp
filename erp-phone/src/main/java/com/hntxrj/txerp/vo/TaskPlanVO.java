@@ -12,7 +12,7 @@ public class TaskPlanVO {
     private String taskId;
     private String contractId;
     private String contractUID;
-    private String cContractCode;
+    private String cContractCode;  //子合同号
     private String eppCode;
     private String eppName;
     private String builderCode;

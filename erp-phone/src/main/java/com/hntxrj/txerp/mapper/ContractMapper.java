@@ -95,4 +95,9 @@ public interface ContractMapper {
 
     /*查询合同的审核状态*/
     Boolean getContractVerifyStatus(String contractUID, String cContractCode, String compid);
+
+
+    String getContractUID(String compid, String code);
+
+    List<ContractListVO> getBuildContractListByEppOrBuild(List<String> ccontractCodes, List<String> contractUIDList, String searchName);
 }

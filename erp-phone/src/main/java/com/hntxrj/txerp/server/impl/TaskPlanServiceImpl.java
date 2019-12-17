@@ -6,10 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.mapper.ConcreteMapper;
-import com.hntxrj.txerp.mapper.PublicInfoMapper;
-import com.hntxrj.txerp.mapper.StockMapper;
-import com.hntxrj.txerp.mapper.TaskPlanMapper;
+import com.hntxrj.txerp.mapper.*;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
 import com.hntxrj.txerp.util.EntityTools;
@@ -35,15 +32,17 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final ConcreteMapper concreteMapper;
     private final PublicInfoMapper publicInfoMapper;
     private StirInfoSetServiceImpl stirInfoSetMapper;
+    private final ConstructionMapper constructionMapper;
 
     @Autowired
-    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
+    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper, ConstructionMapper constructionMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
         this.concreteMapper = concreteMapper;
         this.publicInfoMapper = publicInfoMapper;
         this.stirInfoSetMapper = stirInfoSetMapper;
+        this.constructionMapper = constructionMapper;
     }
 
     @Override
@@ -920,6 +919,47 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             list.add(dirverLEDListVO);
         }
        return list;
+    }
+
+    /**
+     * 获取工地端任务单列表
+     *
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     * @param eppCode      工程代号
+     * @param placing      浇筑部位
+     * @param taskId       任务单号
+     * @param taskStatus   任务单状态
+     * @param compid       企业id
+     * @param page         页码
+     * @param pageSize     每页数量
+     * @param verifyStatus 审核标识  0：未审核； 1：已审核
+     * @param buildId      施工方id
+     * @return 任务单列表对象
+     */
+    @Override
+    public PageVO<TaskPlanListVO> buildTaskPlanList(String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, String compid, Integer verifyStatus, Integer buildId, Integer page, Integer pageSize) {
+        //查询当前施工方关联的所有子合同
+        List<String>  ccontractCodes=constructionMapper.getContractodeList(buildId);
+        List<String> contractUIDList=constructionMapper.getContractUID(buildId);
+
+        //根据子合同查询任务单.
+        PageHelper.startPage(page, pageSize);
+        List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.buildTaskPlanList(ccontractCodes,contractUIDList,beginTime, endTime, eppCode,
+                 placing, taskId, taskStatus, verifyStatus);
+        //循环截取preTime，格式为年月日
+        for (TaskPlanListVO t : taskPlanListVOList) {
+            if (!"".equals(t.getPreTime())) {
+                t.setPreTime(t.getPreTime().substring(0, 16));
+            }
+            if (t.getOverNum() == null) {
+                t.setOverNum(new BigDecimal(0.0));
+            }
+        }
+        PageInfo<TaskPlanListVO> pageInfo = new PageInfo<>(taskPlanListVOList);
+        PageVO<TaskPlanListVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
     }
 
     private String taskPlanSplicing(String compid) {

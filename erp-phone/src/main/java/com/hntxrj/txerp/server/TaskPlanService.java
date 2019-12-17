@@ -248,4 +248,7 @@ public interface TaskPlanService {
     void deletePPCodeStatus(String compid, String taskId);
 
     List<DirverLEDListVO> getProduceCars(String compid);
+
+    PageVO<TaskPlanListVO> buildTaskPlanList(String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, String compid, Integer verifyStatus, Integer buildId, Integer page, Integer pageSize);
+
 }

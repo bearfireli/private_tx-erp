@@ -405,5 +405,21 @@ public class ContractApi {
         return ResultVO.create(contractService.getContractListByEppOrBuild(compid, searchName, page, pageSize));
     }
 
+    /**
+     * 工地端添加任务单时根据施工方查询关联的合同列表
+     *
+     * @param buildId     施工方id
+     * @param searchName 搜索添加，可能是施工名称或者是施工单位
+     * @param page       页码
+     * @param pageSize   每页数量
+     * @return 合同列表
+     */
+    @PostMapping("/getBuildContractListByEppOrBuild")
+    public ResultVO getBuildContractListByEppOrBuild(Integer buildId, String searchName,
+                                                @RequestParam(defaultValue = "1") Integer page,
+                                                @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(contractService.getBuildContractListByEppOrBuild(buildId, searchName, page, pageSize));
+    }
+
 
 }

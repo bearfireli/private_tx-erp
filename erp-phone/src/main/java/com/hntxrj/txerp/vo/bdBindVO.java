@@ -16,5 +16,6 @@ public class bdBindVO implements Serializable {
 
     private String buildid;  //施工方Id
     private String compid;    //公司代号
+    private String contractUID;  //主合同号
     private String ccontractCode; //子合同号
 }

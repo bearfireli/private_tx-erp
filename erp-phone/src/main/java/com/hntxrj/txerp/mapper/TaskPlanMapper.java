@@ -184,4 +184,6 @@ public interface TaskPlanMapper {
     List<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode, String personalName, String workClass, String beginTime, String endTime);
 
     List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
+
+    List<TaskPlanListVO> buildTaskPlanList(List<String> ccontractCodes,List<String> contractUIDList, String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, Integer verifyStatus);
 }

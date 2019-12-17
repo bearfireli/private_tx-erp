@@ -867,5 +867,80 @@
         delete from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
     </delete>
 
+    <!--施工方App中查询任务单列表-->
+    <select id="buildTaskPlanList" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
+        select tp.compid,
+        DD_PublicInfo_3.PI_TypeName as taskStatusName,
+        tp.TaskId,
+        tp.CreateTime,
+        tp.PreTime,
+        tp.TaskOverTime,
+        tp.PreNum,
+        sum(ProduceNum) overNum,
+        tp.ContractUID,
+        tp.CContractCode as ccontractCode,
+        tp.TaskStatus,
+        tp.VerifyStatus,
+        tp.EPPCode,
+        ei.EPPName,
+        tp.BuilderCode,
+        dd.PI_TypeName AS stoneAskName,
+        bi.BuilderName,
+        Placing,
+        ConcreteMark,
+        tp.placeStyle,
+        ps.PI_TypeName placeStyleName,
+        tp.OpenTime,
+        tp.StgId as stgId,
+        tp.Slump as slump,
+        tp.Attribute as attribute
+        from PT_TaskPlan AS tp
+        left join PT_TaskSaleInvoice pt on tp.compid = pt.compid and tp.TaskId = pt.TaskId
+        and pt.InvoiceType !=6
+        LEFT OUTER JOIN
+        dbo.DD_PublicInfo AS DD_PublicInfo_3
+        ON tp.TaskStatus = DD_PublicInfo_3.PI_Values and DD_PublicInfo_3.PI_Class = 23
+        and tp.compid =DD_PublicInfo_3.compid
+        left join SM_EPPInfo ei on tp.EPPCode=ei.EPPCode and tp.compid=ei.compid
+        left join SM_BuilderInfo bi on tp.BuilderCode = bi.BuilderCode and bi.compid=tp.compid
+        left join DD_PublicInfo dd on tp.StoneAsk =dd.PI_Values and dd.PI_Class ='31' and tp.compid =dd.compid
+        left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
+        and tp.compid = ps.compid
+        where tp.DeleteMark = 0
+        and tp.RecStatus = 1
+        and tp.CContractCode in
+        <foreach collection="ccontractCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and tp.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="beginTime != null and endTime != null">
+            and (taskStatus = 1 or tp.preTime between #{beginTime} and #{endTime})
+        </if>
+        <if test="eppCode != null">
+            and tp.eppCode = #{eppCode}
+        </if>
+        <if test="placing != null">
+            and tp.placing like '%' + #{placing}+'%'
+        </if>
+        <if test="taskId != null">
+            and tp.taskId like '%' + #{taskId} + '%'
+        </if>
+        <if test="taskStatus != null">
+            and tp.taskStatus = #{taskStatus}
+        </if>
+        <if test="verifyStatus != null">
+            and tp.VerifyStatus = #{verifyStatus}
+        </if>
+        group by tp.compid, DD_PublicInfo_3.PI_TypeName, tp.TaskId, tp.CreateTime, tp.PreTime, tp.TaskOverTime,
+        tp.PreNum,
+        tp.ContractUID, tp.CContractCode, tp.TaskStatus, tp.VerifyStatus, tp.EPPCode, ei.EPPName,
+        tp.BuilderCode, dd.PI_TypeName, bi.BuilderName, Placing, ConcreteMark,tp.placeStyle,ps.PI_TypeName,
+        tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute
+        order by tp.PreTime desc, tp.TaskId desc
+    </select>
+
 
 </mapper>
