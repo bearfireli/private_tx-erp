@@ -376,6 +376,7 @@
         where  tsi.compid =#{compid} and  tsi.TaskId = #{taskId}
         and InvoiceType in ('1', '2', '3', '4')
         and vm.VehicleStatus in ('2','3')
+        order by tsi.SendTime desc
     </select>
 
     <!--施工方App使用的LED功能，只查询生产中的车辆-->

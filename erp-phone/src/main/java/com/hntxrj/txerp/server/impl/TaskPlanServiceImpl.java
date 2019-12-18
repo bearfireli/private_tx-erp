@@ -198,6 +198,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         for (SendCarListVO sendCarListVO : sendCarList) {
             //获取每个任务单下的所有搅拌车车辆
             List<DriverShiftLEDVO> cars = taskPlanMapper.getCarsByTaskId(compid, sendCarListVO.getTaskId());
+            //排序之后每个任务单下的所有搅拌车辆
+            List<DriverShiftLEDVO> sortCars = new ArrayList<>();
 
             for (DriverShiftLEDVO car : cars) {
                 if (compid.equals("24")){
@@ -208,9 +210,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     }
                 }
             }
+            //把生产的车辆放前面，运输的车辆放后面
+            for (DriverShiftLEDVO car : cars) {
+                if ("生产".equals(car.getStatusName())) {
+                    sortCars.add(car);
+                }
+            }
+            for (DriverShiftLEDVO car : cars) {
+                if ("运输".equals(car.getStatusName())) {
+                    sortCars.add(car);
+                }
+            }
 
-
-            sendCarListVO.setCars(cars);
+            sendCarListVO.setCars(sortCars);
             if (sendCarListVO.getTotalProduceNum() == null) {
                 sendCarListVO.setTotalProduceNum("0.0");
             }
