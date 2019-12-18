@@ -49,7 +49,8 @@
         bd.create_time           createtime,
         bd.create_user           createuser,
         bd.use_status            usestatus,
-        bd.ccontract_code
+        bd.ccontract_code,
+        bd.contractUID
         from bd_invitation_code bd
         left join SM_ContractDetail sc on bd.ccontract_code = sc.CContractCode and bd.contractUID = sc.ContractUID
         left join SM_BuilderInfo sm on bd.compid = sm.compid and sc.BuilderCode = sm.BuilderCode
