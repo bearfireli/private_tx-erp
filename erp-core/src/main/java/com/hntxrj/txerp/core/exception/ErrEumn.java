@@ -40,6 +40,7 @@ public enum ErrEumn {
     ADJUNCT_NOT_EXIST(-21203, "附件不存在"),
     ADJUNCT_STREAM_ERROR(-21204, "文件传输失败"),
     ADJUNCT_SAVE_ERROR(-21205, "保存失败,请重新添加泵车类价格，合同号可能已经存在"),
+    DRIVER_SAVE_ERROR(-21205, "添加失败,请重新选择排班信息"),
     ADJUNCT_UPDATE_ERROR(-21207, "修改失败,请重新检查后修改"),
     VERIFY_TICKET_ERROR(-21206, "小票审核状态失败"),
     ADD_PERSONALCODE_ERROR(-21208, "请选择司机"),

@@ -617,7 +617,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     vehicleId, workClass, workStarTime,
                     workOverTime, remarks, createTime, workTime, upDown, upDownMark, recStatus);
         } catch (Exception e) {
-            throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
+            throw new ErpException(ErrEumn.DRIVER_SAVE_ERROR);
         }
     }
 
