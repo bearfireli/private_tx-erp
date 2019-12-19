@@ -59,7 +59,7 @@ public interface ConcreteMapper {
     /**
      * 产销统计中柱状图数据
      * */
-    List<ConcreteHistogram> getConcreteSaleNum(String compid);
+    List<ConcreteHistogram> getConcreteSaleNum(String compid,String beginTime,String endTime);
 
     /**
      * 产销统计中饼状图数据

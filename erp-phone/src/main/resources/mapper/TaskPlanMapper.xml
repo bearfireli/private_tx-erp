@@ -84,6 +84,7 @@
 
     <select id="getTaskPlanByTaskId" resultType="com.hntxrj.txerp.vo.TaskPlanVO">
         select task.TaskId,
+               task.compid,
                sm.ContractId,
                task.ContractUID,
                task.CContractCode,
@@ -134,7 +135,7 @@
                  left join SM_ContractMaster sm on task.ContractUID = sm.ContractUID and task.compid = sm.compid
         where task.compid = #{compid}
           and task.taskid = #{taskId}
-        group by  task.TaskId, sm.ContractId, task.ContractUID, task.CContractCode, task.EPPCode, EPPName, task.BuilderCode, BuilderName, stgid, Attribute, TechnicalRequirements, task.preCarNum, task.grade, task.Address, task.linkTel, task.distance, Placing, PreNum, ConcreteMark, StoneAsk, dd.PI_TypeName, PreTime, task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus, ts.PI_TypeName, preRemark, task.placeStyle, ps.PI_TypeName
+        group by  task.compid,task.TaskId, sm.ContractId, task.ContractUID, task.CContractCode, task.EPPCode, EPPName, task.BuilderCode, BuilderName, stgid, Attribute, TechnicalRequirements, task.preCarNum, task.grade, task.Address, task.linkTel, task.distance, Placing, PreNum, ConcreteMark, StoneAsk, dd.PI_TypeName, PreTime, task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus, ts.PI_TypeName, preRemark, task.placeStyle, ps.PI_TypeName
     </select>
 
     <select id="getSendCarList" resultType="com.hntxrj.txerp.vo.SendCarListVO">

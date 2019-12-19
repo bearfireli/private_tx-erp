@@ -12,6 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,7 +66,7 @@ public class ConcreteServiceImpl implements ConcreteService {
             //生产方量从生产消耗表中查询，不从小票表中查询，因为小票中生产方量不准确。
             String produceBeginTime = c.getSendTime() + " 00:00:00";
             String produceEndTime = c.getSendTime() + " 23:59:59";
-            BigDecimal productConcrete = concreteMapper.getProductConcreteByTaskId(compid, c.getTaskId(),produceBeginTime,produceEndTime);
+            BigDecimal productConcrete = concreteMapper.getProductConcreteByTaskId(compid, c.getTaskId(), produceBeginTime, produceEndTime);
             c.setProduceNum("0.00");
             if (productConcrete != null) {
                 c.setProduceNum(productConcrete.toString());
@@ -123,18 +128,55 @@ public class ConcreteServiceImpl implements ConcreteService {
 
     @Override
     public List<ConcreteHistogram> getConcreteSaleNum(String compid, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus) {
-        if (timeStatus == null) {
-            timeStatus = 1;
-        }
-        List<ConcreteHistogram> concreteHistogramList = concreteMapper.getConcreteSaleNum(compid);
-        for (ConcreteHistogram concreteHistogram : concreteHistogramList) {
-            if (concreteHistogram != null) {
-                String saleNum = concreteHistogram.getSaleNum();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //用于最终返回数据的集合
+        List<ConcreteHistogram> concreteHistogramsList = new ArrayList<>();
+
+        List<ConcreteHistogram> concreteHistograms = concreteMapper.getConcreteSaleNum(compid, beginTime, endTime);
+        //销售量保留两位小数
+        for (ConcreteHistogram c : concreteHistograms) {
+            if (c != null) {
+                String saleNum = c.getSaleNum();
                 saleNum = saleNum.substring(0, saleNum.indexOf(".") + 3);
-                concreteHistogram.setSaleNum(saleNum);
+                c.setSaleNum(saleNum);
             }
         }
-        return concreteHistogramList;
+
+        //从开始日期向后加七天
+        for (int i = 0; i < 7; i++) {
+
+            ConcreteHistogram concreteHistogra = new ConcreteHistogram();
+            if (concreteHistograms == null || concreteHistograms.size() <= 0) {
+                //寿命
+                concreteHistogra.setSaleNum("0.0");
+                concreteHistogra.setDateTime(beginTime);
+            }else{
+                concreteHistogra.setSaleNum("0.0");
+                concreteHistogra.setDateTime(beginTime);
+                for (ConcreteHistogram c : concreteHistograms) {
+                    if (beginTime.substring(0,10).equals(c.getDateTime())) {
+                        concreteHistogra.setSaleNum(c.getSaleNum());
+                    }
+                }
+            }
+
+            concreteHistogramsList.add(concreteHistogra);
+            Date date = null;
+            try {
+                date = sdf.parse(beginTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.DAY_OF_MONTH, +1);
+             date = c.getTime();
+            beginTime = sdf.format(date);
+        }
+
+
+        return concreteHistogramsList;
+
     }
 
     @Override

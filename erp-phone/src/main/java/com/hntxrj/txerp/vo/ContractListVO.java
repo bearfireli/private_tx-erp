@@ -12,7 +12,7 @@ public class ContractListVO {
     private String contractUid;
 
     private String contractDetailCode;
-    private Integer compid;
+    private String compid;
 
     private String eppName;
 

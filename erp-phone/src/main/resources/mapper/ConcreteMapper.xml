@@ -157,13 +157,16 @@
 
     <!--产销统计中的柱状图-->
     <select id="getConcreteSaleNum" resultType="com.hntxrj.txerp.vo.ConcreteHistogram">
-        select top 7 convert(char(10),SendTime,120) dateTime, sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) saleNum
-        from (select * from PT_TaskSaleInvoice where  (VehiceNumber > '0')
+        select convert(char(10),SendTime,120) dateTime, sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) saleNum
+        from
+        (select * from PT_TaskSaleInvoice where SendTime between #{beginTime} and #{endTime}
+        and (VehiceNumber > '0')
         and (VehicleStatus = '3')
         and InvoiceType != 6) pt
         left join  PT_TaskPlan pp on pp.compid=pt.compid and pp.TaskId=pt.TaskId
         where pt.compid=#{compid}
         group by convert(char(10),SendTime,120) order by dateTime desc
+
     </select>
 
     <!--产销统计中的饼状图-->

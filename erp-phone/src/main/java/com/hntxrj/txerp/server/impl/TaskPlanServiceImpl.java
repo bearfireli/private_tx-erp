@@ -202,7 +202,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             List<DriverShiftLEDVO> sortCars = new ArrayList<>();
 
             for (DriverShiftLEDVO car : cars) {
-                if (compid.equals("24")){
+                if (compid.equals("24")) {
                     if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
                         car.setVehicleStatus("3");
                         car.setStatusName("生产");
@@ -236,7 +236,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public PageVO<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<SendCarDetailVO> sendCarDetailVOS = taskPlanMapper.getSendDetail(compid, vehicleId,beginTime,endTime);
+        List<SendCarDetailVO> sendCarDetailVOS = taskPlanMapper.getSendDetail(compid, vehicleId, beginTime, endTime);
 
         PageInfo<SendCarDetailVO> pageInfo = new PageInfo<>(sendCarDetailVOS);
         PageVO<SendCarDetailVO> pageVO = new PageVO<>();
@@ -412,9 +412,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     secondStirIdCars.add(driverShiftLEDVO);
                 } else if ("3".equals(driverShiftLEDVO.getStirId())) {
                     thirdStirIdCars.add(driverShiftLEDVO);
-                }else if ("4".equals(driverShiftLEDVO.getStirId())) {
+                } else if ("4".equals(driverShiftLEDVO.getStirId())) {
                     fourthStirIdCars.add(driverShiftLEDVO);
-                }else if ("5".equals(driverShiftLEDVO.getStirId())) {
+                } else if ("5".equals(driverShiftLEDVO.getStirId())) {
                     fifthStirIdCars.add(driverShiftLEDVO);
                 }
             }
@@ -544,18 +544,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      */
     @Override
     public List<ShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode,
-                                                        String personalName,
-                                                        String workClass,
-                                                        String beginTime, String endTime,
-                                                        Integer page, Integer pageSize) {
+                                                   String personalName,
+                                                   String workClass,
+                                                   String beginTime, String endTime,
+                                                   Integer page, Integer pageSize) {
         List<ShiftListVO> list = new ArrayList<>();
-        List<DropDownVO> dropDownVOS= publicInfoMapper.getDropDown(16,compid);
-        if (dropDownVOS!=null){
-            for (DropDownVO d:dropDownVOS) {
-                ShiftListVO shiftListVO =new ShiftListVO();
+        List<DropDownVO> dropDownVOS = publicInfoMapper.getDropDown(16, compid);
+        if (dropDownVOS != null) {
+            for (DropDownVO d : dropDownVOS) {
+                ShiftListVO shiftListVO = new ShiftListVO();
                 shiftListVO.setWorkClass(d.getCode());
                 shiftListVO.setWorkName(d.getName());
-                workClass =d.getCode();
+                workClass = d.getCode();
                 shiftListVO.setShiftList(taskPlanMapper.getDriverShiftListNew(compid, vehicleId,
                         personalCode, personalName, workClass, beginTime, endTime));
                 list.add(shiftListVO);
@@ -689,10 +689,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         // TODO: 前台处理月份累加机制。
-        String _tmpMo = endTime.substring(5,7);
-        if("13".equals(_tmpMo)){
-            Integer year = Integer.parseInt(endTime.substring(0,4));
-            endTime = endTime.replace(year.toString() + "-13", String.valueOf(year +1) + "-01");
+        String _tmpMo = endTime.substring(5, 7);
+        if ("13".equals(_tmpMo)) {
+            Integer year = Integer.parseInt(endTime.substring(0, 4));
+            endTime = endTime.replace(year.toString() + "-13", String.valueOf(year + 1) + "-01");
         }
 
         if (type == 3) {
@@ -834,18 +834,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * 给前台返回一个默认的任务单号
      */
     @Override
-    public Map<String,String> makeAutoTaskPlanId(String compid) {
+    public Map<String, String> makeAutoTaskPlanId(String compid) {
         Map<String, String> taskPlanIdMap = new HashMap<>();
         taskPlanIdMap.put("taskId", taskPlanSplicing(compid));
         return taskPlanIdMap;
     }
 
     /**
-     *判断任务单编号是否存在
-     * */
+     * 判断任务单编号是否存在
+     */
     @Override
     public boolean isExistence(String compid, String taskId) {
-        Integer taskIdCount=taskPlanMapper.getTaskIdCount(compid, taskId);
+        Integer taskIdCount = taskPlanMapper.getTaskIdCount(compid, taskId);
         if (taskIdCount != null && taskIdCount != 0) {
             return true;
         } else {
@@ -855,30 +855,30 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     /**
      * 得到所有加价项目下拉
-     * */
+     */
     @Override
     public List<PriceMarkupVO> getPriceMarkup(String compid) {
-        return  taskPlanMapper.getPriceMarkup(compid);
+        return taskPlanMapper.getPriceMarkup(compid);
     }
 
 
     /**
      * 通过加价项目编号得到加价项目数据
-     * */
+     */
     @Override
-    public PriceMarkupVO getPriceMarkupByPPCode(String compid,String ppCode) {
-        return taskPlanMapper.getPriceMarkupByPPCode(compid,ppCode);
+    public PriceMarkupVO getPriceMarkupByPPCode(String compid, String ppCode) {
+        return taskPlanMapper.getPriceMarkupByPPCode(compid, ppCode);
     }
 
     /**
      * 添加任务单和加价项目
-     * */
+     */
     public void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO) {
-        taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(),priceMarkupVO.getUnitPrice(),priceMarkupVO.getSelfDiscPrice(),priceMarkupVO.getJumpPrice(),priceMarkupVO.getTowerCranePrice(),priceMarkupVO.getOtherPrice());
+        taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(), priceMarkupVO.getUnitPrice(), priceMarkupVO.getSelfDiscPrice(), priceMarkupVO.getJumpPrice(), priceMarkupVO.getTowerCranePrice(), priceMarkupVO.getOtherPrice());
     }
 
     @Override
-    public void updateTechnicalRequirements(String compid,String taskId, String pPNames) {
+    public void updateTechnicalRequirements(String compid, String taskId, String pPNames) {
         //根据compid查询系统变量
         SystemVarInitVO systemVarInitVO = taskPlanMapper.getSystemVarInit(compid);
         TaskPlanVO taskPlan = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
@@ -897,19 +897,20 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         } else {
             slumpFlag = "(S4)";
         }
-        if (systemVarInitVO !=null){
-            if (systemVarInitVO.getVarValue()==1){
-                if (!("").equals(pPNames)){
-                    String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag +"-"+ pPNames +"-GB/T14902";
+        if (systemVarInitVO != null) {
+            if (systemVarInitVO.getVarValue() == 1) {
+                if (!("").equals(pPNames)) {
+                    String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag + "-" + pPNames + "-GB/T14902";
                     //把选择的特殊材料名称添加到技术要求里面
-                    taskPlanMapper.updateTechnicalRequirements(compid,taskId,pPNames,concreteMark);
+                    taskPlanMapper.updateTechnicalRequirements(compid, taskId, pPNames, concreteMark);
                 }
             }
         }
     }
+
     /**
      * 删除任务单加价项目
-     * */
+     */
     @Override
     public void deletePPCodeStatus(String compid, String taskId) {
         taskPlanMapper.deletePPCodeStatus(compid, taskId);
@@ -917,20 +918,20 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     /**
      * 调度派车中获取所有正在生产的搅拌车车辆
-     * */
+     */
     @Override
     public List<DirverLEDListVO> getProduceCars(String compid) {
-        List<StirInfoSetVO> stirInfoSet= stirInfoSetMapper.getStirInfoSet(compid);
+        List<StirInfoSetVO> stirInfoSet = stirInfoSetMapper.getStirInfoSet(compid);
         List<DirverLEDListVO> list = new ArrayList<>();
-        for (StirInfoSetVO stir:stirInfoSet) {
-            DirverLEDListVO dirverLEDListVO =new DirverLEDListVO();
-            String stirId =stir.getStirId();
+        for (StirInfoSetVO stir : stirInfoSet) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            String stirId = stir.getStirId();
             dirverLEDListVO.setStatus(Integer.valueOf(stirId));
             dirverLEDListVO.setStatusName(stir.getStirName());
-            dirverLEDListVO.setCars(taskPlanMapper.getProduceCars(compid,stirId));
+            dirverLEDListVO.setCars(taskPlanMapper.getProduceCars(compid, stirId));
             list.add(dirverLEDListVO);
         }
-       return list;
+        return list;
     }
 
     /**
@@ -952,13 +953,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public PageVO<TaskPlanListVO> buildTaskPlanList(String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, String compid, Integer verifyStatus, Integer buildId, Integer page, Integer pageSize) {
         //查询当前施工方关联的所有子合同
-        List<String>  ccontractCodes=constructionMapper.getContractodeList(buildId);
-        List<String> contractUIDList=constructionMapper.getContractUID(buildId);
+        List<String> ccontractCodes = constructionMapper.getContractodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+        if (ccontractCodes.size() == 0) {
+            return null;
+        }
+        if (contractUIDList.size() == 0) {
+            return null;
+        }
 
         //根据子合同查询任务单.
         PageHelper.startPage(page, pageSize);
-        List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.buildTaskPlanList(ccontractCodes,contractUIDList,beginTime, endTime, eppCode,
-                 placing, taskId, taskStatus, verifyStatus);
+        List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.buildTaskPlanList(ccontractCodes, contractUIDList, beginTime, endTime, eppCode,
+                placing, taskId, taskStatus, verifyStatus);
         //循环截取preTime，格式为年月日
         for (TaskPlanListVO t : taskPlanListVOList) {
             if (!"".equals(t.getPreTime())) {

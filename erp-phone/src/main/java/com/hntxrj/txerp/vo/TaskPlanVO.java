@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class TaskPlanVO {
 
+    private String compid;
     private String taskId;
     private String contractId;
     private String contractUID;
