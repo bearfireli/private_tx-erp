@@ -70,6 +70,7 @@
 
     <select id="getTaskSaleInvoiceDetailVO" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO">
         select tsi.ID,
+               tsi.TaskId,
                ps4.PI_TypeName                        InvoiceTypeName,
                tsi.VehicleID,
                (tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) SaleNum,
