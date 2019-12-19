@@ -18,6 +18,7 @@ public class LoginClibationVO implements Serializable {
     private String id;
     //toKen 令牌,用来区别身份
     private String supplierToKen;
+    private String buildName;
 
 
 }

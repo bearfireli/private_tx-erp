@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.dao.EppDao;
 import com.hntxrj.txerp.entity.EppInfo;
 import com.hntxrj.txerp.entity.PageBean;
+import com.hntxrj.txerp.mapper.ConstructionMapper;
 import com.hntxrj.txerp.mapper.EppMapper;
 import com.hntxrj.txerp.server.EppService;
 import com.hntxrj.txerp.vo.EppDropDownVO;
@@ -28,11 +29,13 @@ public class EppServiceImpl implements EppService {
 
     private final EppDao eppDao;
     private final EppMapper eppMapper;
+    private final ConstructionMapper constructionMapper;
 
     @Autowired
-    public EppServiceImpl(EppDao eppDao, EppMapper eppMapper) {
+    public EppServiceImpl(EppDao eppDao, EppMapper eppMapper, ConstructionMapper constructionMapper) {
         this.eppDao = eppDao;
         this.eppMapper = eppMapper;
+        this.constructionMapper = constructionMapper;
     }
 
 
@@ -73,5 +76,21 @@ public class EppServiceImpl implements EppService {
     @Override
     public EppInfo getEppInfo(String eppCode, String compid) {
         return eppMapper.getEppInfo(eppCode, compid);
+    }
+
+    @Override
+    public PageVO<EppDropDownVO> getBuildDropDown(String eppName, Integer buildId, Integer page, Integer pageSize) {
+        //首先根据buildId查询出关联的合同号和子合同号。
+        List<String>  ccontractCodes=constructionMapper.getContractodeList(buildId);
+        List<String> contractUIDList=constructionMapper.getContractUID(buildId);
+
+        //只能查询出绑定的合同的工程名称
+
+        PageHelper.startPage(page, pageSize);
+        List<EppDropDownVO> eppDropDownVOList = eppMapper.getBuildDropDown(ccontractCodes,contractUIDList, eppName);
+        PageInfo<EppDropDownVO> eppDropDownVOPageInfo = new PageInfo<>(eppDropDownVOList);
+        PageVO<EppDropDownVO> pageVO = new PageVO<>();
+        pageVO.format(eppDropDownVOPageInfo);
+        return null;
     }
 }

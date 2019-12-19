@@ -15,7 +15,8 @@
     <select id="getAccountPassword" resultType="com.hntxrj.txerp.vo.LoginClibationVO">
         select build_id         as id,
                build_login_name as loginName,
-               build_password   as password
+               build_password   as password,
+                build_name    as buildName
         from bd_build_accounts
         where build_login_name = #{userName}
           and build_password = #{passWord}

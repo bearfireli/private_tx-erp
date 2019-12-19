@@ -8,6 +8,25 @@
         </if>
     </select>
 
+    <!--施工方App中工程名称的下拉框-->
+    <select id="getBuildDropDown" resultType="com.hntxrj.txerp.vo.EppDropDownVO">
+        select se.EPPName, se.EPPCode ,se.Address from SM_ContractDetail sd
+        left join SM_EPPInfo se on sd.compid=se.compid and sd.EPPCode=se.EPPCode
+        where se.RecStatus=1 and sd.RecStatus=1
+        and sd.CContractCode in
+        <foreach collection="ccontractCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and sd.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="eppName != null and eppName != ''">
+            and eppName like '%'+#{eppName}+'%'
+        </if>
+        group by   se.EPPName, se.EPPCode ,se.Address
+    </select>
+
     <select id="getEppInfo" resultType="com.hntxrj.txerp.entity.EppInfo">
         select * from SM_EPPInfo where EPPCode=#{eppCode} and compid=#{compid}
     </select>

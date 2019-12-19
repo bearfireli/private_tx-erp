@@ -52,4 +52,6 @@ public interface EppService {
 
 
     EppInfo getEppInfo(String eppCode, String compid);
+
+    PageVO<EppDropDownVO> getBuildDropDown(String eppName, Integer buildId, Integer page, Integer pageSize);
 }

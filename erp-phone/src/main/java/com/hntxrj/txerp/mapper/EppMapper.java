@@ -12,4 +12,5 @@ public interface EppMapper {
     List<EppDropDownVO> getDropDown(String compid, String eppName);
     EppInfo getEppInfo(String eppCode, String compid);
 
+    List<EppDropDownVO> getBuildDropDown(List<String> ccontractCodes, List<String> contractUIDList, String eppName);
 }

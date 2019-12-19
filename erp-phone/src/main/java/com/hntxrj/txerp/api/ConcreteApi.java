@@ -89,16 +89,16 @@ public class ConcreteApi {
     }
 
     /**
-     * 产销统计中的柱状图
+     * 产销统计中的柱状图（只按照compid查询当天从当前时间开始向前推7天的数据，不加其他任何条件）
      *
      * @param compid    　企业
-     * @param eppCode   　工程代码
-     * @param placing   　浇筑部位
-     * @param taskId    　任务单号
-     * @param stgId     　砼标记
-     * @param beginTime 　开始时间
-     * @param endTime   　结束时间
-     * @param timeStatus  时间类型：1 派车时间；0离场时间
+     * @param eppCode   　工程代码  (此字段没有用到)
+     * @param placing   　浇筑部位  (此字段没有用到)
+     * @param taskId    　任务单号  (此字段没有用到)
+     * @param stgId     　砼标记   (此字段没有用到)
+     * @param beginTime 　开始时间  (此字段没有用到)
+     * @param endTime   　结束时间  （此字段没有用到）
+     * @param timeStatus  时间类型：1 派车时间；0离场时间  (此字段没有用到)
      */
     @PostMapping("/getConcreteSaleNum")
     public ResultVO getConcreteSaleNum(String compid, String eppCode, String placing,

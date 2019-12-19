@@ -126,7 +126,7 @@ public class ConcreteServiceImpl implements ConcreteService {
         if (timeStatus == null) {
             timeStatus = 1;
         }
-        List<ConcreteHistogram> concreteHistogramList = concreteMapper.getConcreteSaleNum(compid, eppCode, placing, taskId, stgId, beginTime, endTime, timeStatus);
+        List<ConcreteHistogram> concreteHistogramList = concreteMapper.getConcreteSaleNum(compid);
         for (ConcreteHistogram concreteHistogram : concreteHistogramList) {
             if (concreteHistogram != null) {
                 String saleNum = concreteHistogram.getSaleNum();
