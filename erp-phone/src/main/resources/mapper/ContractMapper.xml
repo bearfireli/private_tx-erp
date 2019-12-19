@@ -397,7 +397,7 @@
         cm.ContractUID,
         cm.ContractId,
         cd.CContractCode contractDetailCode,
-        cm.compid,
+        cm.compid as compid,
         cd.Address,
         cd.ContractNum,
         cd.ContractStatus,
