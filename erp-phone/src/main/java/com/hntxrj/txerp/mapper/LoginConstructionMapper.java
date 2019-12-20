@@ -14,4 +14,7 @@ public interface LoginConstructionMapper {
 
     Integer save(String userName, String passWord,String buildName);
 
+    BuildAccountsVO findUser(String buildId);
+
+    void updatePassword(String buildId, String newPassword);
 }

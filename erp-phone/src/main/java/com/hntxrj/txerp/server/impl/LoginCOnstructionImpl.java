@@ -73,6 +73,23 @@ public class LoginCOnstructionImpl implements LoginConstructionService {
 
     }
 
+    @Override
+    public void updatePassword(String buildId, String oldPassword, String newPassword) throws ErpException {
+        BuildAccountsVO buildAccountsVO= loginConstructionMapper.findUser(buildId);
+        if (buildAccountsVO == null) {
+            //用户不存在
+            throw new ErpException(ErrEumn.USER_NO_EXIT);
+        }
+        oldPassword = getMd5Password(oldPassword);
+        if (!oldPassword.equals(buildAccountsVO.getPassword())) {
+            //旧密码错误
+            throw new ErpException(ErrEumn.OLD_PASSWORD_ERROR);
+        }
+        //修改密码
+        newPassword = getMd5Password(newPassword);
+        loginConstructionMapper.updatePassword(buildId, newPassword);
+    }
+
     //加密规则
     private String getMd5Password(
             String password) {

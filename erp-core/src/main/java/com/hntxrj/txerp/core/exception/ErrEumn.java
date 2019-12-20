@@ -64,6 +64,7 @@ public enum ErrEumn {
     LOGIN_ERR(-10005, "用户名或密码错误"),
     EXPIRE_TOKEN(-10006, "身份认证过期,请重新登录"),
     PARAM_IS_NULL(-10007, "参数为空"),
+    OLD_PASSWORD_ERROR(-10007, "旧密码输入错误"),
 
 
     ADD_USER_UID_IS_NULL(-10008, "uid不能为空！"),
