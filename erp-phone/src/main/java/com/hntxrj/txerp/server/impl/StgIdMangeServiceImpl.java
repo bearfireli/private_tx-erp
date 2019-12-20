@@ -97,6 +97,9 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
      */
     @Override
     public void insertStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice, String towerCranePrice) {
+        pumpPrice = pumpPrice.replaceAll(" ", "");
+        notPumpPrice = pumpPrice.replaceAll(" ", "");
+        towerCranePrice = pumpPrice.replaceAll(" ", "");
         stgIdMangeMapper.insertStgIdManage(compid, stgId, grade, pumpPrice, notPumpPrice, towerCranePrice);
     }
 
