@@ -80,6 +80,7 @@ public class ConstructionServiceImpl implements ConstructionService {
             Integer uid = Integer.valueOf(invitationVO.getCreateuser());
             String username = checkTokenIsNormal(uid);
             invitationVO.setCreateuser(username);
+            invitationVO.setCreatetime(invitationVO.getCreatetime().substring(0,16));
         }
         PageInfo<InvitationVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);

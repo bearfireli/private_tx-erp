@@ -167,7 +167,7 @@
         sum(ProduceNum) as totalProduceNum,
         sum(ScrapNum) as ScrapNum,
         sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) totalSaleNum,
-        max(VehiceNumber) vehiceNumber,
+        count(VehiceNumber) vehiceNumber,
         sum(NumberOfSignings) numberOfSignings
         from PT_TaskSaleInvoice
         where InvoiceType != 6
