@@ -210,19 +210,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (taskIds.size() > 0) {
             cars = taskPlanMapper.getCarsByTaskIds(compid, taskIds);
         }
-        //判断厦门华信特殊情况（先打票，再生产）
-        for (DriverShiftLEDVO car : cars) {
-            if (compid.equals("24")) {
-                if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
-                    car.setVehicleStatus("3");
-                    car.setStatusName("生产");
-                }
-            }
-        }
         //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
         for (SendCarListVO sendCarListVO : sendCarList) {
             List<DriverShiftLEDVO> driverShiftLEDVOList = new ArrayList<>();
             for (DriverShiftLEDVO car : cars) {
+                //判断厦门华信特殊情况（先打票，再生产）
+                if (compid.equals("24")) {
+                    if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
+                        car.setVehicleStatus("3");
+                        car.setStatusName("生产");
+                    }
+                }
+                //根据任务单号关联调度派车列表和其对应的车辆
                 if (sendCarListVO.getTaskId().equals(car.getTaskId())) {
                     driverShiftLEDVOList.add(car);
                 }
