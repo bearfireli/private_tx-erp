@@ -219,7 +219,7 @@ public class ConsumeServiceImpl implements ConsumeService {
     }
 
     /**
-     * 原材料统计汇总
+     * 原材料统计汇总(老版本)
      *
      * @param compid    企业id
      * @param beginTime 开始时间
@@ -239,6 +239,82 @@ public class ConsumeServiceImpl implements ConsumeService {
                                             Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<RawCollectVO> rawCollectVOS = consumeMapper.getMatTotal(compid, beginTime, endTime,
+                stgId, vehicleId, taskId, stirId);
+        for (RawCollectVO raw : rawCollectVOS) {
+            raw.setMatV1(String.format("%.2f", Double.valueOf(raw.getMatV1()) / 1000));
+            raw.setMatV2(String.format("%.2f", Double.valueOf(raw.getMatV2()) / 1000));
+            raw.setMatV3(String.format("%.2f", Double.valueOf(raw.getMatV3()) / 1000));
+            raw.setMatV4(String.format("%.2f", Double.valueOf(raw.getMatV4()) / 1000));
+            raw.setMatV5(String.format("%.2f", Double.valueOf(raw.getMatV5()) / 1000));
+            raw.setMatV6(String.format("%.2f", Double.valueOf(raw.getMatV6()) / 1000));
+            raw.setMatV7(String.format("%.2f", Double.valueOf(raw.getMatV7()) / 1000));
+            raw.setMatV8(String.format("%.2f", Double.valueOf(raw.getMatV8()) / 1000));
+            raw.setMatV9(String.format("%.2f", Double.valueOf(raw.getMatV9()) / 1000));
+            raw.setMatV10(String.format("%.2f", Double.valueOf(raw.getMatV10()) / 1000));
+            raw.setMatV11(String.format("%.2f", Double.valueOf(raw.getMatV11()) / 1000));
+            raw.setMatV12(String.format("%.2f", Double.valueOf(raw.getMatV12()) / 1000));
+            raw.setMatV13(String.format("%.2f", Double.valueOf(raw.getMatV13()) / 1000));
+            raw.setMatV14(String.format("%.2f", Double.valueOf(raw.getMatV14()) / 1000));
+            raw.setMatV15(String.format("%.2f", Double.valueOf(raw.getMatV15()) / 1000));
+            raw.setMatV16(String.format("%.2f", Double.valueOf(raw.getMatV16()) / 1000));
+            raw.setMatV17(String.format("%.2f", Double.valueOf(raw.getMatV17()) / 1000));
+            raw.setMatV18(String.format("%.2f", Double.valueOf(raw.getMatV18()) / 1000));
+            raw.setMatV19(String.format("%.2f", Double.valueOf(raw.getMatV19()) / 1000));
+            raw.setMatV20(String.format("%.2f", Double.valueOf(raw.getMatV20()) / 1000));
+            raw.setMatV21(String.format("%.2f", Double.valueOf(raw.getMatV21()) / 1000));
+            raw.setMatV22(String.format("%.2f", Double.valueOf(raw.getMatV22()) / 1000));
+            raw.setMatV23(String.format("%.2f", Double.valueOf(raw.getMatV23()) / 1000));
+            raw.setMatL1(String.format("%.2f", Double.valueOf(raw.getMatL1()) / 1000));
+            raw.setMatL2(String.format("%.2f", Double.valueOf(raw.getMatL2()) / 1000));
+            raw.setMatL3(String.format("%.2f", Double.valueOf(raw.getMatL3()) / 1000));
+            raw.setMatL4(String.format("%.2f", Double.valueOf(raw.getMatL4()) / 1000));
+            raw.setMatL5(String.format("%.2f", Double.valueOf(raw.getMatL5()) / 1000));
+            raw.setMatL6(String.format("%.2f", Double.valueOf(raw.getMatL6()) / 1000));
+            raw.setMatL7(String.format("%.2f", Double.valueOf(raw.getMatL7()) / 1000));
+            raw.setMatL8(String.format("%.2f", Double.valueOf(raw.getMatL8()) / 1000));
+            raw.setMatL9(String.format("%.2f", Double.valueOf(raw.getMatL9()) / 1000));
+            raw.setMatL10(String.format("%.2f", Double.valueOf(raw.getMatL10()) / 1000));
+            raw.setMatL11(String.format("%.2f", Double.valueOf(raw.getMatL11()) / 1000));
+            raw.setMatL12(String.format("%.2f", Double.valueOf(raw.getMatL12()) / 1000));
+            raw.setMatL13(String.format("%.2f", Double.valueOf(raw.getMatL13()) / 1000));
+            raw.setMatL14(String.format("%.2f", Double.valueOf(raw.getMatL14()) / 1000));
+            raw.setMatL15(String.format("%.2f", Double.valueOf(raw.getMatL15()) / 1000));
+            raw.setMatL16(String.format("%.2f", Double.valueOf(raw.getMatL16()) / 1000));
+            raw.setMatL17(String.format("%.2f", Double.valueOf(raw.getMatL17()) / 1000));
+            raw.setMatL18(String.format("%.2f", Double.valueOf(raw.getMatL18()) / 1000));
+            raw.setMatL19(String.format("%.2f", Double.valueOf(raw.getMatL19()) / 1000));
+            raw.setMatL20(String.format("%.2f", Double.valueOf(raw.getMatL20()) / 1000));
+            raw.setMatL21(String.format("%.2f", Double.valueOf(raw.getMatL21()) / 1000));
+            raw.setMatL22(String.format("%.2f", Double.valueOf(raw.getMatL22()) / 1000));
+            raw.setMatL23(String.format("%.2f", Double.valueOf(raw.getMatL23()) / 1000));
+        }
+        PageInfo<RawCollectVO> pageInfo = new PageInfo<>(rawCollectVOS);
+        PageVO<RawCollectVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    /**
+     * 原材料统计汇总(新版本)
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param taskId    任务单号
+     * @param stirId    站别代号
+     * @param stgId     线号
+     * @param page      页数
+     * @param pageSize  每页数量
+     * @return 原材料统计汇总
+     */
+    @Override
+    public PageVO<RawCollectVO> getProductionConsumptionDetails(String compid, String beginTime, String endTime,
+                                                                String vehicleId, String taskId, String stirId,
+                                                                String stgId,
+                                                                Integer page, Integer pageSize) {
+        //        PageHelper.startPage(page, pageSize);
+        List<RawCollectVO> rawCollectVOS = consumeMapper.getProductionConsumptionDetails(compid, beginTime, endTime,
                 stgId, vehicleId, taskId, stirId);
         for (RawCollectVO raw : rawCollectVOS) {
             raw.setMatV1(String.format("%.2f", Double.valueOf(raw.getMatV1()) / 1000));
