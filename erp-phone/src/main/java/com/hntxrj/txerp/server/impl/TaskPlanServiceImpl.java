@@ -194,12 +194,32 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        // TODO: 司机只能查询自己的信息
         List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
+        //查询出所有正在生产的任务单号集合。
+        List<String> taskIds = taskPlanMapper.getTaskIds(compid, searchName);
+        //根据任务单号集合查询出所有的车号。
+        List<DriverShiftLEDVO> cars = new ArrayList<>();
+        if (taskIds.size() > 0) {
+            cars = taskPlanMapper.getCarsByTaskIds(compid, taskIds);
+        }
+        //判断厦门华信特殊情况（先打票，再生产）
+        for (DriverShiftLEDVO car : cars) {
+            if (compid.equals("24")) {
+                if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
+                    car.setVehicleStatus("3");
+                    car.setStatusName("生产");
+                }
+            }
+        }
+        //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
         for (SendCarListVO sendCarListVO : sendCarList) {
-            //获取每个任务单下的所有搅拌车车辆
-            List<DriverShiftLEDVO> cars = taskPlanMapper.getCarsByTaskId(compid, sendCarListVO.getTaskId());
-            sendCarListVO.setCars(cars);
+            List<DriverShiftLEDVO> driverShiftLEDVOList = new ArrayList<>();
+            for (DriverShiftLEDVO car : cars) {
+                if (sendCarListVO.getTaskId().equals(car.getTaskId())) {
+                    driverShiftLEDVOList.add(car);
+                }
+            }
+            sendCarListVO.setCars(driverShiftLEDVOList);
             if (sendCarListVO.getTotalProduceNum() == null) {
                 sendCarListVO.setTotalProduceNum("0.0");
             }
