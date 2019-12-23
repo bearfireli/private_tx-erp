@@ -194,34 +194,38 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
+
         //查询出所有正在生产的任务单号集合。
-        List<String> taskIds = taskPlanMapper.getTaskIds(compid, searchName);
+        List<String> taskIds = new ArrayList<>();
+        for (SendCarListVO sendCarListVO : sendCarList) {
+            if (sendCarListVO.getTotalProduceNum() == null) {
+                sendCarListVO.setTotalProduceNum("0.0");
+            }
+            taskIds.add(sendCarListVO.getTaskId());
+        }
+
         //根据任务单号集合查询出所有的车号。
         List<DriverShiftLEDVO> cars = new ArrayList<>();
         if (taskIds.size() > 0) {
             cars = taskPlanMapper.getCarsByTaskIds(compid, taskIds);
         }
-        //判断厦门华信特殊情况（先打票，再生产）
-        for (DriverShiftLEDVO car : cars) {
-            if (compid.equals("24")) {
-                if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
-                    car.setVehicleStatus("3");
-                    car.setStatusName("生产");
-                }
-            }
-        }
         //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
         for (SendCarListVO sendCarListVO : sendCarList) {
             List<DriverShiftLEDVO> driverShiftLEDVOList = new ArrayList<>();
             for (DriverShiftLEDVO car : cars) {
+                //判断厦门华信特殊情况（先打票，再生产）
+                if (compid.equals("24")) {
+                    if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
+                        car.setVehicleStatus("3");
+                        car.setStatusName("生产");
+                    }
+                }
+                //根据任务单号关联调度派车列表和其对应的车辆
                 if (sendCarListVO.getTaskId().equals(car.getTaskId())) {
                     driverShiftLEDVOList.add(car);
                 }
             }
             sendCarListVO.setCars(driverShiftLEDVOList);
-            if (sendCarListVO.getTotalProduceNum() == null) {
-                sendCarListVO.setTotalProduceNum("0.0");
-            }
         }
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarListVO> pageVO = new PageVO<>();
