@@ -72,7 +72,11 @@ public class TaskPlanApi {
      * @throws ErpException 定义的异常
      */
     @PostMapping("/addTaskPlan")
-    public ResultVO addTaskPlan(TaskPlan taskPlan) throws ErpException {
+    public ResultVO addTaskPlan(TaskPlan taskPlan, String cContractCode) throws ErpException {
+        //兼容老版本，老版本子合同号传递的是cContractCode
+        if (taskPlan.getContractDetailCode() == null) {
+            taskPlan.setContractDetailCode(cContractCode);
+        }
         taskPlanService.addTaskPlan(taskPlan);
         return ResultVO.create();
     }

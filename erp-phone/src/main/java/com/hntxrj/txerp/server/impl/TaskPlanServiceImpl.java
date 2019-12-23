@@ -113,7 +113,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (taskPlan.getPreTime() == null) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_PRETIME);
         }
-        if (StringUtils.isEmpty(taskPlan.getContractUid()) || StringUtils.isEmpty(taskPlan.getCContractCode())) {
+        if (StringUtils.isEmpty(taskPlan.getContractUid()) || StringUtils.isEmpty(taskPlan.getContractDetailCode())) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_CONTRACT);
         }
         if (StringUtils.isEmpty(taskPlan.getEppCode())) {
