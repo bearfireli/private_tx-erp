@@ -133,9 +133,9 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     @Override
-    public Map<String, Boolean> selectBind(String buildId) {
+    public Map<String, Boolean> checkBind(String buildId) {
         Map<String, Boolean> map = new HashMap<>();
-        List<bdBindVO> bdBindVOs = constructionMapper.selectBind(buildId);
+        List<bdBindVO> bdBindVOs = constructionMapper.checkBind(buildId);
         if (bdBindVOs != null && bdBindVOs.size() > 0) {
             map.put("isBind", true);
         } else {

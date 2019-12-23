@@ -22,7 +22,7 @@ public interface ConstructionMapper {
 
     void saveInvitation(String buildId, String compid, String contractDetailCode,String contractUID);
 
-    List<bdBindVO> selectBind(String buildId);
+    List<bdBindVO> checkBind(String buildId);
 
     bdBindVO selectCompid(String contractDetailCode,String contractUID,String buildId);
 

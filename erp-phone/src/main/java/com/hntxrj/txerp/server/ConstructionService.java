@@ -18,5 +18,5 @@ public interface ConstructionService {
 
     void saveInvitation(String buildId, String buildInvitationCode) throws ErpException, SQLException;
 
-    Map<String,Boolean> selectBind(String buildId);
+    Map<String,Boolean> checkBind(String buildId);
 }

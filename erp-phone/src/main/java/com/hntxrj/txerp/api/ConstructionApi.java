@@ -93,9 +93,9 @@ public class ConstructionApi {
      * @param buildId  用户id
      * @return        查询绑定合同
      */
-    @PostMapping("/selectBind")
-    public ResultVO selectBind(String buildId) {
-        return ResultVO.create(constructionService.selectBind(buildId));
+    @PostMapping("/checkBind")
+    public ResultVO checkBind(String buildId) {
+        return ResultVO.create(constructionService.checkBind(buildId));
     }
 
 

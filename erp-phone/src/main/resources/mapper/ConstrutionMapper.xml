@@ -83,7 +83,7 @@
         from bd_invitation_code bd
         where bd.build_invitation_code = #{buildInvitationCode}
     </select>
-    <select id="selectBind" resultType="com.hntxrj.txerp.vo.bdBindVO">
+    <select id="checkBind" resultType="com.hntxrj.txerp.vo.bdBindVO">
         select build_id   buildid,
            bd.compid,
            bd.ccontract_code as contractDetailCode,
