@@ -953,7 +953,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public PageVO<TaskPlanListVO> buildTaskPlanList(String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, String compid, Integer verifyStatus, Integer buildId, Integer page, Integer pageSize) {
         //查询当前施工方关联的所有子合同
-        List<String> ccontractCodes = constructionMapper.getContractodeList(buildId);
+        List<String> ccontractCodes = constructionMapper.getContractCodeList(buildId);
         List<String> contractUIDList = constructionMapper.getContractUID(buildId);
         if (ccontractCodes.size() == 0) {
             return null;

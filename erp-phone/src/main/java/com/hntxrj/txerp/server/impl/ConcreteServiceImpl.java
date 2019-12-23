@@ -144,23 +144,18 @@ public class ConcreteServiceImpl implements ConcreteService {
 
         //从开始日期向后加七天
         for (int i = 0; i < 7; i++) {
-
-            ConcreteHistogram concreteHistogra = new ConcreteHistogram();
-            if (concreteHistograms == null || concreteHistograms.size() <= 0) {
-                //寿命
-                concreteHistogra.setSaleNum("0.0");
-                concreteHistogra.setDateTime(beginTime);
-            }else{
-                concreteHistogra.setSaleNum("0.0");
-                concreteHistogra.setDateTime(beginTime);
+            ConcreteHistogram concreteHistogram = new ConcreteHistogram();
+            concreteHistogram.setSaleNum("0.0");
+            concreteHistogram.setDateTime(beginTime);
+            if (concreteHistograms != null || concreteHistograms.size() > 0) {
                 for (ConcreteHistogram c : concreteHistograms) {
                     if (beginTime.substring(0,10).equals(c.getDateTime())) {
-                        concreteHistogra.setSaleNum(c.getSaleNum());
+                        concreteHistogram.setSaleNum(c.getSaleNum());
                     }
                 }
             }
 
-            concreteHistogramsList.add(concreteHistogra);
+            concreteHistogramsList.add(concreteHistogram);
             Date date = null;
             try {
                 date = sdf.parse(beginTime);
@@ -173,8 +168,6 @@ public class ConcreteServiceImpl implements ConcreteService {
              date = c.getTime();
             beginTime = sdf.format(date);
         }
-
-
         return concreteHistogramsList;
 
     }
@@ -192,7 +185,6 @@ public class ConcreteServiceImpl implements ConcreteService {
                 concretePieChart.setSaleNum(saleNum);
             }
         }
-
         return concretePieCharts;
     }
 }

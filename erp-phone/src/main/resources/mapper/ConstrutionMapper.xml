@@ -14,7 +14,7 @@
          ContractUID)
         VALUES (#{build_Invitation_Code},
         #{compid},
-        #{ccontractCode},
+        #{contractDetailCode},
         #{use_Status},
         #{opid},
         #{date},
@@ -29,14 +29,14 @@
         VALUES (#{buildId},
                 #{compid},
                  #{contractUID},
-                #{ccontractCode})
+                #{contractDetailCode})
     </insert>
 
     <update id="updateUseStatus" useGeneratedKeys="true">
         update bd_invitation_code
         set use_status=#{useStatus}
         where  build_invitation_code = #{buildInvitationCode}
-        and ccontract_code =#{ccontractCode}
+        and ccontract_code =#{contractDetailCode}
        and contractUID=#{contractUID}
     </update>
     <!--施工方邀请码列表-->
@@ -49,7 +49,7 @@
         bd.create_time           createtime,
         bd.create_user           createuser,
         bd.use_status            usestatus,
-        bd.ccontract_code,
+        bd.ccontract_code as contractDetailCode,
         bd.contractUID
         from bd_invitation_code bd
         left join SM_ContractDetail sc on bd.ccontract_code = sc.CContractCode and bd.contractUID = sc.ContractUID
@@ -75,7 +75,7 @@
     <select id="selectInvitation" resultType="com.hntxrj.txerp.vo.InvitationVO">
         select bd.build_invitation_code buildinvitationcode,
                bd.compid,
-               bd.ccontract_code            ccontractCode,
+               bd.ccontract_code            contractDetailCode,
                bd.create_time           createtime,
                bd.create_user           createuser,
                bd.use_status            usestatus,
@@ -86,7 +86,7 @@
     <select id="selectBind" resultType="com.hntxrj.txerp.vo.bdBindVO">
         select build_id   buildid,
            bd.compid,
-           bd.ccontract_code as ccontractCode,
+           bd.ccontract_code as contractDetailCode,
            bd.contractUID
         from bd_bind bd
         where build_id = #{buildId}
@@ -94,14 +94,14 @@
     <select id="selectCompid" resultType="com.hntxrj.txerp.vo.bdBindVO">
         select build_id   buildid,
                compid,
-               ccontract_code as ccontractCode,
+               ccontract_code as contractDetailCode,
                contractUID
         from bd_bind
-        where ccontract_code=#{ccontractCode}
+        where ccontract_code=#{contractDetailCode}
         and contractUID=#{contractUID}
         and build_id = #{buildId}
     </select>
-    <select id="getContractodeList" resultType="java.lang.String">
+    <select id="getContractCodeList" resultType="java.lang.String">
         select ccontract_code
         from bd_bind
         where build_id=#{buildId}

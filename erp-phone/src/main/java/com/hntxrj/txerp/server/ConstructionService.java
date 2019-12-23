@@ -9,12 +9,12 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public interface ConstructionService {
-    InvitationVO getInvitationCode(String compid, Integer  opid, String ccontractCodes) throws ErpException;
+    InvitationVO getInvitationCode(String compid, Integer  opid, String contractDetailCodes) throws ErpException;
 
     PageVO<InvitationVO> getInvitationList(String compid, String buildCode, String useStatus, String createUser,
                                            String beginTime,String endTime,Integer page,Integer pageSize);
 
-    void updateUseStatus(String contractUID,String ccontractCode, String buildInvitationCode) throws ErpException;
+    void updateUseStatus(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException;
 
     void saveInvitation(String buildId, String buildInvitationCode) throws ErpException, SQLException;
 

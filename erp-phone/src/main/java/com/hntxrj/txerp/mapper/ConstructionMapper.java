@@ -10,23 +10,23 @@ import java.util.List;
 @Mapper
 public interface ConstructionMapper {
 
-    void  getInvitationCode(String build_Invitation_Code, String compid, String ccontractCode,
+    void  getInvitationCode(String build_Invitation_Code, String compid, String contractDetailCode,
                            Integer use_Status, Integer opid, Date date,String contractUID);
 
     List<InvitationVO> getInvitationList(String compid, String buildCode, String useStatus,
                                          String createUser, String beginTime, String endTime);
 
-    void updateUseStatus(String contractUID,String ccontractCode,String buildInvitationCode, int useStatus);
+    void updateUseStatus(String contractUID,String contractDetailCode,String buildInvitationCode, int useStatus);
 
     List<InvitationVO> selectInvitation(String buildInvitationCode);
 
-    void saveInvitation(String buildId, String compid, String ccontractCode,String contractUID);
+    void saveInvitation(String buildId, String compid, String contractDetailCode,String contractUID);
 
     List<bdBindVO> selectBind(String buildId);
 
-    bdBindVO selectCompid(String ccontractCode,String contractUID,String buildId);
+    bdBindVO selectCompid(String contractDetailCode,String contractUID,String buildId);
 
-    List<String> getContractodeList(Integer buildId);
+    List<String> getContractCodeList(Integer buildId);
 
     List<String> getContractUID(Integer buildId);
 }

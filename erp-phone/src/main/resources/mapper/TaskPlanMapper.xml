@@ -880,7 +880,7 @@
         tp.PreNum,
         sum(ProduceNum) overNum,
         tp.ContractUID,
-        tp.CContractCode as ccontractCode,
+        tp.CContractCode as contractDetailCode,
         tp.TaskStatus,
         tp.VerifyStatus,
         tp.EPPCode,

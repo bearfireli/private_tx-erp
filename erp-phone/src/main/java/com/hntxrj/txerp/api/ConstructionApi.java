@@ -32,12 +32,12 @@ public class ConstructionApi {
      * 生成邀请码
      * @param compid   企业
      * @param opid     操作人
-     * @param ccontractCodes     子合同号集合
+     * @param contractDetailCodes     子合同号集合
      * @return   生成邀请码
      */
     @PostMapping("/getInvitationCode")
-    public ResultVO getInvitationCode(String compid, Integer  opid, String ccontractCodes) throws ErpException {
-        return ResultVO.create(constructionService.getInvitationCode(compid,opid,ccontractCodes));
+    public ResultVO getInvitationCode(String compid, Integer  opid, String contractDetailCodes) throws ErpException {
+        return ResultVO.create(constructionService.getInvitationCode(compid,opid,contractDetailCodes));
     }
 
     /**
@@ -66,12 +66,12 @@ public class ConstructionApi {
     /**
      * 作废邀请码
      * @param contractUID  主合同
-     * @param ccontractCode  子合同
+     * @param contractDetailCode  子合同
      * @param buildInvitationCode  邀请码
      */
     @PostMapping("/updateUseStatus")
-    public ResultVO updateUseStatus(String contractUID,String ccontractCode, String buildInvitationCode) throws ErpException {
-        constructionService.updateUseStatus(contractUID,ccontractCode, buildInvitationCode);
+    public ResultVO updateUseStatus(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
+        constructionService.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode);
         return ResultVO.create();
     }
 

@@ -28,7 +28,7 @@ public class TaskPlanListVO {
     private String stgId;   //砼标号
     private String slump;   //坍塌度
     private String attribute;  //砼特性
-    private String ccontractCode; // 子合同号
+    private String contractDetailCode; // 子合同号
     private String compid; //公司代号
 
 }

@@ -47,11 +47,11 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     @Override
-    public InvitationVO getInvitationCode(String compid, Integer opid, String ccontractCodes) throws ErpException {
+    public InvitationVO getInvitationCode(String compid, Integer opid, String contractDetailCodes) throws ErpException {
         String build_Invitation_Code = UUID.randomUUID().toString().replace("-", "");
         Date date = new Date();
         Integer use_Status = 0;
-        String[] codes = ccontractCodes.split(",");
+        String[] codes = contractDetailCodes.split(",");
         try {
             for (String code : codes) {
                 //先根据子合同号和compid从合同表中查询出每一个主合同号
@@ -88,10 +88,10 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     @Override
-    public void updateUseStatus(String contractUID,String ccontractCode, String buildInvitationCode) throws ErpException {
+    public void updateUseStatus(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
         try {
             int useStatus = 2;
-            constructionMapper.updateUseStatus(contractUID,ccontractCode, buildInvitationCode, useStatus);
+            constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, useStatus);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADJUNCT_UPDATE_ERROR);
         }
@@ -107,13 +107,13 @@ public class ConstructionServiceImpl implements ConstructionService {
         if (invitationVOS != null && invitationVOS.size() > 0) {
             for (InvitationVO invitationVO : invitationVOS) {
                 //查询此施工单位是否绑定过此合同
-                bdBindVO bdBindVO = constructionMapper.selectCompid(invitationVO.getCcontractCode(),invitationVO.getContractUID(), buildId);
+                bdBindVO bdBindVO = constructionMapper.selectCompid(invitationVO.getContractDetailCode(),invitationVO.getContractUID(), buildId);
                 if (bdBindVO == null) {
                     //说明此用户没有绑定过此合同
                     if (Integer.parseInt(invitationVO.getUsestatus()) == 0) {
                         int usestatus = 1;
                         String compid = invitationVO.getCompid();
-                        String ccontractCode = invitationVO.getCcontractCode();
+                        String ccontractCode = invitationVO.getContractDetailCode();
                         String contractUID = invitationVO.getContractUID();
                         //修改邀请码的使用状态为已使用
                         constructionMapper.updateUseStatus(contractUID,ccontractCode, buildInvitationCode, usestatus);
