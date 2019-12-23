@@ -2,6 +2,8 @@ package com.hntxrj.txerp.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author qyb
  * @ClassName DriverShiftLEDVO
@@ -10,7 +12,7 @@ import lombok.Data;
  * @Version 1.0
  **/
 @Data
-public class DriverShiftLEDVO {
+public class DispatchVehicle implements Serializable {
 
     /**
      * 线号

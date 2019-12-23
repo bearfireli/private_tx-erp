@@ -202,18 +202,21 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             if (sendCarListVO.getTotalProduceNum() == null) {
                 sendCarListVO.setTotalProduceNum("0.0");
             }
-            taskIds.add(sendCarListVO.getTaskId());
+            if (sendCarListVO.getTaskId() != null) {
+                taskIds.add(sendCarListVO.getTaskId());
+            }
+
         }
 
         //根据任务单号集合查询出所有的车号。
-        List<DriverShiftLEDVO> cars = new ArrayList<>();
+        List<DispatchVehicle> cars = new ArrayList<>();
         if (taskIds.size() > 0) {
             cars = taskPlanMapper.getCarsByTaskIds(compid, taskIds);
         }
         //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
         for (SendCarListVO sendCarListVO : sendCarList) {
-            List<DriverShiftLEDVO> driverShiftLEDVOList = new ArrayList<>();
-            for (DriverShiftLEDVO car : cars) {
+            List<DispatchVehicle> driverShiftLEDVOList = new ArrayList<>();
+            for (DispatchVehicle car : cars) {
                 //判断厦门华信特殊情况（先打票，再生产）
                 if (compid.equals("24")) {
                     if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
@@ -390,21 +393,21 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         List<DirverLEDListVO> list = new ArrayList<>();
 
         DirverLEDListVO driverLEDListVO = new DirverLEDListVO();   //所有正在生产中的车辆集合
-        List<DriverShiftLEDVO> zeroStirIdCars = new ArrayList<>();    //所有0号线正在生产的集合
-        List<DriverShiftLEDVO> firstStirIdCars = new ArrayList<>();  //所有1号线正在生产的集合
-        List<DriverShiftLEDVO> secondStirIdCars = new ArrayList<>();  //所有2号线正在生产的集合
-        List<DriverShiftLEDVO> thirdStirIdCars = new ArrayList<>();  //所有3号线正在生产的集合
-        List<DriverShiftLEDVO> fourthStirIdCars = new ArrayList<>();  //所有4号线正在生产的集合
-        List<DriverShiftLEDVO> fifthStirIdCars = new ArrayList<>();  //所有5号线正在生产的集合
+        List<DispatchVehicle> zeroStirIdCars = new ArrayList<>();    //所有0号线正在生产的集合
+        List<DispatchVehicle> firstStirIdCars = new ArrayList<>();  //所有1号线正在生产的集合
+        List<DispatchVehicle> secondStirIdCars = new ArrayList<>();  //所有2号线正在生产的集合
+        List<DispatchVehicle> thirdStirIdCars = new ArrayList<>();  //所有3号线正在生产的集合
+        List<DispatchVehicle> fourthStirIdCars = new ArrayList<>();  //所有4号线正在生产的集合
+        List<DispatchVehicle> fifthStirIdCars = new ArrayList<>();  //所有5号线正在生产的集合
         driverLEDListVO.setStatus(3);
         driverLEDListVO.setStatusName("正在生产");
         vehicleStatus = "3";
 
-        List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
+        List<DispatchVehicle> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
         if (driverShiftLED != null) {
             driverLEDListVO.setCars(driverShiftLED);
             driverLEDListVO.setCarNum(driverShiftLED.size());
-            for (DriverShiftLEDVO driverShiftLEDVO : driverShiftLED) {
+            for (DispatchVehicle driverShiftLEDVO : driverShiftLED) {
                 if ("0".equals(driverShiftLEDVO.getStirId())) {
                     zeroStirIdCars.add(driverShiftLEDVO);
                 } else if ("1".equals(driverShiftLEDVO.getStirId())) {
@@ -955,7 +958,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     //派车LED模块：根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
     private DirverLEDListVO getDirverLEDListVO(DirverLEDListVO driverLEDListVO, String compid, String stirId, String vehicleStatus, String vehicleClass) {
-        List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
+        List<DispatchVehicle> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
         if (driverShiftLED != null) {
             driverLEDListVO.setCars(driverShiftLED);
             driverLEDListVO.setCarNum(driverShiftLED.size());
