@@ -87,7 +87,7 @@
                task.compid,
                sm.ContractId,
                task.ContractUID,
-               task.CContractCode,
+               task.CContractCode as contractDetailCode,
                task.EPPCode,
                EPPName,
                task.BuilderCode,

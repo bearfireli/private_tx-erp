@@ -12,10 +12,10 @@
          create_user,
          create_time,
          ContractUID)
-        VALUES (#{build_Invitation_Code},
+        VALUES (#{buildInvitationCode},
         #{compid},
         #{contractDetailCode},
-        #{use_Status},
+        #{useStatus},
         #{opid},
         #{date},
         #{contractUID})

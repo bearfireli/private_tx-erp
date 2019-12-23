@@ -10,8 +10,8 @@ import java.util.List;
 @Mapper
 public interface ConstructionMapper {
 
-    void  getInvitationCode(String build_Invitation_Code, String compid, String contractDetailCode,
-                           Integer use_Status, Integer opid, Date date,String contractUID);
+    void  getInvitationCode(String buildInvitationCode, String compid, String contractDetailCode,
+                           Integer useStatus, Integer opid, Date date,String contractUID);
 
     List<InvitationVO> getInvitationList(String compid, String buildCode, String useStatus,
                                          String createUser, String beginTime, String endTime);

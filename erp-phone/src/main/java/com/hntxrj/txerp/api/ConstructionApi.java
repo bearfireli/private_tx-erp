@@ -69,9 +69,9 @@ public class ConstructionApi {
      * @param contractDetailCode  子合同
      * @param buildInvitationCode  邀请码
      */
-    @PostMapping("/updateUseStatus")
-    public ResultVO updateUseStatus(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
-        constructionService.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode);
+    @PostMapping("/invalidInvitationCode")
+    public ResultVO invalidInvitationCode(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
+        constructionService.invalidInvitationCode(contractUID,contractDetailCode, buildInvitationCode);
         return ResultVO.create();
     }
 

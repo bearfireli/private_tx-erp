@@ -48,7 +48,9 @@ public class ConstructionServiceImpl implements ConstructionService {
 
     @Override
     public InvitationVO getInvitationCode(String compid, Integer opid, String contractDetailCodes) throws ErpException {
-        String build_Invitation_Code = UUID.randomUUID().toString().replace("-", "");
+
+
+        String buildInvitationCode = UUID.randomUUID().toString().replace("-", "");
         Date date = new Date();
         Integer use_Status = 0;
         String[] codes = contractDetailCodes.split(",");
@@ -57,10 +59,10 @@ public class ConstructionServiceImpl implements ConstructionService {
                 //先根据子合同号和compid从合同表中查询出每一个主合同号
                 String contractUID = contractMapper.getContractUID(compid, code);
                 //把邀请码，compid，子合同号，主合同号插入
-                constructionMapper.getInvitationCode(build_Invitation_Code, compid, code, use_Status, opid, date,contractUID);
+                constructionMapper.getInvitationCode(buildInvitationCode, compid, code, use_Status, opid, date,contractUID);
             }
             InvitationVO invitationVO = new InvitationVO();
-            invitationVO.setBuildinvitationcode(build_Invitation_Code);
+            invitationVO.setBuildinvitationcode(buildInvitationCode);
             return invitationVO;
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_INVITATION_ERROR);
@@ -88,7 +90,7 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     @Override
-    public void updateUseStatus(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
+    public void invalidInvitationCode(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
         try {
             int useStatus = 2;
             constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, useStatus);
