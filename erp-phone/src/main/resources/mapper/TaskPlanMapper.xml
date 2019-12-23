@@ -192,21 +192,6 @@
         order by pt.TaskId
     </select>
 
-    <!--查询所有正在生产的任务单号-->
-    <select id="getTaskIds" resultType="java.lang.String">
-        select TaskId
-        from PT_TaskPlan pt
-        left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
-        where pt.compid = #{compid}
-        <if test="searchName != null and searchName != '' ">
-            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like '%'+#{searchName}+'%')
-        </if>
-        and pt.RecStatus = 1
-        and pt.TaskStatus = 1
-        and DeleteMark = 0
-        order by pt.TaskId
-    </select>
-
     <!--查询所有正在生产的任务单的车辆情况-->
     <select id="getCarsByTaskIds" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
         select tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
