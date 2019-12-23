@@ -99,5 +99,5 @@ public interface ContractMapper {
 
     String getContractUID(String compid, String code);
 
-    List<ContractListVO> getBuildContractListByEppOrBuild(List<String> ccontractCodes, List<String> contractUIDList, String searchName);
+    List<ContractListVO> getBuildContractListByEppOrBuild(List<String> contractDetailCodes, List<String> contractUIDList, String searchName);
 }

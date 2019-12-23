@@ -14,7 +14,7 @@
         left join SM_EPPInfo se on sd.compid=se.compid and sd.EPPCode=se.EPPCode
         where se.RecStatus=1 and sd.RecStatus=1
         and sd.CContractCode in
-        <foreach collection="ccontractCodes" index="index" item="item" open="(" separator="," close=")">
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
         and sd.ContractUID in

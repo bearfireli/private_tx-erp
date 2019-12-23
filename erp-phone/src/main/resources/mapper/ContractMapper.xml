@@ -414,7 +414,7 @@
         and cd.RecStatus=1
         and cd.verifyStatus = 1
         and cd.CContractCode in
-        <foreach collection="ccontractCodes" index="index" item="item" open="(" separator="," close=")">
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
         and cm.ContractUID in

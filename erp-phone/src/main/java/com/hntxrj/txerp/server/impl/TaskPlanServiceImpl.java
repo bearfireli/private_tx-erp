@@ -949,9 +949,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public PageVO<TaskPlanListVO> buildTaskPlanList(String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, String compid, Integer verifyStatus, Integer buildId, Integer page, Integer pageSize) {
         //查询当前施工方关联的所有子合同
-        List<String> ccontractCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
         List<String> contractUIDList = constructionMapper.getContractUID(buildId);
-        if (ccontractCodes.size() == 0) {
+        if (contractDetailCodes.size() == 0) {
             return null;
         }
         if (contractUIDList.size() == 0) {
@@ -960,7 +960,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
         //根据子合同查询任务单.
         PageHelper.startPage(page, pageSize);
-        List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.buildTaskPlanList(ccontractCodes, contractUIDList, beginTime, endTime, eppCode,
+        List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.buildTaskPlanList(contractDetailCodes, contractUIDList, beginTime, endTime, eppCode,
                 placing, taskId, taskStatus, verifyStatus);
         //循环截取preTime，格式为年月日
         for (TaskPlanListVO t : taskPlanListVOList) {

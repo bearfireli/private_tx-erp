@@ -900,11 +900,11 @@ public class ContractServiceImp implements ContractService {
     public PageVO<ContractListVO> getBuildContractListByEppOrBuild(Integer buildId, String searchName, Integer page, Integer pageSize) {
 
         //首先根据buildId查询出此施工方用户下的所有合同uid和所有子合同号
-        List<String>  ccontractCodes=constructionMapper.getContractCodeList(buildId);
+        List<String>  contractDetailCodes=constructionMapper.getContractCodeList(buildId);
         List<String> contractUIDList=constructionMapper.getContractUID(buildId);
 
         PageHelper.startPage(page, pageSize, "SignDate desc");
-        List<ContractListVO> contractListVOList = contractMapper.getBuildContractListByEppOrBuild(ccontractCodes,contractUIDList, searchName);
+        List<ContractListVO> contractListVOList = contractMapper.getBuildContractListByEppOrBuild(contractDetailCodes,contractUIDList, searchName);
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
         PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

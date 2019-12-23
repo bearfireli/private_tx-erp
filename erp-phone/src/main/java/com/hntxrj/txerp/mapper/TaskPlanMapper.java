@@ -186,7 +186,7 @@ public interface TaskPlanMapper {
 
     List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
 
-    List<TaskPlanListVO> buildTaskPlanList(List<String> ccontractCodes,List<String> contractUIDList, String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, Integer verifyStatus);
+    List<TaskPlanListVO> buildTaskPlanList(List<String> contractDetailCodes,List<String> contractUIDList, String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, Integer verifyStatus);
 
     List<String> getTaskIds(String compid, String searchName);
 

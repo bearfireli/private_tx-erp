@@ -81,13 +81,13 @@ public class EppServiceImpl implements EppService {
     @Override
     public PageVO<EppDropDownVO> getBuildDropDown(String eppName, Integer buildId, Integer page, Integer pageSize) {
         //首先根据buildId查询出关联的合同号和子合同号。
-        List<String>  ccontractCodes=constructionMapper.getContractCodeList(buildId);
+        List<String>  contractDetailCodes=constructionMapper.getContractCodeList(buildId);
         List<String> contractUIDList=constructionMapper.getContractUID(buildId);
 
         //只能查询出绑定的合同的工程名称
 
         PageHelper.startPage(page, pageSize);
-        List<EppDropDownVO> eppDropDownVOList = eppMapper.getBuildDropDown(ccontractCodes,contractUIDList, eppName);
+        List<EppDropDownVO> eppDropDownVOList = eppMapper.getBuildDropDown(contractDetailCodes,contractUIDList, eppName);
         PageInfo<EppDropDownVO> eppDropDownVOPageInfo = new PageInfo<>(eppDropDownVOList);
         PageVO<EppDropDownVO> pageVO = new PageVO<>();
         pageVO.format(eppDropDownVOPageInfo);

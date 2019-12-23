@@ -945,7 +945,7 @@
         where tp.DeleteMark = 0
         and tp.RecStatus = 1
         and tp.CContractCode in
-        <foreach collection="ccontractCodes" index="index" item="item" open="(" separator="," close=")">
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
         and tp.ContractUID in
