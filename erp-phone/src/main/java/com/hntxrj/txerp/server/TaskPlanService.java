@@ -123,7 +123,10 @@ public interface TaskPlanService {
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
      * @param vehicleClass  班次
      * @return 司机排班LED
+     *
+     * 此方法代码逻辑复杂，执行效率慢，新版本由getDriverShiftLEDNew方法代替。
      */
+    @Deprecated
     List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass);
 
 
