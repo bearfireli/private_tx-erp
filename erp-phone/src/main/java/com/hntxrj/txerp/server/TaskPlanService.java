@@ -136,7 +136,7 @@ public interface TaskPlanService {
      * @param vehicleClass  班次
      * @return 司机排班LED
      */
-    List<DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, String vehicleStatus, String vehicleClass);
+    Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, String vehicleStatus, String vehicleClass);
 
 
     /**
