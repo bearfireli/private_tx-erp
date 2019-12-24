@@ -259,7 +259,7 @@ public class TaskPlanApi {
      */
     @PostMapping("getDriverShiftLED")
     public ResultVO getDriverShiftLED(String compid, String stirId,
-                                      @RequestParam(defaultValue = "") String vehicleStatus,String isNewVersion,
+                                      @RequestParam(defaultValue = "") String vehicleStatus,Integer isNewVersion,
                                       String vehicleClass) {
         if (isNewVersion == null) {
             return ResultVO.create(taskPlanService.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
