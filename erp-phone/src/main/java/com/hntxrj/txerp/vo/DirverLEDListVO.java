@@ -3,6 +3,7 @@ package com.hntxrj.txerp.vo;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author qyb
@@ -22,6 +23,8 @@ public class DirverLEDListVO {
     List<DispatchVehicle> cars;
 
     private Integer carNum;
+    //正在生产状态的车辆按照线号分类
+    private Map<String, List<DispatchVehicle>> productVehicleMap;
 
     List<DispatchVehicle> zeroStirIdCars;    //0号线所有正在生产的车辆
     List<DispatchVehicle> firstStirIdCars;    //1号线所有正在生产车辆

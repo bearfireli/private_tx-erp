@@ -254,13 +254,18 @@ public class TaskPlanApi {
      * @param compid        企业id
      * @param stirId        线号/搅拌楼楼号
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
+     * @param isNewVersion 　新老版本标识： 1：新版本     null:老版本
      * @param vehicleClass  班次
      */
     @PostMapping("getDriverShiftLED")
     public ResultVO getDriverShiftLED(String compid, String stirId,
-                                      @RequestParam(defaultValue = "") String vehicleStatus,
+                                      @RequestParam(defaultValue = "") String vehicleStatus,String isNewVersion,
                                       String vehicleClass) {
-        return ResultVO.create(taskPlanService.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
+        if (isNewVersion == null) {
+            return ResultVO.create(taskPlanService.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
+        }
+        return ResultVO.create(taskPlanService.getDriverShiftLEDNew(compid, stirId, vehicleStatus, vehicleClass));
+
     }
 
 

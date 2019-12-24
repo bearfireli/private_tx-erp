@@ -116,7 +116,7 @@ public interface TaskPlanService {
                                                String monthStart, String monthEnd) throws ParseException;
 
     /**
-     * 司机排班LED
+     * 司机排班LED(老版本)
      *
      * @param compid        企业id
      * @param stirId        线号/搅拌楼楼号
@@ -125,6 +125,18 @@ public interface TaskPlanService {
      * @return 司机排班LED
      */
     List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass);
+
+
+    /**
+     * 司机排班LED(新版本)
+     *
+     * @param compid        企业id
+     * @param stirId        线号/搅拌楼楼号
+     * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
+     * @param vehicleClass  班次
+     * @return 司机排班LED
+     */
+    List<DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, String vehicleStatus, String vehicleClass);
 
 
     /**
@@ -248,4 +260,6 @@ public interface TaskPlanService {
     void deletePPCodeStatus(String compid, String taskId);
 
     List<DirverLEDListVO> getProduceCars(String compid);
+
+
 }
