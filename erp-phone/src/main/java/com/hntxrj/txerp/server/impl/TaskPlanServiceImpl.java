@@ -496,6 +496,44 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      */
     @Override
     public List<DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, String vehicleStatus, String vehicleClass) {
+        //查询出所有状态的车辆
+        List<DispatchVehicle> dispatchVehicleList = taskPlanMapper.getDriverShiftLED(compid, stirId, null, vehicleClass);
+        //用于返回的map集合。
+        Map<String, DirverLEDListVO> driverLEDMap = new HashMap<>();
+        for (DispatchVehicle dispatchVehicle : dispatchVehicleList) {
+            if (driverLEDMap.get(dispatchVehicle.getVehicleStatus())==null) {
+                DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+                dirverLEDListVO.setStatus(Integer.parseInt(dispatchVehicle.getVehicleStatus()));
+                dirverLEDListVO.setStatusName(dispatchVehicle.getStatusName());
+
+            }
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //=========================================================华丽的分割线============================================
         //用户最终返回的集合
         List<DirverLEDListVO> list = new ArrayList<>();
         //查询出所有状态的车辆
@@ -643,7 +681,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         list.add(driverLEDListVO6);
         list.add(driverLEDListVO7);
 
-        return list;
+        return null;
     }
 
 
