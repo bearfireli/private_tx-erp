@@ -76,6 +76,8 @@ public interface DriverService {
     void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType);
 
     DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String queryTime);
+
+    TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetail(String compid, Integer id);
 }
 
 

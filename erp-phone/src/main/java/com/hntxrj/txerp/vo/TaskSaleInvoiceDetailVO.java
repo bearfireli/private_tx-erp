@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 @Data
 public class TaskSaleInvoiceDetailVO {
 
+    private Integer id;  //小票id
     private String eppName;
     private String builderName;
     private String placing;
@@ -66,4 +67,5 @@ public class TaskSaleInvoiceDetailVO {
     private  String invoiceTypeName;
     private String eppCode;
     private double qianNum;
+    private String attribute;
 }

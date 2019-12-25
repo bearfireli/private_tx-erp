@@ -115,14 +115,9 @@ public class DriverServiceImpl implements DriverService {
                                                                       Integer page,
                                                                       Integer pageSize, String driverCode) {
         PageHelper.startPage(page, pageSize, "SendTime desc");
-        List<TaskSaleInvoiceDriverListVO> taskSaleInvoiceLists = null;
-//        List<TaskSaleInvoiceDriverListVO> taskInvoicelist = new ArrayList<>();
-        if (id != null) {
-            taskSaleInvoiceLists = driverMapper.driverGetTaskSaleInvoiceListById(id, driverCode);
-        } else {
-            taskSaleInvoiceLists =
-                    driverMapper.driverGetTaskSaleInvoiceList(compid, beginTime,
-                            endTime, eppCode, upStatus, builderCode, placing, driverCode);
+        List<TaskSaleInvoiceDriverListVO> taskSaleInvoiceLists =
+                driverMapper.driverGetTaskSaleInvoiceList(id, compid, beginTime,
+                        endTime, eppCode, upStatus, builderCode, placing, driverCode);
 //            if (driverCode!=null){
 //                for (TaskSaleInvoiceDriverListVO t :taskSaleInvoiceLists) {
 //                    if(t.getInvoiceType()==4 && t.getVehicleStatus()==3){
@@ -132,11 +127,16 @@ public class DriverServiceImpl implements DriverService {
 //                }
 //                taskSaleInvoiceLists = taskInvoicelist;
 //            }
-        }
+
         PageInfo<TaskSaleInvoiceDriverListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
         PageVO<TaskSaleInvoiceDriverListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+    @Override
+    public TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetail(String compid, Integer id) {
+        return driverMapper.driverGetTaskSaleInvoiceDetail(id, compid);
     }
 
     @Override
@@ -173,5 +173,6 @@ public class DriverServiceImpl implements DriverService {
     public DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime) {
         return driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
     }
+
 
 }

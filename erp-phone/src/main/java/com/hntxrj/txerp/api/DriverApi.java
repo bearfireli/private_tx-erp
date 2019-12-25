@@ -3,6 +3,7 @@ package com.hntxrj.txerp.api;
 import com.hntxrj.txerp.server.DriverService;
 import com.hntxrj.txerp.server.TaskSaleInvoiceService;
 import com.hntxrj.txerp.vo.ResultVO;
+import com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,20 @@ public class DriverApi {
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 eppCode, upStatus == -1 ? null : upStatus, builderCode, placing, page, pageSize, driverCode));
     }
+
+    /**
+     * 获取小票详情
+     *
+     * @param compid      企业
+     * @param id      企业
+     * @return 小票签收列表
+     */
+    @PostMapping("/getTaskSaleInvoiceDetail")
+    public ResultVO getTaskSaleInvoiceDetail(String compid, Integer id) {
+        TaskSaleInvoiceDetailVO taskSaleInvoiceDetail = driverService.getTaskSaleInvoiceDetail(compid, id);
+        return ResultVO.create(driverService.getTaskSaleInvoiceDetail(compid, id));
+    }
+
 
 
     @PostMapping("/getDriverList")
@@ -189,13 +204,13 @@ public class DriverApi {
      *
      * @param compid     企业
      * @param driverCode 司机代号
-     * @param workTime  打卡时间
+     * @param time  打卡时间
      * @param timeType   打卡类型  0:上班打卡    1：下班打卡
      */
     @PostMapping("/saveDriverWorkTime")
-    public ResultVO saveDriverWorkTime(String compid, String driverCode, Long workTime, Integer timeType) {
+    public ResultVO saveDriverWorkTime(String compid, String driverCode, Long time, Integer timeType) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        driverService.saveDriverWorkTime(compid,driverCode,sdf.format(new Date(workTime)),timeType);
+        driverService.saveDriverWorkTime(compid,driverCode,sdf.format(new Date(time)),timeType);
         return ResultVO.create();
     }
 

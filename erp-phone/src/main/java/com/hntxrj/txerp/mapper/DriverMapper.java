@@ -20,9 +20,9 @@ public interface DriverMapper {
 
     String getDriverNames(String compid, String driverCode);
 
-    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceListById(Integer id, String driverCode);
+    TaskSaleInvoiceDetailVO driverGetTaskSaleInvoiceDetail(Integer id, String compid);
 
-    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceList(String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, String driverCode);
+    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceList(Integer id,String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, String driverCode);
 
 
     TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, String driverCode);
