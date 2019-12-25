@@ -6,7 +6,10 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.mapper.*;
+import com.hntxrj.txerp.mapper.ConcreteMapper;
+import com.hntxrj.txerp.mapper.PublicInfoMapper;
+import com.hntxrj.txerp.mapper.StockMapper;
+import com.hntxrj.txerp.mapper.TaskPlanMapper;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
 import com.hntxrj.txerp.util.EntityTools;
@@ -32,17 +35,15 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final ConcreteMapper concreteMapper;
     private final PublicInfoMapper publicInfoMapper;
     private StirInfoSetServiceImpl stirInfoSetMapper;
-    private final SystemVarInitMapper systemVarInitMapper;
 
     @Autowired
-    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper, SystemVarInitMapper systemVarInitMapper) {
+    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
         this.concreteMapper = concreteMapper;
         this.publicInfoMapper = publicInfoMapper;
         this.stirInfoSetMapper = stirInfoSetMapper;
-        this.systemVarInitMapper = systemVarInitMapper;
     }
 
     @Override
@@ -193,15 +194,42 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        // TODO: 司机只能查询自己的信息
         List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
+
+        //查询出所有正在生产的任务单号集合。
+        List<String> taskIds = new ArrayList<>();
         for (SendCarListVO sendCarListVO : sendCarList) {
-            //获取每个任务单下的所有搅拌车车辆
-            List<DriverShiftLEDVO> cars = taskPlanMapper.getCarsByTaskId(compid, sendCarListVO.getTaskId());
-            sendCarListVO.setCars(cars);
             if (sendCarListVO.getTotalProduceNum() == null) {
                 sendCarListVO.setTotalProduceNum("0.0");
             }
+            if (sendCarListVO.getTaskId() != null) {
+                taskIds.add(sendCarListVO.getTaskId());
+            }
+
+        }
+
+        //根据任务单号集合查询出所有的车号。
+        List<DispatchVehicle> cars = new ArrayList<>();
+        if (taskIds.size() > 0) {
+            cars = taskPlanMapper.getCarsByTaskIds(compid, taskIds);
+        }
+        //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
+        for (SendCarListVO sendCarListVO : sendCarList) {
+            List<DispatchVehicle> dispatchVehicleList = new ArrayList<>();
+            for (DispatchVehicle car : cars) {
+                //判断厦门华信特殊情况（先打票，再生产）
+                if (compid.equals("24")) {
+                    if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
+                        car.setVehicleStatus("3");
+                        car.setStatusName("生产");
+                    }
+                }
+                //根据任务单号关联调度派车列表和其对应的车辆
+                if (sendCarListVO.getTaskId().equals(car.getTaskId())) {
+                    dispatchVehicleList.add(car);
+                }
+            }
+            sendCarListVO.setCars(dispatchVehicleList);
         }
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarListVO> pageVO = new PageVO<>();
@@ -352,34 +380,37 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     /**
-     * 司机排班LED
+     * 司机排班LED（老版本）
      *
      * @param compid        企业id
      * @param stirId        线号/搅拌楼楼号
      * @param vehicleStatus 　车状态  3 正在生产 , 1 等待生产(7、停用，包含在等待生产中) , 4 维修 ， 5 休息 ， 8 工地托水  ， 9 工地拖泵 ，10 工地脱水拖泵 ，11 场内托水 ， 16 自动回厂
      * @param vehicleClass  班次
      * @return 司机排班LED
+     *
+     * 此方法代码逻辑复杂，执行效率慢，新版本由getDriverShiftLEDNew方法代替。
      */
     @Override
+    @Deprecated
     public List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass) {
         List<DirverLEDListVO> list = new ArrayList<>();
 
         DirverLEDListVO driverLEDListVO = new DirverLEDListVO();   //所有正在生产中的车辆集合
-        List<DriverShiftLEDVO> zeroStirIdCars = new ArrayList<>();    //所有0号线正在生产的集合
-        List<DriverShiftLEDVO> firstStirIdCars = new ArrayList<>();  //所有1号线正在生产的集合
-        List<DriverShiftLEDVO> secondStirIdCars = new ArrayList<>();  //所有2号线正在生产的集合
-        List<DriverShiftLEDVO> thirdStirIdCars = new ArrayList<>();  //所有3号线正在生产的集合
-        List<DriverShiftLEDVO> fourthStirIdCars = new ArrayList<>();  //所有4号线正在生产的集合
-        List<DriverShiftLEDVO> fifthStirIdCars = new ArrayList<>();  //所有5号线正在生产的集合
+        List<DispatchVehicle> zeroStirIdCars = new ArrayList<>();    //所有0号线正在生产的集合
+        List<DispatchVehicle> firstStirIdCars = new ArrayList<>();  //所有1号线正在生产的集合
+        List<DispatchVehicle> secondStirIdCars = new ArrayList<>();  //所有2号线正在生产的集合
+        List<DispatchVehicle> thirdStirIdCars = new ArrayList<>();  //所有3号线正在生产的集合
+        List<DispatchVehicle> fourthStirIdCars = new ArrayList<>();  //所有4号线正在生产的集合
+        List<DispatchVehicle> fifthStirIdCars = new ArrayList<>();  //所有5号线正在生产的集合
         driverLEDListVO.setStatus(3);
         driverLEDListVO.setStatusName("正在生产");
         vehicleStatus = "3";
 
-        List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
-        if (driverShiftLED != null) {
-            driverLEDListVO.setCars(driverShiftLED);
-            driverLEDListVO.setCarNum(driverShiftLED.size());
-            for (DriverShiftLEDVO driverShiftLEDVO : driverShiftLED) {
+        List<DispatchVehicle> dispatchVehicleList = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
+        if (dispatchVehicleList != null) {
+            driverLEDListVO.setCars(dispatchVehicleList);
+            driverLEDListVO.setCarNum(dispatchVehicleList.size());
+            for (DispatchVehicle driverShiftLEDVO : dispatchVehicleList) {
                 if ("0".equals(driverShiftLEDVO.getStirId())) {
                     zeroStirIdCars.add(driverShiftLEDVO);
                 } else if ("1".equals(driverShiftLEDVO.getStirId())) {
@@ -457,51 +488,142 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         return list;
     }
 
-    //3 ： 正在生产    1：等待生产
+    /**
+     * 司机排班LED（新版本）
+     *
+     * @param compid        企业id
+     * @param stirId        线号/搅拌楼楼号
+     * @param vehicleStatus 　车状态  3 正在生产 , 1 等待生产(7、停用，包含在等待生产中) , 4 维修 ， 5 休息 ， 8 工地托水  ， 9 工地拖泵 ，10 工地脱水拖泵 ，11 场内托水 ， 16 自动回厂
+     * @param vehicleClass  班次
+     * @return 司机排班LED
+     */
     @Override
-    public List<ProductDriverListvo> getProductDriverShiftLED(String compid) {
-        //最终返回的集合，包括车辆状态和车辆集合。
-        List<ProductDriverListvo> ProductDriverList = new ArrayList<>();
-        //正在生产的车辆
-        ProductDriverListvo producingDriverList = new ProductDriverListvo();
-        producingDriverList.setVehicleStatus(3);
-        producingDriverList.setVehicleStatusName("正在生产");
-        //等待生产的车辆
-        ProductDriverListvo waitingDriverList = new ProductDriverListvo();
-        waitingDriverList.setVehicleStatus(1);
-        waitingDriverList.setVehicleStatusName("等待生产");
+    public Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, String vehicleStatus, String vehicleClass) {
+        //查询出所有状态的车辆
+        List<DispatchVehicle> dispatchVehicleList = taskPlanMapper.getDriverShiftLED(compid, stirId, null, vehicleClass);
+        //用于返回的map集合。
+        Map<String, DirverLEDListVO> driverLEDMap = new HashMap<>();
 
-        //从系统变量表中查询出用户的设置信息，包括是否显示等待派车，和显示几辆
-        DriverWaitLEDVO driverWaitLEDVO = systemVarInitMapper.getDriverWaitLED(compid);
-        //获取所有等待生产的车辆的集合
-        List<ProductDriverLEDVo> waitDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, null, 1);
-        if (waitDriverShiftLED != null && waitDriverShiftLED.size() > driverWaitLEDVO.getValue()) {
-            waitDriverShiftLED = waitDriverShiftLED.subList(0, driverWaitLEDVO.getValue());
-        }
-
-        //获取全部线号
-        List<StirIdVO> stirIds = stockMapper.getStirIds(compid);
-        //获取所有正在生产的车辆的集合，根据线号分类
-        List produceList = new ArrayList();
-
-        for (StirIdVO stirId : stirIds) {
-            List<ProductDriverLEDVo> produceDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, stirId.getStirId(), 3);
-            if (produceDriverShiftLED != null && produceDriverShiftLED.size() != 0) {
-                if (produceDriverShiftLED.size() > 3) {
-                    produceDriverShiftLED = produceDriverShiftLED.subList(0, 3);
-                }
-                produceList.add(produceDriverShiftLED);
+        for (DispatchVehicle dispatchVehicle : dispatchVehicleList) {
+            if (driverLEDMap.get(dispatchVehicle.getVehicleStatus()) == null) {
+                DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+                //每种状态下的车辆集合。
+                List<DispatchVehicle> cars = new ArrayList<>();
+                dirverLEDListVO.setStatus(Integer.parseInt(dispatchVehicle.getVehicleStatus()));
+                dirverLEDListVO.setStatusName(dispatchVehicle.getStatusName());
+                cars.add(dispatchVehicle);
+                dirverLEDListVO.setCars(cars);
+                dirverLEDListVO.setCarNum(1);
+                driverLEDMap.put(dispatchVehicle.getVehicleStatus(), dirverLEDListVO);
+            } else {
+                driverLEDMap.get(dispatchVehicle.getVehicleStatus()).getCars().add(dispatchVehicle);
+                //总车辆加1
+                driverLEDMap.get(dispatchVehicle.getVehicleStatus()).setCarNum(driverLEDMap.get(dispatchVehicle.getVehicleStatus()).getCarNum() + 1);
             }
-
-        }
-        producingDriverList.setCars(produceList);
-        waitingDriverList.setCars(waitDriverShiftLED);
-        ProductDriverList.add(producingDriverList);
-        if (driverWaitLEDVO.getIsShow()) {
-            ProductDriverList.add(waitingDriverList);
         }
 
-        return ProductDriverList;
+        List<DispatchVehicle> dispatchVehicles = new ArrayList<>();
+        if (driverLEDMap.get("1") == null) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            dirverLEDListVO.setStatus(1);
+            dirverLEDListVO.setStatusName("待班");
+            dirverLEDListVO.setCars(dispatchVehicles);
+            dirverLEDListVO.setCarNum(0);
+            driverLEDMap.put("1", dirverLEDListVO);
+        } else if (driverLEDMap.get("3") == null) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            dirverLEDListVO.setStatus(3);
+            dirverLEDListVO.setStatusName("生产");
+            dirverLEDListVO.setCars(dispatchVehicles);
+            dirverLEDListVO.setCarNum(0);
+            driverLEDMap.put("3", dirverLEDListVO);
+        }else if (driverLEDMap.get("4") == null) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            dirverLEDListVO.setStatus(4);
+            dirverLEDListVO.setStatusName("维修");
+            dirverLEDListVO.setCars(dispatchVehicles);
+            dirverLEDListVO.setCarNum(0);
+            driverLEDMap.put("4", dirverLEDListVO);
+        }else if (driverLEDMap.get("5") == null) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            dirverLEDListVO.setStatus(5);
+            dirverLEDListVO.setStatusName("休息");
+            dirverLEDListVO.setCars(dispatchVehicles);
+            dirverLEDListVO.setCarNum(0);
+            driverLEDMap.put("5", dirverLEDListVO);
+        }else if (driverLEDMap.get("8") == null) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            dirverLEDListVO.setStatus(8);
+            dirverLEDListVO.setStatusName("工地脱水");
+            dirverLEDListVO.setCars(dispatchVehicles);
+            dirverLEDListVO.setCarNum(0);
+            driverLEDMap.put("8", dirverLEDListVO);
+        }else if (driverLEDMap.get("9") == null) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            dirverLEDListVO.setStatus(9);
+            dirverLEDListVO.setStatusName("工地托泵");
+            dirverLEDListVO.setCars(dispatchVehicles);
+            dirverLEDListVO.setCarNum(0);
+            driverLEDMap.put("9", dirverLEDListVO);
+        }else if (driverLEDMap.get("10") == null) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            dirverLEDListVO.setStatus(10);
+            dirverLEDListVO.setStatusName("工地托水托泵");
+            dirverLEDListVO.setCars(dispatchVehicles);
+            dirverLEDListVO.setCarNum(0);
+            driverLEDMap.put("10", dirverLEDListVO);
+        }else if (driverLEDMap.get("11") == null) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            dirverLEDListVO.setStatus(11);
+            dirverLEDListVO.setStatusName("厂内托水");
+            dirverLEDListVO.setCars(dispatchVehicles);
+            dirverLEDListVO.setCarNum(0);
+            driverLEDMap.put("11", dirverLEDListVO);
+        }else if (driverLEDMap.get("16") == null) {
+            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
+            dirverLEDListVO.setStatus(16);
+            dirverLEDListVO.setStatusName("自动回厂");
+            dirverLEDListVO.setCars(dispatchVehicles);
+            dirverLEDListVO.setCarNum(0);
+            driverLEDMap.put("16", dirverLEDListVO);
+        }
+
+        //各个线号正在生产的车辆
+        Map<String, List<DispatchVehicle>> productMap = new HashMap<>();
+        for (DispatchVehicle productCar : driverLEDMap.get("3").getCars()) {
+            //循环正在生产的车辆，按照线号分类
+            if (productMap.get(productCar.getStirId()) == null) {
+                List<DispatchVehicle> dispatchStirIdVehicles = new ArrayList<>();
+                dispatchStirIdVehicles.add(productCar);
+                productMap.put(productCar.getStirId(), dispatchStirIdVehicles);
+            }else{
+                productMap.get(productCar.getStirId()).add(productCar);
+            }
+        }
+
+        driverLEDMap.get("3").setProductVehicleMap(productMap);
+
+        return driverLEDMap;
+    }
+
+
+    @Override
+    public List<ProductDriverLEDListVO> getProductDriverShiftLED(String compid) {
+        List<ProductDriverLEDListVO> list = new ArrayList<>();
+
+        List<StirIdVO> stirIds = stockMapper.getStirIds(compid);
+        for (StirIdVO stirId : stirIds) {
+            ProductDriverLEDListVO productDriverLEDListVO = new ProductDriverLEDListVO();
+            productDriverLEDListVO.setStirID(stirId.getStirId());
+            productDriverLEDListVO.setStirName(stirId.getStirName());
+            List<ProductDriverLEDVo> productDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, stirId.getStirId());
+            productDriverLEDListVO.setCars(productDriverShiftLED);
+
+            list.add(productDriverLEDListVO);
+        }
+        return list;
+
+
     }
 
     /**
@@ -958,7 +1080,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     //派车LED模块：根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
     private DirverLEDListVO getDirverLEDListVO(DirverLEDListVO driverLEDListVO, String compid, String stirId, String vehicleStatus, String vehicleClass) {
-        List<DriverShiftLEDVO> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
+        List<DispatchVehicle> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
         if (driverShiftLED != null) {
             driverLEDListVO.setCars(driverShiftLED);
             driverLEDListVO.setCarNum(driverShiftLED.size());
