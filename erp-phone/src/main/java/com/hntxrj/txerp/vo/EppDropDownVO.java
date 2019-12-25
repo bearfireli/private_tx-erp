@@ -6,4 +6,5 @@ import lombok.Data;
 public class EppDropDownVO {
     private String eppCode;
     private String eppName;
+    private String address;
 }

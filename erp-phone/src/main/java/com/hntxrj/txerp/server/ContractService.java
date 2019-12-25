@@ -329,7 +329,7 @@ public interface ContractService {
      */
     PageVO<ContractListVO> getContractList(Long startTime, Long endTime, String contractCode,
                                            String eppCode, String buildCode, String salesMan,
-                                           String compId, Integer page, Integer pageSize);
+                                           String compId, String verifyStatus,Integer page, Integer pageSize);
 
     /**
      * 获取合同详情
@@ -380,10 +380,10 @@ public interface ContractService {
      */
     List<DropDownVO> getPriceTypeDropDown(String compid);
 
-    void addContract(String contractId, String salesman, Date signDate, Date effectDate,
+    void addContract(String contractId, String salesman, Date signDate, Date expiresDate,Date effectDate,
                      Integer contractType, Integer priceStyle, String eppCode,
                      String builderCode, BigDecimal contractNum, BigDecimal preNum,
-                     BigDecimal preMoney, String remarks, String compid) throws ErpException;
+                     BigDecimal preMoney, String remarks, String compid,String address) throws ErpException;
 
     /**
      * 上传合同附件
@@ -497,6 +497,14 @@ public interface ContractService {
 
     PageVO<PumpTruckListVO> selectPumpTruckList(String compid,Integer page,Integer pageSize,String builderName);
 
-
-
+    /**
+     * 添加任务单时根据工程名称或者施工单位查询合同列表
+     *
+     * @param compid     站别代号
+     * @param searchName 搜索添加，可能是施工名称或者是施工单位
+     * @param page       页码
+     * @param pageSize   每页数量
+     * @return 合同列表
+     */
+    PageVO<ContractListVO> getContractListByEppOrBuild(String compid, String searchName, Integer page, Integer pageSize);
 }

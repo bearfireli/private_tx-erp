@@ -331,7 +331,6 @@ public class AdminController {
                 vo.setData(array);
                 if (Mark == 1 && StringUtils.isEmpty(saleCode)) {
                     //修改个人信息成功后修改,修改人员的归属关系
-
                     JSONArray jsonArray = adminService.sp_edit_User_ascription(1, compid_a, opid_a, null, saleCode, emptype_id);
                     JSONObject jsonObject1 = (JSONObject) jsonArray.getJSONArray(0).get(0);
                     //获取修改人员的归属关系的result

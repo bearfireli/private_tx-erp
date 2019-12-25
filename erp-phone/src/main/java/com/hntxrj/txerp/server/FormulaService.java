@@ -43,7 +43,7 @@ public interface FormulaService {
                                              Integer verifystatus, Integer stirid, String formulaCode);
 
 
-    JSONObject getFormulaByTaskId(String compid, String taskId);
+    Map<String, Object> getFormulaByTaskId(String compid, String taskId);
 
 
     JSONObject getFormulaInfo(String compid, String taskId, String stirId);

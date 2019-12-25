@@ -13,7 +13,7 @@ public interface TaskPlanMapper {
 
     List<TaskPlanListVO> getTaskPlanList(String beginTime, String endTime, String eppCode,
                                          String builderCode, String placing, String taskId,
-                                         Integer taskStatus, String compid);
+                                         Integer taskStatus, String compid,Integer verifyStatus);
 
 
     void verifyTaskPlan(String taskId, String compid, Integer verifyStatus, Date verifyTime);
@@ -27,7 +27,7 @@ public interface TaskPlanMapper {
      * @param compid 企业代号
      * @return 调度派车列表
      */
-    List<SendCarListVO> getSendCarList(String compid);
+    List<SendCarListVO> getSendCarList(String compid,String searchName);
 
 
     /**
@@ -48,7 +48,7 @@ public interface TaskPlanMapper {
      */
     List<DriverShiftLEDVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass);
 
-    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId);
+    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId,int vehicleStatus);
 
     /**
      * 司机排班列表信息
@@ -60,7 +60,7 @@ public interface TaskPlanMapper {
      * @param beginTime    　　　　　开始时间
      * @param endTime      结束时间
      */
-    List<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode, String personalName,
+    List<DriverShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode, String personalName,
                                                String workClass, String beginTime, String endTime);
 
     /**
@@ -176,4 +176,12 @@ public interface TaskPlanMapper {
 
     void deletePPCodeStatus(String compid, String taskId);
     void updateTechnicalRequirements(String compid, String taskId, String pPNames,String concreteMark);
+
+    List<DriverShiftLEDVO> getProduceCars(String compid,String stirId);
+
+    List<DriverShiftLEDVO> getCarsByTaskId(String compid, String taskId);
+
+    List<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode, String personalName, String workClass, String beginTime, String endTime);
+
+    List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
 }

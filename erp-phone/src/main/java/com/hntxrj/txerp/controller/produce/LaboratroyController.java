@@ -152,11 +152,11 @@ public class LaboratroyController {
      */
     @RequestMapping(value = "/spVerifyLMTaskTheoryFormula")
     public JsonVo spVerifyLMTaskTheoryFormula(@RequestParam String TaskId,
-                                                 @RequestParam String compid,
-                                                 @RequestParam String opid,
-                                                 @RequestParam Integer verifystatus,
-                                                 @RequestParam Integer stirid,
-                                                 String formulaCode) {
+                                              @RequestParam String compid,
+                                              @RequestParam String opid,
+                                              @RequestParam Integer verifystatus,
+                                              @RequestParam Integer stirid,
+                                              String formulaCode) {
         JsonVoAndPage jsonVoAndPage = new JsonVoAndPage();
         JSONArray jsonArray = formulaService.sp_Verify_LM_TaskTheoryFormula(compid, TaskId, opid,
                 verifystatus, stirid, formulaCode);
@@ -357,7 +357,7 @@ public class LaboratroyController {
     ) {
         JsonVo jsonVo = new JsonVo();
         //执行修改操作
-        JSONArray jsonArray = lmTaskServer.sp_insert_LM_TaskTheoryFormula(taskid, compid, formulacode, opid, stgid, whisktime, slump,
+        JSONArray jsonArray = lmTaskServer.upDateTaskTheoryFormula(taskid, compid, formulacode, opid, stgid, whisktime, slump,
                 wr1, wr2, wr3, wr4, wr5, wr6, wr7, wr8,
                 mat1, mat2, mat3, mat4, mat5, mat6, mat7, mat8, mat9, mat10, mat11,
                 mat12, mat13, mat14, mat15, mat16, mat17, mat18, mat19, mat20, mat21, mat22,

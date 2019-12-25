@@ -1,11 +1,12 @@
 package com.hntxrj.txerp.server.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.dao.DriverDao;
 import com.hntxrj.txerp.mapper.DriverMapper;
 import com.hntxrj.txerp.server.DriverService;
-import com.hntxrj.txerp.vo.DriverVO;
-import com.hntxrj.txerp.vo.TaskJumpVO;
+import com.hntxrj.txerp.vo.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 功能及介绍：司机模块数据处理层
@@ -110,5 +108,42 @@ public class DriverServiceImpl implements DriverService {
         }
     }
 
+    @Override
+    public PageVO<TaskSaleInvoiceDriverListVO> getTaskSaleInvoiceList(Integer id, String compid, String beginTime,
+                                                                      String endTime, String eppCode, Byte upStatus,
+                                                                      String builderCode, String placing,
+                                                                      Integer page,
+                                                                      Integer pageSize, String driverCode) {
+        PageHelper.startPage(page, pageSize, "SendTime desc");
+        List<TaskSaleInvoiceDriverListVO> taskSaleInvoiceLists = null;
+//        List<TaskSaleInvoiceDriverListVO> taskInvoicelist = new ArrayList<>();
+        if (id != null) {
+            taskSaleInvoiceLists = driverMapper.driverGetTaskSaleInvoiceListById(id, driverCode);
+        } else {
+            taskSaleInvoiceLists =
+                    driverMapper.driverGetTaskSaleInvoiceList(compid, beginTime,
+                            endTime, eppCode, upStatus, builderCode, placing, driverCode);
+//            if (driverCode!=null){
+//                for (TaskSaleInvoiceDriverListVO t :taskSaleInvoiceLists) {
+//                    if(t.getInvoiceType()==4 && t.getVehicleStatus()==3){
+//                        break;
+//                    }
+//                    taskInvoicelist.add(t);
+//                }
+//                taskSaleInvoiceLists = taskInvoicelist;
+//            }
+        }
+        PageInfo<TaskSaleInvoiceDriverListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
+        PageVO<TaskSaleInvoiceDriverListVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    @Override
+    public TaskSaleInvoiceSumVO getTaskSaleInvoiceSum( String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode) {
+      return   driverMapper.getTaskSaleInvoiceSum(compid, beginTime,
+                endTime, eppCode, upStatus, builderCode, placing, driverCode);
+
+    }
 
 }

@@ -62,4 +62,9 @@ public class WorkloadStatisticsVo {
      * 过磅员
      */
     private  String empName;
+
+    /**
+     * 进场时间
+     * */
+
 }

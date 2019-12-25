@@ -7,6 +7,7 @@
         from SM_BuilderInfo
         where compid=#{compid}
         and RecStatus = 1
+        and BuilderShortName !=''
         <if test="builderName != null and builderName != ''">
             and builderShortName like '%'+#{builderName}+'%'
         </if>

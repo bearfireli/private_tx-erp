@@ -39,13 +39,15 @@ public class StockInApi {
      * @param endTime   结束时间
      * @param vehicleId 车号
      * @param supName   供货商
+     * @param matName   材料名称
+     * @param saleType  业务类别    0：进货，  1：出货，  2：其他，  3：退货
      * @param page      页数
      * @param pageSize  每页数量
      * @return 原材料统计汇总
      */
     @PostMapping("/getStockInDetails")
     public ResultVO getStockInDetails(String matName, String vehicleId, String supName, String compid, Long beginTime,
-                                      Long endTime, Integer page, Integer pageSize, String saleType) {
+                                      Long endTime, @RequestParam(defaultValue = "1")Integer page, @RequestParam(defaultValue = "10")Integer pageSize, String saleType) {
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -171,22 +173,22 @@ public class StockInApi {
      * @param endTime   结束时间
      * @param vehicleId 车号
      * @param supName   供货商
-     * @param MatName   材料名称
+     * @param matName   材料名称
      * @param page      页数
      * @param pageSize  每页数量
      * @return 原材料统计汇总
      */
     @PostMapping("/getMatDetailsList")
     public ResultVO getMatDetailsList(String vehicleId, String supName, String matSpecs, String compid, Long beginTime,
-                                      Long endTime, Integer page, Integer pageSize, String MatName) {
+                                      Long endTime, @RequestParam(defaultValue = "1")Integer page, @RequestParam(defaultValue = "10")Integer pageSize, String matName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stoclInCollectService.getMatDetailsList(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, MatName));
+                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, matName));
     }
 
     /**
-     * /*原材料明细汇总合计入库量
+     * 原材料明细汇总合计入库量
      *
      * @param compid    企业id
      * @param beginTime 开始时间
@@ -332,13 +334,16 @@ public class StockInApi {
      * @param page      页数
      * @param pageSize  每页数量
      * @param stoName   入库库位
+     * @param isNewVersion   是否是新版本。 0：不是新版本， 1：是新版本
      * @return 原材料统计汇总
      */
     @PostMapping("/getWeightByStoName")
     public ResultVO getWeighByStoName(String empName, String compid, String vehicleId,
-                                      String stoName, String supName, Long beginTime, Long endTime, Integer page, Integer pageSize) {
+                                      String stoName, String supName, Long beginTime, Long endTime,
+                                      @RequestParam(defaultValue = "0") String isNewVersion,@RequestParam(defaultValue = "1") Integer page,
+                                      @RequestParam(defaultValue = "10")Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(stockInServer.getWeightByStoName(empName, compid, vehicleId, stoName, supName,
+        return ResultVO.create(stockInServer.getWeightByStoName(empName, compid, vehicleId, stoName, supName,isNewVersion,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
@@ -445,4 +450,75 @@ public class StockInApi {
                 endTime == null ? null : sdf.format(new Date(endTime)));
         return ResultVO.create(weightByMatParent);
     }
+
+
+    /**
+     * 材料统计中按照材料名称查询的柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param supName   供货商
+     * @param empName   过磅员
+     * @param stoName   入库库位
+     * @param matType   材料分类  1:骨料  2：粉料  3：外加剂
+     */
+    @PostMapping("/getHistogramByMat")
+    public ResultVO getHistogramByMat(String empName, String compid, String vehicleId,
+                                      String stoName, String supName, Long beginTime, Long endTime,
+                                      @RequestParam(defaultValue = "1") Integer matType) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(stockInServer.getHistogramByMat(compid, empName, vehicleId, stoName, supName,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)),matType));
+    }
+
+
+    /**
+     * 材料统计中按照供应商查询的饼状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param supName   供货商
+     * @param empName   过磅员
+     * @param stoName   入库库位
+     * @return 原材料统计汇总
+     */
+    @PostMapping("/getPieChartBySupName")
+    public ResultVO getPieChartBySupName(String empName, String compid, String vehicleId,
+                                         String stoName, String supName, Long beginTime, Long endTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(stockInServer.getPieChartBySupName(compid, empName, vehicleId, stoName, supName,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
+    }
+
+
+    /**
+     * 材料统计中按照入库库位查询的柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param supName   供货商
+     * @param empName   过磅员
+     * @param stoName   入库库位
+     * @return 原材料统计汇总
+     */
+    @PostMapping("/getHistogramByStoName")
+    public ResultVO getHistogramByStoName(String empName, String compid, String vehicleId,
+                                          String stoName, String supName, Long beginTime, Long endTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(stockInServer.getHistogramByStoName(compid, empName, vehicleId, stoName, supName,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
+    }
+
+
 }

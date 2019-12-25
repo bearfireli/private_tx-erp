@@ -6,17 +6,20 @@
         select TaskId, pi.PI_TypeName placeStyleName, dd.PI_TypeName TaskStatusName,
         sm.EPPName,Placing,ConcreteMark,PreNum,PreTime,TechnicalRequirements,Slump,
         dd1.PI_TypeName StoneAskName,dd2.PI_TypeName CementVarietyName,PreRemark,StgId,
-        FormulaStatus
+        FormulaStatus,Attribute
         from PT_TaskPlan pf
-        left join  SM_EPPInfo sm on pf.EPPCode=sm.EPPCode and pf.compid =sm.compid
+        left join SM_EPPInfo sm on pf.EPPCode=sm.EPPCode and pf.compid =sm.compid
         left join DD_PublicInfo pi on pi.PI_Class = 24 and pf.PlaceStyle = pi.PI_Values and pf.compid = pi.compid
-        LEFT  JOIN DD_PublicInfo dd on dd.PI_Class = 23 and pf.TaskStatus = dd.PI_Values and pf.compid = dd.compid
+        LEFT JOIN DD_PublicInfo dd on dd.PI_Class = 23 and pf.TaskStatus = dd.PI_Values and pf.compid = dd.compid
         left join DD_PublicInfo dd1 on dd1.PI_Class = 31 and pf.StoneAsk = dd1.PI_Values and pf.compid = dd1.compid
         left join DD_PublicInfo dd2 on dd2.PI_Class = 32 and pf.CementVariety = dd2.PI_Values and pf.compid = dd2.compid
         where (verifystatus = 1)
         and pf.compid = #{compid}
         <if test="taskStatus != null">
             and (taskstatus = #{taskStatus})
+        </if>
+        <if test="formulaStatus != null">
+            and (FormulaStatus = #{formulaStatus})
         </if>
         <if test="eppCode != null">
             and (sm.eppCode = #{eppCode})
@@ -37,17 +40,35 @@
         </if>
     </select>
     <select id="getFormulaByTaskId" resultType="java.util.Map">
-        select TaskId, pi.PI_TypeName PlaceStyleName, dd.PI_TypeName TaskStatusName,
-               sm.EPPName,bd.BuilderName,Placing,ConcreteMark,PreNum,PreTime,TechnicalRequirements,Slump,
-               dd1.PI_TypeName StoneAskName,dd2.PI_TypeName CementVarietyName,PreRemark,StgId,
-               FormulaStatus,pf.FormulaCode
+        select TaskId,
+               pi.PI_TypeName  PlaceStyleName,
+               dd.PI_TypeName  TaskStatusName,
+               sm.EPPName,
+               bd.BuilderName,
+               Placing,
+               ConcreteMark,
+               PreNum,
+               PreTime,
+               TechnicalRequirements,
+               Slump,
+               dd1.PI_TypeName StoneAskName,
+               dd2.PI_TypeName CementVarietyName,
+               PreRemark,
+               StgId,
+               FormulaStatus,
+               TheoryFormulaCode,
+               pf.FormulaCode
         from PT_TaskPlan pf
-                 left join  SM_EPPInfo sm on pf.EPPCode=sm.EPPCode and pf.compid =sm.compid
-                 left join DD_PublicInfo pi on pi.PI_Class = 24 and pf.PlaceStyle = pi.PI_Values and pf.compid = pi.compid
-                 LEFT  JOIN DD_PublicInfo dd on dd.PI_Class = 23 and pf.TaskStatus = dd.PI_Values and pf.compid = dd.compid
-                 left join SM_BuilderInfo bd on pf.compid =bd.compid and pf.BuilderCode =bd.BuilderCode
-                 left join DD_PublicInfo dd1 on dd1.PI_Class = 31 and pf.StoneAsk = dd1.PI_Values and pf.compid = dd1.compid
-                 left join DD_PublicInfo dd2 on dd2.PI_Class = 32 and pf.CementVariety = dd2.PI_Values and pf.compid = dd2.compid
+                 left join SM_EPPInfo sm on pf.EPPCode = sm.EPPCode and pf.compid = sm.compid
+                 left join DD_PublicInfo pi
+                           on pi.PI_Class = 24 and pf.PlaceStyle = pi.PI_Values and pf.compid = pi.compid
+                 LEFT JOIN DD_PublicInfo dd
+                           on dd.PI_Class = 23 and pf.TaskStatus = dd.PI_Values and pf.compid = dd.compid
+                 left join SM_BuilderInfo bd on pf.compid = bd.compid and pf.BuilderCode = bd.BuilderCode
+                 left join DD_PublicInfo dd1
+                           on dd1.PI_Class = 31 and pf.StoneAsk = dd1.PI_Values and pf.compid = dd1.compid
+                 left join DD_PublicInfo dd2
+                           on dd2.PI_Class = 32 and pf.CementVariety = dd2.PI_Values and pf.compid = dd2.compid
         where (pf.compid = #{compid})
           and (pf.TaskId = #{taskId})
     </select>
@@ -62,68 +83,68 @@
     </select>
     <select id="getFormulaInfo" resultType="java.util.Map">
         SELECT top 1 Mat1,
-                     Mat2,
-                     Mat3,
-                     Mat4,
-                     Mat5,
-                     Mat6,
-                     Mat7,
-                     Mat8,
-                     Mat9,
-                     Mat10,
-                     Mat11,
-                     Mat12,
-                     Mat13,
-                     Mat14,
-                     Mat15,
-                     Mat16,
-                     Mat17,
-                     Mat18,
-                     Mat19,
-                     Mat20,
-                     Mat21,
-                     Mat22,
-                     Mat23,
-                     Mat24,
-                     Mat25,
-                     Mat26,
-                     Mat27,
-                     MatV1,
-                     MatV2,
-                     MatV3,
-                     MatV4,
-                     MatV5,
-                     MatV6,
-                     MatV7,
-                     MatV8,
-                     MatV9,
-                     MatV10,
-                     MatV11,
-                     MatV12,
-                     MatV13,
-                     MatV14,
-                     MatV15,
-                     MatV16,
-                     MatV17,
-                     MatV18,
-                     MatV19,
-                     MatV20,
-                     MatV21,
-                     MatV22,
-                     MatV23,
-                     MatV24,
-                     MatV25,
-                     MatV26,
-                     MatV27,
-                     WR1,
-                     WR2,
-                     WR3,
-                     WR4,
-                     WR5,
-                     WR6,
-                     WR7,
-                     WR8,
-                     VerifyStatus
+               Mat2,
+               Mat3,
+               Mat4,
+               Mat5,
+               Mat6,
+               Mat7,
+               Mat8,
+               Mat9,
+               Mat10,
+               Mat11,
+               Mat12,
+               Mat13,
+               Mat14,
+               Mat15,
+               Mat16,
+               Mat17,
+               Mat18,
+               Mat19,
+               Mat20,
+               Mat21,
+               Mat22,
+               Mat23,
+               Mat24,
+               Mat25,
+               Mat26,
+               Mat27,
+               MatV1,
+               MatV2,
+               MatV3,
+               MatV4,
+               MatV5,
+               MatV6,
+               MatV7,
+               MatV8,
+               MatV9,
+               MatV10,
+               MatV11,
+               MatV12,
+               MatV13,
+               MatV14,
+               MatV15,
+               MatV16,
+               MatV17,
+               MatV18,
+               MatV19,
+               MatV20,
+               MatV21,
+               MatV22,
+               MatV23,
+               MatV24,
+               MatV25,
+               MatV26,
+               MatV27,
+               WR1,
+               WR2,
+               WR3,
+               WR4,
+               WR5,
+               WR6,
+               WR7,
+               WR8,
+               VerifyStatus
         from LM_TaskTheoryFormula
         where Taskid = #{taskId}
           and compid = #{compid}

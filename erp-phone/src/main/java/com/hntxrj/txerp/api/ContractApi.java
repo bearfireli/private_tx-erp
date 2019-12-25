@@ -43,13 +43,14 @@ public class ContractApi {
     public ResultVO getContractList(String startTime, String endTime,
                                     String contractCode, String eppCode,
                                     String buildCode, String salesMan, String compid,
+                                    @RequestParam(required = false) String verifyStatus,
                                     @RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(defaultValue = "10") Integer pageSize) {
 
         return ResultVO.create(contractService.getContractList(
                 startTime == null ? null : Long.parseLong(startTime),
                 endTime == null ? null : Long.parseLong(endTime), contractCode,
-                eppCode, buildCode, salesMan, compid, page, pageSize));
+                eppCode, buildCode, salesMan, compid, verifyStatus, page, pageSize));
     }
 
     /**
@@ -91,7 +92,7 @@ public class ContractApi {
      */
     @PostMapping("/getContractGradePrice")
     public ResultVO getContractGradePrice(String contractUid, String contractDetailCode, String compid) {
-        if(StringUtils.isEmpty(contractUid) && StringUtils.isEmpty(contractDetailCode)){
+        if (StringUtils.isEmpty(contractUid) && StringUtils.isEmpty(contractDetailCode)) {
             return ResultVO.create(contractService.getContractStgIdDropDown(compid));
         }
         return ResultVO.create(contractService.getContractGradePrice(contractUid, contractDetailCode, compid));
@@ -197,11 +198,30 @@ public class ContractApi {
     }
 
 
+    /**
+     * 添加合同
+     * @param contractId    主合同号
+     * @param salesman      业务员代号
+     * @param signDate      签订日期
+     * @param expiresDate   新版本到期时间
+     * @param effectDate    老版本到期时间
+     * @param contractType  合同类别
+     * @param priceStyle     价格执行方式
+     * @param eppCode        工程代号
+     * @param builderCode    施工单位代号
+     * @param contractNum    合同方量
+     * @param preNum         预付方量
+     * @param preMoney       预付金额
+     * @param remarks        备注
+     * @param compid         公司代号
+     * @param address        交货地址
+     * */
     @PostMapping("/addContract")
     public ResultVO addContract(String contractId,
                                 String salesman,
-                                long signDate,
-                                long effectDate,
+                                Long signDate,
+                                Long expiresDate,
+                                Long effectDate,
                                 Integer contractType,
                                 Integer priceStyle,
                                 String eppCode,
@@ -209,11 +229,14 @@ public class ContractApi {
                                 BigDecimal contractNum,
                                 BigDecimal preNum,
                                 BigDecimal preMoney,
-                                String remarks, String compid) throws ErpException {
+                                String remarks,
+                                String compid,
+                                String address) throws ErpException {
         contractService.addContract(contractId,
                 salesman,
                 new Date(signDate),
-                new Date(effectDate),
+                expiresDate == null ? null : new Date(expiresDate),
+                effectDate == null ? null : new Date(effectDate),
                 contractType,
                 priceStyle,
                 eppCode,
@@ -221,7 +244,9 @@ public class ContractApi {
                 contractNum,
                 preNum,
                 preMoney,
-                remarks, compid);
+                remarks,
+                compid,
+                address);
         return ResultVO.create();
     }
 
@@ -296,7 +321,7 @@ public class ContractApi {
     /**
      * 泵车类价格插入数据
      *
-     * @param compid        企业代号
+     * @param compid       企业代号
      * @param opid         操作员代号
      * @param contractUID  合同uid号
      * @param contractCode 子合同号
@@ -355,13 +380,29 @@ public class ContractApi {
     /**
      * 泵车列表查询
      *
-     * @param compid  企业代号
+     * @param compid 企业代号
      * @return 列表查询
      */
     @PostMapping("/selectPumpTruckList")
     public ResultVO selectPumpTruckList(String compid, @RequestParam(defaultValue = "1") Integer page,
                                         @RequestParam(defaultValue = "10") Integer pageSize, String builderName) {
         return ResultVO.create(contractService.selectPumpTruckList(compid, page, pageSize, builderName));
+    }
+
+    /**
+     * 添加任务单时根据工程名称或者施工单位查询合同列表
+     *
+     * @param compid     站别代号
+     * @param searchName 搜索添加，可能是施工名称或者是施工单位
+     * @param page       页码
+     * @param pageSize   每页数量
+     * @return 合同列表
+     */
+    @PostMapping("/getContractListByEppOrBuild")
+    public ResultVO getContractListByEppOrBuild(String compid, String searchName,
+                                                @RequestParam(defaultValue = "1") Integer page,
+                                                @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(contractService.getContractListByEppOrBuild(compid, searchName, page, pageSize));
     }
 
 

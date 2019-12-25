@@ -1,8 +1,8 @@
 package com.hntxrj.txerp.server;
 
 import com.alibaba.fastjson.JSONArray;
-import com.hntxrj.txerp.vo.DriverVO;
-import com.hntxrj.txerp.vo.TaskJumpVO;
+import com.hntxrj.txerp.util.jdbc.sql.Page;
+import com.hntxrj.txerp.vo.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -45,6 +45,25 @@ public interface DriverService {
  **/
     void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath, String fileName, HttpServletResponse response) throws IOException;
 
+    /**
+     * 获取小票签收列表
+     *
+     * @param compid      企业
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param eppCode     工程代号
+     * @param builderCode 施工单位代号
+     * @param placing     浇筑部位
+     * @param page        页数
+     * @param pageSize    每页数量
+     * @param driverCode  司机代号
+     * @return 小票签收列表
+     */
+    PageVO<TaskSaleInvoiceDriverListVO> getTaskSaleInvoiceList(Integer id, String compid, String beginTime, String endTime, String eppCode,
+                                                               Byte upStatus, String builderCode, String placing,
+                                                               Integer page, Integer pageSize, String driverCode);
+
+    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum( String compid, String beginTime, String endTime, String eppCode, Byte aByte, String builderCode, String placing, Integer page, Integer pageSize, String driverCode);
 }
 
 

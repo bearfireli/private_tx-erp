@@ -127,6 +127,33 @@
         order by pc.StirId,pt.StgId
     </select>
 
+    <!--标号消耗汇总柱状图-->
+    <select id="getConsumptionHistogram" resultType="com.hntxrj.txerp.vo.ConsumptionHistogram">
+        select pt.StgId as stgId,sum(pc.PanNum) as num
+        from PT_ProduceConsume pc
+        left join PT_TaskPlan pt
+        on pc.compid =pt.compid and pc.TaskId =pt.TaskId
+        where pc.compid = #{compid}
+        and pc.RecStatus =1 and pt.RecStatus =1
+        <if test="taskId != null">
+            and pc.taskId like '%'+#{taskId}+'%'
+        </if>
+        <if test="stirId != null">
+            and pc.stirId like '%'+#{stirId}+'%'
+        </if>
+        <if test="stgId != null">
+            and pc.StgId like '%'+#{stgId}+'%'
+        </if>
+        <if test="vehicleId != null">
+            and pc.vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and pc.produceTime between #{beginTime} and #{endTime}
+        </if>
+        group by pt.StgId
+        order by pt.StgId
+    </select>
+
 
     <!--原材料统计汇总-->
     <select id="getMatTotal" resultType="com.hntxrj.txerp.vo.RawCollectVO">
