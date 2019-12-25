@@ -74,6 +74,8 @@ public interface DriverService {
      * @param timeType   司机下班时间  0:上班打卡    1：下班打卡
      */
     void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType);
+
+    DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String queryTime);
 }
 
 

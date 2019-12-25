@@ -1,9 +1,6 @@
 package com.hntxrj.txerp.mapper;
 
-import com.hntxrj.txerp.vo.DriverVO;
-import com.hntxrj.txerp.vo.TaskJumpVO;
-import com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO;
-import com.hntxrj.txerp.vo.TaskSaleInvoiceSumVO;
+import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -29,4 +26,10 @@ public interface DriverMapper {
 
 
     TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, String driverCode);
+
+    void saveDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime);
+
+    DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime);
+
+    void updateDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime);
 }

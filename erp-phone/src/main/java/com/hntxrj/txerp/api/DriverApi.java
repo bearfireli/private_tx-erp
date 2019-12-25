@@ -189,13 +189,26 @@ public class DriverApi {
      *
      * @param compid     企业
      * @param driverCode 司机代号
-     * @param workTime  司机上班时间
-     * @param timeType   司机下班时间  0:上班打卡    1：下班打卡
+     * @param workTime  打卡时间
+     * @param timeType   打卡类型  0:上班打卡    1：下班打卡
      */
     @PostMapping("/saveDriverWorkTime")
     public ResultVO saveDriverWorkTime(String compid, String driverCode, Long workTime, Integer timeType) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         driverService.saveDriverWorkTime(compid,driverCode,sdf.format(new Date(workTime)),timeType);
-        return null;
+        return ResultVO.create();
+    }
+
+    /**
+     * 查询司机当天打卡时间
+     */
+    @PostMapping("/getDriverWorkTime")
+    public ResultVO getDriverWorkTime(String compid, String driverCode, Long dateTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String queryTime = sdf.format(new Date());
+        if (dateTime != null) {
+            queryTime = sdf.format(new Date(dateTime));
+        }
+        return ResultVO.create(driverService.getDriverWorkTime(compid, driverCode, queryTime));
     }
 }
