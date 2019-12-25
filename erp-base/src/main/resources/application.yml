@@ -43,16 +43,16 @@ pagehelper:
 
 
 app:
-  workspace: /home/qyb/IdeaProjects
+  workspace: D:\pic
   afterSaleLog:
     upload:
-      path: ${app.workspace}/upload/
+      path: ${app.workspace}\upload/
   user:
-    headerPath: ${app.workspace}/upload/user/header/
+    headerPath: ${app.workspace}\upload\user\header\
   pay:
-    imgFilePath: ${app.workspace}/upload/payImgPath/
+    imgFilePath: ${app.workspace}\upload\payImgPath\
   feedback:
-    imgFilePath: ${app.workspace}/pic
+    imgFilePath: ${app.workspace}\pic
   host: http://192.168.31.88:8088
 server:
   port: 9501
