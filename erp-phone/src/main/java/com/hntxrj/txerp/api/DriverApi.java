@@ -155,7 +155,6 @@ public class DriverApi {
     }
 
 
-
     /**
      * 获取小票签收汇总
      *
@@ -172,16 +171,44 @@ public class DriverApi {
      * @return 小票签收列表
      */
     @PostMapping("/getTaskSaleInvoiceSum")
-    public ResultVO getTaskSaleInvoiceSum( String compid, Long beginTime, Long endTime, String eppCode,
-                                           @RequestParam(defaultValue = "-1") Byte upStatus,
-                                           String builderCode, String placing,
-                                           @RequestParam(defaultValue = "1") Integer page,
-                                           @RequestParam(defaultValue = "10") Integer pageSize, String driverCode) {
+    public ResultVO getTaskSaleInvoiceSum(String compid, Long beginTime, Long endTime, String eppCode,
+                                          @RequestParam(defaultValue = "-1") Byte upStatus,
+                                          String builderCode, String placing,
+                                          @RequestParam(defaultValue = "1") Integer page,
+                                          @RequestParam(defaultValue = "10") Integer pageSize, String driverCode) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(driverService.getTaskSaleInvoiceSum( compid,
+        return ResultVO.create(driverService.getTaskSaleInvoiceSum(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 eppCode, upStatus == -1 ? null : upStatus, builderCode, placing, page, pageSize, driverCode));
     }
 
+
+    /**
+     * 保存司机打卡时间
+     *
+     * @param compid     企业
+     * @param driverCode 司机代号
+     * @param workTime  打卡时间
+     * @param timeType   打卡类型  0:上班打卡    1：下班打卡
+     */
+    @PostMapping("/saveDriverWorkTime")
+    public ResultVO saveDriverWorkTime(String compid, String driverCode, Long workTime, Integer timeType) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        driverService.saveDriverWorkTime(compid,driverCode,sdf.format(new Date(workTime)),timeType);
+        return ResultVO.create();
+    }
+
+    /**
+     * 查询司机当天打卡时间
+     */
+    @PostMapping("/getDriverWorkTime")
+    public ResultVO getDriverWorkTime(String compid, String driverCode, Long dateTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String queryTime = sdf.format(new Date());
+        if (dateTime != null) {
+            queryTime = sdf.format(new Date(dateTime));
+        }
+        return ResultVO.create(driverService.getDriverWorkTime(compid, driverCode, queryTime));
+    }
 }

@@ -194,4 +194,32 @@
           and tsi.InvoiceType not in('1','2')
           and tsi.recStatus = 1
     </select>
+
+    <select id="getDriverWorkTime" resultType="com.hntxrj.txerp.vo.DriverWorkTimeVO">
+       select top 1 * from DM_DriverWorkTime where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
+    </select>
+
+    <update id="updateDriverWorkTime">
+        <if test="timeType==1 ">
+            update DM_DriverWorkTime set end_time=#{workTime}
+            where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
+        </if>
+        <if test="timeType==0 ">
+            update DM_DriverWorkTime set begin_time=#{workTime}
+            where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
+        </if>
+
+    </update>
+
+    <insert id="saveDriverWorkTime">
+        <if test="timeType==1 ">
+            insert  into DM_DriverWorkTime(compid, driver_code, end_time, date_time)
+            values (#{compid},#{driverCode},#{workTime},#{dateTime})
+        </if>
+        <if test="timeType==0 ">
+            insert  into DM_DriverWorkTime(compid, driver_code,  begin_time, date_time)
+            values (#{compid},#{driverCode},#{workTime},#{dateTime})
+        </if>
+
+    </insert>
 </mapper>

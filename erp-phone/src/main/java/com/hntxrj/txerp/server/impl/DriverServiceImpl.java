@@ -94,9 +94,9 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath,String fileName, HttpServletResponse response) throws IOException {
+    public void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath, String fileName, HttpServletResponse response) throws IOException {
 
-        File file = new File(taskSaleInvoiceUploadPath+ fileName);
+        File file = new File(taskSaleInvoiceUploadPath + fileName);
         if (!file.exists()) {
             file = new File(taskSaleInvoiceUploadPath + "default.png");
         }
@@ -140,10 +140,38 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public TaskSaleInvoiceSumVO getTaskSaleInvoiceSum( String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode) {
-      return   driverMapper.getTaskSaleInvoiceSum(compid, beginTime,
+    public TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode) {
+        return driverMapper.getTaskSaleInvoiceSum(compid, beginTime,
                 endTime, eppCode, upStatus, builderCode, placing, driverCode);
 
+    }
+
+    /**
+     * 司机App保存上下班打卡
+     *
+     * @param compid     企业
+     * @param driverCode 司机代号
+     * @param workTime   打卡时间
+     * @param timeType   打卡类型  0:上班打卡    1：下班打卡
+     */
+    @Override
+    public void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateTime = dateFormat.format(new Date());
+
+        //先查询当前日期此司机有没有打卡记录。
+        DriverWorkTimeVO driverWorkTimeVO = driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
+        if (driverWorkTimeVO == null) {
+            //说明当天没有打卡记录
+            driverMapper.saveDriverWorkTime(timeType, compid, driverCode, workTime, dateTime);
+        } else {
+            driverMapper.updateDriverWorkTime(timeType, compid, driverCode, workTime, dateTime);
+        }
+    }
+
+    @Override
+    public DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime) {
+        return driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
     }
 
 }
