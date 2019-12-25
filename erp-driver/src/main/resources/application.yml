@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/tx-driver?characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://192.168.31.2:3306/tx-driver?characterEncoding=UTF-8&useSSL=false
     username: root
-    password: root
+    password: TongXin2019
   jpa:
     show-sql: true
 
