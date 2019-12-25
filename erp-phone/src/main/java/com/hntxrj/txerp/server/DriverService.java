@@ -64,6 +64,16 @@ public interface DriverService {
                                                                Integer page, Integer pageSize, String driverCode);
 
     TaskSaleInvoiceSumVO getTaskSaleInvoiceSum( String compid, String beginTime, String endTime, String eppCode, Byte aByte, String builderCode, String placing, Integer page, Integer pageSize, String driverCode);
+
+    /**
+     * 保存司机打卡时间
+     *
+     * @param compid     企业
+     * @param driverCode 司机代号
+     * @param workTime  司机上班时间
+     * @param timeType   司机下班时间  0:上班打卡    1：下班打卡
+     */
+    void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType);
 }
 
 
