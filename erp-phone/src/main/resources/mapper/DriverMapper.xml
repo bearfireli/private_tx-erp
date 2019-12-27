@@ -13,6 +13,26 @@
         where ID = #{invoiceId}
     </update>
 
+    <update id="saveSaleFileImage">
+        update PT_TaskSaleInvoice
+        set SigningTime = #{signingTime},
+            SaleFileImage = #{saleFileImage},
+            updownmark=0,
+            upStatus=1
+        where ID = #{invoiceId}
+        and compid=#{compid}
+    </update>
+
+    <update id="saveNumberOfSignings">
+        update PT_TaskSaleInvoice
+        set SigningTime = #{signingTime},
+            NumberOfSignings = #{receiptNum},
+            updownmark=0,
+            upStatus=1
+        where ID = #{invoiceId}
+        and compid=#{compid}
+    </update>
+
     <select id="getDriverList" resultType="com.hntxrj.txerp.vo.DriverVO">
         select PersonalCode, PersonalName
         from VM_PersonalInfo
@@ -226,11 +246,11 @@
 
     <insert id="saveDriverWorkTime">
         <if test="timeType==1 ">
-            insert  into DM_DriverWorkTime(compid, driver_code, end_time, date_time)
+            insert into DM_DriverWorkTime(compid, driver_code, end_time, date_time)
             values (#{compid},#{driverCode},#{workTime},#{dateTime})
         </if>
         <if test="timeType==0 ">
-            insert  into DM_DriverWorkTime(compid, driver_code,  begin_time, date_time)
+            insert into DM_DriverWorkTime(compid, driver_code, begin_time, date_time)
             values (#{compid},#{driverCode},#{workTime},#{dateTime})
         </if>
 

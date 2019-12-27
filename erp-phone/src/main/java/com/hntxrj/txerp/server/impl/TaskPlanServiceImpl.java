@@ -492,10 +492,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 }
                 produceList.add(produceDriverShiftLED);
             }
-
+            //获取正在生产车辆的总数
+            producingDriverList.setCarNum(producingDriverList.getCarNum()+produceDriverShiftLED.size());
         }
+
+        //获取等待生产的车辆总数
+        waitingDriverList.setCarNum(waitDriverShiftLED.size());
+
+
         producingDriverList.setCars(produceList);
-        waitingDriverList.setCars(waitDriverShiftLED);
+        //创建一个集合，用于存储等待生产的车辆的集合，便于前台处理。
+        List waitList = new ArrayList();
+        waitList.add(waitDriverShiftLED);
+        waitingDriverList.setCars(waitList);
         ProductDriverList.add(producingDriverList);
         if (driverWaitLEDVO.getIsShow()) {
             ProductDriverList.add(waitingDriverList);

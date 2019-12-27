@@ -78,6 +78,16 @@ public interface DriverService {
     DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String queryTime);
 
     TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetail(String compid, Integer id);
+
+    /**
+     * 保存签收人手写图片
+     *
+     * @param saleFileImage    用户手写签名
+     * @param invoiceId        小票id
+    * */
+    void saveSaleFileImage(String saleFileImage, String invoiceId,String compid);
+
+    void saveNumberOfSignings(String compid,Double receiptNum,String invoiceId);
 }
 
 

@@ -32,4 +32,8 @@ public interface DriverMapper {
     DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime);
 
     void updateDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime);
+
+    void saveSaleFileImage(String compid,String saleFileImage, String invoiceId, String signingTime);
+
+    void saveNumberOfSignings(String compid,Double receiptNum, String invoiceId, String signingTime);
 }

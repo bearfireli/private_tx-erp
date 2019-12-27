@@ -122,13 +122,13 @@ public class DriverApi {
     }
 
     /**
-     * 保存小票签收签收图片
+     * 保存小票签收签收图片（老版本）
      */
     @RequestMapping("/uploadTaskSaleInvoiceReceiptSign")
     public ResultVO uploadTaskSaleInvoiceReceiptSign(MultipartFile image, String invoiceId) throws IOException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
         if (file.exists()) {
-            assert file.delete();
+            file.delete();
         }
         if (file.createNewFile()) {
             IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
@@ -136,6 +136,50 @@ public class DriverApi {
         Map<String, String> out = new HashMap<>();
         out.put("fileName", invoiceId + ".png");
         return ResultVO.create(out);
+    }
+
+
+    /**
+     * 保存小票签收签收图片并保存到数据库(新版本)
+     *
+     * @param image     图片
+     * @param invoiceId 小票id
+     * @param compid    小票id
+     */
+    @RequestMapping("/saveTaskSaleInvoiceReceiptSign")
+    public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, String invoiceId, String compid) throws IOException {
+
+        File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
+        if (file.exists()) {
+            file.delete();
+        }
+        if (file.createNewFile()) {
+            IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
+        }
+        String saleFileImage = invoiceId + ".png";
+        try {
+            driverService.saveSaleFileImage(saleFileImage, invoiceId, compid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResultVO.create();
+    }
+
+
+    /**
+     * 编辑签收方量
+     *
+     * @param compid     公司代号
+     * @param receiptNum 签收方量
+     * @param invoiceId  小票id
+     */
+    @RequestMapping("/saveNumberOfSignings")
+    public ResultVO saveNumberOfSignings(String compid, Double receiptNum, String invoiceId) throws IOException {
+        if (receiptNum == null) {
+            receiptNum = 0.0;
+        }
+        driverService.saveNumberOfSignings(compid,receiptNum, invoiceId);
+        return ResultVO.create();
     }
 
 
