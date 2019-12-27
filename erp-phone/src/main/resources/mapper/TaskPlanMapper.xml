@@ -734,7 +734,7 @@
         left join PT_TaskPlan pt on tsi.compid = pt.compid and tsi.TaskId = pt.TaskId
         left join SM_EPPInfo sm on tsi.compid = sm.compid and pt.EPPCode = sm.EPPCode
         where tsi.compid = #{compid}
-        /*and (VehiceNumber > '0')*/
+        and (VehiceNumber > '0')
         and (VehicleStatus = '3')
         and tsi.InvoiceType != 6
         and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
@@ -763,7 +763,7 @@
 
         from PT_TaskSaleInvoice tsi
         where tsi.compid = #{compid}
-          /*and (VehiceNumber > '0')*/
+          and (VehiceNumber > '0')
           and (VehicleStatus = '3')
           and tsi.InvoiceType != 6
           and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
