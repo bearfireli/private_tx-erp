@@ -165,8 +165,8 @@
         sum(RemnantNum)RemnantNum,
         sum(ProduceNum) as totalProduceNum,
         sum(ScrapNum) as ScrapNum,
-        sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) totalSaleNum,
-        max(VehiceNumber) vehiceNumber,
+        sum(SaleNum - ReturnNum - RemnantNum - ScrapNum) totalSaleNum,
+        count(VehiceNumber) vehiceNumber,
         sum(NumberOfSignings) numberOfSignings
         from PT_TaskSaleInvoice
         where InvoiceType != 6
@@ -220,7 +220,7 @@
         ps.SendTime as sendTime,
         ps.Arrive_STTime as arriveTime,
         Placing,
-        (SaleNum - ReturnNum - SeparateNum - ScrapNum) saleNumTotal,
+        (SaleNum - ReturnNum - RemnantNum - ScrapNum) saleNumTotal,
         ps.StirId,
         ds.StirName as stirName,
         ps.VehicleID as vehicleID
@@ -734,7 +734,7 @@
         left join PT_TaskPlan pt on tsi.compid = pt.compid and tsi.TaskId = pt.TaskId
         left join SM_EPPInfo sm on tsi.compid = sm.compid and pt.EPPCode = sm.EPPCode
         where tsi.compid = #{compid}
-        and (VehiceNumber > '0')
+        /*and (VehiceNumber > '0')*/
         and (VehicleStatus = '3')
         and tsi.InvoiceType != 6
         and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
@@ -763,7 +763,7 @@
 
         from PT_TaskSaleInvoice tsi
         where tsi.compid = #{compid}
-          and (VehiceNumber > '0')
+          /*and (VehiceNumber > '0')*/
           and (VehicleStatus = '3')
           and tsi.InvoiceType != 6
           and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
