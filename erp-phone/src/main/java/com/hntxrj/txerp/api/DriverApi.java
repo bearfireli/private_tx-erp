@@ -58,7 +58,7 @@ public class DriverApi {
      */
     @PostMapping("/getTaskSaleInvoiceList")
     public ResultVO getTaskSaleInvoiceList(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
-                                           @RequestParam(defaultValue = "-1") Byte upStatus,
+                                           @RequestParam(defaultValue = "0") Byte upStatus,
                                            String builderCode, String placing,
                                            @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize, String driverCode) {
@@ -66,7 +66,7 @@ public class DriverApi {
         return ResultVO.create(driverService.getTaskSaleInvoiceList(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
-                eppCode, upStatus == -1 ? null : upStatus, builderCode, placing, page, pageSize, driverCode));
+                eppCode, upStatus == 0 ? null : upStatus, builderCode, placing, page, pageSize, driverCode));
     }
 
     /**
@@ -187,7 +187,7 @@ public class DriverApi {
      */
     @PostMapping("/getTaskSaleInvoiceSum")
     public ResultVO getTaskSaleInvoiceSum(String compid, Long beginTime, Long endTime, String eppCode,
-                                          @RequestParam(defaultValue = "-1") Byte upStatus,
+                                          @RequestParam(defaultValue = "0") Byte upStatus,
                                           String builderCode, String placing,
                                           @RequestParam(defaultValue = "1") Integer page,
                                           @RequestParam(defaultValue = "10") Integer pageSize, String driverCode) {
@@ -195,7 +195,7 @@ public class DriverApi {
         return ResultVO.create(driverService.getTaskSaleInvoiceSum(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
-                eppCode, upStatus == -1 ? null : upStatus, builderCode, placing, page, pageSize, driverCode));
+                eppCode, upStatus == 0 ? null : upStatus, builderCode, placing, page, pageSize, driverCode));
     }
 
 
