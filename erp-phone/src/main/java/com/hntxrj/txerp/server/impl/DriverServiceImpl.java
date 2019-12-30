@@ -121,9 +121,9 @@ public class DriverServiceImpl implements DriverService {
 
 
         for (TaskSaleInvoiceDriverListVO taskSaleInvoice : taskSaleInvoiceLists) {
-            //判断如果此小票是未签收,并且小票状态是完成生产，将车辆状态修改为开始卸料。
+            //判断如果此小票是未签收,并且小票状态是完成生产，并且车辆状态是运输，将车辆状态修改为开始卸料。
             if (taskSaleInvoice.getUpStatus() == 0 && taskSaleInvoice.getInvoiceType() == 3
-                    && taskSaleInvoice.getVehicleStatus() != 13 && taskSaleInvoice.getVehicleStatus() != 14) {
+                    && taskSaleInvoice.getVehicleStatus() == 2 ) {
                 taskSaleInvoice.setVehicleStatus(17);
                 taskSaleInvoice.setVehicleStatusName("开始卸料");
             }
@@ -141,9 +141,9 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void saveSaleFileImage(String saleFileImage, String invoiceId, String compid) {
+    public void saveSaleFileImage(String saleFileImage, String invoiceId, String compid,Double receiptNum) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        driverMapper.saveSaleFileImage(compid, saleFileImage, invoiceId, dateFormat.format(new Date()));
+        driverMapper.saveSaleFileImage(compid, saleFileImage, invoiceId, dateFormat.format(new Date()),receiptNum);
     }
 
     @Override

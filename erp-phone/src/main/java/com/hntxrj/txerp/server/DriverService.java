@@ -85,7 +85,7 @@ public interface DriverService {
      * @param saleFileImage    用户手写签名
      * @param invoiceId        小票id
     * */
-    void saveSaleFileImage(String saleFileImage, String invoiceId,String compid);
+    void saveSaleFileImage(String saleFileImage, String invoiceId,String compid,Double receiptNum);
 
     void saveNumberOfSignings(String compid,Double receiptNum,String invoiceId);
 

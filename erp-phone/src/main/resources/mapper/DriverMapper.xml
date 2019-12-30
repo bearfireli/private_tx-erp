@@ -15,7 +15,8 @@
 
     <update id="saveSaleFileImage">
         update PT_TaskSaleInvoice
-        set SigningTime = #{signingTime},
+        set NumberOfSignings=#{receiptNum},
+        SigningTime = #{signingTime},
             SaleFileImage = #{saleFileImage},
             updownmark=0,
             upStatus=1

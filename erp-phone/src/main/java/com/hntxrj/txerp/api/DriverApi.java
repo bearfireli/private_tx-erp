@@ -162,18 +162,19 @@ public class DriverApi {
      * @param compid    小票id
      */
     @RequestMapping("/saveTaskSaleInvoiceReceiptSign")
-    public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, String invoiceId, String compid) throws IOException {
-
+    public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId, String compid) throws IOException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
         if (file.exists()) {
+            System.gc();
             file.delete();
+
         }
         if (file.createNewFile()) {
             IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
         }
         String saleFileImage = invoiceId + ".png";
         try {
-            driverService.saveSaleFileImage(saleFileImage, invoiceId, compid);
+            driverService.saveSaleFileImage(saleFileImage, invoiceId, compid,receiptNum==null?0.0:receiptNum);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -33,7 +33,7 @@ public interface DriverMapper {
 
     void updateDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime);
 
-    void saveSaleFileImage(String compid,String saleFileImage, String invoiceId, String signingTime);
+    void saveSaleFileImage(String compid,String saleFileImage, String invoiceId, String signingTime,Double receiptNum);
 
     void saveNumberOfSignings(String compid,Double receiptNum, String invoiceId, String signingTime);
 
