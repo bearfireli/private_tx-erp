@@ -65,7 +65,7 @@
     </select>
     <select id="driverGetTaskSaleInvoiceList" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO">
         select tsi.ID,
-        vv.VehicleStatus,
+        tsi.VehicleStatus,
         tsi.VehicleID,
         tsi.PersonalCode,
         vm.PersonalName,
@@ -132,6 +132,12 @@
         </if>
 
     </select>
+
+    <!--修改小票表中的车辆状态-->
+    <update id="updateVehicleStatus">
+        update PT_TaskSaleInvoice set VehicleStatus=#{vehicleStatus}
+        where compid=#{compid} and id =#{id}
+    </update>
 
     <!--司机App小票汇总-->
     <select id="getTaskSaleInvoiceSum" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceSumVO">

@@ -36,4 +36,6 @@ public interface DriverMapper {
     void saveSaleFileImage(String compid,String saleFileImage, String invoiceId, String signingTime);
 
     void saveNumberOfSignings(String compid,Double receiptNum, String invoiceId, String signingTime);
+
+    void updateVehicleStatus(String compid, Integer id, Integer vehicleStatus);
 }

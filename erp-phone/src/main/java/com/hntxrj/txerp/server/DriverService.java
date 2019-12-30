@@ -88,6 +88,16 @@ public interface DriverService {
     void saveSaleFileImage(String saleFileImage, String invoiceId,String compid);
 
     void saveNumberOfSignings(String compid,Double receiptNum,String invoiceId);
+
+    /**
+     * 修改小票中的车辆状态
+     *
+     * @param compid         企业
+     * @param id             小票id
+     * @param vehicleStatus  车辆状态   13：正在卸料； 14：卸料完毕
+     * @return 小票签收列表
+     */
+    void updateVehicleStatus(String compid, Integer id, Integer vehicleStatus);
 }
 
 

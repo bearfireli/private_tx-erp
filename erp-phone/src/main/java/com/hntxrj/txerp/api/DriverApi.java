@@ -70,10 +70,25 @@ public class DriverApi {
     }
 
     /**
+     * 修改小票中的车辆状态
+     *
+     * @param compid         企业
+     * @param id             小票id
+     * @param vehicleStatus  车辆状态   13：正在卸料； 14：卸料完毕
+     * @return 小票签收列表
+     */
+    @PostMapping("/updateVehicleStatus")
+    public ResultVO updateVehicleStatus(String compid, Integer id,Integer vehicleStatus) {
+        driverService.updateVehicleStatus(compid, id, vehicleStatus);
+        return ResultVO.create();
+    }
+
+
+    /**
      * 获取小票详情
      *
      * @param compid 企业
-     * @param id     企业
+     * @param id     小票id
      * @return 小票签收列表
      */
     @PostMapping("/getTaskSaleInvoiceDetail")
