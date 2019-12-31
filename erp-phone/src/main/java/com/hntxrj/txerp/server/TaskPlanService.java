@@ -255,6 +255,9 @@ public interface TaskPlanService {
      */
     void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO);
 
+    /**
+    * 修改任务单技术要求
+    * */
     void updateTechnicalRequirements(String compid,String taskId, String pPNames);
     /**
      *
@@ -262,6 +265,12 @@ public interface TaskPlanService {
     * */
     void deletePPCodeStatus(String compid, String taskId);
 
+
+    /**
+     * 调度派车中查询正在生产的搅拌车
+     *
+     * @param compid  企业
+     */
     List<DirverLEDListVO> getProduceCars(String compid);
 
 

@@ -554,6 +554,8 @@ public class TaskPlanApi {
 
     /**
      * 生成任务单Id
+     *
+     * @param compid
      */
     @PostMapping("/makeAutoTaskPlanId")
     public ResultVO makeAutoTaskPlanId(String compid) throws SQLException {
@@ -563,6 +565,9 @@ public class TaskPlanApi {
 
     /**
      * 校验用户输入的任务单号是否存在
+     *
+     * @param compid   企业
+     * @param taskId  任务单号
      */
     @PostMapping("/isExistence")
     public ResultVO isExistence(String compid, String taskId) {
@@ -572,6 +577,8 @@ public class TaskPlanApi {
 
     /**
      * 获取特殊加价项目列表
+     *
+     * @param compid   企业
      */
     @PostMapping("/getPriceMarkup")
     public ResultVO getPriceMarkup(String compid) {
@@ -582,7 +589,7 @@ public class TaskPlanApi {
     /**
      * 调度派车中查询正在生产的搅拌车
      *
-     * @param compid
+     * @param compid  企业
      */
 
     @PostMapping("/getProduceCars")

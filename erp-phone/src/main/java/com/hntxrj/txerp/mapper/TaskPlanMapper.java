@@ -186,5 +186,12 @@ public interface TaskPlanMapper {
     List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
 
 
+    /**
+     * 查询任务单集合下的所有车辆
+     *
+     * @param compid 企业代号
+     * @param taskIds 任务单号集合
+     * @return 车辆集合
+     * */
     List<DispatchVehicle> getCarsByTaskIds(String compid, List<String> taskIds);
 }
