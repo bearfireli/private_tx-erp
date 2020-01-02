@@ -83,7 +83,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         String taskId = "P" + compid + String.valueOf(year).substring(2);
-        if (lastTask == null || lastTask.equals("")) {
+        if (lastTask == null || "".equals(lastTask)) {
             lastTask = "0";
         }
 
@@ -169,7 +169,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlan.setTaskType(1);
         // TODO:等待打通手机和pc用户以后需要把这块操作员替换掉
         taskPlan.setOpId("0225");
-        if (taskPlan.getDefaultJump().equals("")) {
+        if ("".equals(taskPlan.getDefaultJump())) {
             taskPlan.setDefaultJump("自卸");
         }
         taskPlan.setAdjustmentTime(taskPlan.getPreTime());
@@ -310,14 +310,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date today = sdf.parse(sdf.format(new Date()));
         Date as = DateUtils.addDays(today, -1);
-        System.out.println(as);
-        /*if(totalnum.getYesDay() != null){
-            totalnum.setYesDay((Timestamp) as);
-        }*/
         if (totalNum.getTime() != as) {
             totalNum.setTime(as);
         }
-        //String  yesDay = sdf.format(as) ;
         List<SendCarTotalNumVO> SendCarTotalNumVO = taskPlanMapper.getSendCarYesterDayNum(compid, time);
         PageInfo<SendCarTotalNumVO> pageInfo = new PageInfo<>(SendCarTotalNumVO);
         PageVO<SendCarTotalNumVO> pageVO = new PageVO<>();
@@ -337,40 +332,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         SendCarTotalNumVO totalnum = new SendCarTotalNumVO();
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
-        /*Calendar cale = null;
-        String firstday;
-        String lastday;*/
+
         Date date = new Date();
         monthStart = format.format(date) + "-01";
         monthEnd = format.format(DateUtils.addMonths(date, 1)) + "-01";
 
-
-       /* format = new SimpleDateFormat("yyyy-MM-dd");
-
-        Date start = format.parse(monthStart);
-        Date end = format.parse(monthEnd);*/
-        //Date cs = format.parse(start,end);
-
-       /* if (totalnum.getTime() != cs) {
-            totalnum.setTime(cs);
-        }*/
-/*
-        System.out.println(start);
-        System.out.println(end);
-        // 获取前月的第一天
-        cale = Calendar.getInstance();
-        cale.add(Calendar.MONTH, 0);
-        cale.set(Calendar.DAY_OF_MONTH, 1);
-        firstday = format.format(cale.getTime());
-        // 获取前月的最后一天
-        cale = Calendar.getInstance();
-        cale.add(Calendar.MONTH, 1);
-        cale.set(Calendar.DAY_OF_MONTH, 0);
-        lastday = format.format(cale.getTime());*/
-       /* String cs = firstday + " and " + lastday;
-        if (!(totalnum.getYesDay().equals(cs))) {
-            //totalnum.setYesDay(cs);
-        }*/
 
         List<SendCarTotalNumVO> SendCarTotalNumVO = taskPlanMapper.getMonthTotalNum(compid, monthStart, monthEnd);
         PageInfo<SendCarTotalNumVO> pageInfo = new PageInfo<>(SendCarTotalNumVO);
@@ -388,10 +354,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * @param vehicleClass  班次
      * @return 司机排班LED
      *
-     * 此方法代码逻辑复杂，执行效率慢，新版本由getDriverShiftLEDNew方法代替。
      */
     @Override
-    public List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass) {
+    public List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, Integer vehicleStatus, String vehicleClass) {
         List<DirverLEDListVO> list = new ArrayList<>();
 
         DirverLEDListVO driverLEDListVO = new DirverLEDListVO();   //所有正在生产中的车辆集合
@@ -401,9 +366,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         List<DispatchVehicle> thirdStirIdCars = new ArrayList<>();  //所有3号线正在生产的集合
         List<DispatchVehicle> fourthStirIdCars = new ArrayList<>();  //所有4号线正在生产的集合
         List<DispatchVehicle> fifthStirIdCars = new ArrayList<>();  //所有5号线正在生产的集合
-        driverLEDListVO.setStatus(3);
+        driverLEDListVO.setStatus(DirverLEDListVO.PRODUCTION_VEHICLE_STATUS);
         driverLEDListVO.setStatusName("正在生产");
-        vehicleStatus = "3";
+        vehicleStatus = DirverLEDListVO.PRODUCTION_VEHICLE_STATUS;
 
         List<DispatchVehicle> dispatchVehicleList = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
         if (dispatchVehicleList != null) {
@@ -434,54 +399,54 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         list.add(driverLEDListVO);
 
         DirverLEDListVO driverLEDListVOs = new DirverLEDListVO();
-        driverLEDListVOs.setStatus(1);
+        driverLEDListVOs.setStatus(DirverLEDListVO.WAIT_VEHICLE_STATUS);
         driverLEDListVOs.setStatusName("等待生产");
-        vehicleStatus = "1";
+        vehicleStatus = DirverLEDListVO.WAIT_VEHICLE_STATUS;
         list.add(getDriverLEDListVO(driverLEDListVOs, compid, stirId, vehicleStatus, vehicleClass));
 
 
         DirverLEDListVO driverLEDListVO1 = new DirverLEDListVO();
-        driverLEDListVO1.setStatus(4);
+        driverLEDListVO1.setStatus(DirverLEDListVO.REPAIR_VEHICLE_STATUS);
         driverLEDListVO1.setStatusName("维修");
-        vehicleStatus = "4";
+        vehicleStatus = DirverLEDListVO.REPAIR_VEHICLE_STATUS;
 
         list.add(getDriverLEDListVO(driverLEDListVO1, compid, stirId, vehicleStatus, vehicleClass));
 
 
         DirverLEDListVO driverLEDListVO2 = new DirverLEDListVO();
-        driverLEDListVO2.setStatus(5);
+        driverLEDListVO2.setStatus(DirverLEDListVO.REST_VEHICLE_STATUS);
         driverLEDListVO2.setStatusName("休息");
-        vehicleStatus = "5";
+        vehicleStatus = DirverLEDListVO.REST_VEHICLE_STATUS;
         list.add(getDriverLEDListVO(driverLEDListVO2, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO3 = new DirverLEDListVO();
-        driverLEDListVO3.setStatus(8);
+        driverLEDListVO3.setStatus(DirverLEDListVO.WATER_VEHICLE_STATUS);
         driverLEDListVO3.setStatusName("工地脱水");
-        vehicleStatus = "8";
+        vehicleStatus = DirverLEDListVO.WATER_VEHICLE_STATUS;
         list.add(getDriverLEDListVO(driverLEDListVO3, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO4 = new DirverLEDListVO();
-        driverLEDListVO4.setStatus(9);
+        driverLEDListVO4.setStatus(DirverLEDListVO.PUMP_VEHICLE_STATUS);
         driverLEDListVO4.setStatusName("工地拖泵");
-        vehicleStatus = "9";
+        vehicleStatus = DirverLEDListVO.PUMP_VEHICLE_STATUS;
         list.add(getDriverLEDListVO(driverLEDListVO4, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO5 = new DirverLEDListVO();
-        driverLEDListVO5.setStatus(10);
+        driverLEDListVO5.setStatus(DirverLEDListVO.WATER_PUMP_VEHICLE_STATUS);
         driverLEDListVO5.setStatusName("工地拖水拖泵");
-        vehicleStatus = "10";
+        vehicleStatus = DirverLEDListVO.WATER_PUMP_VEHICLE_STATUS;
         list.add(getDriverLEDListVO(driverLEDListVO5, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO6 = new DirverLEDListVO();
-        driverLEDListVO6.setStatus(11);
+        driverLEDListVO6.setStatus(DirverLEDListVO.FACTORY_WATER_VEHICLE_STATUS);
         driverLEDListVO6.setStatusName("场内托水");
-        vehicleStatus = "11";
+        vehicleStatus = DirverLEDListVO.FACTORY_WATER_VEHICLE_STATUS;
         list.add(getDriverLEDListVO(driverLEDListVO6, compid, stirId, vehicleStatus, vehicleClass));
 
         DirverLEDListVO driverLEDListVO7 = new DirverLEDListVO();
-        driverLEDListVO7.setStatus(16);
+        driverLEDListVO7.setStatus(DirverLEDListVO.BACK_VEHICLE_STATUS);
         driverLEDListVO7.setStatusName("自动回厂");
-        vehicleStatus = "16";
+        vehicleStatus = DirverLEDListVO.BACK_VEHICLE_STATUS;
         list.add(getDriverLEDListVO(driverLEDListVO7, compid, stirId, vehicleStatus, vehicleClass));
 
         return list;
@@ -497,7 +462,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * @return 司机排班LED
      */
     @Override
-    public Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, String vehicleStatus, String vehicleClass) {
+    public Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, Integer vehicleStatus, String vehicleClass) {
         //查询出所有状态的车辆
         List<DispatchVehicle> dispatchVehicleList = taskPlanMapper.getDriverShiftLED(compid, stirId, null, vehicleClass);
         //用于返回的map集合。
@@ -521,37 +486,37 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             }
         }
 
-        if (driverLEDMap.get("1") == null) {
-            setDriverLEDMap(driverLEDMap,1,"待班");
+        if (driverLEDMap.get(String.valueOf(DirverLEDListVO.WAIT_VEHICLE_STATUS)) == null) {
+            setDriverLEDMap(driverLEDMap,DirverLEDListVO.WAIT_VEHICLE_STATUS,"待班");
         }
-        if (driverLEDMap.get("3") == null) {
-            setDriverLEDMap(driverLEDMap,3,"生产");
+        if (driverLEDMap.get(String.valueOf(DirverLEDListVO.PRODUCTION_VEHICLE_STATUS)) == null) {
+            setDriverLEDMap(driverLEDMap,DirverLEDListVO.PRODUCTION_VEHICLE_STATUS,"生产");
         }
-        if (driverLEDMap.get("4") == null) {
-            setDriverLEDMap(driverLEDMap,4,"维修");
+        if (driverLEDMap.get(String.valueOf(DirverLEDListVO.REPAIR_VEHICLE_STATUS)) == null) {
+            setDriverLEDMap(driverLEDMap,DirverLEDListVO.REPAIR_VEHICLE_STATUS,"维修");
         }
-        if (driverLEDMap.get("5") == null) {
-            setDriverLEDMap(driverLEDMap,5,"休息");
+        if (driverLEDMap.get(String.valueOf(DirverLEDListVO.REST_VEHICLE_STATUS)) == null) {
+            setDriverLEDMap(driverLEDMap,DirverLEDListVO.REST_VEHICLE_STATUS,"休息");
         }
-        if (driverLEDMap.get("8") == null) {
-            setDriverLEDMap(driverLEDMap,8,"工地脱水");
+        if (driverLEDMap.get(String.valueOf(DirverLEDListVO.WATER_VEHICLE_STATUS)) == null) {
+            setDriverLEDMap(driverLEDMap,DirverLEDListVO.WATER_VEHICLE_STATUS,"工地脱水");
         }
-        if (driverLEDMap.get("9") == null) {
-            setDriverLEDMap(driverLEDMap,9,"工地拖泵");
+        if (driverLEDMap.get(String.valueOf(DirverLEDListVO.PUMP_VEHICLE_STATUS)) == null) {
+            setDriverLEDMap(driverLEDMap,DirverLEDListVO.PUMP_VEHICLE_STATUS,"工地拖泵");
         }
-        if (driverLEDMap.get("10") == null) {
-            setDriverLEDMap(driverLEDMap,10,"工地脱水拖泵");
+        if (driverLEDMap.get(String.valueOf(DirverLEDListVO.WATER_PUMP_VEHICLE_STATUS)) == null) {
+            setDriverLEDMap(driverLEDMap,DirverLEDListVO.WATER_PUMP_VEHICLE_STATUS,"工地脱水拖泵");
         }
-        if (driverLEDMap.get("11") == null) {
-            setDriverLEDMap(driverLEDMap,11,"场内托水");
+        if (driverLEDMap.get(String.valueOf(DirverLEDListVO.FACTORY_WATER_VEHICLE_STATUS)) == null) {
+            setDriverLEDMap(driverLEDMap,DirverLEDListVO.FACTORY_WATER_VEHICLE_STATUS,"场内托水");
         }
-        if (driverLEDMap.get("16") == null) {
-            setDriverLEDMap(driverLEDMap,16,"自动回厂");
+        if (driverLEDMap.get(String.valueOf(DirverLEDListVO.BACK_VEHICLE_STATUS)) == null) {
+            setDriverLEDMap(driverLEDMap,DirverLEDListVO.BACK_VEHICLE_STATUS,"自动回厂");
         }
 
         //各个线号正在生产的车辆
         Map<String, List<DispatchVehicle>> productMap = new HashMap<>();
-        for (DispatchVehicle productCar : driverLEDMap.get("3").getCars()) {
+        for (DispatchVehicle productCar : driverLEDMap.get(String.valueOf(DirverLEDListVO.PRODUCTION_VEHICLE_STATUS)).getCars()) {
             //循环正在生产的车辆，按照线号分类
             if (productMap.get(productCar.getStirId()) == null) {
                 List<DispatchVehicle> dispatchStirIdVehicles = new ArrayList<>();
@@ -562,7 +527,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             }
         }
 
-        driverLEDMap.get("3").setProductVehicleMap(productMap);
+        driverLEDMap.get(String.valueOf(DirverLEDListVO.PRODUCTION_VEHICLE_STATUS)).setProductVehicleMap(productMap);
 
         return driverLEDMap;
     }
@@ -985,7 +950,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
         if (systemVarInitVO != null) {
             if (systemVarInitVO.getVarValue() == 1) {
-                if (!("").equals(pPNames)) {
+                if (!"".equals(pPNames)) {
                     String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag + "-" + pPNames + "-GB/T14902";
                     //把选择的特殊材料名称添加到技术要求里面
                     taskPlanMapper.updateTechnicalRequirements(compid, taskId, pPNames, concreteMark);
@@ -1040,7 +1005,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     //派车LED模块：根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
-    private DirverLEDListVO getDriverLEDListVO(DirverLEDListVO driverLEDListVO, String compid, String stirId, String vehicleStatus, String vehicleClass) {
+    private DirverLEDListVO getDriverLEDListVO(DirverLEDListVO driverLEDListVO, String compid, String stirId, Integer vehicleStatus, String vehicleClass) {
         List<DispatchVehicle> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
         if (driverShiftLED != null) {
             driverLEDListVO.setCars(driverShiftLED);

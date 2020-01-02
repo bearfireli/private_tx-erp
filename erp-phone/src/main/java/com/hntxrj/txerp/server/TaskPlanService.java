@@ -126,7 +126,7 @@ public interface TaskPlanService {
      *
      * 目前前台司机派车LED页面调用的是这个方法，没有调用新版本
      */
-    List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass);
+    List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, Integer vehicleStatus, String vehicleClass);
 
 
     /**
@@ -140,7 +140,7 @@ public interface TaskPlanService {
      *
      * 此方法优化了老版本的代码，前台还未启用
      */
-    Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, String vehicleStatus, String vehicleClass);
+    Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, Integer vehicleStatus, String vehicleClass);
 
 
     /**

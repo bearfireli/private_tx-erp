@@ -46,7 +46,7 @@ public interface TaskPlanMapper {
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
      * @param vehicleClass  班次
      */
-    List<DispatchVehicle> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass);
+    List<DispatchVehicle> getDriverShiftLED(String compid, String stirId, Integer vehicleStatus, String vehicleClass);
 
     List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId);
 
