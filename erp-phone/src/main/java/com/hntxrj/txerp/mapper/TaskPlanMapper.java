@@ -179,9 +179,6 @@ public interface TaskPlanMapper {
 
     List<DispatchVehicle> getProduceCars(String compid,String stirId);
 
-    List<DispatchVehicle> getCarsByTaskId(String compid, String taskId);
-    /*此接口由getCarsByTaskIds代替，不再使用*/
-    List<DriverShiftLEDVO> getCarsByTaskId(String compid, String taskId);
 
     List<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode, String personalName, String workClass, String beginTime, String endTime);
 
