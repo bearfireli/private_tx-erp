@@ -159,7 +159,7 @@ public class DriverApi {
      *
      * @param image     图片
      * @param invoiceId 小票id
-     * @param compid    小票id
+     * @param compid    企业
      */
     @RequestMapping("/saveTaskSaleInvoiceReceiptSign")
     public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId, String compid) throws IOException {
@@ -276,6 +276,10 @@ public class DriverApi {
 
     /**
      * 查询司机当天打卡时间
+     *
+     * @param compid        企业
+     * @param driverCode    司机代号
+     * @param dateTime      查询日期
      */
     @PostMapping("/getDriverWorkTime")
     public ResultVO getDriverWorkTime(String compid, String driverCode, Long dateTime) {
