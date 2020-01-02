@@ -116,7 +116,7 @@ public interface TaskPlanService {
                                                String monthStart, String monthEnd) throws ParseException;
 
     /**
-     * 司机排班LED(老版本)
+     * 司机派车LED(老版本)
      *
      * @param compid        企业id
      * @param stirId        线号/搅拌楼楼号
@@ -124,20 +124,21 @@ public interface TaskPlanService {
      * @param vehicleClass  班次
      * @return 司机排班LED
      *
-     * 此方法代码逻辑复杂，执行效率慢，新版本由getDriverShiftLEDNew方法代替。
+     * 目前前台司机派车LED页面调用的是这个方法，没有调用新版本
      */
-    @Deprecated
     List<DirverLEDListVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass);
 
 
     /**
-     * 司机排班LED(新版本)
+     * 司机派车LED(新版本)
      *
      * @param compid        企业id
      * @param stirId        线号/搅拌楼楼号
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
      * @param vehicleClass  班次
      * @return 司机排班LED
+     *
+     * 此方法优化了老版本的代码，前台还未启用
      */
     Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, String vehicleStatus, String vehicleClass);
 

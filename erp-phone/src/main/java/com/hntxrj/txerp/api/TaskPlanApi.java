@@ -249,7 +249,7 @@ public class TaskPlanApi {
 
 
     /**
-     * 司机排班LED
+     * 司机派车LED
      *
      * @param compid        企业id
      * @param stirId        线号/搅拌楼楼号
