@@ -166,7 +166,7 @@
         sum(RemnantNum)RemnantNum,
         sum(ProduceNum) as totalProduceNum,
         sum(ScrapNum) as ScrapNum,
-        sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) totalSaleNum,
+        sum(SaleNum - ReturnNum - RemnantNum - ScrapNum) totalSaleNum,
         count(VehiceNumber) vehiceNumber,
         sum(NumberOfSignings) numberOfSignings
         from PT_TaskSaleInvoice
@@ -191,6 +191,24 @@
         and pt.TaskStatus = 1
         and DeleteMark = 0
         order by pt.TaskId
+    </select>
+
+    <!--查询所有正在生产的任务单的车辆情况-->
+    <select id="getCarsByTaskIds" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
+        select tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
+        dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId,dd2.StirName
+        from PT_TaskSaleInvoice tsi
+        left join  PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+        left join VM_VehicelManagement vm on tsi.compid = vm.compid and tsi.VehicleID = vm.CarID
+        left join  DD_PublicInfo dd on vm.VehicleStatus =dd.PI_Values and dd.compid =vm.compid and dd.PI_Class =22
+        left join DD_StirInfoSet dd2 on vm.compid =dd2.compid and vm.StirId =dd2.StirId
+        where  tsi.compid =#{compid} and  tsi.TaskId in
+        <foreach collection="taskIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and InvoiceType in ('1', '2', '3', '4')
+        and vm.VehicleStatus in ('2','3')
+        order by dd.PI_TypeName, tsi.SendTime desc
     </select>
 
 
@@ -219,7 +237,7 @@
         ps.SendTime as sendTime,
         ps.Arrive_STTime as arriveTime,
         Placing,
-        (SaleNum - ReturnNum - SeparateNum - ScrapNum) saleNumTotal,
+        (SaleNum - ReturnNum - RemnantNum - ScrapNum) saleNumTotal,
         ps.StirId,
         ds.StirName as stirName,
         ps.VehicleID as vehicleID
@@ -337,14 +355,16 @@
       </select>-->
 
     <!--司机排班LED-->
-    <select id="getDriverShiftLED" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
+    <select id="getDriverShiftLED" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
         select
         vm.CarID,
         vm.StirId,
         dd.StirName,
-        vm.VehicleStatus
+        vm.VehicleStatus,
+        dp.PI_TypeName as statusName
         from VM_VehicelManagement vm
         left join DD_StirInfoSet dd on vm.compid =dd.compid and vm.StirId =dd.StirId
+        left join DD_PublicInfo dp on vm.compid=dp.compid and dp.PI_Class=45 and vm.VehicleStatus=dp.PI_Values
         where vm.compid = #{compid} and vm.RecStatus=1 and dd.RecStatus=1
         and VehicleClass ='1'
         <if test="vehicleStatus != null and vehicleStatus != '' ">
@@ -363,7 +383,7 @@
     </select>
 
     <!--调度派车中正在生产的搅拌车-->
-    <select id="getProduceCars" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
+    <select id="getProduceCars" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
         select
         vm.CarID,
         vm.StirId,

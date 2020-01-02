@@ -59,7 +59,7 @@ public enum ErrEumn {
     USER_NO_EXIT(-10000, "用户不存在"),
     ADD_USER_ERR(-10001, "添加用户失败"),
     UPDATE_USER_PARAMS_ERR(-10002, "修改用户-非法参数"),
-    UPDATE_USER_ERR(-10003, "修改用户-非法参数"),
+    UPDATE_USER_ERR(-10003, "编辑用户失败"),
     DELECT_USER_ERR(-10004, "删除用户失败"),
     LOGIN_ERR(-10005, "用户名或密码错误"),
     EXPIRE_TOKEN(-10006, "身份认证过期,请重新登录"),

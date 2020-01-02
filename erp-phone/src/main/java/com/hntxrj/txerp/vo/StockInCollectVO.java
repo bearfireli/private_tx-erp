@@ -32,7 +32,7 @@ public class StockInCollectVO {
     /*净重*/
     private double netWeight;
     /*毛重*/
-    private  double grWeight;
+    private double grWeight;
 
     /*材料规格*/
     private String matSpecs;
