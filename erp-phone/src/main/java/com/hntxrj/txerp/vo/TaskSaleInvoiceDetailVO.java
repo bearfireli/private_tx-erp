@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 public class TaskSaleInvoiceDetailVO {
 
     private Integer id;  //小票id
+    private String companyName;   //公司名称
     private String eppName;
     private String builderName;
     private String placing;

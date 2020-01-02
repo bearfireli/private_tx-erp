@@ -175,6 +175,7 @@
 
     <select id="driverGetTaskSaleInvoiceDetail" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO">
         select tsi.ID,
+               uc.longname as companyName,
                ps4.PI_TypeName                        InvoiceTypeName,
                tsi.VehicleID,
                (tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) SaleNum,
@@ -183,13 +184,13 @@
                e.EppCode,
                b.BuilderName,
                Placing,
-               shortname,
+               e.shortname,
                tsi.PersonalCode,
                vm.PersonalName,
                tsi.Distance,
                us.empname,
                SendTime,
-               tsi.StirId,
+               ds.StirName as stirId,
                ps.PI_TypeName                         placeTypeName,
                VehicleID_Jump                         jumpVehicleID,
                (tsi.SaleNum - ReturnNum - RemnantNum -tsi.ScrapNum) SaleNum,
@@ -231,6 +232,8 @@
                               vw.WeightType = 0 and tsi.StirId = vw.StirId
                  left join DD_PublicInfo it2 on it2.PI_Class = 53 and vw.WeightType = it2.PI_Values
             and tsi.compid = it2.compid
+                 left join DD_StirInfoSet ds on tsi.compid=ds.compid and tsi.StirId=ds.StirId
+                 left join User_comp uc on tsi.compid=uc.compid
         where tsi.compid = #{compid}
           and tsi.id = #{id}
     </select>
