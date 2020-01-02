@@ -11,16 +11,17 @@
             sb.builderName,
             sm.eppName,
             pt.placing,
-            count(pt.TotalVehicleNum )carNum,
+            count(tsi.VehiceNumber)carNum,
             pt.stgId,
             sum(tsi.produceNum) produceNum,
-            sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum
+            sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
             from PT_TaskSaleInvoice tsi
             left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
             left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
             left join SM_BuilderInfo sb on pt.compid =sb.compid and pt.BuilderCode =sb.BuilderCode
             where tsi.compid = #{compid}
-            and (VehiceNumber > '0')
+            /*与电脑端数据查询保持一致*/
+            /*and (VehiceNumber > '0')*/
             and (VehicleStatus = '3')
             and tsi.InvoiceType != 6
             <if test="eppCode != null and eppCode != ''">
@@ -52,16 +53,16 @@
             sb.builderName,
             sm.eppName,
             pt.placing,
-            count(pt.TotalVehicleNum )carNum,
+            count(tsi.VehiceNumber )carNum,
             pt.stgId,
             sum(tsi.produceNum) produceNum,
-            sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum
+            sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
             from PT_TaskSaleInvoice tsi
             left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
             left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
             left join SM_BuilderInfo sb on pt.compid =sb.compid and pt.BuilderCode =sb.BuilderCode
             where tsi.compid = #{compid}
-            and (VehiceNumber > '0')
+          /*  and (VehiceNumber > '0')*/
             and (VehicleStatus = '3')
             and tsi.InvoiceType != 6
             <if test="eppCode != null and eppCode != ''">
@@ -92,13 +93,13 @@
 
     <select id="getConcreteSum" resultType="com.hntxrj.txerp.vo.ConcreteVO">
         select
-        sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNumList
+        sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNumList
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
         left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
         left join SM_BuilderInfo sb on pt.compid =sb.compid and pt.BuilderCode =sb.BuilderCode
         where tsi.compid = #{compid}
-        and (VehiceNumber > '0')
+        /*and (VehiceNumber > '0')*/
         and (VehicleStatus = '3')
         and tsi.InvoiceType != 6
         <if test="eppCode != null and eppCode != ''">
@@ -158,10 +159,10 @@
     <!--产销统计中的柱状图-->
     <select id="getConcreteSaleNum" resultType="com.hntxrj.txerp.vo.ConcreteHistogram">
         <if test="timeStatus ==1">
-            select convert(char(10),SendTime,120) dateTime, sum(SaleNum - ReturnNum - SeparateNum - ScrapNum) saleNum
+            select convert(char(10),SendTime,120) dateTime, sum(SaleNum - ReturnNum - RemnantNum - ScrapNum) saleNum
             from
             (select * from PT_TaskSaleInvoice where SendTime between #{beginTime} and #{endTime}
-            and (VehiceNumber > '0')
+            /*and (VehiceNumber > '0')*/
             and (VehicleStatus = '3')
             and InvoiceType != 6) pt
             left join  PT_TaskPlan pp on pp.compid=pt.compid and pp.TaskId=pt.TaskId
@@ -181,10 +182,10 @@
             group by convert(char(10),SendTime,120) order by dateTime desc
         </if>
         <if test="timeStatus ==0">
-            select convert(char(10),Leave_STTime,120) dateTime, sum(SaleNum - ReturnNum - SeparateNum - ScrapNum)
+            select convert(char(10),Leave_STTime,120) dateTime, sum(SaleNum - ReturnNum - RemnantNum - ScrapNum)
             saleNum from
             (select * from PT_TaskSaleInvoice where Leave_STTime between #{beginTime} and #{endTime}
-            and (VehiceNumber > '0')
+            /*and (VehiceNumber > '0')*/
             and (VehicleStatus = '3')
             and InvoiceType != 6) pt
             left join  PT_TaskPlan pp on pp.compid=pt.compid and pp.TaskId=pt.TaskId
@@ -208,11 +209,11 @@
 
     <!--产销统计中的饼状图-->
     <select id="getConcreteStgIdNum" resultType="com.hntxrj.txerp.vo.ConcretePieChart">
-        select pp.StgId stgId, sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum from
+        select pp.StgId stgId, sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum from
         PT_TaskSaleInvoice tsi
         left join PT_TaskPlan pp on tsi.compid=pp.compid and pp.TaskId =tsi.TaskId
         where tsi.compid=#{compid}
-        and (VehiceNumber > '0')
+        /*and (VehiceNumber > '0')*/
         and (VehicleStatus = '3')
         and tsi.InvoiceType != 6
         <if test="eppCode != null and eppCode != ''">

@@ -46,7 +46,7 @@ public interface TaskPlanMapper {
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
      * @param vehicleClass  班次
      */
-    List<DriverShiftLEDVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass);
+    List<DispatchVehicle> getDriverShiftLED(String compid, String stirId, Integer vehicleStatus, String vehicleClass);
 
     List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId);
 
@@ -177,11 +177,21 @@ public interface TaskPlanMapper {
     void deletePPCodeStatus(String compid, String taskId);
     void updateTechnicalRequirements(String compid, String taskId, String pPNames,String concreteMark);
 
-    List<DriverShiftLEDVO> getProduceCars(String compid,String stirId);
+    List<DispatchVehicle> getProduceCars(String compid,String stirId);
 
-    List<DriverShiftLEDVO> getCarsByTaskId(String compid, String taskId);
+    List<DispatchVehicle> getCarsByTaskId(String compid, String taskId);
 
     List<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode, String personalName, String workClass, String beginTime, String endTime);
 
     List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
+
+
+    /**
+     * 查询任务单集合下的所有车辆
+     *
+     * @param compid 企业代号
+     * @param taskIds 任务单号集合
+     * @return 车辆集合
+     * */
+    List<DispatchVehicle> getCarsByTaskIds(String compid, List<String> taskIds);
 }

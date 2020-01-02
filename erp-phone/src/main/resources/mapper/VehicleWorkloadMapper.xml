@@ -199,7 +199,8 @@
         select
         tsi.VehicleID,
         count(tsi.VehicleID) carNumList,
-        vm.PersonalName
+        vm.PersonalName,
+        sum(tsi.Distance) distance
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid

@@ -249,18 +249,23 @@ public class TaskPlanApi {
 
 
     /**
-     * 司机排班LED
+     * 司机派车LED
      *
      * @param compid        企业id
      * @param stirId        线号/搅拌楼楼号
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
+     * @param isNewVersion 　新老版本标识： 1：新版本     null:老版本
      * @param vehicleClass  班次
      */
     @PostMapping("getDriverShiftLED")
     public ResultVO getDriverShiftLED(String compid, String stirId,
-                                      @RequestParam(defaultValue = "") String vehicleStatus,
+                                      Integer vehicleStatus,Integer isNewVersion,
                                       String vehicleClass) {
-        return ResultVO.create(taskPlanService.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
+        if (isNewVersion == null) {
+            return ResultVO.create(taskPlanService.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
+        }
+        return ResultVO.create(taskPlanService.getDriverShiftLEDNew(compid, stirId, vehicleStatus, vehicleClass));
+
     }
 
 
@@ -549,6 +554,8 @@ public class TaskPlanApi {
 
     /**
      * 生成任务单Id
+     *
+     * @param compid
      */
     @PostMapping("/makeAutoTaskPlanId")
     public ResultVO makeAutoTaskPlanId(String compid) throws SQLException {
@@ -558,6 +565,9 @@ public class TaskPlanApi {
 
     /**
      * 校验用户输入的任务单号是否存在
+     *
+     * @param compid   企业
+     * @param taskId  任务单号
      */
     @PostMapping("/isExistence")
     public ResultVO isExistence(String compid, String taskId) {
@@ -567,6 +577,8 @@ public class TaskPlanApi {
 
     /**
      * 获取特殊加价项目列表
+     *
+     * @param compid   企业
      */
     @PostMapping("/getPriceMarkup")
     public ResultVO getPriceMarkup(String compid) {
@@ -577,7 +589,7 @@ public class TaskPlanApi {
     /**
      * 调度派车中查询正在生产的搅拌车
      *
-     * @param compid
+     * @param compid  企业
      */
 
     @PostMapping("/getProduceCars")
