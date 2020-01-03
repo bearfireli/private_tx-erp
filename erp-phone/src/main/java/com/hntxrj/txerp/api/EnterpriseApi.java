@@ -1,6 +1,5 @@
 package com.hntxrj.txerp.api;
 
-import com.hntxrj.txerp.server.BuilderService;
 import com.hntxrj.txerp.server.EnterpriseService;
 import com.hntxrj.txerp.vo.EnterpriseVO;
 import com.hntxrj.txerp.vo.ResultVO;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class EnterpriseApi {
     private final EnterpriseService enterpriseService;
-    private ResultVO resultVO;
 
     @Autowired
     public EnterpriseApi(EnterpriseService enterpriseService) {
@@ -30,10 +28,10 @@ public class EnterpriseApi {
      * @param opid     操作员代号
      *
      * */
-    @RequestMapping("/setEnterpriseAddress")
-    public ResultVO setEnterpriseAddress(String compid,String address,String opid) {
+    @RequestMapping("/saveEnterpriseAddress")
+    public ResultVO saveEnterpriseAddress(String compid,String address,String opid) {
         enterpriseService.setEnterpriseAddress(compid, address, opid);
-        return resultVO.create();
+        return ResultVO.create();
     }
 
     /**
@@ -48,6 +46,9 @@ public class EnterpriseApi {
 
         return ResultVO.create(enterpriseVO);
     }
+
+
+
 
 
 }

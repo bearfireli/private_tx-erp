@@ -3,6 +3,7 @@ package com.hntxrj.txerp.server.impl;
 import com.hntxrj.txerp.mapper.EnterpriseMapper;
 import com.hntxrj.txerp.server.EnterpriseService;
 import com.hntxrj.txerp.vo.EnterpriseVO;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,14 @@ public class EnterpriseServiceImpl implements EnterpriseService {
      * */
     @Override
     public EnterpriseVO getEnterpriseAddress(String compid) {
-        return enterpriseMapper.selectEnterpriseAddress(compid);
+
+        EnterpriseVO enterpriseVO = enterpriseMapper.selectEnterpriseAddress(compid);
+        String addr = enterpriseVO.getAddr();
+        //如果企业没有设置搅拌站位置，则addr返回null
+        if (!addr.startsWith("{")) {
+            enterpriseVO.setAddr(null);
+        }
+
+        return enterpriseVO;
     }
 }
