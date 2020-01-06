@@ -15,7 +15,13 @@ public class LoginConstructionApi {
         this.loginConstructionService = loginConstructionService;
     }
 
-    //校对账户和密码是否正确
+    /**
+     * 校验用户名和密码是否正确
+     *
+     * @param userName  用户名
+     * @param passWord  密码
+     * @param tokens    令牌
+     */
     @RequestMapping("/getAccountPassword")
     public ResultVO getAccountPassword(String userName, String passWord, String tokens) throws ErpException {
         return ResultVO.create(loginConstructionService.getAccountPassword(userName, passWord, tokens));

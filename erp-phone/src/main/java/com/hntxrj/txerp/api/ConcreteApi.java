@@ -46,7 +46,6 @@ public class ConcreteApi {
      * @param page      　　　　页数
      * @param pageSize  　　每页显示多少条
      */
-//    @Cacheable("getConcreteCount")
     @PostMapping("/getConcreteCount")
     public ResultVO getConcreteCount(String compid, String eppCode, String placing,
                                      String taskId, String stgId,

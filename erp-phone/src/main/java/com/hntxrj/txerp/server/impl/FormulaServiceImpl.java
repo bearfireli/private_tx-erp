@@ -163,7 +163,7 @@ public class FormulaServiceImpl implements FormulaService {
             for (Map<String, Object> map : formulaList) {
                 StringBuilder ppName = new StringBuilder();
                 //根据compid和taskId查询出每个任务单对应的加价项目编号集合。
-                List<String> ppCodes = taskPlanMapper.getPPCodeBytaskId(compid, String.valueOf(map.get("TaskId")));
+                List<String> ppCodes = taskPlanMapper.getPPCodeByTaskId(compid, String.valueOf(map.get("TaskId")));
                 for (String ppCode : ppCodes) {
                     PriceMarkupVO priceMarkupVO = taskPlanMapper.getPriceMarkupByPPCode(compid, ppCode);
                     ppName.append(priceMarkupVO.getPPName());

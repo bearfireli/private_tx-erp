@@ -12,9 +12,9 @@ import java.io.Serializable;
  * @Version 1.0
  **/
 @Data
-public class bdBindVO implements Serializable {
+public class BdBindVO implements Serializable {
 
-    private String buildid;  //施工方Id
+    private String buildId;  //施工方Id
     private String compid;    //公司代号
     private String contractUID;  //主合同号
     private String contractDetailCode; //子合同号

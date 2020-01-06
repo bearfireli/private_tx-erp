@@ -61,7 +61,7 @@ public class EppApi {
     public ResultVO getBuildDropDown(String eppName, Integer buildId,
                                 @RequestParam(defaultValue = "1") Integer page,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        log.info("【获取工程名称下拉】eppName={}，compid={}, page={}, pageSize={}",
+        log.info("【获取工程名称下拉】eppName={}，buildId={}, page={}, pageSize={}",
                 eppName, buildId, page, pageSize);
         resultVO.setData(eppService.getBuildDropDown(eppName, buildId, page, pageSize));
         return resultVO;

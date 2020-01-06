@@ -63,7 +63,7 @@ public interface ConcreteService {
 
 
     /**
-     * 产销统计中柱状图数据
+     * 产销统计中饼状图数据
      * @param compid　企业
      * @param eppCode　工程代码
      * @param placing　浇筑部位

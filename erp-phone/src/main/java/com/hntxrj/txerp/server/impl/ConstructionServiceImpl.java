@@ -14,7 +14,7 @@ import com.hntxrj.txerp.mapper.ContractMapper;
 import com.hntxrj.txerp.server.ConstructionService;
 import com.hntxrj.txerp.vo.InvitationVO;
 import com.hntxrj.txerp.vo.PageVO;
-import com.hntxrj.txerp.vo.bdBindVO;
+import com.hntxrj.txerp.vo.BdBindVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,8 +92,7 @@ public class ConstructionServiceImpl implements ConstructionService {
     @Override
     public void invalidInvitationCode(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
         try {
-            int useStatus = 2;
-            constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, useStatus);
+            constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, 2);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADJUNCT_UPDATE_ERROR);
         }
@@ -104,23 +103,22 @@ public class ConstructionServiceImpl implements ConstructionService {
     @Transactional
     public void saveInvitation(String buildId, String buildInvitationCode) throws ErpException {
         //获取此邀请码绑定的合同集合
-
         List<InvitationVO> invitationVOS = constructionMapper.selectInvitation(buildInvitationCode);
         if (invitationVOS != null && invitationVOS.size() > 0) {
             for (InvitationVO invitationVO : invitationVOS) {
                 //查询此施工单位是否绑定过此合同
-                bdBindVO bdBindVO = constructionMapper.selectCompid(invitationVO.getContractDetailCode(),invitationVO.getContractUID(), buildId);
+                BdBindVO bdBindVO = constructionMapper.checkBindContract(invitationVO.getContractDetailCode(),invitationVO.getContractUID(), buildId);
                 if (bdBindVO == null) {
                     //说明此用户没有绑定过此合同
                     if (Integer.parseInt(invitationVO.getUsestatus()) == 0) {
-                        int usestatus = 1;
+                        int useStatus = 1;
                         String compid = invitationVO.getCompid();
-                        String ccontractCode = invitationVO.getContractDetailCode();
+                        String contractDetailCode = invitationVO.getContractDetailCode();
                         String contractUID = invitationVO.getContractUID();
                         //修改邀请码的使用状态为已使用
-                        constructionMapper.updateUseStatus(contractUID,ccontractCode, buildInvitationCode, usestatus);
+                        constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, useStatus);
                         //给此用户绑定合同
-                        constructionMapper.saveInvitation(buildId, compid, ccontractCode,contractUID);
+                        constructionMapper.saveInvitation(buildId, compid, contractDetailCode,contractUID);
                     } else if (Integer.parseInt(invitationVO.getUsestatus()) == 1) {
                         throw new ErpException(ErrEumn.INVITATION_USESTATUS_EXIST);
                     } else {
@@ -137,7 +135,7 @@ public class ConstructionServiceImpl implements ConstructionService {
     @Override
     public Map<String, Boolean> checkBind(String buildId) {
         Map<String, Boolean> map = new HashMap<>();
-        List<bdBindVO> bdBindVOs = constructionMapper.checkBind(buildId);
+        List<BdBindVO> bdBindVOs = constructionMapper.checkBind(buildId);
         if (bdBindVOs != null && bdBindVOs.size() > 0) {
             map.put("isBind", true);
         } else {

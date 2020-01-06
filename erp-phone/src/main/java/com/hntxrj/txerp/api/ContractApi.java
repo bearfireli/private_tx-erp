@@ -280,6 +280,14 @@ public class ContractApi {
 
     }
 
+    /**
+     * 保存合同标号价格
+     *
+     * @param compid 企业id
+     * @param contractUid 主合同号
+     * @param contractDetailCode 子合同号
+     * @param gradePrice 砼价格
+     * */
     @PostMapping("/saveContractGradePrice")
     public ResultVO saveContractGradePrice(String compid, String contractUid,
                                            String contractDetailCode, String gradePrice) throws ErpException {
@@ -287,6 +295,15 @@ public class ContractApi {
         return ResultVO.create();
     }
 
+
+    /**
+     * 保存合同加价项目
+     *
+     * @param compid 企业id
+     * @param contractUid 主合同号
+     * @param contractDetailCode 子合同号
+     * @param priceMarkup  加价项目
+     * */
     @PostMapping("/saveContractPriceMarkup")
     public ResultVO saveContractPriceMarkup(String compid, String contractUid,
                                             String contractDetailCode, String priceMarkup) throws ErpException {
@@ -381,6 +398,9 @@ public class ContractApi {
      * 泵车列表查询
      *
      * @param compid 企业代号
+     * @param builderName 工程名称
+     * @param page       页码
+     * @param pageSize   每页数量
      * @return 列表查询
      */
     @PostMapping("/selectPumpTruckList")

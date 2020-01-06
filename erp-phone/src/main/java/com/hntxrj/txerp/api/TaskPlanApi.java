@@ -97,15 +97,15 @@ public class TaskPlanApi {
 
         if (ppCodes != "" && ppCodes != null) {
             String[] ppCodeArray = ppCodes.split(",");
-            String pPNames = "";
+            String ppNames = "";
             for (String ppCode : ppCodeArray) {
                 //根据ppCode从加价从加价项目表中查询出数据
                 PriceMarkupVO priceMarkupVO = taskPlanService.getPriceMarkupByPPCode(compid, ppCode);
                 //插入任务单加价项目表中
                 taskPlanService.addTaskPriceMarkup(compid, taskId, priceMarkupVO);
-                pPNames = pPNames + priceMarkupVO.getPPName();
+                ppNames = ppNames + priceMarkupVO.getPPName();
             }
-            taskPlanService.updateTechnicalRequirements(compid, taskId, pPNames);
+            taskPlanService.updateTechnicalRequirements(compid, taskId, ppNames);
             return ResultVO.create();
         }
         ResultVO resultVO = new ResultVO();
@@ -189,13 +189,16 @@ public class TaskPlanApi {
      * 调度派车列表
      *
      * @param compid 企业代号
+     * @param searchName  搜索关键字
+     * @param page   页码
+     * @param pageSize   每页数量
      * @return 调度派车列表
      */
     @PostMapping("/getSendCarList")
     public ResultVO getSendCarList(String compid,
                                    @RequestParam(defaultValue = "1") Integer page,
                                    @RequestParam(defaultValue = "10") Integer pageSize,
-                                   @RequestParam(required = false) String searchName) {
+                                   String searchName) {
         return ResultVO.create(taskPlanService.getSendCarList(compid, searchName, page, pageSize));
     }
 
@@ -204,10 +207,10 @@ public class TaskPlanApi {
      *
      * @param compid    企业代号
      * @param vehicleId 车号
-     * @param beginTime
-     * @param endTime
-     * @param page
-     * @param pageSize
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
+     * @param page       页码
+     * @param pageSize   每页显示条数
      * @return 调度派车列表
      */
     @PostMapping("/getSendDetail")
@@ -339,7 +342,7 @@ public class TaskPlanApi {
     /**
      * 添加司机排班信息
      *
-     * @param compid       　　　企业ｉｄ
+     * @param compid       　　　企业id
      * @param opId         　　　　　当前操作员
      * @param personalCode 　　司机代码
      * @param vehicleId    车号
@@ -384,9 +387,9 @@ public class TaskPlanApi {
     }
 
     /**
-     * 查询司机
+     * 查询司机姓名
      *
-     * @param compid 企业ｉｄ
+     * @param compid 企业id
      */
     @PostMapping("/getPersonalName")
     public ResultVO getPersonalName(String compid) {
@@ -539,10 +542,9 @@ public class TaskPlanApi {
     /**
      * 获取今日预计方量
      *
-     * @param compid
-     * @param beginTime
-     * @param endTime
-     * @return
+     * @param compid  企业
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
      * @throws SQLException
      */
     @RequestMapping("/phoneStatistics")

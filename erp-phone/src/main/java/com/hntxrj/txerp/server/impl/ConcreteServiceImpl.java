@@ -107,7 +107,6 @@ public class ConcreteServiceImpl implements ConcreteService {
                                              String taskId, String stgId, String beginTime,
                                              String endTime, Integer timeStatus, Integer page, Integer pageSize) {
         PageVO<ConcreteVO> pageVO = new PageVO<>();
-//        PageHelper.startPage(page, pageSize);
         if (timeStatus == null) {
             timeStatus = 1;
         }
@@ -126,6 +125,17 @@ public class ConcreteServiceImpl implements ConcreteService {
         return pageVO;
     }
 
+
+    /**
+     * 产销统计中柱状图数据
+     * @param compid　企业
+     * @param eppCode　工程代码
+     * @param placing　浇筑部位
+     * @param taskId　　任务单号
+     * @param stgId　　　砼标记
+     * @param beginTime　　开始时间
+     * @param endTime　　　结束时间
+     */
     @Override
     public List<ConcreteHistogram> getConcreteSaleNum(String compid, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

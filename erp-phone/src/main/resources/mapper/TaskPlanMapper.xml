@@ -403,23 +403,7 @@
 
 
 
-    <!--查询所有正在生产的任务单的车辆情况-->
-    <select id="getCarsByTaskIds" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
-       select tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
-       dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId,dd2.StirName
-        from PT_TaskSaleInvoice tsi
-         left join  PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
-         left join VM_VehicelManagement vm on tsi.compid = vm.compid and tsi.VehicleID = vm.CarID
-        left join  DD_PublicInfo dd on vm.VehicleStatus =dd.PI_Values and dd.compid =vm.compid and dd.PI_Class =22
-        left join DD_StirInfoSet dd2 on vm.compid =dd2.compid and vm.StirId =dd2.StirId
-        where  tsi.compid =#{compid} and  tsi.TaskId in
-        <foreach collection="taskIds" index="index" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-        and InvoiceType in ('1', '2', '3', '4')
-        and vm.VehicleStatus in ('2','3')
-        order by dd.PI_TypeName, tsi.SendTime desc
-    </select>
+
 
     <!--施工方App使用的LED功能，只查询生产中的车辆-->
     <select id="getProductDriverShiftLED" resultType="com.hntxrj.txerp.vo.ProductDriverLEDVo">
@@ -553,18 +537,23 @@
             Remarks=#{remarks},
             WorkStarTime=#{workStarTime},
             WorkOverTime=#{workOverTime},
-            CreateTime=#{createTime}
+            CreateTime=#{createTime},
+            UpDownMark=0
         where compid = #{compid}
           and ID = #{id}
     </update>
     <update id="updateTechnicalRequirements">
-        update PT_TaskPlan set TechnicalRequirements = #{pPNames},concreteMark =#{concreteMark} where compid =#{compid} and taskid =#{taskId}
+        update PT_TaskPlan set
+        TechnicalRequirements = #{ppNames},
+        concreteMark =#{concreteMark} ,
+        UpDownMark=0
+        where compid =#{compid} and taskid =#{taskId}
     </update>
 
-    <select id="selectid" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
-        select TaskId
+    <select id="selectId" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
+        select TaskIdI
         from PT_TaskPlan
-        where TaskId like #{taskid} + '%' and len(TaskId)=10
+        where TaskId like #{taskId} + '%' and len(TaskId)=10
     </select>
 
     <!--任务单生产配比日志查询-->
@@ -899,7 +888,7 @@
     </insert>
 
 
-    <select id="getPPCodeBytaskId" resultType="string">
+    <select id="getPPCodeByTaskId" resultType="string">
         select PPCode from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
     </select>
     <select id="getSystemVarInit" resultType="com.hntxrj.txerp.vo.SystemVarInitVO">

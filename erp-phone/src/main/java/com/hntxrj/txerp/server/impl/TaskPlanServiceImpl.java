@@ -70,7 +70,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     @Override
     public TaskPlanVO getTaskPlanDetail(String compid, String taskId) {
-        List<String> ppCodes = taskPlanMapper.getPPCodeBytaskId(compid, taskId);
+        List<String> ppCodes = taskPlanMapper.getPPCodeByTaskId(compid, taskId);
         TaskPlanVO taskPlanVO = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
         taskPlanVO.setPpCodes(ppCodes);
         return taskPlanVO;
@@ -928,8 +928,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(),priceMarkupVO.getUnitPrice(),priceMarkupVO.getSelfDiscPrice(),priceMarkupVO.getJumpPrice(),priceMarkupVO.getTowerCranePrice(),priceMarkupVO.getOtherPrice());
     }
 
+
+    /**
+     * 修改任务单技术要求
+     */
     @Override
-    public void updateTechnicalRequirements(String compid,String taskId, String pPNames) {
+    public void updateTechnicalRequirements(String compid,String taskId, String ppNames) {
         //根据compid查询系统变量
         SystemVarInitVO systemVarInitVO = taskPlanMapper.getSystemVarInit(compid);
         TaskPlanVO taskPlan = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
@@ -950,10 +954,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
         if (systemVarInitVO !=null){
             if (systemVarInitVO.getVarValue()==1){
-                if (!("").equals(pPNames)){
-                    String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag +"-"+ pPNames +"-GB/T14902";
+                if (!("").equals(ppNames)){
+                    String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag +"-"+ ppNames +"-GB/T14902";
                     //把选择的特殊材料名称添加到技术要求里面
-                    taskPlanMapper.updateTechnicalRequirements(compid,taskId,pPNames,concreteMark);
+                    taskPlanMapper.updateTechnicalRequirements(compid,taskId,ppNames,concreteMark);
                 }
             }
         }
@@ -1031,6 +1035,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         return pageVO;
     }
 
+    //任务单号拼接
     private String taskPlanSplicing(String compid) {
         int page = 0;
         int pageSize = 1;
@@ -1038,16 +1043,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         SimpleDateFormat sdf2 = new SimpleDateFormat("yy");
         Date date = new Date();
         String year = sdf2.format(date);
-        String taskid = "P" + compid + year;
+        String taskId = "P" + compid + year;
         PageHelper.startPage(page, pageSize, "TaskId desc");
-        TaskPlanListVO selectid = taskPlanMapper.selectid(taskid);
-        if (selectid != null) {
-            taskid = makeTaskId(compid, selectid.getTaskId());
+        TaskPlanListVO selectId = taskPlanMapper.selectId(taskId);
+        if (selectId != null) {
+            taskId = makeTaskId(compid, selectId.getTaskId());
         } else {
-            taskid = "p" + compid + year + "00001";
+            taskId = "p" + compid + year + "00001";
         }
 
-        return taskid;
+        return taskId;
     }
 
     //派车LED模块：根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
