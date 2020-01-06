@@ -14,7 +14,7 @@ public interface ConstructionService {
      * @param compid   企业
      * @param opid     操作人
      * @param contractDetailCodes     子合同号集合
-     * @return   生成邀请码
+     * @return   邀请码
      */
     InvitationVO getInvitationCode(String compid, Integer  opid, String contractDetailCodes) throws ErpException;
 

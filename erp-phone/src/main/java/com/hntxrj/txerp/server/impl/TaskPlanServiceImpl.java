@@ -193,7 +193,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        // TODO: 司机只能查询自己的信息
         List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
 
         //查询出所有正在生产的任务单号集合。
@@ -954,7 +953,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
         if (systemVarInitVO !=null){
             if (systemVarInitVO.getVarValue()==1){
-                if (!("").equals(ppNames)){
+                if (!"".equals(ppNames)){
                     String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag +"-"+ ppNames +"-GB/T14902";
                     //把选择的特殊材料名称添加到技术要求里面
                     taskPlanMapper.updateTechnicalRequirements(compid,taskId,ppNames,concreteMark);

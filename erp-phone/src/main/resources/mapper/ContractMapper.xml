@@ -186,7 +186,7 @@
              ON SP.compid = SM.compid
                  AND SP.Pumptype = SM.Pumptype
         where SP.compid = #{compid}
-          AND SP.CContractCode = #{cContractCode}
+          AND SP.CContractCode = #{contractDetailCode}
           AND SP.ContractUID = #{contractUID}
           AND SP.RecStatus = '1'
     </select>
@@ -249,7 +249,7 @@
         from SM_ContractDistanceSet sc
                  left join User_comp us on sc.compid = us.compid
         where sc.compid = #{compid}
-          and sc.CContractCode = #{cContractCode}
+          and sc.CContractCode = #{contractDetailCode}
           and sc.ContractUID = #{contractUID}
           and SC.RecStatus = 1
     </select>
@@ -269,7 +269,7 @@
          UpDown,
          UpDownMark)
         VALUES (#{contractUID},
-                #{cContractCode},
+                #{contractDetailCode},
                 #{compid},
                 #{distance},
                 #{remarks},
@@ -288,7 +288,7 @@
          Remarks=#{remarks},
          UpDownMark=0,
          UpDown=0
-        where compid=#{compid} and ContractUID=#{contractUID} and CContractCode=#{cContractCode}
+        where compid=#{compid} and ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
 
     </insert>
 

@@ -109,21 +109,21 @@ public interface ContractMapper {
 
     /**
      * @param compid        企业id
-     * @param cContractCode 子合同号
+     * @param contractDetailCode 子合同号
      * @param contractUID   合同法UID
      * @return ContractPumperVO
      */
-    List<ContractPumperVO> getContractPumperPrice(String compid, String cContractCode, String contractUID);
+    List<ContractPumperVO> getContractPumperPrice(String compid, String contractDetailCode, String contractUID);
 
     /**
      * 合同运距
      *
      * @param compid        企业ID
      * @param contractUID   合同UID
-     * @param cContractCode 子合同号
+     * @param contractDetailCode 子合同号
      * @return 站名 运输距离
      */
-    ContractDistanceVO getContractDistance(String compid, String contractUID, String cContractCode);
+    ContractDistanceVO getContractDistance(String compid, String contractUID, String contractDetailCode);
 
     /**
      * 插入泵车类价格数据
@@ -147,7 +147,7 @@ public interface ContractMapper {
      * 添加合同运距
      *
      * @param contractUID   合同UID号
-     * @param cContractCode 子合同号
+     * @param contractDetailCode 子合同号
      * @param compid        站别代号
      * @param distance      运输距离
      * @param recStatus     标志
@@ -156,7 +156,7 @@ public interface ContractMapper {
      * @param upDownMark    上传标识
      * @return int
      */
-    Integer saveContractDistance(String contractUID, String cContractCode, String compid, Double distance,
+    Integer saveContractDistance(String contractUID, String contractDetailCode, String compid, Double distance,
                                  String remarks, Integer recStatus, Double upDown, Integer upDownMark);
 
     /**
@@ -200,15 +200,15 @@ public interface ContractMapper {
 
     /**
      * 修改合同运距
-     * <p>
-     * * @param contractUID     主合同号
-     * * @param cContractCode    子合同号
-     * * @param compid     站别代号
-     * * @param distance     运距
-     * * @param remarks     备注
-     * * @param recStatus     状态
+     *
+     * @param contractUID     主合同号
+     * @param contractDetailCode    子合同号
+     * @param compid     站别代号
+     * @param distance     运距
+     * @param remarks     备注
+     * @param recStatus     状态
      */
-    void updateContractDistance(String contractUID, String cContractCode, String compid, Double distance, String remarks, Integer recStatus);
+    void updateContractDistance(String contractUID, String contractDetailCode, String compid, Double distance, String remarks, Integer recStatus);
 
 
     /**

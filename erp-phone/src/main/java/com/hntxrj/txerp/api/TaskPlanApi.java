@@ -97,15 +97,17 @@ public class TaskPlanApi {
 
         if (ppCodes != "" && ppCodes != null) {
             String[] ppCodeArray = ppCodes.split(",");
-            String ppNames = "";
+
+            //拼接加价项目名称
+            StringBuilder ppNames=new StringBuilder();
             for (String ppCode : ppCodeArray) {
                 //根据ppCode从加价从加价项目表中查询出数据
                 PriceMarkupVO priceMarkupVO = taskPlanService.getPriceMarkupByPPCode(compid, ppCode);
                 //插入任务单加价项目表中
                 taskPlanService.addTaskPriceMarkup(compid, taskId, priceMarkupVO);
-                ppNames = ppNames + priceMarkupVO.getPPName();
+                ppNames.append(priceMarkupVO.getPPName());
             }
-            taskPlanService.updateTechnicalRequirements(compid, taskId, ppNames);
+            taskPlanService.updateTechnicalRequirements(compid, taskId, ppNames.toString());
             return ResultVO.create();
         }
         ResultVO resultVO = new ResultVO();

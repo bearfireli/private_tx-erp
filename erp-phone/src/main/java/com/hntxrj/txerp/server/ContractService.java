@@ -430,14 +430,14 @@ public interface ContractService {
      * 上传合同附件
      *
      * @param contractUid   合同uid
-     * @param ccontractCode 子合同代号
+     * @param contractDetailCode 子合同代号
      * @param num           第几个文件
      * @param file          文件对象
      * @param compid        企业id
      * @return 保存后的该合同附件内容
      * @throws ErpException 上传失败
      */
-    List<Adjunct> uploadAdjunct(String contractUid, String ccontractCode,
+    List<Adjunct> uploadAdjunct(String contractUid, String contractDetailCode,
                                 Integer num, MultipartFile file, String compid) throws ErpException;
 
 
@@ -453,11 +453,11 @@ public interface ContractService {
      * 获取附件列表
      *
      * @param contractUid   合同uid
-     * @param ccontractCode 子合同代号
+     * @param contractDetailCode 子合同代号
      * @param compid        企业id
      * @return 保存后的该合同附件内容
      */
-    List<Adjunct> getAdjunct(String contractUid, String ccontractCode, String compid);
+    List<Adjunct> getAdjunct(String contractUid, String contractDetailCode, String compid);
 
 
     /**
@@ -526,12 +526,12 @@ public interface ContractService {
 
     /**
      * @param compid        企业id
-     * @param cContractCode 子合同号
+     * @param contractDetailCode 子合同号
      * @param contractUID   合同法UID
      *
      * @return ContractPumperVO
      */
-    List<ContractPumperVO> getContractPumperPrice(String compid, String cContractCode, String contractUID) throws ErpException;
+    List<ContractPumperVO> getContractPumperPrice(String compid, String contractDetailCode, String contractUID) throws ErpException;
 
 
     /**
@@ -539,17 +539,17 @@ public interface ContractService {
      *
      * @param compid        企业ID
      * @param contractUID   合同UID
-     * @param cContractCode 子合同号
+     * @param contractDetailCode 子合同号
      * @return 站名 运输距离
      */
-    ContractDistanceVO getContractDistance(String compid, String contractUID, String cContractCode) throws ErpException;
+    ContractDistanceVO getContractDistance(String compid, String contractUID, String contractDetailCode) throws ErpException;
 
 
     /**
      * 添加合同运距
      *
      * @param contractUID   合同UID号
-     * @param cContractCode 子合同号
+     * @param contractDetailCode 子合同号
      * @param compid        站别代号
      * @param distance      运输距离
      * @param recStatus     标志
@@ -558,7 +558,7 @@ public interface ContractService {
      * @param upDownMark    上传标识
      * @return int
      */
-    ResultVO saveContractDistance(String contractUID, String cContractCode, String compid, Double distance,
+    ResultVO saveContractDistance(String contractUID, String contractDetailCode, String compid, Double distance,
                                   String remarks,
                                   Integer recStatus, Double upDown,
                                   Integer upDownMark) throws ErpException;

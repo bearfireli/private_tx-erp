@@ -21,7 +21,7 @@
         tp.PreNum,
         sum(ProduceNum) overNum,
         tp.ContractUID,
-        tp.CContractCode as ccontractCode,
+        tp.CContractCode as contractDetailCode,
         tp.TaskStatus,
         tp.VerifyStatus,
         tp.EPPCode,
@@ -479,12 +479,6 @@
         <if test="personalName !=null or vehicleId !=null ">
             and (PersonalName like '%'+#{personalName}+'%' or VehicleId like '%'+#{vehicleId}+'%')
         </if>
-        <!--        <if test="beginTime != null and beginTime != ''">-->
-        <!--            and vs.WorkStarTime <![CDATA[ >= ]]>  #{beginTime}-->
-        <!--        </if>-->
-        <!--        <if test="endTime != null and endTime != ''">-->
-        <!--            and vs.WorkOverTime <![CDATA[ <= ]]> #{endTime}-->
-        <!--        </if>-->
 
     </select>
 

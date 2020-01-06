@@ -260,7 +260,7 @@ public interface TaskPlanMapper {
     QueryTimeSetVO queryTimeTask(String compid);
 
     /**
-     * 查询当天任务单总
+     * 查询当天任务单总数
      */
     List<TodayTaskVO> todayTask(String compid, String beginTime, String endTime);
 
