@@ -152,8 +152,7 @@ public class ConstructionServiceImpl implements ConstructionService {
      * @return 返回是否通过
      */
     private String checkTokenIsNormal(Integer uid) {
-        String baseUrl = "";
-        baseUrl = url + "/user/getUser";
+        String baseUrl = url + "/user/getUser";
         Map<String, Object> map = new HashMap<>();
         map.put("uid", uid);
         Header[] headers = HttpHeader.custom()
@@ -182,7 +181,6 @@ public class ConstructionServiceImpl implements ConstructionService {
 
             e.printStackTrace();
         }
-        baseUrl = "";
         return pass;
     }
 

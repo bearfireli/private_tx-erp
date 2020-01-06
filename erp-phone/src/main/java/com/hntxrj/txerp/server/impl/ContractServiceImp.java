@@ -821,14 +821,14 @@ public class ContractServiceImp implements ContractService {
      * @param opid         操作员代号
      * @param contractUID  合同uid号
      * @param contractCode 子合同号
-     * @param pumptype     泵车类别
+     * @param pumpType     泵车类别
      * @param pumPrice     泵送单价
      * @param tableExpense 台班费
      */
     @Override
     @Transactional
     public ResultVO insertPumpTruck(String compid, String opid, String contractUID, String contractCode,
-                                    Integer pumptype, Double pumPrice, Double tableExpense) throws ErpException {
+                                    Integer pumpType, Double pumPrice, Double tableExpense) throws ErpException {
 
         //判断合同是否审核，如果已经审核，则无法添加泵车价格。
         if (getContractVerifyStatus(contractUID, contractCode, compid)) {
@@ -839,16 +839,16 @@ public class ContractServiceImp implements ContractService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = sdf.format(date);
 
-            Integer pump = contractMapper.selectPumpTruck(compid, pumptype, contractUID, contractCode);
+            Integer pump = contractMapper.selectPumpTruck(compid, pumpType, contractUID, contractCode);
             if (pump == null) {
                 Integer row = contractMapper.insertPumpTruck(compid, opid, contractUID, contractCode,
-                        pumptype, pumPrice, tableExpense, createTime);
+                        pumpType, pumPrice, tableExpense, createTime);
                 if (row == null || row == 0) {
                     throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
                 }
             } else {
                 contractMapper.updatePumpTruck(compid, opid, contractUID, contractCode,
-                        pumptype, pumPrice, tableExpense, createTime);
+                        pumpType, pumPrice, tableExpense, createTime);
             }
 
         } catch (Exception e) {

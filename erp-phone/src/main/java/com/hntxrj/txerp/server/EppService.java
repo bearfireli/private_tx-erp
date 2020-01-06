@@ -51,7 +51,23 @@ public interface EppService {
     PageVO<EppDropDownVO> getDropDown(String eppName, String compid, Integer page, Integer pageSize);
 
 
+    /**
+     * 获取工程名称
+     * @param eppCode   工程代号
+     * @param compid     企业id
+     * @return 工程对象
+     * */
     EppInfo getEppInfo(String eppCode, String compid);
 
+
+    /**
+     * 获取工地端App工程名称下拉
+     *
+     * @param eppName  工程名称模糊查询
+     * @param buildId   企业id
+     * @param page     页码
+     * @param pageSize 每页数量
+     * @return 带分页工程下拉列表
+     */
     PageVO<EppDropDownVO> getBuildDropDown(String eppName, Integer buildId, Integer page, Integer pageSize);
 }

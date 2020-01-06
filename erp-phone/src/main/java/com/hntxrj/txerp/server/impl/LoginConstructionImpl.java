@@ -15,12 +15,12 @@ import java.util.UUID;
 
 //登录业务层
 @Service
-public class LoginCOnstructionImpl implements LoginConstructionService {
+public class LoginConstructionImpl implements LoginConstructionService {
 
     private final LoginConstructionMapper loginConstructionMapper;
     private final RedisUtil<LoginClibationVO> redisUtil;
 
-    public LoginCOnstructionImpl(LoginConstructionMapper loginConstructionMapper, RedisUtil<LoginClibationVO> redisUtil) {
+    public LoginConstructionImpl(LoginConstructionMapper loginConstructionMapper, RedisUtil<LoginClibationVO> redisUtil) {
         this.loginConstructionMapper = loginConstructionMapper;
         this.redisUtil = redisUtil;
     }
@@ -60,7 +60,7 @@ public class LoginCOnstructionImpl implements LoginConstructionService {
 
     @Override
     public void addUser(String userName, String passWord,String buildName) throws ErpException {
-        BuildAccountsVO user = loginConstructionMapper.findBybuildId(userName);
+        BuildAccountsVO user = loginConstructionMapper.findByBuildId(userName);
         if (user != null) {
             throw new ErpException(ErrEumn.ADD_USER_PHONE_EXIST);
         }

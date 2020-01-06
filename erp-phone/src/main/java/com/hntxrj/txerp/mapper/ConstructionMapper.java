@@ -20,7 +20,6 @@ public interface ConstructionMapper {
      * @param opid                操作人
      * @param date                日期
      * @param contractUID         主合同号
-     * @return 生成邀请码
      */
     void getInvitationCode(String buildInvitationCode, String compid, String contractDetailCode,
                            Integer useStatus, Integer opid, Date date, String contractUID);

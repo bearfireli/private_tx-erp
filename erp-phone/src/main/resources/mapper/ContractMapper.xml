@@ -236,7 +236,7 @@
           RecStatus=1,
           UpDownMark=0,
           UpDown=0
-        where compid=#{compid} and  Pumptype=#{pumptype}
+        where compid=#{compid} and  Pumptype=#{pumpType}
         and  ContractUID=#{contractUID} and CContractCode=#{contractCode}
     </select>
 
@@ -376,7 +376,7 @@
     <select id="getContractVerifyStatus" resultType="java.lang.Boolean">
         select VerifyStatus from SM_ContractDetail
         where ContractUID=#{contractUID}
-         and CContractCode=#{cContractCode}
+         and CContractCode=#{contractDetailCode}
           and compid=#{compid}
           and RecStatus=1
     </select>
