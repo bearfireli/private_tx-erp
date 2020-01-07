@@ -2,14 +2,16 @@ package com.hntxrj.txerp.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  * 小票签收需求
  */
 @Data
-public class TaskSaleInvoiceDetailVO {
+public class TaskSaleInvoiceDetailVO implements Serializable {
 
+    private String taskId;
     private Integer id;  //小票id
     private String companyName;   //公司名称
     private String eppName;

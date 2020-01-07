@@ -642,7 +642,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         if (user.getUid() <= 0) {
             //当修改用户或找不到该用户的id时
-            throw new ErpException(ErrEumn.UPDATE_USER_PARAMS_ERR);
+            throw new ErpException(ErrEumn.USER_NO_EXIT);
         }
         if (user.getErpType() != null) {
             oldUser.setErpType(user.getErpType());

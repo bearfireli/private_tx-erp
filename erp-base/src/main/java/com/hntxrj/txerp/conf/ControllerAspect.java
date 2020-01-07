@@ -46,6 +46,7 @@ public class ControllerAspect {
     private static final String USER_GETUSERFAVORITE = "/user/getUserFavorite";
     private static final String UPLOADPICTURE = "/enterprise/uploadPicture";
     private static final String SAVECOLLECTIONCODE = "/enterprise/saveCollectionCode";
+    private static final String USER_EXPIRE_TIME = "/v1/project/getExpireTime";
 
 
     private static final String DOCUMENT_URI = "/swagger";
@@ -66,7 +67,8 @@ public class ControllerAspect {
 
     private static final String[] PUBLIC_API_LIST = new String[]{
             LOGIN_API, TOKEN_USE, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API, FAVICON, JOURNALISM_LIST
-            , JOURNALISM_BYID, JOURNALISM_SELECT_LIST,GETAUTHVALUE,USER_SETUSERFAVORITE,USER_GETUSERFAVORITE,UPLOADPICTURE,SAVECOLLECTIONCODE
+            , JOURNALISM_BYID, JOURNALISM_SELECT_LIST,GETAUTHVALUE,USER_SETUSERFAVORITE,USER_GETUSERFAVORITE,UPLOADPICTURE,SAVECOLLECTIONCODE,
+            USER_EXPIRE_TIME
     };
 
     private static final String[] PUBLIC_PATH = new String[]{

@@ -4,7 +4,7 @@
     <!--原材料明细汇总-->
     <select id="getMatDetailsList" resultType="com.hntxrj.txerp.vo.StockInCollectVO">
         select mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,sum(si.ClWeight) as
-        clWeight,si.TaWeight,mt.MatSpecs,si.NetWeight as netWeight,sl.Sup_LinkMan as linkMan
+        clWeight,si.TaWeight,mt.MatSpecs,si.NetWeight as netWeight,sl.Sup_LinkMan as linkMan,si.GrWeight
         from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
@@ -26,7 +26,7 @@
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
         group by
-        mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,si.TaWeight,mt.MatSpecs,si.NetWeight,sl.Sup_LinkMan
+        mt.MatName,si.StICode,si.FirstTime,si.SecondTime,sl.Sup_Name,si.VehicleID,si.TaWeight,mt.MatSpecs,si.NetWeight,sl.Sup_LinkMan,si.GrWeight
     </select>
     <!--原材料明细汇总合计入库量-->
     <select id="getStockInCollectClose" resultType="com.hntxrj.txerp.vo.StockInCollectCloseVO">

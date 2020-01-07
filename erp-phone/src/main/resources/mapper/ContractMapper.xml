@@ -41,7 +41,7 @@
             and cm.SignDate <![CDATA[ <= ]]>  #{endTime}
         </if>
         <if test="contractCode != null">
-            and cm.ContractId like '%'+#{contractCode}+'%'
+            and cm.ContractId like '%'+#{contractDetailCode}+'%'
         </if>
         <if test="verifyStatus != null">
             and cd.verifyStatus = #{verifyStatus}
@@ -186,7 +186,7 @@
              ON SP.compid = SM.compid
                  AND SP.Pumptype = SM.Pumptype
         where SP.compid = #{compid}
-          AND SP.CContractCode = #{cContractCode}
+          AND SP.CContractCode = #{contractDetailCode}
           AND SP.ContractUID = #{contractUID}
           AND SP.RecStatus = '1'
     </select>
@@ -201,7 +201,7 @@
                ,
                  #{contractUID}
                ,
-                 #{contractCode}
+                 #{contractDetailCode}
                ,
                  #{opid}
                ,
@@ -222,7 +222,7 @@
         where compid=#{compid}
         and Pumptype=#{pumpType}
         and contractUID=#{contractUID}
-        and CContractCode=#{contractCode}
+        and CContractCode=#{contractDetailCode}
     </select>
 
 
@@ -236,8 +236,8 @@
           RecStatus=1,
           UpDownMark=0,
           UpDown=0
-        where compid=#{compid} and  Pumptype=#{pumptype}
-        and  ContractUID=#{contractUID} and CContractCode=#{contractCode}
+        where compid=#{compid} and  Pumptype=#{pumpType}
+        and  ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
     </select>
 
 
@@ -249,7 +249,7 @@
         from SM_ContractDistanceSet sc
                  left join User_comp us on sc.compid = us.compid
         where sc.compid = #{compid}
-          and sc.CContractCode = #{cContractCode}
+          and sc.CContractCode = #{contractDetailCode}
           and sc.ContractUID = #{contractUID}
           and SC.RecStatus = 1
     </select>
@@ -269,7 +269,7 @@
          UpDown,
          UpDownMark)
         VALUES (#{contractUID},
-                #{cContractCode},
+                #{contractDetailCode},
                 #{compid},
                 #{distance},
                 #{remarks},
@@ -288,7 +288,7 @@
          Remarks=#{remarks},
          UpDownMark=0,
          UpDown=0
-        where compid=#{compid} and ContractUID=#{contractUID} and CContractCode=#{cContractCode}
+        where compid=#{compid} and ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
 
     </insert>
 
@@ -376,9 +376,54 @@
     <select id="getContractVerifyStatus" resultType="java.lang.Boolean">
         select VerifyStatus from SM_ContractDetail
         where ContractUID=#{contractUID}
-         and CContractCode=#{cContractCode}
+         and CContractCode=#{contractDetailCode}
           and compid=#{compid}
           and RecStatus=1
+    </select>
+
+    <select id="getContractUID" resultType="java.lang.String">
+        select ContractUID from SM_ContractDetail
+        where compid=#{compid}
+        and CContractCode=#{contractDetailCode}
+    </select>
+
+
+    <!--工地端App添加任务单时选择合同调用的接口，只能查询已绑定的合同-->
+    <select id="getBuildContractListByEppOrBuild" resultType="com.hntxrj.txerp.vo.ContractListVO">
+        select cd.EPPCode,
+        cd.BuilderCode,
+        epp.EPPName,
+        bu.BuilderShortName builderName,
+        cm.ContractUID,
+        cm.ContractId,
+        cd.CContractCode contractDetailCode,
+        cm.compid as compid,
+        cd.Address,
+        cd.ContractNum,
+        cd.ContractStatus,
+        cm.SignDate,
+        cm.Salesman,
+        bg.ScaleName,
+        cd.VerifyStatus
+        from SM_ContractMaster cm
+        left join SM_ContractDetail cd on cm.ContractUID = cd.ContractUID and cm.compid=cd.compid
+        left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid=epp.compid
+        left join SM_BuilderInfo bu on cd.BuilderCode = bu.BuilderCode and cd.compid=bu.compid
+        left join  SM_BusinessGroup bg on  bg.compid = cm.compid  and  bg.SalesmanCode = cm.Salesman
+        where  cm.RecStatus=1
+        and cd.RecStatus=1
+        and cd.verifyStatus = 1
+        and cd.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and cm.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="searchName != null and searchName!='' ">
+            and (epp.EPPName like '%'+#{searchName}+'%' or bu.BuilderShortName like '%'+#{searchName}+'%')
+        </if>
 
     </select>
 

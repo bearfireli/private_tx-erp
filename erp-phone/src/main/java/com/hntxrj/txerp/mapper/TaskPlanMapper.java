@@ -1,33 +1,63 @@
 package com.hntxrj.txerp.mapper;
 
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 @Mapper
 public interface TaskPlanMapper {
 
+    /**
+     * 获取任务单列表
+     *
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param eppCode     工程代号
+     * @param builderCode 施工单位代号
+     * @param placing     浇筑部位
+     * @param taskId      任务单号
+     * @param taskStatus  任务单状态
+     * @param compid      企业id
+     * @return 任务单列表对象
+     */
     List<TaskPlanListVO> getTaskPlanList(String beginTime, String endTime, String eppCode,
                                          String builderCode, String placing, String taskId,
-                                         Integer taskStatus, String compid,Integer verifyStatus);
+                                         Integer taskStatus, String compid, Integer verifyStatus);
 
 
+    /**
+     * 审核任务单
+     *
+     * @param taskId       任务单id
+     * @param compid       企业id
+     * @param verifyStatus 审核状态
+     * @return 任务单列表对象
+     */
     void verifyTaskPlan(String taskId, String compid, Integer verifyStatus, Date verifyTime);
 
+    /**
+     * 获取任务单
+     *
+     * @param taskId 任务单id
+     * @param compid 企业id
+     */
     TaskPlanVO getTaskPlanByTaskId(String compid, String taskId);
 
 
     /**
      * 调度派车列表
      *
-     * @param compid 企业代号
+     * @param compid     企业代号
+     * @param searchName 搜索关键字
      * @return 调度派车列表
      */
-    List<SendCarListVO> getSendCarList(String compid,String searchName);
+    List<SendCarListVO> getSendCarList(String compid, String searchName);
 
 
     /**
@@ -46,22 +76,30 @@ public interface TaskPlanMapper {
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
      * @param vehicleClass  班次
      */
-    List<DriverShiftLEDVO> getDriverShiftLED(String compid, String stirId, String vehicleStatus, String vehicleClass);
+    List<DispatchVehicle> getDriverShiftLED(String compid, String stirId, Integer vehicleStatus, String vehicleClass);
 
-    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId,int vehicleStatus);
+
+    /**
+     * 司机App中的司机排班LED
+     *
+     * @param compid 企业id
+     * @param stirId 线号
+     * @return 司机排班LED
+     */
+    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId);
 
     /**
      * 司机排班列表信息
      *
      * @param compid       企业ｉｄ
      * @param vehicleId    车号
-     * @param personalCode 司机
+     * @param personalCode 司机代号
      * @param workClass    班次状态
      * @param beginTime    　　　　　开始时间
      * @param endTime      结束时间
      */
     List<DriverShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode, String personalName,
-                                               String workClass, String beginTime, String endTime);
+                                                  String workClass, String beginTime, String endTime);
 
     /**
      * 查询司机
@@ -136,52 +174,209 @@ public interface TaskPlanMapper {
     List<SendCarTotalNumVO> getMonthTotalNum(String compid, String monthStart, String monthEnd);
 
 
-    TaskPlanListVO selectid(String taskid);
+    /**
+     * 获取任务单号
+     */
+    TaskPlanListVO selectId(String taskId);
 
+
+    /**
+     * 任务单生产配比日志查询
+     *
+     * @param compid      企业代码
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param formulaCode 配比编号
+     * @param stgId       砼标号
+     * @param stirId      搅拌楼
+     * @param eppCode     工程代码
+     * @param placing     浇筑部位
+     * @param taskId      任务单号
+     * @return 任务单生产配比日志查询
+     */
     List<ProductionRatioVO> getProductionRatio(String compid, String beginTime, String endTime,
                                                String formulaCode, String stgId, String stirId,
                                                String eppCode, String placing, String taskId);
 
+    /**
+     * 任务单理论配比日志查询
+     *
+     * @param compid      企业代码
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param formulaCode 配比编号
+     * @param stgId       砼标号
+     * @param stirId      搅拌楼
+     * @param eppCode     工程代码
+     * @param placing     浇筑部位
+     * @param taskId      任务单号
+     * @return 任务单理论配比日志查询
+     */
     List<ProductionRatioVO> getTheoreticalproportioning(String compid, String beginTime,
                                                         String endTime, String formulaCode,
                                                         String stgId, String stirId, String eppCode, String placing,
                                                         String taskId);
 
 
+    /**
+     * 获取方量统计
+     *
+     * @param compid    　企业
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     */
     SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime);
 
+    /**
+     * 从DD_QueryTimeSet表中获取用户自定义查询时间
+     *
+     * @param compid    　企业
+     * @param queryType 　查询统计类型
+     */
     QueryTimeSetVO getQueryTime(String compid, int queryType);
 
+    /**
+     * 获取今日预计方量
+     *
+     * @param compid    企业
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     */
     SquareQuantityVO phoneStatistics(String compid, String beginTime, String endTime);
 
+    /**
+     * 预计方量
+     */
     SquareQuantityVO taskPlanPreNum(String compid, String beginTime, String endTime);
 
+    /**
+     * 用户自定义时间查询
+     */
     QueryTimeSetVO queryTimeId(String compid);
 
+    /**
+     * 用户自定义任务单预览时间查询
+     */
     QueryTimeSetVO queryTimeTask(String compid);
 
+    /**
+     * 查询当天任务单总数
+     */
     List<TodayTaskVO> todayTask(String compid, String beginTime, String endTime);
 
-    Integer getTaskIdCount(String compid, String taskId);
+    /**
+     * 判断任务单是否存在
+     */
+    Integer checkTaskIdExit(String compid, String taskId);
 
+    /**
+     * 获取加价项目
+     */
     List<PriceMarkupVO> getPriceMarkup(String compid);
 
-    PriceMarkupVO getPriceMarkupByPPCode(String compid,String ppCode);
+    /**
+     * 根据加价项目编号获取加价项目名称
+     *
+     * @param compid 企业
+     * @param ppCode 加价项目代号
+     */
+    PriceMarkupVO getPriceMarkupByPPCode(String compid, String ppCode);
 
+    /**
+     * 添加加价项目
+     *
+     * @param compid          企业
+     * @param taskId          任务单
+     * @param ppCode          加价项目编号
+     * @param unitPrice       单价
+     * @param selfDiscPrice   自卸价
+     * @param jumpPrice       泵送价
+     * @param towerCranePrice 塔吊价
+     * @param otherPrice      其他价
+     */
     void addTaskPriceMarkup(String compid, String taskId, String ppCode, BigDecimal unitPrice, BigDecimal selfDiscPrice, BigDecimal jumpPrice, BigDecimal towerCranePrice, BigDecimal otherPrice);
 
-    List<String> getPPCodeBytaskId(String compid, String taskId);
+    /**
+     * 获取加价项目编号
+     */
+    List<String> getPPCodeByTaskId(String compid, String taskId);
 
+    /**
+     * 查询系统变量
+     */
     SystemVarInitVO getSystemVarInit(String compid);
 
+    /**
+     * 删除任务单加价项目
+     */
     void deletePPCodeStatus(String compid, String taskId);
-    void updateTechnicalRequirements(String compid, String taskId, String pPNames,String concreteMark);
 
-    List<DriverShiftLEDVO> getProduceCars(String compid,String stirId);
+    /**
+     * 修改技术要求
+     *
+     * @param compid       企业id
+     * @param taskId       任务单号
+     * @param ppNames      加价项目名称
+     * @param concreteMark 砼标记
+     */
+    void updateTechnicalRequirements(String compid, String taskId, String ppNames, String concreteMark);
 
-    List<DriverShiftLEDVO> getCarsByTaskId(String compid, String taskId);
 
+    /**
+     * 调度派车中获取所有正在生产的搅拌车车辆
+     */
+    List<DispatchVehicle> getProduceCars(String compid, String stirId);
+
+
+    /**
+     * 司机排班列表信息
+     *
+     * @param compid       企业ｉｄ
+     * @param vehicleId    车号
+     * @param personalCode 司机代号
+     * @param workClass    班次状态
+     * @param beginTime    　　　　　开始时间
+     * @param endTime      结束时间
+     * @return 司机排班列表信息
+     */
     List<DriverShiftListVO> getDriverShiftList(String compid, String vehicleId, String personalCode, String personalName, String workClass, String beginTime, String endTime);
 
+
+    /**
+     * 调度派车中今日调度
+     **/
     List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
+
+    /**
+     * 施工方App中的任务单列表
+     *
+     * @param contractDetailCodes 子合同集合
+     * @param contractUIDList     主合同集合
+     * @param beginTime           开始时间
+     * @param endTime             结束时间
+     * @param eppCode             工程代号
+     * @param placing             浇筑部位
+     * @param taskId              任务单号
+     * @param taskStatus          生产状态
+     * @param verifyStatus        审核状态
+     */
+    List<TaskPlanListVO> buildTaskPlanList(List<String> contractDetailCodes, List<String> contractUIDList, String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, Integer verifyStatus);
+
+    /**
+     * 任务单号集合
+     *
+     * @param compid     企业
+     * @param searchName 搜索关键字
+     */
+    List<String> getTaskIds(String compid, String searchName);
+
+
+    /**
+     * 查询任务单集合下的所有车辆
+     *
+     * @param compid  企业代号
+     * @param taskIds 任务单号集合
+     * @return 车辆集合
+     */
+    List<DispatchVehicle> getCarsByTaskIds(String compid, List<String> taskIds);
 }

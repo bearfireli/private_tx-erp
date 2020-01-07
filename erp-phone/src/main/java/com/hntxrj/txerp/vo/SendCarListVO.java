@@ -35,7 +35,7 @@ public class SendCarListVO {
     private String vehicleStatus;
     private Integer status;
     private String statusName;
-    List<DriverShiftLEDVO> cars;
+    List<DispatchVehicle> cars;
     private String totalProduceNum;
     private double num;
     private String attribute;

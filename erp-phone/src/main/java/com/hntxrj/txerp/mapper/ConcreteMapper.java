@@ -16,53 +16,68 @@ public interface ConcreteMapper {
 
     /**
      * 砼产量统计
-     * @param compid　企业
-     * @param eppCode　工程代码
-     * @param placing　浇筑部位
-     * @param taskId　　任务单号
-     * @param stgId　　　砼标记
-     * @param beginTime　　开始时间
-     * @param endTime　　　结束时间
+     *
+     * @param compid    　企业
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　　任务单号
+     * @param stgId     　　　砼标记
+     * @param beginTime 　　开始时间
+     * @param endTime   　　　结束时间
      */
     List<ConcreteVO> getConcreteCount(String compid, String eppCode, String placing,
                                       String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
 
     /**
      * 砼产量统计合计
-     * @param compid　企业
-     * @param eppCode　工程代码
-     * @param placing　浇筑部位
-     * @param taskId　　任务单号
-     * @param stgId　　　砼标记
-     * @param beginTime　　开始时间
-     * @param endTime　　　结束时间
+     *
+     * @param compid    　企业
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　　任务单号
+     * @param stgId     　　　砼标记
+     * @param beginTime 　　开始时间
+     * @param endTime   　　　结束时间
      */
     List<ConcreteVO> getConcreteSum(String compid, String eppCode, String placing, String taskId, String stgId,
-                                    String beginTime, String endTime,Integer timeStatus);
+                                    String beginTime, String endTime, Integer timeStatus);
 
 
     /**
      * 生产方量统计（从生产消耗表中查询）
-     * @param compid　企业
-     * @param beginTime　　开始时间
-     * @param endTime　　　结束时间
-     * */
-    BigDecimal getProductConcreteSum(String compid,String beginTime,String endTime);
+     *
+     * @param compid    　企业
+     * @param beginTime 　　开始时间
+     * @param endTime   　　　结束时间
+     */
+    BigDecimal getProductConcreteSum(String compid, String beginTime, String endTime);
 
     /**
      * 任务单的生产方量（从生产消耗表中查询）
-     * @param compid　企业
-     * @param taskId　　任务单号
-     * */
-    BigDecimal getProductConcreteByTaskId(String compid,String taskId,String produceBeginTime,String produceEndTime);
+     *
+     * @param compid           　企业
+     * @param taskId           　　任务单号
+     * @param produceBeginTime 　　开始时间
+     * @param produceEndTime   　　结束时间
+     */
+    BigDecimal getProductConcreteByTaskId(String compid, String taskId, String produceBeginTime, String produceEndTime);
 
     /**
      * 产销统计中柱状图数据
-     * */
-    List<ConcreteHistogram> getConcreteSaleNum(String compid, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
+     */
+    List<ConcreteHistogram> getConcreteSaleNum(String compid, String beginTime, String endTime);
 
     /**
      * 产销统计中饼状图数据
-     * */
+     *
+     * @param compid     　企业
+     * @param eppCode    　工程代码
+     * @param placing    　浇筑部位
+     * @param taskId     　　任务单号
+     * @param stgId      　　　砼标记
+     * @param beginTime  　　开始时间
+     * @param endTime    　　　结束时间
+     * @param timeStatus 时间类型：1 派车时间；0离场时间
+     */
     List<ConcretePieChart> getConcreteStgIdNum(String compid, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
 }
