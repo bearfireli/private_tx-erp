@@ -51,15 +51,14 @@ public class ConstructionServiceImpl implements ConstructionService {
 
 
         String buildInvitationCode = UUID.randomUUID().toString().replace("-", "");
-        Date date = new Date();
-        Integer use_Status = 0;
+        Integer useStatus = 0;
         String[] codes = contractDetailCodes.split(",");
         try {
             for (String code : codes) {
                 //先根据子合同号和compid从合同表中查询出每一个主合同号
                 String contractUID = contractMapper.getContractUID(compid, code);
                 //把邀请码，compid，子合同号，主合同号插入
-                constructionMapper.getInvitationCode(buildInvitationCode, compid, code, use_Status, opid, date,contractUID);
+                constructionMapper.getInvitationCode(buildInvitationCode, compid, code, useStatus, opid, new Date(),contractUID);
             }
             InvitationVO invitationVO = new InvitationVO();
             invitationVO.setBuildinvitationcode(buildInvitationCode);

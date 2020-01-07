@@ -2,6 +2,7 @@ package com.hntxrj.txerp.server.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.entity.Data;
 import com.hntxrj.txerp.mapper.ConcreteMapper;
 import com.hntxrj.txerp.server.ConcreteService;
 import com.hntxrj.txerp.vo.ConcreteHistogram;
@@ -157,7 +158,7 @@ public class ConcreteServiceImpl implements ConcreteService {
             ConcreteHistogram concreteHistogram = new ConcreteHistogram();
             concreteHistogram.setSaleNum("0.0");
             concreteHistogram.setDateTime(beginTime);
-            if (concreteHistograms != null || concreteHistograms.size() > 0) {
+            if (concreteHistograms.size() > 0) {
                 for (ConcreteHistogram c : concreteHistograms) {
                     if (beginTime.substring(0,10).equals(c.getDateTime())) {
                         concreteHistogram.setSaleNum(c.getSaleNum());
@@ -166,7 +167,7 @@ public class ConcreteServiceImpl implements ConcreteService {
             }
 
             concreteHistogramsList.add(concreteHistogram);
-            Date date = null;
+            Date date =new Date();
             try {
                 date = sdf.parse(beginTime);
             } catch (ParseException e) {

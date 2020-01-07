@@ -29,7 +29,7 @@ public class ConstructionApi {
     }
 
     /**
-     * 生成邀请码
+     * 生成施工方邀请码
      * @param compid   企业
      * @param opid     操作人
      * @param contractDetailCodes     子合同号集合
@@ -64,7 +64,7 @@ public class ConstructionApi {
     }
 
     /**
-     * 作废邀请码
+     * 作废施工方邀请码
      * @param contractUID  主合同
      * @param contractDetailCode  子合同
      * @param buildInvitationCode  邀请码
@@ -76,7 +76,7 @@ public class ConstructionApi {
     }
 
     /**
-     * 绑定邀请码
+     * 绑定施工方邀请码
      * @param buildId  用户id
      * @param buildInvitationCode 邀请码
      * @throws ErpException 异常处理

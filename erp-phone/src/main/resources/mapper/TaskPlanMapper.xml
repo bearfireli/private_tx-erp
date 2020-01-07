@@ -854,7 +854,7 @@
           and compid = #{compid}
     </select>
 
-    <select id="getTaskIdCount" resultType="integer">
+    <select id="checkTaskIdExit" resultType="integer">
        select count(*) from PT_TaskPlan
        where compid=#{compid} and TaskId=#{taskId}
     </select>

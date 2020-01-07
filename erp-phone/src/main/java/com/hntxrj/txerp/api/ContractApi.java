@@ -311,7 +311,7 @@ public class ContractApi {
      * @param compid             企业id
      * @param contractUid        主合同号
      * @param contractDetailCode 子合同号
-     * @param gradePrice         砼价格
+     * @param gradePrice         砼价格对象
      */
     @PostMapping("/saveContractGradePrice")
     public ResultVO saveContractGradePrice(String compid, String contractUid,

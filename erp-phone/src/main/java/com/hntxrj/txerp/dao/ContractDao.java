@@ -246,7 +246,7 @@ public interface ContractDao {
      * @param currPage     当前页
      * @param pageSize     页长度
      * @param mark         1  砼价格  2  特殊材料  3泵车车价格
-     * @param stgid         线号
+     * @param stgid         砼标号
      * @param ppname
      * @param pumptypename @return jsonArray
      */

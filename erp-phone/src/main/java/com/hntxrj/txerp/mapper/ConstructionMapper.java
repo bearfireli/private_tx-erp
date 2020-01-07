@@ -11,7 +11,7 @@ import java.util.List;
 public interface ConstructionMapper {
 
     /**
-     * 生成邀请码
+     * 生成施工方邀请码
      *
      * @param buildInvitationCode 邀请码
      * @param compid              企业
@@ -39,7 +39,7 @@ public interface ConstructionMapper {
                                          String createUser, String beginTime, String endTime);
 
     /**
-     * 修改邀请码状态
+     * 修改施工方邀请码状态
      *
      * @param contractUID         主合同号
      * @param contractDetailCode  子合同号
@@ -50,12 +50,12 @@ public interface ConstructionMapper {
 
 
     /**
-     * 获取邀请码绑定的合同集合
+     * 获取施工方邀请码绑定的合同集合
      */
     List<InvitationVO> selectInvitation(String buildInvitationCode);
 
     /**
-     * 绑定用户和邀请码
+     * 绑定用户和施工方邀请码
      *
      * @param buildId            施工方用户id
      * @param compid             企业

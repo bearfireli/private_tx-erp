@@ -13,16 +13,16 @@ public interface ContractMapper {
     /**
      * 合同列表查询
      *
-     * @param startTime    签订日期 开始时间
-     * @param endTime      签订日期 结束时间
-     * @param contractCode 合同编号
-     * @param eppCode      工程代号
-     * @param buildCode    施工单位代号
-     * @param salesMan     销售员代号
-     * @param compId       企业代号
+     * @param startTime          签订日期 开始时间
+     * @param endTime            签订日期 结束时间
+     * @param contractDetailCode 合同编号
+     * @param eppCode            工程代号
+     * @param buildCode          施工单位代号
+     * @param salesMan           销售员代号
+     * @param compId             企业代号
      * @return 合同列表
      */
-    List<ContractListVO> getContractList(String startTime, String endTime, String contractCode,
+    List<ContractListVO> getContractList(String startTime, String endTime, String contractDetailCode,
                                          String eppCode, String buildCode, String salesMan, String compId, String verifyStatus);
 
     /**
@@ -108,9 +108,9 @@ public interface ContractMapper {
 
 
     /**
-     * @param compid        企业id
+     * @param compid             企业id
      * @param contractDetailCode 子合同号
-     * @param contractUID   合同法UID
+     * @param contractUID        合同法UID
      * @return ContractPumperVO
      */
     List<ContractPumperVO> getContractPumperPrice(String compid, String contractDetailCode, String contractUID);
@@ -118,8 +118,8 @@ public interface ContractMapper {
     /**
      * 合同运距
      *
-     * @param compid        企业ID
-     * @param contractUID   合同UID
+     * @param compid             企业ID
+     * @param contractUID        合同UID
      * @param contractDetailCode 子合同号
      * @return 站名 运输距离
      */
@@ -128,17 +128,17 @@ public interface ContractMapper {
     /**
      * 插入泵车类价格数据
      *
-     * @param compid
-     * @param opid         操作员代号
-     * @param contractUID  合同uid号
-     * @param contractCode 子合同号
-     * @param pumptype     泵车类别
-     * @param pumPrice     泵送单价
-     * @param tableExpense 台班费
-     * @param createTime   创建时间
+     * @param compid             企业id
+     * @param opid               操作员代号
+     * @param contractUID        合同uid号
+     * @param contractDetailCode 子合同号
+     * @param pumptype           泵车类别
+     * @param pumPrice           泵送单价
+     * @param tableExpense       台班费
+     * @param createTime         创建时间
      * @return
      */
-    Integer insertPumpTruck(String compid, String opid, String contractUID, String contractCode,
+    Integer insertPumpTruck(String compid, String opid, String contractUID, String contractDetailCode,
                             Integer pumptype, Double pumPrice, Double tableExpense
             , String createTime);
 
@@ -146,14 +146,14 @@ public interface ContractMapper {
     /**
      * 添加合同运距
      *
-     * @param contractUID   合同UID号
+     * @param contractUID        合同UID号
      * @param contractDetailCode 子合同号
-     * @param compid        站别代号
-     * @param distance      运输距离
-     * @param recStatus     标志
-     * @param remarks       备注
-     * @param upDown        网络标识
-     * @param upDownMark    上传标识
+     * @param compid             站别代号
+     * @param distance           运输距离
+     * @param recStatus          标志
+     * @param remarks            备注
+     * @param upDown             网络标识
+     * @param upDownMark         上传标识
      * @return int
      */
     Integer saveContractDistance(String contractUID, String contractDetailCode, String compid, Double distance,
@@ -201,12 +201,12 @@ public interface ContractMapper {
     /**
      * 修改合同运距
      *
-     * @param contractUID     主合同号
-     * @param contractDetailCode    子合同号
-     * @param compid     站别代号
-     * @param distance     运距
-     * @param remarks     备注
-     * @param recStatus     状态
+     * @param contractUID        主合同号
+     * @param contractDetailCode 子合同号
+     * @param compid             站别代号
+     * @param distance           运距
+     * @param remarks            备注
+     * @param recStatus          启用状态
      */
     void updateContractDistance(String contractUID, String contractDetailCode, String compid, Double distance, String remarks, Integer recStatus);
 
@@ -217,24 +217,24 @@ public interface ContractMapper {
      * @param compid       企业代号
      * @param pumpType     泵车类型
      * @param contractUID  主合同
-     * @param contractCode 子合同
+     * @param contractDetailCode 子合同
      * @return 列表查询
      */
-    Integer selectPumpTruck(String compid, Integer pumpType, String contractUID, String contractCode);
+    Integer selectPumpTruck(String compid, Integer pumpType, String contractUID, String contractDetailCode);
 
     /**
      * 修改泵车价格
      *
      * @param compid       企业代号
-     * @param opid         泵车类型
+     * @param opid         操作员id
      * @param contractUID  主合同
-     * @param contractCode 子合同
+     * @param contractDetailCode 子合同
      * @param pumpType     泵车类型
      * @param pumPrice     泵车价格
      * @param tableExpense 台班费
      * @param createTime   创建时间
      */
-    void updatePumpTruck(String compid, String opid, String contractUID, String contractCode, Integer pumpType, Double pumPrice, Double tableExpense, String createTime);
+    void updatePumpTruck(String compid, String opid, String contractUID, String contractDetailCode, Integer pumpType, Double pumPrice, Double tableExpense, String createTime);
 
     /**
      * 获取合同特殊材料
@@ -261,9 +261,9 @@ public interface ContractMapper {
      * 获取主合同号
      *
      * @param compid 企业id
-     * @param code   子合同号
+     * @param contractDetailCode   子合同号
      */
-    String getContractUID(String compid, String code);
+    String getContractUID(String compid, String contractDetailCode);
 
 
     /**

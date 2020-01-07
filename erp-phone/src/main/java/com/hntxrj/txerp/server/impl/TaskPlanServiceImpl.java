@@ -895,7 +895,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * */
     @Override
     public boolean isExistence(String compid, String taskId) {
-        Integer taskIdCount=taskPlanMapper.getTaskIdCount(compid, taskId);
+        Integer taskIdCount=taskPlanMapper.checkTaskIdExit(compid, taskId);
         if (taskIdCount != null && taskIdCount != 0) {
             return true;
         } else {

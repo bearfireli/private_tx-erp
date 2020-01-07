@@ -93,7 +93,7 @@ public interface TaskPlanMapper {
      *
      * @param compid       企业ｉｄ
      * @param vehicleId    车号
-     * @param personalCode 司机
+     * @param personalCode 司机代号
      * @param workClass    班次状态
      * @param beginTime    　　　　　开始时间
      * @param endTime      结束时间
@@ -267,7 +267,7 @@ public interface TaskPlanMapper {
     /**
      * 判断任务单是否存在
      */
-    Integer getTaskIdCount(String compid, String taskId);
+    Integer checkTaskIdExit(String compid, String taskId);
 
     /**
      * 获取加价项目
@@ -317,7 +317,7 @@ public interface TaskPlanMapper {
      * @param compid       企业id
      * @param taskId       任务单号
      * @param ppNames      加价项目名称
-     * @param concreteMark 企业ｉｄ
+     * @param concreteMark 砼标记
      */
     void updateTechnicalRequirements(String compid, String taskId, String ppNames, String concreteMark);
 
@@ -333,7 +333,7 @@ public interface TaskPlanMapper {
      *
      * @param compid       企业ｉｄ
      * @param vehicleId    车号
-     * @param personalCode 司机
+     * @param personalCode 司机代号
      * @param workClass    班次状态
      * @param beginTime    　　　　　开始时间
      * @param endTime      结束时间

@@ -41,7 +41,7 @@
             and cm.SignDate <![CDATA[ <= ]]>  #{endTime}
         </if>
         <if test="contractCode != null">
-            and cm.ContractId like '%'+#{contractCode}+'%'
+            and cm.ContractId like '%'+#{contractDetailCode}+'%'
         </if>
         <if test="verifyStatus != null">
             and cd.verifyStatus = #{verifyStatus}
@@ -201,7 +201,7 @@
                ,
                  #{contractUID}
                ,
-                 #{contractCode}
+                 #{contractDetailCode}
                ,
                  #{opid}
                ,
@@ -222,7 +222,7 @@
         where compid=#{compid}
         and Pumptype=#{pumpType}
         and contractUID=#{contractUID}
-        and CContractCode=#{contractCode}
+        and CContractCode=#{contractDetailCode}
     </select>
 
 
@@ -237,7 +237,7 @@
           UpDownMark=0,
           UpDown=0
         where compid=#{compid} and  Pumptype=#{pumpType}
-        and  ContractUID=#{contractUID} and CContractCode=#{contractCode}
+        and  ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
     </select>
 
 
@@ -384,7 +384,7 @@
     <select id="getContractUID" resultType="java.lang.String">
         select ContractUID from SM_ContractDetail
         where compid=#{compid}
-        and CContractCode=#{code}
+        and CContractCode=#{contractDetailCode}
     </select>
 
 

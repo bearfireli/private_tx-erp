@@ -318,14 +318,14 @@ public interface ContractService {
      * @param contractCode 合同编号
      * @param eppCode      工程代号
      * @param buildCode    施工单位代号
-     * @param salesMan     销售员代号
+     * @param salesManCode     销售员代号
      * @param compId       企业代号
      * @param page         页码
      * @param pageSize     每页数量
      * @return 合同列表
      */
     PageVO<ContractListVO> getContractList(Long startTime, Long endTime, String contractCode,
-                                           String eppCode, String buildCode, String salesMan,
+                                           String eppCode, String buildCode, String salesManCode,
                                            String compId, String verifyStatus, Integer page, Integer pageSize);
 
     /**
@@ -491,10 +491,10 @@ public interface ContractService {
      * @param compid             企业id
      * @param contractUid        主合同号
      * @param contractDetailCode 子合同号
-     * @param gradePrice         砼价格
+     * @param gradePriceVO         砼标号价格对象
      */
     void saveContractGradePrice(String compid, String contractUid,
-                                String contractDetailCode, String gradePrice) throws ErpException;
+                                String contractDetailCode, String gradePriceVO) throws ErpException;
 
     /**
      * 获取特殊材料下拉
@@ -568,13 +568,13 @@ public interface ContractService {
      * @param compid       企业代码
      * @param opid         操作员代号
      * @param contractUID  合同uid号
-     * @param contractCode 子合同号
+     * @param contractDetailCode 子合同号
      * @param pumptype     泵车类别
      * @param pumPrice     泵送单价
      * @param tableExpense 台班费
      * @return Integer
      */
-    ResultVO insertPumpTruck(String compid, String opid, String contractUID, String contractCode,
+    ResultVO insertPumpTruck(String compid, String opid, String contractUID, String contractDetailCode,
                              Integer pumptype, Double pumPrice, Double tableExpense
     ) throws ErpException;
 
