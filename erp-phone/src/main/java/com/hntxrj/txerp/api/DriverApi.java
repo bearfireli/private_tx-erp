@@ -99,6 +99,12 @@ public class DriverApi {
 
 
 
+    /**
+     * 获取司机列表
+     *
+     * @param compid 企业
+     * @return 司机列表
+     * */
     @PostMapping("/getDriverList")
     public ResultVO getDriverList(String compid, String token) {
         return ResultVO.create(driverService.getDriverList(compid, token, null));
@@ -107,9 +113,10 @@ public class DriverApi {
 
     /**
      * 获取任务单泵车列表
-     * 此接口用来删除泵车deletemark
      *
-     * @return
+     * @param compid 企业
+     * @param taskId 任务单号
+     * @return 泵车列表
      */
     @PostMapping("/getJumpVehicleList")
     public ResultVO getJumpVehicleList(String compid, String token, String taskId) {
@@ -138,6 +145,9 @@ public class DriverApi {
 
     /**
      * 保存小票签收签收图片（老版本）
+     *
+     *  @param image     图片
+     *  @param invoiceId 小票id
      */
     @RequestMapping("/uploadTaskSaleInvoiceReceiptSign")
     public ResultVO uploadTaskSaleInvoiceReceiptSign(MultipartFile image, String invoiceId) throws IOException {
@@ -201,20 +211,28 @@ public class DriverApi {
 
     /**
      * 获取签收人签名图片
+     *
+     * @param fileName 图片名
      */
     @RequestMapping("/getTaskSaleInvoiceReceiptSign")
     public void getTaskSaleInvoiceReceiptSign(String fileName, HttpServletResponse response) throws IOException {
         driverService.getTaskSaleInvoiceReceiptSign(taskSaleInvoiceUploadPath, fileName, response);
     }
 
+    /**
+     * 获取司机姓名
+     *
+     * @param compid 企业代号
+     * @param driverCode 司机代号
+     * */
     @PostMapping("/getDriverName")
     public ResultVO getDriverName(String compid, String driverCode) {
         return ResultVO.create(driverService.getDriverName(compid, driverCode));
     }
 
 
-    /*
-    根据司机编号集合查询出司机名称集合
+    /**
+    * 根据司机编号集合查询出司机名称集合
     */
     @RequestMapping("/getDriverNames")
     public ResultVO getDriverNames(String compid, String driverCodes) {
@@ -225,7 +243,6 @@ public class DriverApi {
             String driverName = driverService.getDriverNames(compid, driverCode);
             map.put(driverCode, driverName);
         }
-
         return ResultVO.create((map));
     }
 

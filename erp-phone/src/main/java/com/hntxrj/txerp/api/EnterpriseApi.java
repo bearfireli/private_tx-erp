@@ -43,7 +43,6 @@ public class EnterpriseApi {
     @RequestMapping("/getEnterpriseAddress")
     public ResultVO getEnterpriseAddress(String compid) {
         EnterpriseVO enterpriseVO= enterpriseService.getEnterpriseAddress(compid);
-
         return ResultVO.create(enterpriseVO);
     }
 
