@@ -40,6 +40,7 @@ public enum ErrEumn {
     ADJUNCT_NOT_EXIST(-21203, "附件不存在"),
     ADJUNCT_STREAM_ERROR(-21204, "文件传输失败"),
     ADJUNCT_SAVE_ERROR(-21205, "保存失败,请重新添加泵车类价格，合同号可能已经存在"),
+    DRIVER_SAVE_ERROR(-21205, "添加失败,请重新选择排班信息"),
     ADJUNCT_UPDATE_ERROR(-21207, "修改失败,请重新检查后修改"),
     VERIFY_TICKET_ERROR(-21206, "小票审核状态失败"),
     ADD_PERSONALCODE_ERROR(-21208, "请选择司机"),
@@ -63,6 +64,7 @@ public enum ErrEumn {
     LOGIN_ERR(-10005, "用户名或密码错误"),
     EXPIRE_TOKEN(-10006, "身份认证过期,请重新登录"),
     PARAM_IS_NULL(-10007, "参数为空"),
+    OLD_PASSWORD_ERROR(-10007, "旧密码输入错误"),
 
 
     ADD_USER_UID_IS_NULL(-10008, "uid不能为空！"),

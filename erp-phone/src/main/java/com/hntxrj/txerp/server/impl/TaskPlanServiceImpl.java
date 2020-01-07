@@ -6,10 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.mapper.ConcreteMapper;
-import com.hntxrj.txerp.mapper.PublicInfoMapper;
-import com.hntxrj.txerp.mapper.StockMapper;
-import com.hntxrj.txerp.mapper.TaskPlanMapper;
+import com.hntxrj.txerp.mapper.*;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
 import com.hntxrj.txerp.util.EntityTools;
@@ -35,15 +32,17 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final ConcreteMapper concreteMapper;
     private final PublicInfoMapper publicInfoMapper;
     private StirInfoSetServiceImpl stirInfoSetMapper;
+    private final ConstructionMapper constructionMapper;
 
     @Autowired
-    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
+    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper, ConstructionMapper constructionMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
         this.concreteMapper = concreteMapper;
         this.publicInfoMapper = publicInfoMapper;
         this.stirInfoSetMapper = stirInfoSetMapper;
+        this.constructionMapper = constructionMapper;
     }
 
     @Override
@@ -71,7 +70,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     @Override
     public TaskPlanVO getTaskPlanDetail(String compid, String taskId) {
-        List<String> ppCodes = taskPlanMapper.getPPCodeBytaskId(compid, taskId);
+        List<String> ppCodes = taskPlanMapper.getPPCodeByTaskId(compid, taskId);
         TaskPlanVO taskPlanVO = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
         taskPlanVO.setPpCodes(ppCodes);
         return taskPlanVO;
@@ -114,7 +113,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (taskPlan.getPreTime() == null) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_PRETIME);
         }
-        if (StringUtils.isEmpty(taskPlan.getContractUid()) || StringUtils.isEmpty(taskPlan.getCContractCode())) {
+        if (StringUtils.isEmpty(taskPlan.getContractUid()) || StringUtils.isEmpty(taskPlan.getContractDetailCode())) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_CONTRACT);
         }
         if (StringUtils.isEmpty(taskPlan.getEppCode())) {
@@ -885,18 +884,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      * 给前台返回一个默认的任务单号
      */
     @Override
-    public Map<String, String> makeAutoTaskPlanId(String compid) {
+    public Map<String,String> makeAutoTaskPlanId(String compid) {
         Map<String, String> taskPlanIdMap = new HashMap<>();
         taskPlanIdMap.put("taskId", taskPlanSplicing(compid));
         return taskPlanIdMap;
     }
 
     /**
-     * 判断任务单编号是否存在
-     */
+     *判断任务单编号是否存在
+     * */
     @Override
     public boolean isExistence(String compid, String taskId) {
-        Integer taskIdCount = taskPlanMapper.getTaskIdCount(compid, taskId);
+        Integer taskIdCount=taskPlanMapper.checkTaskIdExit(compid, taskId);
         if (taskIdCount != null && taskIdCount != 0) {
             return true;
         } else {
@@ -906,30 +905,34 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     /**
      * 得到所有加价项目下拉
-     */
+     * */
     @Override
     public List<PriceMarkupVO> getPriceMarkup(String compid) {
-        return taskPlanMapper.getPriceMarkup(compid);
+        return  taskPlanMapper.getPriceMarkup(compid);
     }
 
 
     /**
      * 通过加价项目编号得到加价项目数据
-     */
+     * */
     @Override
-    public PriceMarkupVO getPriceMarkupByPPCode(String compid, String ppCode) {
-        return taskPlanMapper.getPriceMarkupByPPCode(compid, ppCode);
+    public PriceMarkupVO getPriceMarkupByPPCode(String compid,String ppCode) {
+        return taskPlanMapper.getPriceMarkupByPPCode(compid,ppCode);
     }
 
     /**
      * 添加任务单和加价项目
-     */
+     * */
     public void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO) {
-        taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(), priceMarkupVO.getUnitPrice(), priceMarkupVO.getSelfDiscPrice(), priceMarkupVO.getJumpPrice(), priceMarkupVO.getTowerCranePrice(), priceMarkupVO.getOtherPrice());
+        taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(),priceMarkupVO.getUnitPrice(),priceMarkupVO.getSelfDiscPrice(),priceMarkupVO.getJumpPrice(),priceMarkupVO.getTowerCranePrice(),priceMarkupVO.getOtherPrice());
     }
 
+
+    /**
+     * 修改任务单技术要求
+     */
     @Override
-    public void updateTechnicalRequirements(String compid, String taskId, String pPNames) {
+    public void updateTechnicalRequirements(String compid,String taskId, String ppNames) {
         //根据compid查询系统变量
         SystemVarInitVO systemVarInitVO = taskPlanMapper.getSystemVarInit(compid);
         TaskPlanVO taskPlan = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
@@ -948,20 +951,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         } else {
             slumpFlag = "(S4)";
         }
-        if (systemVarInitVO != null) {
-            if (systemVarInitVO.getVarValue() == 1) {
-                if (!"".equals(pPNames)) {
-                    String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag + "-" + pPNames + "-GB/T14902";
+        if (systemVarInitVO !=null){
+            if (systemVarInitVO.getVarValue()==1){
+                if (!"".equals(ppNames)){
+                    String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag +"-"+ ppNames +"-GB/T14902";
                     //把选择的特殊材料名称添加到技术要求里面
-                    taskPlanMapper.updateTechnicalRequirements(compid, taskId, pPNames, concreteMark);
+                    taskPlanMapper.updateTechnicalRequirements(compid,taskId,ppNames,concreteMark);
                 }
             }
         }
     }
-
     /**
      * 删除任务单加价项目
-     */
+     * */
     @Override
     public void deletePPCodeStatus(String compid, String taskId) {
         taskPlanMapper.deletePPCodeStatus(compid, taskId);
@@ -969,22 +971,70 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     /**
      * 调度派车中获取所有正在生产的搅拌车车辆
-     */
+     * */
     @Override
     public List<DirverLEDListVO> getProduceCars(String compid) {
-        List<StirInfoSetVO> stirInfoSet = stirInfoSetMapper.getStirInfoSet(compid);
+        List<StirInfoSetVO> stirInfoSet= stirInfoSetMapper.getStirInfoSet(compid);
         List<DirverLEDListVO> list = new ArrayList<>();
-        for (StirInfoSetVO stir : stirInfoSet) {
-            DirverLEDListVO dirverLEDListVO = new DirverLEDListVO();
-            String stirId = stir.getStirId();
+        for (StirInfoSetVO stir:stirInfoSet) {
+            DirverLEDListVO dirverLEDListVO =new DirverLEDListVO();
+            String stirId =stir.getStirId();
             dirverLEDListVO.setStatus(Integer.valueOf(stirId));
             dirverLEDListVO.setStatusName(stir.getStirName());
-            dirverLEDListVO.setCars(taskPlanMapper.getProduceCars(compid, stirId));
+            dirverLEDListVO.setCars(taskPlanMapper.getProduceCars(compid,stirId));
             list.add(dirverLEDListVO);
         }
-        return list;
+       return list;
     }
 
+    /**
+     * 获取工地端任务单列表
+     *
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     * @param eppCode      工程代号
+     * @param placing      浇筑部位
+     * @param taskId       任务单号
+     * @param taskStatus   任务单状态
+     * @param compid       企业id
+     * @param page         页码
+     * @param pageSize     每页数量
+     * @param verifyStatus 审核标识  0：未审核； 1：已审核
+     * @param buildId      施工方id
+     * @return 任务单列表对象
+     */
+    @Override
+    public PageVO<TaskPlanListVO> buildTaskPlanList(String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, String compid, Integer verifyStatus, Integer buildId, Integer page, Integer pageSize) {
+        //查询当前施工方关联的所有子合同
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+        if (contractDetailCodes.size() == 0) {
+            return null;
+        }
+        if (contractUIDList.size() == 0) {
+            return null;
+        }
+
+        //根据子合同查询任务单.
+        PageHelper.startPage(page, pageSize);
+        List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.buildTaskPlanList(contractDetailCodes, contractUIDList, beginTime, endTime, eppCode,
+                placing, taskId, taskStatus, verifyStatus);
+        //循环截取preTime，格式为年月日
+        for (TaskPlanListVO t : taskPlanListVOList) {
+            if (!"".equals(t.getPreTime())) {
+                t.setPreTime(t.getPreTime().substring(0, 16));
+            }
+            if (t.getOverNum() == null) {
+                t.setOverNum(new BigDecimal(0.0));
+            }
+        }
+        PageInfo<TaskPlanListVO> pageInfo = new PageInfo<>(taskPlanListVOList);
+        PageVO<TaskPlanListVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    //任务单号拼接
     private String taskPlanSplicing(String compid) {
         int page = 0;
         int pageSize = 1;
@@ -992,16 +1042,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         SimpleDateFormat sdf2 = new SimpleDateFormat("yy");
         Date date = new Date();
         String year = sdf2.format(date);
-        String taskid = "P" + compid + year;
+        String taskId = "P" + compid + year;
         PageHelper.startPage(page, pageSize, "TaskId desc");
-        TaskPlanListVO selectid = taskPlanMapper.selectid(taskid);
-        if (selectid != null) {
-            taskid = makeTaskId(compid, selectid.getTaskId());
+        TaskPlanListVO selectId = taskPlanMapper.selectId(taskId);
+        if (selectId != null) {
+            taskId = makeTaskId(compid, selectId.getTaskId());
         } else {
-            taskid = "p" + compid + year + "00001";
+            taskId = "p" + compid + year + "00001";
         }
 
-        return taskid;
+        return taskId;
     }
 
     //派车LED模块：根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数

@@ -53,13 +53,15 @@ public class ContractServiceImp implements ContractService {
 
     private final ContractGradePriceDetailRepository contractGradePriceDetailRepository;
 
+    private final ConstructionMapper constructionMapper;
+
     @Value("${app.spterp.contractAdjunctPath}")
     private String contractAdjunctPath;
 
     @Autowired
     public ContractServiceImp(ContractDao dao, ContractMapper contractMapper, PublicInfoMapper publicInfoMapper,
                               ContractMasterMapper contractMasterMapper, ContractDetailMapper contractDetailMapper,
-                              AdjunctMapper adjunctMapper, ContractGradePriceDetailRepository contractGradePriceDetailRepository) {
+                              AdjunctMapper adjunctMapper, ContractGradePriceDetailRepository contractGradePriceDetailRepository, ConstructionMapper constructionMapper) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -67,6 +69,7 @@ public class ContractServiceImp implements ContractService {
         this.contractDetailMapper = contractDetailMapper;
         this.adjunctMapper = adjunctMapper;
         this.contractGradePriceDetailRepository = contractGradePriceDetailRepository;
+        this.constructionMapper = constructionMapper;
     }
 
 
@@ -817,18 +820,18 @@ public class ContractServiceImp implements ContractService {
      * @param compid       企业代码
      * @param opid         操作员代号
      * @param contractUID  合同uid号
-     * @param contractCode 子合同号
-     * @param pumptype     泵车类别
+     * @param contractDetailCode 子合同号
+     * @param pumpType     泵车类别
      * @param pumPrice     泵送单价
      * @param tableExpense 台班费
      */
     @Override
     @Transactional
-    public ResultVO insertPumpTruck(String compid, String opid, String contractUID, String contractCode,
-                                    Integer pumptype, Double pumPrice, Double tableExpense) throws ErpException {
+    public ResultVO insertPumpTruck(String compid, String opid, String contractUID, String contractDetailCode,
+                                    Integer pumpType, Double pumPrice, Double tableExpense) throws ErpException {
 
         //判断合同是否审核，如果已经审核，则无法添加泵车价格。
-        if (getContractVerifyStatus(contractUID, contractCode, compid)) {
+        if (getContractVerifyStatus(contractUID, contractDetailCode, compid)) {
             throw new ErpException(ErrEumn.VERIFY_CONTRACT_ERROR);
         }
         try {
@@ -836,16 +839,16 @@ public class ContractServiceImp implements ContractService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = sdf.format(date);
 
-            Integer pump = contractMapper.selectPumpTruck(compid, pumptype, contractUID, contractCode);
+            Integer pump = contractMapper.selectPumpTruck(compid, pumpType, contractUID, contractDetailCode);
             if (pump == null) {
-                Integer row = contractMapper.insertPumpTruck(compid, opid, contractUID, contractCode,
-                        pumptype, pumPrice, tableExpense, createTime);
+                Integer row = contractMapper.insertPumpTruck(compid, opid, contractUID, contractDetailCode,
+                        pumpType, pumPrice, tableExpense, createTime);
                 if (row == null || row == 0) {
                     throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
                 }
             } else {
-                contractMapper.updatePumpTruck(compid, opid, contractUID, contractCode,
-                        pumptype, pumPrice, tableExpense, createTime);
+                contractMapper.updatePumpTruck(compid, opid, contractUID, contractDetailCode,
+                        pumpType, pumPrice, tableExpense, createTime);
             }
 
         } catch (Exception e) {
@@ -887,6 +890,21 @@ public class ContractServiceImp implements ContractService {
         PageHelper.startPage(page, pageSize, "SignDate desc");
 
         List<ContractListVO> contractListVOList = contractMapper.getContractListByEppOrBuild(compid, searchName);
+        PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
+        PageVO<ContractListVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    @Override
+    public PageVO<ContractListVO> getBuildContractListByEppOrBuild(Integer buildId, String searchName, Integer page, Integer pageSize) {
+
+        //首先根据buildId查询出此施工方用户下的所有合同uid和所有子合同号
+        List<String>  contractDetailCodes=constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList=constructionMapper.getContractUID(buildId);
+
+        PageHelper.startPage(page, pageSize, "SignDate desc");
+        List<ContractListVO> contractListVOList = contractMapper.getBuildContractListByEppOrBuild(contractDetailCodes,contractUIDList, searchName);
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
         PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

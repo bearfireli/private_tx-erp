@@ -48,5 +48,24 @@ public class EppApi {
         return resultVO;
     }
 
+    /**
+     * 获取工地端App工程名称下拉
+     *
+     * @param eppName  工程名称模糊查询
+     * @param buildId   企业id
+     * @param page     页码
+     * @param pageSize 每页数量
+     * @return 带分页工程下拉列表
+     */
+    @PostMapping("/getBuildDropDown")
+    public ResultVO getBuildDropDown(String eppName, Integer buildId,
+                                @RequestParam(defaultValue = "1") Integer page,
+                                @RequestParam(defaultValue = "10") Integer pageSize) {
+        log.info("【获取工程名称下拉】eppName={}，buildId={}, page={}, pageSize={}",
+                eppName, buildId, page, pageSize);
+        resultVO.setData(eppService.getBuildDropDown(eppName, buildId, page, pageSize));
+        return resultVO;
+    }
+
 
 }
