@@ -110,8 +110,8 @@
         and tsi.InvoiceType not in('1','2','6')
         and tsi.recStatus = 1
         and (tsi.InvoiceType !=4 and vv.VehicleStatus !=3)
-        <if test="id != null ">
-            and tsi.ID like #{id}
+        <if test="invoiceId != null ">
+            and tsi.ID like #{invoiceId}
         </if>
         <if test="eppCode != null and eppCode != ''">
             and tp.EPPCode = #{eppCode}
@@ -137,7 +137,7 @@
     <!--修改小票表中的车辆状态-->
     <update id="updateVehicleStatus">
         update PT_TaskSaleInvoice set VehicleStatus=#{vehicleStatus}
-        where compid=#{compid} and id =#{id}
+        where compid=#{compid} and id =#{invoiceId}
     </update>
 
     <!--司机App小票汇总-->
@@ -235,7 +235,7 @@
                  left join DD_StirInfoSet ds on tsi.compid=ds.compid and tsi.StirId=ds.StirId
                  left join User_comp uc on tsi.compid=uc.compid
         where tsi.compid = #{compid}
-          and tsi.id = #{id}
+          and tsi.id = #{invoiceId}
     </select>
 
     <select id="getDriverWorkTime" resultType="com.hntxrj.txerp.vo.DriverWorkTimeVO">

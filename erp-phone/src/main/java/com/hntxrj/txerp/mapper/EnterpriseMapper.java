@@ -11,7 +11,7 @@ public interface EnterpriseMapper {
     /**
      * 获取搅拌站地址坐标
      *
-     * @param compid 企业
+     * @param compid 企业id
      * @return 公司地址
      */
     EnterpriseVO selectEnterpriseAddress(String compid);
@@ -19,7 +19,7 @@ public interface EnterpriseMapper {
     /**
      * 设置搅拌站地址坐标
      *
-     * @param compid     企业
+     * @param compid     企业id
      * @param address    地址坐标
      * @param opid       操作员代号
      * @param updateTime 修改时间

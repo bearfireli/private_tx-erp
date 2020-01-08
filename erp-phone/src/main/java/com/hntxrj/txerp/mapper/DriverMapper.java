@@ -60,16 +60,16 @@ public interface DriverMapper {
     /**
      * 小票详情
      *
-     * @param id     小票id
+     * @param invoiceId     小票id
      * @param compid 企业代号
      */
-    TaskSaleInvoiceDetailVO driverGetTaskSaleInvoiceDetail(Integer id, String compid);
+    TaskSaleInvoiceDetailVO driverGetTaskSaleInvoiceDetail(Integer invoiceId, String compid);
 
 
     /**
      * 获取小票签收列表
      *
-     * @param id          小票id（模糊查询）
+     * @param invoiceId          小票id（模糊查询）
      * @param compid      企业
      * @param beginTime   开始时间
      * @param endTime     结束时间
@@ -80,7 +80,7 @@ public interface DriverMapper {
      * @param driverCode  司机代号
      * @return 小票签收列表
      */
-    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceList(Integer id, String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, String driverCode);
+    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceList(Integer invoiceId, String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, String driverCode);
 
 
     /**
@@ -103,9 +103,9 @@ public interface DriverMapper {
      *
      * @param compid     企业
      * @param driverCode 司机代号
-     * @param workTime   司机上班时间
-     * @param timeType   司机下班时间  0:上班打卡    1：下班打卡
-     * @param dateTime   打卡类型
+     * @param workTime   司机打卡时间
+     * @param timeType   司机打卡类型  0:上班打卡    1：下班打卡
+     * @param dateTime   打卡日期
      */
     void saveDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime);
 
@@ -123,9 +123,9 @@ public interface DriverMapper {
      *
      * @param compid     企业
      * @param driverCode 司机代号
-     * @param workTime   司机上班时间
-     * @param timeType   司机下班时间  0:上班打卡    1：下班打卡
-     * @param dateTime   打卡类型
+     * @param workTime   司机打卡时间
+     * @param timeType   司机打卡类型  0:上班打卡    1：下班打卡
+     * @param dateTime   打卡日期
      */
     void updateDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime);
 
@@ -153,8 +153,8 @@ public interface DriverMapper {
      * 修改小票中的车辆状态
      *
      * @param compid        企业
-     * @param id            小票id
+     * @param invoiceId            小票id
      * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕
      */
-    void updateVehicleStatus(String compid, Integer id, Integer vehicleStatus);
+    void updateVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus);
 }

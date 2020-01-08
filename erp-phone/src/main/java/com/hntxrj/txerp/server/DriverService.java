@@ -120,8 +120,8 @@ public interface DriverService {
      *
      * @param compid     企业
      * @param driverCode 司机代号
-     * @param workTime   司机上班时间
-     * @param timeType   司机下班时间  0:上班打卡    1：下班打卡
+     * @param workTime   司机打卡时间
+     * @param timeType   司机打卡类型  0:上班打卡    1：下班打卡
      */
     void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType);
 
@@ -138,10 +138,10 @@ public interface DriverService {
      * 获取小票详情
      *
      * @param compid 企业
-     * @param id     小票id
+     * @param invoiceId     小票id
      * @return 小票签收列表
      */
-    TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetail(String compid, Integer id);
+    TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetail(String compid, Integer invoiceId);
 
     /**
      * 保存签收人手写图片
@@ -164,10 +164,10 @@ public interface DriverService {
      * 修改小票中的车辆状态
      *
      * @param compid        企业
-     * @param id            小票id
+     * @param invoiceId            小票id
      * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕
      */
-    void updateVehicleStatus(String compid, Integer id, Integer vehicleStatus);
+    void updateVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus);
 }
 
 

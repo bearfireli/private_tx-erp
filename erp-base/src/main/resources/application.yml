@@ -53,6 +53,6 @@ app:
     imgFilePath: ${app.workspace}/upload/payImgPath/
   feedback:
     imgFilePath: ${app.workspace}/pic
-  host: http://192.168.31.198:8088
+  host: http://192.168.31.178:8088
 server:
   port: 9501
