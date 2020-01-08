@@ -31,15 +31,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final StockMapper stockMapper;
     private final ConcreteMapper concreteMapper;
     private final PublicInfoMapper publicInfoMapper;
+    private final SystemVarInitMapper systemVarInitMapper;
+    private final ConstructionMapper constructionMapper;
     private StirInfoSetServiceImpl stirInfoSetMapper;
 
     @Autowired
-    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
+    public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository, StockMapper stockMapper, ConcreteMapper concreteMapper, PublicInfoMapper publicInfoMapper, SystemVarInitMapper systemVarInitMapper, ConstructionMapper constructionMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
         this.concreteMapper = concreteMapper;
         this.publicInfoMapper = publicInfoMapper;
+        this.systemVarInitMapper = systemVarInitMapper;
+        this.constructionMapper = constructionMapper;
         this.stirInfoSetMapper = stirInfoSetMapper;
     }
 

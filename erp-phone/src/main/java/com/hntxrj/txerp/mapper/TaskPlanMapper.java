@@ -86,7 +86,7 @@ public interface TaskPlanMapper {
      * @param stirId 线号
      * @return 司机排班LED
      */
-    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId);
+    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId,Integer vehicleStatus);
 
     /**
      * 司机排班列表信息
