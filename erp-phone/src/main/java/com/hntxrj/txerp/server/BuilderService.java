@@ -5,7 +5,9 @@ import com.hntxrj.txerp.entity.BuilderInfo;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.vo.*;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Map;
 
 /**
  * 功能:  施工服务接口
@@ -108,4 +110,17 @@ public interface BuilderService {
      * @return 调度派车列表
      */
     PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page, Integer pageSize);
+
+    /**
+     * 工地端App产销总量统计
+     *
+     * @param buildId   　企业
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　　任务单号
+     * @param stgId     　　　砼标记
+     * @param beginTime 　　开始时间
+     * @param endTime   　　　结束时间
+     * */
+    Map<String, BigDecimal> getBuilderConcreteSum(Integer buildId, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
 }

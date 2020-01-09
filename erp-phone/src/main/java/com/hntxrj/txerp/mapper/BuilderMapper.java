@@ -84,4 +84,18 @@ public interface BuilderMapper {
      * @return 调度派车列表
      */
     List<SendCarListVO> getBuildSendCarList(List<String> contractDetailCodes, List<String> contractUIDList, String searchName);
+
+    /**
+     * 查询产销统计中发货方量统计
+     *
+     * @param contractDetailCodes 　子合同号集合
+     * @param contractUIDList     　主合同号集合
+     * @param eppCode             　工程代码
+     * @param placing             　浇筑部位
+     * @param taskId              　　任务单号
+     * @param stgId               　　　砼标记
+     * @param beginTime           　　开始时间
+     * @param endTime             　　　结束时间
+     */
+    BigDecimal getBuilderConcreteSum(List<String> contractDetailCodes, List<String> contractUIDList, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
 }

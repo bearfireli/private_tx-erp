@@ -284,6 +284,78 @@
         and DeleteMark = 0
         order by pt.TaskId
     </select>
+    <select id="getBuilderConcreteSum" resultType="java.math.BigDecimal">
+        <if test="timeStatus ==1">
+            select
+            sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
+            from PT_TaskSaleInvoice tsi
+            left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+            where VehicleStatus = '3'
+            /*与电脑端数据查询保持一致*/
+            /*and (VehiceNumber > '0')*/
+            and tsi.InvoiceType != 6
+            and pt.CContractCode in
+            <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            and pt.ContractUID in
+            <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            <if test="eppCode != null and eppCode != ''">
+                and pt.eppCode=#{eppCode}
+            </if>
+            <if test="placing != null and placing != ''">
+                and pt.placing like '%'+#{placing}+'%'
+            </if>
+            <if test="taskId != null and taskId != ''">
+                and tsi.taskId like '%'+#{taskId}+'%'
+            </if>
+            <if test="stgId != null and stgId != ''">
+                and pt.stgid like '%'+#{stgId}+'%'
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and tsi.sendTime <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and tsi.sendTime <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </if>
+        <if test="timeStatus ==0">
+            select
+            sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
+            from PT_TaskSaleInvoice tsi
+            left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+            where VehicleStatus = '3'
+            and tsi.InvoiceType != 6
+            and pt.CContractCode in
+            <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            and pt.ContractUID in
+            <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            <if test="eppCode != null and eppCode != ''">
+                and pt.eppCode=#{eppCode}
+            </if>
+            <if test="placing != null and placing != ''">
+                and pt.placing like '%'+#{placing}+'%'
+            </if>
+            <if test="taskId != null and taskId != ''">
+                and tsi.taskId like '%'+#{taskId}+'%'
+            </if>
+            <if test="stgId != null and stgId != ''">
+                and pt.stgid like '%'+#{stgId}+'%'
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and tsi.Leave_STTime <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </if>
+    </select>
 
 
 </mapper>

@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 功能:   施工单位服务接口实现层
@@ -100,7 +102,7 @@ public class BuilderServiceImpl implements BuilderService {
     /**
      * 工地端App产销统计查询
      *
-     * @param buildId   　企业
+     * @param buildId   　施工方用户id
      * @param eppCode   　工程代码
      * @param placing   　浇筑部位
      * @param taskId    　　任务单号
@@ -128,20 +130,24 @@ public class BuilderServiceImpl implements BuilderService {
         }
 
         PageHelper.startPage(page, pageSize);
-        //查询当前施工方关联的所有子合同
-        List<ConcreteVO> vehicleWorkloadSummaryVOS = builderMapper.getBuilderConcreteCount(contractDetailCodes, contractUIDList, eppCode, placing, taskId,
+        //查询施工方用户关联合同下的产销统计
+        List<ConcreteVO> concreteVOS = builderMapper.getBuilderConcreteCount(contractDetailCodes, contractUIDList, eppCode, placing, taskId,
                 stgId, beginTime, endTime, timeStatus);
-        //再根据合同列表为条件查询关联的任务单的生产消耗
-        for (ConcreteVO c : vehicleWorkloadSummaryVOS) {
 
-            //生产方量从生产消耗表中查询，不从小票表中查询，因为小票中生产方量不准确。
+
+
+        //再根据合同列表为条件查询关联的任务单的生产消耗
+        for (ConcreteVO c : concreteVOS) {
+
+            //施工方没有必要显示生产方量。
+            /*//生产方量从生产消耗表中查询，不从小票表中查询，因为小票中生产方量不准确。
             String produceBeginTime = c.getSendTime() + " 00:00:00";
             String produceEndTime = c.getSendTime() + " 23:59:59";
             BigDecimal productConcrete = builderMapper.getProductConcreteByTaskId(contractDetailCodes, contractUIDList, c.getTaskId(), produceBeginTime, produceEndTime);
             c.setProduceNum("0.00");
             if (productConcrete != null) {
                 c.setProduceNum(productConcrete.toString());
-            }
+            }*/
 
             // 保留小数点后两位数
             if (c.getProduceNum() != null && !"".equals(c.getProduceNum())) {
@@ -155,9 +161,45 @@ public class BuilderServiceImpl implements BuilderService {
                 c.setSaleNum(saleNum);
             }
         }
-        PageInfo<ConcreteVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
+        PageInfo<ConcreteVO> pageInfo = new PageInfo<>(concreteVOS);
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+
+    /**
+     * 查询产销统计中发货方量统计
+     *
+     * @param buildId   　施工方用户id
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　　任务单号
+     * @param stgId     　　　砼标记
+     * @param beginTime 　　开始时间
+     * @param endTime   　　　结束时间
+     */
+    @Override
+    public Map<String, BigDecimal> getBuilderConcreteSum(Integer buildId, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus) {
+
+
+        if (timeStatus == null) {
+            timeStatus = 1;
+        }
+        Map<String, BigDecimal> map = new HashMap<>();
+        //首先根据buildId查询出施工方用户关联的合同列表
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+
+        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
+            return null;
+        }
+        BigDecimal totalSaleNum = builderMapper.getBuilderConcreteSum(contractDetailCodes, contractUIDList, eppCode, placing, taskId,
+                stgId, beginTime, endTime, timeStatus);
+
+
+        map.put("totalSaleNum", totalSaleNum);
+
+        return map;
     }
 
     @Override

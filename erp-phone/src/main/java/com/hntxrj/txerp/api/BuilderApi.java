@@ -77,6 +77,28 @@ public class BuilderApi {
     }
 
     /**
+     * 工地端App发货总量（销量）统计
+     *
+     * @param buildId   　企业
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　　任务单号
+     * @param stgId     　　　砼标记
+     * @param beginTime 　　开始时间
+     * @param endTime   　　　结束时间
+     * */
+    @PostMapping("/getBuildConcreteSum")
+    public ResultVO getBuilderConcreteSum(Integer buildId, String eppCode, String placing,
+                                            String taskId, String stgId,
+                                            Long beginTime, Long endTime, Integer timeStatus) {
+        log.info("getBuilderConcreteSum");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(builderService.getBuilderConcreteSum(buildId, eppCode, placing, taskId,
+                stgId, beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)), timeStatus));
+    }
+
+    /**
      * 获取小票签收列表
      *
      * @param buildId     企业
