@@ -155,7 +155,6 @@ public class StockInServerImpl implements StockInServer {
         List<WeightMatNameVO> stockInWeighmatNsVOS = stockInWeighmatNsMapper.getWeightByMat(empName, compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
         for (WeightMatNameVO raw : stockInWeighmatNsVOS) {
             raw.setTlWeight(raw.getTlWeight() / 1000);
-            raw.setProportion(raw.getProportion() / 1000);
             if (!"G".equals(raw.getMatParentCode()) && !"S".equals(raw.getMatParentCode())) {
                 raw.setProportion(0.0);
             }

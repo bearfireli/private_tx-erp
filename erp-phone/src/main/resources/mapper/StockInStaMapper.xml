@@ -4,7 +4,7 @@
 
     <!--原材料过磅统计。材料名称-->
     <select id="getWeightByMat" resultType="com.hntxrj.txerp.vo.WeightMatNameVO">
-        select dd.PI_TypeName matParentName,dd.PI_Values matParentCode, sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as Proportion,mp.MatName,mp.mat,mp.MatSpecs as matSpecs
+        select dd.PI_TypeName matParentName,dd.PI_Values matParentCode, sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.Proportion) as Proportion,mp.MatName,mp.mat,mp.MatSpecs as matSpecs
         from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
