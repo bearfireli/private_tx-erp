@@ -18,4 +18,272 @@
         where BuilderCode = #{builderCode}
           and CompId = #{compid}
     </select>
+
+
+    <!--工地端App砼产量统计-->
+    <select id="getBuilderConcreteCount" resultType="com.hntxrj.txerp.vo.ConcreteVO">
+        <if test="timeStatus ==1">
+            select
+            convert(varchar(10),tsi.sendtime,120) as sendTime,
+            tsi.taskId,
+            sb.builderName,
+            sm.eppName,
+            pt.placing,
+            count(tsi.VehiceNumber)carNum,
+            pt.stgId,
+            sum(tsi.produceNum) produceNum,
+            sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
+            from PT_TaskSaleInvoice tsi
+            left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+            left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
+            left join SM_BuilderInfo sb on pt.compid =sb.compid and pt.BuilderCode =sb.BuilderCode
+            where VehicleStatus = '3'
+            /*与电脑端数据查询保持一致*/
+            /*and (VehiceNumber > '0')*/
+            and tsi.InvoiceType != 6
+            and pt.CContractCode in
+            <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            and pt.ContractUID in
+            <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            <if test="eppCode != null and eppCode != ''">
+                and pt.eppCode=#{eppCode}
+            </if>
+            <if test="placing != null and placing != ''">
+                and pt.placing like '%'+#{placing}+'%'
+            </if>
+            <if test="taskId != null and taskId != ''">
+                and tsi.taskId like '%'+#{taskId}+'%'
+            </if>
+            <if test="stgId != null and stgId != ''">
+                and pt.stgid like '%'+#{stgId}+'%'
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and tsi.sendTime <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and tsi.sendTime <![CDATA[ <= ]]> #{endTime}
+            </if>
+            Group By convert(varchar(10),tsi.sendTime,120),tsi.taskId, eppname, pt.buildercode, buildername, placing,
+            stgid
+            ORDER BY convert(varchar(10),tsi.sendTime,120),tsi.taskId
+        </if>
+        <if test="timeStatus ==0">
+            select
+            convert(varchar(10),tsi.Leave_STTime,120) as sendTime,
+            tsi.taskId,
+            sb.builderName,
+            sm.eppName,
+            pt.placing,
+            count(tsi.VehiceNumber )carNum,
+            pt.stgId,
+            sum(tsi.produceNum) produceNum,
+            sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
+            from PT_TaskSaleInvoice tsi
+            left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+            left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
+            left join SM_BuilderInfo sb on pt.compid =sb.compid and pt.BuilderCode =sb.BuilderCode
+            where VehicleStatus = '3'
+            and tsi.InvoiceType != 6
+            and pt.CContractCode in
+            <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            and pt.ContractUID in
+            <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            <if test="eppCode != null and eppCode != ''">
+                and pt.eppCode=#{eppCode}
+            </if>
+            <if test="placing != null and placing != ''">
+                and pt.placing like '%'+#{placing}+'%'
+            </if>
+            <if test="taskId != null and taskId != ''">
+                and tsi.taskId like '%'+#{taskId}+'%'
+            </if>
+            <if test="stgId != null and stgId != ''">
+                and pt.stgid like '%'+#{stgId}+'%'
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and tsi.Leave_STTime <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
+            </if>
+            Group By convert(varchar(10),tsi.Leave_STTime,120),tsi.taskId, eppname, pt.buildercode, buildername,
+            placing, stgid
+            ORDER BY convert(varchar(10),tsi.Leave_STTime,120),tsi.taskId
+        </if>
+    </select>
+
+    <!--工地端App从生产消耗表中查询生产消耗-->
+    <select id="getProductConcreteByTaskId" resultType="java.math.BigDecimal">
+        select sum(pp.PanNum)
+        from PT_ProduceConsume pp
+        left join PT_TaskPlan pt on pp.compid = pt.compid and pp.TaskId = pt.TaskId
+        where pp.RecStatus = 1
+        and pp.taskId = #{taskId}
+        and pt.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and pt.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="produceBeginTime != null and produceBeginTime != ''">
+            and ProduceTime <![CDATA[ >= ]]>  #{produceBeginTime}
+        </if>
+        <if test="produceEndTime != null and produceEndTime != ''">
+            and ProduceTime <![CDATA[ <= ]]> #{produceEndTime}
+        </if>
+    </select>
+
+
+    <!--工地端App小票列表-->
+    <select id="getBuildTaskSaleInvoiceList" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceListVO">
+        select tsi.compid,
+        tsi.ID,
+        vv.VehicleStatus,
+        tsi.VehicleID,
+        (tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) SaleNum,
+        tsi.QianNum,
+        tsi.PersonalCode,
+        vm.PersonalName,
+        tsi.VehiceNumber,
+        tp.TaskId,
+        tsi.ThreeProduceNum,
+        tsi.TaWeight,
+        tsi.GrWeight,
+        tsi.NetWeight,
+        e.EPPName,
+        b.BuilderName,
+        tp.StgId,
+        tsi.Arrive_STTime arriveSttime,
+        tp.Slump,
+        tp.Placing,
+        tp.Attribute,
+        ps.PI_TypeName placeStyleName,
+        upStatus,
+        vs.PI_TypeName VehicleStatusName,
+        it.PI_TypeName invoiceTypeName
+        from PT_TaskSaleInvoice tsi
+        left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
+        left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
+        and tsi.compid = ps.compid
+        left join SM_EPPInfo e on tp.EPPCode = e.EPPCode and e.compid = tsi.compid
+        left join SM_BuilderInfo b on tp.BuilderCode = b.BuilderCode and b.compid = tsi.compid
+        left join DD_PublicInfo vs on vs.PI_Class = 22 and tsi.VehicleStatus=vs.PI_Values
+        and tsi.compid =vs.compid
+        left join DD_PublicInfo it on it.PI_Class = 51 and tsi.InvoiceType=it.PI_Values
+        and tsi.compid = it.compid
+        left join VM_PersonalInfo vm on tsi.PersonalCode =vm.PersonalCode and tsi.compid =vm.compid
+        left join VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
+        where tsi.RecStatus=1
+        and tsi.InvoiceType!=6
+        and tp.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and tp.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="beginTime != null and beginTime != '' ">
+            and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != '' ">
+            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="eppCode != null and eppCode != ''">
+            and tp.EPPCode = #{eppCode}
+        </if>
+        <if test="upStatus != null">
+            <if test="upStatus==0">and (tsi.upStatus=0 or tsi.upStatus is null)</if>
+            <if test="upStatus==1">and tsi.upStatus = #{upStatus}</if>
+        </if>
+        <if test="builderCode != null and builderCode != '' ">
+            and tp.builderCode = #{builderCode}
+        </if>
+        <if test="taskStatus != null and taskStatus != '' ">
+            and tp.taskStatus = #{taskStatus}
+        </if>
+        <if test="taskId != null and taskId != '' ">
+            and tp.taskId like '%'+#{taskId}+'%'
+        </if>
+        <if test="placing != null and placing != '' ">
+            and tp.placing like '%'+#{placing}+'%'
+        </if>
+    </select>
+
+
+    <!--工地端App中获取调度派车列表-->
+    <select id="getBuildSendCarList" resultType="com.hntxrj.txerp.vo.SendCarListVO">
+        select pt.compid,
+        totalProduceNum,
+        ScrapNum,
+        Attribute,
+        pt.Taskid,
+        stgid,
+        pt.Slump as slump,
+        EPPName,
+        BuilderName,
+        Placing,
+        PreNum,
+        PI_TypeName as PlaceStyleName,
+        pp.totalSaleNum saleNumTotal,
+        pp.vehiceNumber,
+        pp.RemnantNum remnantNum,
+        pp.numberOfSignings,
+        pt.adjustmentTime,
+        pt.concreteMark,
+        pt.defaultJump,
+        pt.PreCarNum
+        from PT_TaskPlan pt
+        left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
+        left join SM_BuilderInfo sb on pt.compid = sb.compid and pt.BuilderCode = sb.BuilderCode
+        left join (select TaskId,
+        compid,
+        sum(RemnantNum)RemnantNum,
+        sum(ProduceNum) as totalProduceNum,
+        sum(ScrapNum) as ScrapNum,
+        sum(SaleNum - ReturnNum - RemnantNum - ScrapNum) totalSaleNum,
+        count(VehiceNumber) vehiceNumber,
+        sum(NumberOfSignings) numberOfSignings
+        from PT_TaskSaleInvoice
+        where InvoiceType != 6
+        and VehicleStatus not in ('8', '9', '10', '11')
+        and VehicleStatus is not null
+        group by TaskId, compid) pp
+        on pt.compid = pp.compid and pt.TaskId = pp.TaskId
+        left join(select PI_TypeName, PI_Values, compid
+        from DD_PublicInfo
+        where PI_Class = 24
+        and PI_Status = 1
+        group by PI_TypeName, PI_Values, compid) p
+        on p.PI_Values = pt.PlaceStyle
+        and pt.compid = p.compid
+        where  pt.RecStatus = 1
+        and pt.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and pt.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="searchName != null and searchName != '' ">
+            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
+            '%'+#{searchName}+'%')
+        </if>
+        and pt.TaskStatus = 1
+        and DeleteMark = 0
+        order by pt.TaskId
+    </select>
+
+
 </mapper>

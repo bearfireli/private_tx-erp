@@ -7,14 +7,17 @@ import com.hntxrj.txerp.dao.BuilderDao;
 import com.hntxrj.txerp.entity.BuilderInfo;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.mapper.BuilderMapper;
+import com.hntxrj.txerp.mapper.ConstructionMapper;
 import com.hntxrj.txerp.server.BuilderService;
-import com.hntxrj.txerp.vo.BuilderDropDownVO;
-import com.hntxrj.txerp.vo.PageVO;
+import com.hntxrj.txerp.server.TaskListServer;
+import com.hntxrj.txerp.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,11 +33,14 @@ public class BuilderServiceImpl implements BuilderService {
 
     private final BuilderDao builderDao;
     private final BuilderMapper builderMapper;
+    private final ConstructionMapper constructionMapper;
+
 
     @Autowired
-    public BuilderServiceImpl(BuilderDao builderDao, BuilderMapper builderMapper) {
+    public BuilderServiceImpl(BuilderDao builderDao, BuilderMapper builderMapper, ConstructionMapper constructionMapper) {
         this.builderDao = builderDao;
         this.builderMapper = builderMapper;
+        this.constructionMapper = constructionMapper;
     }
 
 
@@ -89,4 +95,111 @@ public class BuilderServiceImpl implements BuilderService {
     public BuilderInfo getBuilderInfo(String builderCode, String compid) {
         return builderMapper.getBuilderInfo(builderCode, compid);
     }
+
+
+    /**
+     * 工地端App产销统计查询
+     *
+     * @param buildId   　企业
+     * @param eppCode   　工程代码
+     * @param placing   　浇筑部位
+     * @param taskId    　　任务单号
+     * @param stgId     　　　砼标记
+     * @param beginTime 　　开始时间
+     * @param endTime   　　　结束时间
+     * @param page      　　　　页数
+     * @param pageSize  　　每页显示多少条
+     */
+    @Override
+    public PageVO<ConcreteVO> getBuilderConcreteCount(Integer buildId, String eppCode, String placing,
+                                                      String taskId, String stgId, String beginTime,
+                                                      String endTime, Integer timeStatus, Integer page, Integer pageSize) {
+        PageVO<ConcreteVO> pageVO = new PageVO<>();
+        if (timeStatus == null) {
+            timeStatus = 1;
+        }
+
+        //首先根据buildId查询出施工方用户关联的合同列表
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
+            pageVO.setArr(new ArrayList<>());
+            return pageVO;
+        }
+
+        PageHelper.startPage(page, pageSize);
+        //查询当前施工方关联的所有子合同
+        List<ConcreteVO> vehicleWorkloadSummaryVOS = builderMapper.getBuilderConcreteCount(contractDetailCodes, contractUIDList, eppCode, placing, taskId,
+                stgId, beginTime, endTime, timeStatus);
+        //再根据合同列表为条件查询关联的任务单的生产消耗
+        for (ConcreteVO c : vehicleWorkloadSummaryVOS) {
+
+            //生产方量从生产消耗表中查询，不从小票表中查询，因为小票中生产方量不准确。
+            String produceBeginTime = c.getSendTime() + " 00:00:00";
+            String produceEndTime = c.getSendTime() + " 23:59:59";
+            BigDecimal productConcrete = builderMapper.getProductConcreteByTaskId(contractDetailCodes, contractUIDList, c.getTaskId(), produceBeginTime, produceEndTime);
+            c.setProduceNum("0.00");
+            if (productConcrete != null) {
+                c.setProduceNum(productConcrete.toString());
+            }
+
+            // 保留小数点后两位数
+            if (c.getProduceNum() != null && !"".equals(c.getProduceNum())) {
+                String produceNum = c.getProduceNum();
+                produceNum = produceNum.substring(0, produceNum.indexOf(".") + 3);
+                c.setProduceNum(produceNum);
+            }
+            if (c.getSaleNum() != null && !"".equals(c.getSaleNum())) {
+                String saleNum = c.getSaleNum();
+                saleNum = saleNum.substring(0, saleNum.indexOf(".") + 3);
+                c.setSaleNum(saleNum);
+            }
+        }
+        PageInfo<ConcreteVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    @Override
+    public PageVO<TaskSaleInvoiceListVO> getBuildTaskSaleInvoiceList(Integer buildId, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String taskId, String placing, String taskStatus, Integer page, Integer pageSize) {
+        PageVO<TaskSaleInvoiceListVO> pageVO = new PageVO<>();
+        //首先根据buildId查询出施工方用户关联的合同列表
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
+
+            pageVO.setArr(new ArrayList<>());
+            return pageVO;
+        }
+
+        PageHelper.startPage(page, pageSize, "SendTime desc");
+        List<TaskSaleInvoiceListVO> taskSaleInvoiceLists = builderMapper.getBuildTaskSaleInvoiceList(contractDetailCodes, contractUIDList, beginTime,
+                endTime, eppCode, upStatus, builderCode, taskId, placing, taskStatus);
+        PageInfo<TaskSaleInvoiceListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    @Override
+    public PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page, Integer pageSize) {
+        PageVO<SendCarListVO> pageVO = new PageVO<>();
+
+        //首先根据buildId查询出施工方用户关联的合同列表
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+
+        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
+            pageVO.setArr(new ArrayList<>());
+            return pageVO;
+        }
+
+        PageHelper.startPage(page, pageSize);
+        List<SendCarListVO> sendCarList = builderMapper.getBuildSendCarList(contractDetailCodes, contractUIDList, searchName);
+        PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
+
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+
 }

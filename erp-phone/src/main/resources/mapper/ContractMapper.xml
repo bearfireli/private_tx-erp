@@ -40,7 +40,7 @@
         <if test="endTime != null">
             and cm.SignDate <![CDATA[ <= ]]>  #{endTime}
         </if>
-        <if test="contractCode != null">
+        <if test="contractDetailCode != null">
             and cm.ContractId like '%'+#{contractDetailCode}+'%'
         </if>
         <if test="verifyStatus != null">
