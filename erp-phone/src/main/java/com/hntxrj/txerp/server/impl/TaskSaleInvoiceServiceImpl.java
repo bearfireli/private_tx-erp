@@ -6,10 +6,7 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.mapper.TaskSaleInvoiceMapper;
 import com.hntxrj.txerp.server.TaskSaleInvoiceService;
-import com.hntxrj.txerp.vo.PageVO;
-import com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO;
-import com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO;
-import com.hntxrj.txerp.vo.TaskSaleInvoiceListVO;
+import com.hntxrj.txerp.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,5 +67,10 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
             e.printStackTrace();
             throw new ErpException(ErrEumn.VERIFY_TICKET_ERROR);
         }
+    }
+
+    @Override
+    public TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String taskId, String placing, String taskStatus) {
+        return taskSaleInvoiceMapper.getTaskSaleInvoiceCount(compid,beginTime,endTime,eppCode,upStatus,builderCode,taskId,placing,taskStatus);
     }
 }

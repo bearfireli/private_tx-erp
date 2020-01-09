@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.mapper;
 
+import com.hntxrj.txerp.vo.TaskSaleInvoiceCountVO;
 import com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO;
 import com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO;
 import com.hntxrj.txerp.vo.TaskSaleInvoiceListVO;
@@ -42,9 +43,10 @@ public interface TaskSaleInvoiceMapper {
      * @param compid      　企业id
      * @param id          　　　小票id
      * @param opid        　　当前用户
-     * @param qiannum     　签收数量
+     * @param qianNum     　签收数量
      * @param signingTime 签收时间
      */
-    void getTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double qiannum, String saleFileImage, Date signingTime);
+    void getTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double qianNum, String saleFileImage, Date signingTime);
 
+    TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String taskId, String placing, String taskStatus);
 }

@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 功能:  搅拌车服务层接口实现类
@@ -677,6 +679,25 @@ public class VehicleServiceImpl implements VehicleService {
         PageInfo<PumpTruckWorkloadStatisticsVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+
+    /**
+     * 搅拌车过磅查询汇总
+     *
+     * @param compid     企业
+     * @param eppCode    工程代码
+     * @param empName   过磅员
+     * @param weightType 过磅类别
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
+     */
+    @Override
+    public Map<String, Double> getWorkloadStatisticsCount(String compid, String eppCode, String empName, Integer weightType, String beginTime, String endTime) {
+        Double totalNum=vehicleWorkloadMapper.getWorkloadStatisticsCount(compid,eppCode,empName,weightType,beginTime,endTime);
+        Map<String, Double> map = new HashMap<>();
+        map.put("totalNum", totalNum);
+        return map;
     }
 
 }

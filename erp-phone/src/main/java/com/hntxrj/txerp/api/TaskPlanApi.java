@@ -99,7 +99,7 @@ public class TaskPlanApi {
             String[] ppCodeArray = ppCodes.split(",");
 
             //拼接加价项目名称
-            StringBuilder ppNames=new StringBuilder();
+            StringBuilder ppNames = new StringBuilder();
             for (String ppCode : ppCodeArray) {
                 //根据ppCode从加价从加价项目表中查询出数据
                 PriceMarkupVO priceMarkupVO = taskPlanService.getPriceMarkupByPPCode(compid, ppCode);
@@ -174,6 +174,31 @@ public class TaskPlanApi {
                 eppCode, upStatus == null ? null : (upStatus == -1 ? null : upStatus), builderCode, taskId, placing, taskStatus, page, pageSize));
     }
 
+
+    /**
+     * 获取小票发货，签收方量汇总
+     *
+     * @param compid      企业
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param eppCode     工程代号
+     * @param upStatus    签收状态
+     * @param builderCode 施工单位代号
+     * @param taskId      任务单id
+     * @param placing     浇筑部位
+     * @param taskStatus  生产状态
+     * @return 小票签收列表
+     */
+    @PostMapping("/getTaskSaleInvoiceCount")
+    public ResultVO getTaskSaleInvoiceCount(String compid, Long beginTime, Long endTime, String eppCode, Byte upStatus,
+                                            String builderCode, String taskId, String placing, String taskStatus) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceCount(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)),
+                eppCode, upStatus , builderCode, taskId, placing, taskStatus));
+    }
+
     /**
      * 获取小票详情
      *
@@ -190,9 +215,9 @@ public class TaskPlanApi {
     /**
      * 调度派车列表
      *
-     * @param compid 企业代号
-     * @param searchName  搜索关键字
-     * @param page   页码
+     * @param compid     企业代号
+     * @param searchName 搜索关键字
+     * @param page       页码
      * @param pageSize   每页数量
      * @return 调度派车列表
      */
@@ -209,10 +234,10 @@ public class TaskPlanApi {
      *
      * @param compid    企业代号
      * @param vehicleId 车号
-     * @param beginTime  开始时间
-     * @param endTime    结束时间
-     * @param page       页码
-     * @param pageSize   每页显示条数
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param page      页码
+     * @param pageSize  每页显示条数
      * @return 调度派车列表
      */
     @PostMapping("/getSendDetail")
@@ -263,12 +288,12 @@ public class TaskPlanApi {
      * @param compid        企业id
      * @param stirId        线号/搅拌楼楼号
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
-     * @param isNewVersion 　新老版本标识： 1：新版本     null:老版本
+     * @param isNewVersion  　新老版本标识： 1：新版本     null:老版本
      * @param vehicleClass  班次
      */
     @PostMapping("getDriverShiftLED")
     public ResultVO getDriverShiftLED(String compid, String stirId,
-                                      Integer vehicleStatus,Integer isNewVersion,
+                                      Integer vehicleStatus, Integer isNewVersion,
                                       String vehicleClass) {
         if (isNewVersion == null) {
             return ResultVO.create(taskPlanService.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
@@ -544,9 +569,9 @@ public class TaskPlanApi {
     /**
      * 获取今日预计方量
      *
-     * @param compid  企业
-     * @param beginTime  开始时间
-     * @param endTime    结束时间
+     * @param compid    企业
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      * @throws SQLException
      */
     @RequestMapping("/phoneStatistics")
@@ -574,8 +599,8 @@ public class TaskPlanApi {
     /**
      * 校验用户输入的任务单号是否存在
      *
-     * @param compid   企业
-     * @param taskId  任务单号
+     * @param compid 企业
+     * @param taskId 任务单号
      */
     @PostMapping("/isExistence")
     public ResultVO isExistence(String compid, String taskId) {
@@ -586,7 +611,7 @@ public class TaskPlanApi {
     /**
      * 获取特殊加价项目列表
      *
-     * @param compid   企业
+     * @param compid 企业
      */
     @PostMapping("/getPriceMarkup")
     public ResultVO getPriceMarkup(String compid) {
@@ -597,7 +622,7 @@ public class TaskPlanApi {
     /**
      * 调度派车中查询正在生产的搅拌车
      *
-     * @param compid  企业
+     * @param compid 企业
      */
 
     @PostMapping("/getProduceCars")
