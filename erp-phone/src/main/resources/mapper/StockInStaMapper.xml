@@ -4,12 +4,14 @@
 
     <!--原材料过磅统计。材料名称-->
     <select id="getWeightByMat" resultType="com.hntxrj.txerp.vo.WeightMatNameVO">
-        select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as Proportion,mp.MatName,mp.mat,mp.MatSpecs as matSpecs
+        select dd.PI_TypeName matParentName,dd.PI_Values matParentCode, sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as Proportion,mp.MatName,mp.mat,mp.MatSpecs as matSpecs
         from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
         left join (select MatName + '(' +MatSpecs+ ')' AS matName,MatName as mat ,MatSpecs ,compid,MatCode,empName from MP_MaterialInfor )
         mp on si.compid =mp.compid and si.MatCode =mp.MatCode
+        left join MP_MaterialInfor mm  on  si.compid=mm.compid and si.MatCode=mm.MatCode
+        left join DD_PublicInfo dd on si.compid=dd.compid and dd.PI_Class=64 and dd.PI_Values=mm.MatParent
         where si.compid = #{compid} and si.RecStatus=1
         <if test="empName != null">
             and mp.empName like '%'+#{empName}+'%'
@@ -26,7 +28,7 @@
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
-        group by mp.MatName,mp.mat,mp.MatSpecs
+        group by mp.MatName,mp.mat,mp.MatSpecs,dd.PI_TypeName,dd.PI_Values
         order by mp.MatName
     </select>
 

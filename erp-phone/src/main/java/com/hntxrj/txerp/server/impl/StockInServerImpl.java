@@ -154,13 +154,11 @@ public class StockInServerImpl implements StockInServer {
         PageHelper.startPage(page, pageSize);
         List<WeightMatNameVO> stockInWeighmatNsVOS = stockInWeighmatNsMapper.getWeightByMat(empName, compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
         for (WeightMatNameVO raw : stockInWeighmatNsVOS) {
-            raw.setTlWeight(Double.valueOf(raw.getTlWeight()) / 1000);
-            raw.setProportion(Double.valueOf(raw.getProportion() / 1000));
-        /*    if(raw.getProportion()!=0){
-             String getProportion = String.valueOf(raw.getProportion());
-             getProportion = getProportion.substring(0,getProportion.indexOf(".") +3);
-             raw.setProportion(Double.parseDouble(getProportion));
-            }*/
+            raw.setTlWeight(raw.getTlWeight() / 1000);
+            raw.setProportion(raw.getProportion() / 1000);
+            if (!"G".equals(raw.getMatParentCode()) && !"S".equals(raw.getMatParentCode())) {
+                raw.setProportion(0.0);
+            }
 
         }
         PageInfo<WeightMatNameVO> pageInfo = new PageInfo<>(stockInWeighmatNsVOS);

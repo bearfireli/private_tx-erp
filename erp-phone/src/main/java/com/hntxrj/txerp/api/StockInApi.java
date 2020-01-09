@@ -274,7 +274,7 @@ public class StockInApi {
     }
 
     /**
-     * /*原材料过磅统计  材料名称
+     * 原材料过磅统计  材料名称
      *
      * @param compid    企业id
      * @param beginTime 开始时间

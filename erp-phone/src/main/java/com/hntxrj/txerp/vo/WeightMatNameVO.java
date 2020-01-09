@@ -21,4 +21,10 @@ public class WeightMatNameVO {
     /*规格*/
     private String matSpecs;
 
+    /*材料类别名称*/
+    private String matParentName;
+
+    /*材料类别编号*/
+    private String matParentCode;
+
 }
