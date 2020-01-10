@@ -186,7 +186,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         }
         // 添加spterp中的企业
         OkHttpClient client = new OkHttpClient();
-         url =url+ "/comp/addComp";
+         String phoneUrl =url+ "/comp/addComp";
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("compid", String.valueOf(savedEnterprise.getEid()))
@@ -196,7 +196,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                 .build();
 
         Request request = new Request.Builder()
-                .url(url)
+                .url(phoneUrl)
                 .post(requestBody)
                 .build();
 
