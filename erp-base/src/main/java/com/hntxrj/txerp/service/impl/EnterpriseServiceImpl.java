@@ -45,6 +45,10 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     @Value("${app.pay.imgFilePath}")
     private String imgFilePath;
 
+    @Value("${app.host}")
+    private String url;
+
+
     private final EnterpriseMapper enterpriseMapper;
 
 
@@ -182,7 +186,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         }
         // 添加spterp中的企业
         OkHttpClient client = new OkHttpClient();
-        String url = "https://dev.erp.hntxrj.com/comp/addComp";
+         url =url+ "/comp/addComp";
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("compid", String.valueOf(savedEnterprise.getEid()))
