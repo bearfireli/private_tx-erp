@@ -1,10 +1,7 @@
 package com.hntxrj.txerp.mapper;
 
 import com.hntxrj.txerp.entity.BuilderInfo;
-import com.hntxrj.txerp.vo.BuilderDropDownVO;
-import com.hntxrj.txerp.vo.ConcreteVO;
-import com.hntxrj.txerp.vo.SendCarListVO;
-import com.hntxrj.txerp.vo.TaskSaleInvoiceListVO;
+import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
@@ -98,4 +95,15 @@ public interface BuilderMapper {
      * @param endTime             　　　结束时间
      */
     BigDecimal getBuilderConcreteSum(List<String> contractDetailCodes, List<String> contractUIDList, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
+
+
+    /**
+     * 查询任务单集合下的所有车辆
+     *
+     * @param contractDetailCodes 子合同号
+     * @param contractUIDList     主合同号
+     * @param taskIds             任务单号集合
+     * @return 车辆集合
+     */
+    List<DispatchVehicle> getCarsByTaskIds(List<String> contractDetailCodes, List<String> contractUIDList, List<String> taskIds);
 }

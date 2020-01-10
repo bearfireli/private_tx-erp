@@ -37,10 +37,7 @@
             left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
             left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
             left join SM_BuilderInfo sb on pt.compid =sb.compid and pt.BuilderCode =sb.BuilderCode
-            where VehicleStatus = '3'
-            /*与电脑端数据查询保持一致*/
-            /*and (VehiceNumber > '0')*/
-            and tsi.InvoiceType != 6
+            where  tsi.InvoiceType = 5
             and pt.CContractCode in
             <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
                 #{item}
@@ -290,10 +287,7 @@
             sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
             from PT_TaskSaleInvoice tsi
             left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
-            where VehicleStatus = '3'
-            /*与电脑端数据查询保持一致*/
-            /*and (VehiceNumber > '0')*/
-            and tsi.InvoiceType != 6
+            where tsi.InvoiceType = 5
             and pt.CContractCode in
             <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
                 #{item}
@@ -355,6 +349,34 @@
                 and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
             </if>
         </if>
+    </select>
+
+
+
+    <!--查询所有正在生产的任务单的车辆情况-->
+    <select id="getCarsByTaskIds" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
+        select tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
+        dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId,dd2.StirName
+        from PT_TaskSaleInvoice tsi
+        left join  PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+        left join VM_VehicelManagement vm on tsi.compid = vm.compid and tsi.VehicleID = vm.CarID
+        left join  DD_PublicInfo dd on vm.VehicleStatus =dd.PI_Values and dd.compid =vm.compid and dd.PI_Class =22
+        left join DD_StirInfoSet dd2 on vm.compid =dd2.compid and vm.StirId =dd2.StirId
+        where InvoiceType in ('1', '2', '3', '4')
+        and vm.VehicleStatus in ('2','3')
+        and pt.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and pt.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and tsi.TaskId in
+        <foreach collection="taskIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        order by dd.PI_TypeName, tsi.SendTime desc
     </select>
 
 

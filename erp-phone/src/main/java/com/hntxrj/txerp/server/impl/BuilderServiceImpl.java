@@ -139,16 +139,6 @@ public class BuilderServiceImpl implements BuilderService {
         //再根据合同列表为条件查询关联的任务单的生产消耗
         for (ConcreteVO c : concreteVOS) {
 
-            //施工方没有必要显示生产方量。
-            /*//生产方量从生产消耗表中查询，不从小票表中查询，因为小票中生产方量不准确。
-            String produceBeginTime = c.getSendTime() + " 00:00:00";
-            String produceEndTime = c.getSendTime() + " 23:59:59";
-            BigDecimal productConcrete = builderMapper.getProductConcreteByTaskId(contractDetailCodes, contractUIDList, c.getTaskId(), produceBeginTime, produceEndTime);
-            c.setProduceNum("0.00");
-            if (productConcrete != null) {
-                c.setProduceNum(productConcrete.toString());
-            }*/
-
             // 保留小数点后两位数
             if (c.getProduceNum() != null && !"".equals(c.getProduceNum())) {
                 String produceNum = c.getProduceNum();
@@ -231,12 +221,53 @@ public class BuilderServiceImpl implements BuilderService {
         List<String> contractUIDList = constructionMapper.getContractUID(buildId);
 
         if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
+            //说明施工方用户未绑定合同
             pageVO.setArr(new ArrayList<>());
             return pageVO;
         }
 
         PageHelper.startPage(page, pageSize);
         List<SendCarListVO> sendCarList = builderMapper.getBuildSendCarList(contractDetailCodes, contractUIDList, searchName);
+
+
+        //查询出所有正在生产的任务单号集合。
+        List<String> taskIds = new ArrayList<>();
+        for (SendCarListVO sendCarListVO : sendCarList) {
+            if (sendCarListVO.getTotalProduceNum() == null) {
+                sendCarListVO.setTotalProduceNum("0.0");
+            }
+            if (sendCarListVO.getTaskId() != null) {
+                taskIds.add(sendCarListVO.getTaskId());
+            }
+
+        }
+
+
+        //根据任务单号集合查询出所有的车号。
+        List<DispatchVehicle> cars = new ArrayList<>();
+        if (taskIds.size() > 0) {
+            cars = builderMapper.getCarsByTaskIds(contractDetailCodes,contractUIDList, taskIds);
+        }
+
+        //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
+        for (SendCarListVO sendCarListVO : sendCarList) {
+            List<DispatchVehicle> dispatchVehicleList = new ArrayList<>();
+            for (DispatchVehicle car : cars) {
+                //判断厦门华信特殊情况（先打票，再生产）
+                if ("24".equals(sendCarListVO.getCompid())) {
+                    if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
+                        car.setVehicleStatus("3");
+                        car.setStatusName("生产");
+                    }
+                }
+                //根据任务单号关联调度派车列表和其对应的车辆
+                if (sendCarListVO.getTaskId().equals(car.getTaskId())) {
+                    dispatchVehicleList.add(car);
+                }
+            }
+            sendCarListVO.setCars(dispatchVehicleList);
+        }
+
         PageInfo<SendCarListVO> pageInfo = new PageInfo<>(sendCarList);
 
         pageVO.format(pageInfo);

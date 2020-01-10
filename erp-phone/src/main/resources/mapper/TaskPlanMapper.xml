@@ -545,7 +545,7 @@
     </update>
 
     <select id="selectId" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
-        select TaskIdI
+        select TaskId
         from PT_TaskPlan
         where TaskId like #{taskId} + '%' and len(TaskId)=10
     </select>
@@ -902,7 +902,7 @@
         tp.PreTime,
         tp.TaskOverTime,
         tp.PreNum,
-        sum(ProduceNum) overNum,
+        sum(pt.SaleNum - pt.ReturnNum - pt.RemnantNum - pt.ScrapNum) overNum,
         tp.ContractUID,
         tp.CContractCode as contractDetailCode,
         tp.TaskStatus,
@@ -922,7 +922,7 @@
         tp.Attribute as attribute
         from PT_TaskPlan AS tp
         left join PT_TaskSaleInvoice pt on tp.compid = pt.compid and tp.TaskId = pt.TaskId
-        and pt.InvoiceType !=6
+        and pt.InvoiceType =5
         LEFT OUTER JOIN
         dbo.DD_PublicInfo AS DD_PublicInfo_3
         ON tp.TaskStatus = DD_PublicInfo_3.PI_Values and DD_PublicInfo_3.PI_Class = 23
