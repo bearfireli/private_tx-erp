@@ -44,6 +44,7 @@ public class DriverApi {
     /**
      * 获取小票签收列表
      *
+     * @param id          小票id
      * @param compid      企业
      * @param beginTime   开始时间
      * @param endTime     结束时间
@@ -72,13 +73,13 @@ public class DriverApi {
     /**
      * 修改小票中的车辆状态
      *
-     * @param compid         企业
-     * @param id             小票id
-     * @param vehicleStatus  车辆状态   13：正在卸料； 14：卸料完毕
+     * @param compid        企业
+     * @param id            小票id
+     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕； 1：场内待班
      * @return 小票签收列表
      */
     @PostMapping("/updateVehicleStatus")
-    public ResultVO updateVehicleStatus(String compid, Integer id,Integer vehicleStatus) {
+    public ResultVO updateVehicleStatus(String compid, Integer id, Integer vehicleStatus) {
         driverService.updateVehicleStatus(compid, id, vehicleStatus);
         return ResultVO.create();
     }
@@ -98,13 +99,12 @@ public class DriverApi {
     }
 
 
-
     /**
      * 获取司机列表
      *
      * @param compid 企业
      * @return 司机列表
-     * */
+     */
     @PostMapping("/getDriverList")
     public ResultVO getDriverList(String compid, String token) {
         return ResultVO.create(driverService.getDriverList(compid, token, null));
@@ -146,8 +146,8 @@ public class DriverApi {
     /**
      * 保存小票签收签收图片（老版本）
      *
-     *  @param image     图片
-     *  @param invoiceId 小票id
+     * @param image     图片
+     * @param invoiceId 小票id
      */
     @RequestMapping("/uploadTaskSaleInvoiceReceiptSign")
     public ResultVO uploadTaskSaleInvoiceReceiptSign(MultipartFile image, String invoiceId) throws IOException {
@@ -184,7 +184,7 @@ public class DriverApi {
         }
         String saleFileImage = invoiceId + ".png";
         try {
-            driverService.saveSaleFileImage(saleFileImage, invoiceId, compid,receiptNum==null?0.0:receiptNum);
+            driverService.saveSaleFileImage(saleFileImage, invoiceId, compid, receiptNum == null ? 0.0 : receiptNum);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -204,7 +204,7 @@ public class DriverApi {
         if (receiptNum == null) {
             receiptNum = 0.0;
         }
-        driverService.saveNumberOfSignings(compid,receiptNum, invoiceId);
+        driverService.saveNumberOfSignings(compid, receiptNum, invoiceId);
         return ResultVO.create();
     }
 
@@ -222,9 +222,9 @@ public class DriverApi {
     /**
      * 获取司机姓名
      *
-     * @param compid 企业代号
+     * @param compid     企业代号
      * @param driverCode 司机代号
-     * */
+     */
     @PostMapping("/getDriverName")
     public ResultVO getDriverName(String compid, String driverCode) {
         return ResultVO.create(driverService.getDriverName(compid, driverCode));
@@ -232,8 +232,8 @@ public class DriverApi {
 
 
     /**
-    * 根据司机编号集合查询出司机名称集合
-    */
+     * 根据司机编号集合查询出司机名称集合
+     */
     @RequestMapping("/getDriverNames")
     public ResultVO getDriverNames(String compid, String driverCodes) {
 
@@ -250,6 +250,7 @@ public class DriverApi {
     /**
      * 获取小票签收汇总
      *
+     * @param id          小票id
      * @param compid      企业
      * @param beginTime   开始时间
      * @param endTime     结束时间
@@ -263,13 +264,13 @@ public class DriverApi {
      * @return 小票签收列表
      */
     @PostMapping("/getTaskSaleInvoiceSum")
-    public ResultVO getTaskSaleInvoiceSum(String compid, Long beginTime, Long endTime, String eppCode,
+    public ResultVO getTaskSaleInvoiceSum(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
                                           @RequestParam(defaultValue = "-1") Byte upStatus,
                                           String builderCode, String placing,
                                           @RequestParam(defaultValue = "1") Integer page,
                                           @RequestParam(defaultValue = "10") Integer pageSize, String driverCode) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(driverService.getTaskSaleInvoiceSum(compid,
+        return ResultVO.create(driverService.getTaskSaleInvoiceSum(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 eppCode, upStatus == -1 ? null : upStatus, builderCode, placing, page, pageSize, driverCode));
@@ -294,9 +295,9 @@ public class DriverApi {
     /**
      * 查询司机当天打卡时间
      *
-     * @param compid        企业
-     * @param driverCode    司机代号
-     * @param dateTime      查询日期
+     * @param compid     企业
+     * @param driverCode 司机代号
+     * @param dateTime   查询日期
      */
     @PostMapping("/getDriverWorkTime")
     public ResultVO getDriverWorkTime(String compid, String driverCode, Long dateTime) {

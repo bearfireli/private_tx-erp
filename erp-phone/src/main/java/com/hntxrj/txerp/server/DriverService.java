@@ -101,6 +101,7 @@ public interface DriverService {
     /**
      * 获取小票签收汇总
      *
+     * @param invoiceId   小票id
      * @param compid      企业
      * @param beginTime   开始时间
      * @param endTime     结束时间
@@ -111,9 +112,9 @@ public interface DriverService {
      * @param upStatus    签收状态
      * @param page        页数
      * @param pageSize    每页数量
-     * @return 小票签收列表
+     * @return 小票签收汇总
      */
-    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode);
+    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(Integer invoiceId, String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode);
 
     /**
      * 保存司机打卡时间
@@ -128,17 +129,17 @@ public interface DriverService {
     /**
      * 查询司机当天打卡时间
      *
-     * @param compid        企业
-     * @param driverCode    司机代号
-     * @param queryTime      查询日期
+     * @param compid     企业
+     * @param driverCode 司机代号
+     * @param queryTime  查询日期
      */
     DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String queryTime);
 
     /**
      * 获取小票详情
      *
-     * @param compid 企业
-     * @param invoiceId     小票id
+     * @param compid    企业
+     * @param invoiceId 小票id
      * @return 小票签收列表
      */
     TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetail(String compid, Integer invoiceId);
@@ -164,7 +165,7 @@ public interface DriverService {
      * 修改小票中的车辆状态
      *
      * @param compid        企业
-     * @param invoiceId            小票id
+     * @param invoiceId     小票id
      * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕
      */
     void updateVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus);

@@ -117,7 +117,8 @@
             and tp.EPPCode = #{eppCode}
         </if>
         <if test="upStatus != null">
-            and tsi.upStatus = #{upStatus}
+            <if test="upStatus==0">and (tsi.upStatus=0 or tsi.upStatus is null)</if>
+            <if test="upStatus==1">and tsi.upStatus = #{upStatus}</if>
         </if>
         <if test="builderCode != null and builderCode != '' ">
             and tp.builderCode = #{builderCode}
@@ -136,7 +137,18 @@
 
     <!--修改小票表中的车辆状态-->
     <update id="updateVehicleStatus">
-        update PT_TaskSaleInvoice set VehicleStatus=#{vehicleStatus}
+        update PT_TaskSaleInvoice set VehicleStatus=#{vehicleStatus},
+        UpDownMark=0
+        <if test="vehicleStatus == 1 ">
+            ,Arrive_STTime=#{dateTime}
+        </if>
+        <if test="vehicleStatus == 13 ">
+
+            ,UnloadStarTime=#{dateTime}
+        </if>
+        <if test="vehicleStatus == 14 ">
+            ,UnlodeOverTime=#{dateTime}
+        </if>
         where compid=#{compid} and id =#{invoiceId}
     </update>
 
@@ -151,6 +163,9 @@
         and tsi.InvoiceType not in('1','2','6')
         and tsi.recStatus = 1
         and (tsi.InvoiceType !=4 and vv.VehicleStatus !=3)
+        <if test="invoiceId != null ">
+            and tsi.ID like #{invoiceId}
+        </if>
         <if test="eppCode != null and eppCode != ''">
             and tp.EPPCode = #{eppCode}
         </if>

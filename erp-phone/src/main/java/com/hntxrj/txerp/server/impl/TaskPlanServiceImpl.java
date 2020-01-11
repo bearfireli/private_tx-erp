@@ -550,6 +550,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
         //从系统变量表中查询出用户的设置信息，包括是否显示等待派车，和显示几辆
         DriverWaitLEDVO driverWaitLEDVO = systemVarInitMapper.getDriverWaitLED(compid);
+        if (driverWaitLEDVO == null) {
+            driverWaitLEDVO = new DriverWaitLEDVO();
+        }
         //获取所有等待生产的车辆的集合
         List<ProductDriverLEDVo> waitDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid, null, 1);
         if (waitDriverShiftLED != null && waitDriverShiftLED.size() > driverWaitLEDVO.getValue()) {

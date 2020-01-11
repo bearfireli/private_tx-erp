@@ -121,9 +121,8 @@ public class DriverServiceImpl implements DriverService {
 
 
         for (TaskSaleInvoiceDriverListVO taskSaleInvoice : taskSaleInvoiceLists) {
-            //判断如果此小票是未签收,并且小票状态是完成生产，并且车辆状态是运输，将车辆状态修改为开始卸料。
-            if (taskSaleInvoice.getUpStatus() == 0 && taskSaleInvoice.getInvoiceType() == 3
-                    && taskSaleInvoice.getVehicleStatus() == 2 ) {
+            //判断小票的状态如果不是正在卸料（vehicleStatus=13）和完成卸料（vehicleStatus=14），就显示开始卸料
+            if (taskSaleInvoice.getVehicleStatus() != 13 && taskSaleInvoice.getVehicleStatus() != 14) {
                 taskSaleInvoice.setVehicleStatus(17);
                 taskSaleInvoice.setVehicleStatusName("开始卸料");
             }
@@ -141,9 +140,9 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void saveSaleFileImage(String saleFileImage, String invoiceId, String compid,Double receiptNum) {
+    public void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double receiptNum) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        driverMapper.saveSaleFileImage(compid, saleFileImage, invoiceId, dateFormat.format(new Date()),receiptNum);
+        driverMapper.saveSaleFileImage(compid, saleFileImage, invoiceId, dateFormat.format(new Date()), receiptNum);
     }
 
     @Override
@@ -152,14 +151,23 @@ public class DriverServiceImpl implements DriverService {
         driverMapper.saveNumberOfSignings(compid, receiptNum, invoiceId, dateFormat.format(new Date()));
     }
 
+
+    /**
+     * 修改小票中的车辆状态
+     *
+     * @param compid         企业
+     * @param id             小票id
+     * @param vehicleStatus  车辆状态   13：正在卸料； 14：卸料完毕； 1：场内待班
+     * @return 小票签收列表
+     */
     @Override
     public void updateVehicleStatus(String compid, Integer id, Integer vehicleStatus) {
-        driverMapper.updateVehicleStatus(compid, id, vehicleStatus);
+        driverMapper.updateVehicleStatus(compid, id, vehicleStatus,new Date());
     }
 
     @Override
-    public TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode) {
-        return driverMapper.getTaskSaleInvoiceSum(compid, beginTime,
+    public TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(Integer invoiceId,String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode) {
+        return driverMapper.getTaskSaleInvoiceSum(invoiceId,compid, beginTime,
                 endTime, eppCode, upStatus, builderCode, placing, driverCode);
 
     }
