@@ -37,7 +37,7 @@
             left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
             left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
             left join SM_BuilderInfo sb on pt.compid =sb.compid and pt.BuilderCode =sb.BuilderCode
-            where  tsi.InvoiceType = 5
+            where  tsi.InvoiceType !=6
             and pt.CContractCode in
             <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
                 #{item}

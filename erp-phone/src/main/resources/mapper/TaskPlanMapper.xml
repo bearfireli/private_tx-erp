@@ -922,7 +922,7 @@
         tp.Attribute as attribute
         from PT_TaskPlan AS tp
         left join PT_TaskSaleInvoice pt on tp.compid = pt.compid and tp.TaskId = pt.TaskId
-        and pt.InvoiceType =5
+        and pt.InvoiceType !=6
         LEFT OUTER JOIN
         dbo.DD_PublicInfo AS DD_PublicInfo_3
         ON tp.TaskStatus = DD_PublicInfo_3.PI_Values and DD_PublicInfo_3.PI_Class = 23
