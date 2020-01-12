@@ -3,7 +3,7 @@
 <mapper namespace="com.hntxrj.txerp.mapper.DriverMapper">
     <update id="taskSaleInvoiceReceipt">
         update PT_TaskSaleInvoice
-        set VehicleID_Jump=#{PumpVehicle},
+        set VehicleID_Jump=#{pumpVehicle},
             NumberOfSignings = #{receiptNum},
             SigningTime = #{signingTime},
             ReceiptMan = #{receiptPeople},

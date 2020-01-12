@@ -159,7 +159,7 @@ public class DriverApi {
     }
 
     /**
-     * 保存小票签收签收图片（老版本）
+     * 保存小票签收图片（老版本）
      *
      * @param image     图片
      * @param invoiceId 小票id
@@ -192,7 +192,8 @@ public class DriverApi {
      * @param compid    企业
      */
     @RequestMapping("/saveTaskSaleInvoiceReceiptSign")
-    public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId, String compid) throws ErpException {
+    public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId,
+                                                   String compid) throws ErpException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
         if (file.exists()) {
             System.gc();

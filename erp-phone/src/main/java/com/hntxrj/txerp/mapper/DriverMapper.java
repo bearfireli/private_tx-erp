@@ -32,14 +32,14 @@ public interface DriverMapper {
      *
      * @param receiptPeople 签收人
      * @param receiptNum    签收数量
-     * @param PumpVehicle   泵车
+     * @param pumpVehicle   泵车
      * @param sign          签字图片
      * @param invoiceId     小票代号
      * @param signingTime   签收时间
      * @return 结果
      */
     void taskSaleInvoiceReceipt(String receiptPeople, Double receiptNum,
-                                String PumpVehicle, String sign, String invoiceId, String signingTime);
+                                String pumpVehicle, String sign, String invoiceId, String signingTime);
 
     /**
      * 获取司机姓名
@@ -81,7 +81,9 @@ public interface DriverMapper {
      * @param driverCode  司机代号
      * @return 小票签收列表
      */
-    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceList(Integer invoiceId, String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, String driverCode);
+    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceList(Integer invoiceId, String compid, String beginTime,
+                                                                   String endTime, String eppCode, Byte upStatus,
+                                                                   String builderCode, String placing, String driverCode);
 
 
     /**
@@ -98,7 +100,9 @@ public interface DriverMapper {
      * @param upStatus    签收状态
      * @return 小票签收列表
      */
-    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(Integer invoiceId, String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, String driverCode);
+    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(Integer invoiceId, String compid, String beginTime, String endTime,
+                                               String eppCode, Byte upStatus, String builderCode, String placing,
+                                               String driverCode);
 
     /**
      * 保存司机打卡时间

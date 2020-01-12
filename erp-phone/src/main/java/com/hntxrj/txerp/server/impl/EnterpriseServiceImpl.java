@@ -24,13 +24,13 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     /**
      * 设置搅拌站地址坐标
      *
-     * @param compid   企业
-     * @param address  地址坐标
-     * @param opid     操作员代号
-     * */
+     * @param compid  企业
+     * @param address 地址坐标
+     * @param opid    操作员代号
+     */
     @Override
     public void setEnterpriseAddress(String compid, String address, String opid) {
-        EnterpriseVO enterpriseVO= enterpriseMapper.selectEnterpriseAddress(compid);
+        EnterpriseVO enterpriseVO = enterpriseMapper.selectEnterpriseAddress(compid);
         if (enterpriseVO != null) {
             enterpriseMapper.updateEnterpriseAddress(compid, address, opid, new Date());
         }
@@ -40,8 +40,8 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     /**
      * 获取搅拌站地址坐标
      *
-     * @param compid   企业
-     * */
+     * @param compid 企业
+     */
     @Override
     public EnterpriseVO getEnterpriseAddress(String compid) {
 
