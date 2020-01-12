@@ -53,7 +53,7 @@ app:
     taskSaleInvoiceUploadPath: /Users/haoranliu/IdeaProjects/spterp-phone/upload/
   cloud:
 
-#    host: http://localhost:9501
+    #    host: http://localhost:9501
     host: http://192.168.31.178:9501
     auth: ${app.cloud.host}/user/tokenUse
 logging:
