@@ -23,13 +23,12 @@ public class EnterpriseApi {
     /**
      * 设置搅拌站地址坐标
      *
-     * @param compid   企业
-     * @param address  地址坐标
-     * @param opid     操作员代号
-     *
-     * */
+     * @param compid  企业
+     * @param address 地址坐标
+     * @param opid    操作员代号
+     */
     @RequestMapping("/saveEnterpriseAddress")
-    public ResultVO saveEnterpriseAddress(String compid,String address,String opid) {
+    public ResultVO saveEnterpriseAddress(String compid, String address, String opid) {
         enterpriseService.setEnterpriseAddress(compid, address, opid);
         return ResultVO.create();
     }
@@ -37,17 +36,13 @@ public class EnterpriseApi {
     /**
      * 获取搅拌站地址坐标
      *
-     * @param compid   企业
-     *
-     * */
+     * @param compid 企业
+     */
     @RequestMapping("/getEnterpriseAddress")
     public ResultVO getEnterpriseAddress(String compid) {
-        EnterpriseVO enterpriseVO= enterpriseService.getEnterpriseAddress(compid);
+        EnterpriseVO enterpriseVO = enterpriseService.getEnterpriseAddress(compid);
         return ResultVO.create(enterpriseVO);
     }
-
-
-
 
 
 }

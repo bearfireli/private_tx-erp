@@ -25,7 +25,7 @@ public interface TaskSaleInvoiceMapper {
      */
     List<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(String compid, String beginTime, String endTime,
                                                        String eppCode, Byte upStatus, String builderCode,
-                                                       String taskId, String placing,String taskStatus);
+                                                       String taskId, String placing, String taskStatus);
 
     /**
      * 获取小票需求

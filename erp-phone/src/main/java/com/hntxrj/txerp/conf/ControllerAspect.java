@@ -101,10 +101,9 @@ public class ControllerAspect {
     }
 
 
-
     //向tx-erp项目发送请求，把methodName，functionName，compid传递过去，存入数据库统计表中。
-    private void insertMethodName(String methodName, String functionName, String compid)  {
-        String baseUrl ;
+    private void insertMethodName(String methodName, String functionName, String compid) {
+        String baseUrl;
         baseUrl = url + "/statistic/functionClick";
         OkHttpClient client = new OkHttpClient();
         RequestBody body = new FormBody.Builder()
