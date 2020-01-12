@@ -287,7 +287,7 @@
             sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
             from PT_TaskSaleInvoice tsi
             left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
-            where tsi.InvoiceType = 5
+            where tsi.InvoiceType !=6
             and pt.CContractCode in
             <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
                 #{item}
