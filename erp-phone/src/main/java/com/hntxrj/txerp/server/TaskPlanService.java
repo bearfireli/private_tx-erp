@@ -37,7 +37,8 @@ public interface TaskPlanService {
      */
     PageVO<TaskPlanListVO> getTaskPlanList(String beginTime, String endTime, String eppCode,
                                            String builderCode, String placing, String taskId,
-                                           Integer taskStatus, String compid, Integer verifyStatus, Integer page, Integer pageSize);
+                                           Integer taskStatus, String compid, Integer verifyStatus,
+                                           Integer page, Integer pageSize);
 
 
     /**
@@ -399,6 +400,8 @@ public interface TaskPlanService {
      * @param buildId      施工方id
      * @return 任务单列表对象
      */
-    PageVO<TaskPlanListVO> buildTaskPlanList(String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, String compid, Integer verifyStatus, Integer buildId, Integer page, Integer pageSize);
+    PageVO<TaskPlanListVO> buildTaskPlanList(String beginTime, String endTime, String eppCode, String placing,
+                                             String taskId, Integer taskStatus, String compid, Integer verifyStatus,
+                                             Integer buildId, Integer page, Integer pageSize) throws ErpException;
 
 }

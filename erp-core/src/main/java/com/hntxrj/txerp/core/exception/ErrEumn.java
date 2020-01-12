@@ -19,6 +19,7 @@ public enum ErrEumn {
     ADD_CONTRACTDISTANCESET_ERROR(-21011, "该站距记录已经存在，请从新输入"),
     ADD_CONTRACTPRICEMARKUP_ERROR(-21012, "添加特殊材料失败！"),
     VERIFY_CONTRACT_ERROR(-21013, "合同已经审核，无法编辑！"),
+    NOT_BIND_CONTRACT(-21014, "您尚未绑定合同,请先绑定合同"),
 
 
     /* 任务单 21101-21199*/

@@ -547,7 +547,7 @@
     </update>
 
     <select id="selectId" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
-        select TaskIdI
+        select TaskId
         from PT_TaskPlan
         where TaskId like #{taskId} + '%' and len(TaskId)=10
     </select>
