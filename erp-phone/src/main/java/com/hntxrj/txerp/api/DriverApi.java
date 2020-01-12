@@ -1,5 +1,7 @@
 package com.hntxrj.txerp.api;
 
+import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.server.DriverService;
 import com.hntxrj.txerp.server.TaskSaleInvoiceService;
 import com.hntxrj.txerp.vo.ResultVO;
@@ -29,15 +31,13 @@ import java.util.*;
 @Slf4j
 public class DriverApi {
 
-    private final TaskSaleInvoiceService taskSaleInvoiceService;
     private final DriverService driverService;
 
     @Value("${app.spterp.taskSaleInvoiceUploadPath}")
     private String taskSaleInvoiceUploadPath;
 
     @Autowired
-    public DriverApi(TaskSaleInvoiceService taskSaleInvoiceService, DriverService driverService) {
-        this.taskSaleInvoiceService = taskSaleInvoiceService;
+    public DriverApi(DriverService driverService) {
         this.driverService = driverService;
     }
 
@@ -75,12 +75,28 @@ public class DriverApi {
      *
      * @param compid        企业
      * @param id            小票id
-     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕； 1：场内待班
+     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕；
+     * @return 小票签收列表
+     */
+    @PostMapping("/updateInvoiceVehicleStatus")
+    public ResultVO updateInvoiceVehicleStatus(String compid, Integer id, Integer vehicleStatus) {
+        driverService.updateInvoiceVehicleStatus(compid, id, vehicleStatus);
+        return ResultVO.create();
+    }
+
+
+    /**
+     * 修改车辆表中的车辆状态
+     *
+     * @param compid        企业
+     * @param vehicleId     车号
+     * @param id            小票id
+     * @param vehicleStatus 车辆状态    1：场内待班
      * @return 小票签收列表
      */
     @PostMapping("/updateVehicleStatus")
-    public ResultVO updateVehicleStatus(String compid, Integer id, Integer vehicleStatus) {
-        driverService.updateVehicleStatus(compid, id, vehicleStatus);
+    public ResultVO updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus) {
+        driverService.updateVehicleStatus(compid, vehicleId, id, vehicleStatus);
         return ResultVO.create();
     }
 
@@ -94,7 +110,6 @@ public class DriverApi {
      */
     @PostMapping("/getTaskSaleInvoiceDetail")
     public ResultVO getTaskSaleInvoiceDetail(String compid, Integer id) {
-        TaskSaleInvoiceDetailVO taskSaleInvoiceDetail = driverService.getTaskSaleInvoiceDetail(compid, id);
         return ResultVO.create(driverService.getTaskSaleInvoiceDetail(compid, id));
     }
 
@@ -150,13 +165,18 @@ public class DriverApi {
      * @param invoiceId 小票id
      */
     @RequestMapping("/uploadTaskSaleInvoiceReceiptSign")
-    public ResultVO uploadTaskSaleInvoiceReceiptSign(MultipartFile image, String invoiceId) throws IOException {
+    public ResultVO uploadTaskSaleInvoiceReceiptSign(MultipartFile image, String invoiceId) throws ErpException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
         if (file.exists()) {
             file.delete();
         }
-        if (file.createNewFile()) {
-            IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
+        try {
+            if (file.createNewFile()) {
+                IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.SAVE_PICTURE_ERROR);
         }
         Map<String, String> out = new HashMap<>();
         out.put("fileName", invoiceId + ".png");
@@ -172,21 +192,23 @@ public class DriverApi {
      * @param compid    企业
      */
     @RequestMapping("/saveTaskSaleInvoiceReceiptSign")
-    public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId, String compid) throws IOException {
+    public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId, String compid) throws ErpException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
         if (file.exists()) {
             System.gc();
             file.delete();
 
         }
-        if (file.createNewFile()) {
-            IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
-        }
-        String saleFileImage = invoiceId + ".png";
         try {
+            if (file.createNewFile()) {
+                IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
+            }
+            String saleFileImage = invoiceId + ".png";
+
             driverService.saveSaleFileImage(saleFileImage, invoiceId, compid, receiptNum == null ? 0.0 : receiptNum);
         } catch (Exception e) {
             e.printStackTrace();
+            throw new ErpException(ErrEumn.SAVE_PICTURE_ERROR);
         }
         return ResultVO.create();
     }
@@ -200,7 +222,7 @@ public class DriverApi {
      * @param invoiceId  小票id
      */
     @RequestMapping("/saveNumberOfSignings")
-    public ResultVO saveNumberOfSignings(String compid, Double receiptNum, String invoiceId) throws IOException {
+    public ResultVO saveNumberOfSignings(String compid, Double receiptNum, String invoiceId) {
         if (receiptNum == null) {
             receiptNum = 0.0;
         }
@@ -215,7 +237,7 @@ public class DriverApi {
      * @param fileName 图片名
      */
     @RequestMapping("/getTaskSaleInvoiceReceiptSign")
-    public void getTaskSaleInvoiceReceiptSign(String fileName, HttpServletResponse response) throws IOException {
+    public void getTaskSaleInvoiceReceiptSign(String fileName, HttpServletResponse response) throws ErpException {
         driverService.getTaskSaleInvoiceReceiptSign(taskSaleInvoiceUploadPath, fileName, response);
     }
 

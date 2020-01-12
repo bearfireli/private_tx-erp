@@ -3,6 +3,8 @@ package com.hntxrj.txerp.server.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.dao.DriverDao;
 import com.hntxrj.txerp.mapper.DriverMapper;
 import com.hntxrj.txerp.server.DriverService;
@@ -94,7 +96,8 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath, String fileName, HttpServletResponse response) throws IOException {
+    public void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath, String fileName,
+                                              HttpServletResponse response) throws ErpException {
 
         File file = new File(taskSaleInvoiceUploadPath + fileName);
         if (!file.exists()) {
@@ -104,7 +107,7 @@ public class DriverServiceImpl implements DriverService {
             IOUtils.copy(new FileInputStream(file), response.getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IOException();
+            throw new ErpException(ErrEumn.GET_PICTURE_ERROR);
         }
     }
 
@@ -125,6 +128,10 @@ public class DriverServiceImpl implements DriverService {
             if (taskSaleInvoice.getVehicleStatus() != 13 && taskSaleInvoice.getVehicleStatus() != 14) {
                 taskSaleInvoice.setVehicleStatus(17);
                 taskSaleInvoice.setVehicleStatusName("开始卸料");
+                if (taskSaleInvoice.getVehicleStatus() == 1) {
+                    taskSaleInvoice.setVehicleStatus(14);
+                    taskSaleInvoice.setVehicleStatusName("完成卸料");
+                }
             }
         }
 
@@ -155,21 +162,32 @@ public class DriverServiceImpl implements DriverService {
     /**
      * 修改小票中的车辆状态
      *
-     * @param compid         企业
-     * @param id             小票id
-     * @param vehicleStatus  车辆状态   13：正在卸料； 14：卸料完毕； 1：场内待班
+     * @param compid        企业
+     * @param id            小票id
+     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕；
      * @return 小票签收列表
      */
     @Override
-    public void updateVehicleStatus(String compid, Integer id, Integer vehicleStatus) {
-        driverMapper.updateVehicleStatus(compid, id, vehicleStatus,new Date());
+    public void updateInvoiceVehicleStatus(String compid, Integer id, Integer vehicleStatus) {
+        driverMapper.updateInvoiceVehicleStatus(compid, id, vehicleStatus, new Date());
     }
 
     @Override
-    public TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(Integer invoiceId,String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode) {
-        return driverMapper.getTaskSaleInvoiceSum(invoiceId,compid, beginTime,
-                endTime, eppCode, upStatus, builderCode, placing, driverCode);
+    public void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus) {
+        Date date = new Date();
+        //修改小票表中的车辆状态为回厂待班。
+        driverMapper.updateInvoiceVehicleStatus(compid, id, vehicleStatus, date);
+        //修改车辆表中的车辆状态为回厂待班。
+        driverMapper.updateVehicleStatus(compid, vehicleId, vehicleStatus, date);
+    }
 
+    @Override
+    public TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(Integer invoiceId, String compid, String beginTime,
+                                                      String endTime, String eppCode, Byte upStatus,
+                                                      String builderCode, String placing,
+                                                      Integer page, Integer pageSize, String driverCode) {
+        return driverMapper.getTaskSaleInvoiceSum(invoiceId, compid, beginTime,
+                endTime, eppCode, upStatus, builderCode, placing, driverCode);
     }
 
     /**

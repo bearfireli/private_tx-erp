@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.server;
 
 import com.alibaba.fastjson.JSONArray;
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.util.jdbc.sql.Page;
 import com.hntxrj.txerp.vo.*;
 
@@ -78,7 +79,7 @@ public interface DriverService {
     /**
      * 获取签收人手写图片
      **/
-    void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath, String fileName, HttpServletResponse response) throws IOException;
+    void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath, String fileName, HttpServletResponse response) throws ErpException;
 
     /**
      * 获取小票签收列表
@@ -94,7 +95,8 @@ public interface DriverService {
      * @param driverCode  司机代号
      * @return 小票签收列表
      */
-    PageVO<TaskSaleInvoiceDriverListVO> getTaskSaleInvoiceList(Integer id, String compid, String beginTime, String endTime, String eppCode,
+    PageVO<TaskSaleInvoiceDriverListVO> getTaskSaleInvoiceList(Integer id, String compid, String beginTime,
+                                                               String endTime, String eppCode,
                                                                Byte upStatus, String builderCode, String placing,
                                                                Integer page, Integer pageSize, String driverCode);
 
@@ -109,12 +111,14 @@ public interface DriverService {
      * @param builderCode 施工单位代号
      * @param driverCode  司机代号
      * @param placing     浇筑部位
-     * @param upStatus    签收状态
+     * @param upStatus    签收状态  0:未签收；  1:已签收；
      * @param page        页数
      * @param pageSize    每页数量
      * @return 小票签收汇总
      */
-    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(Integer invoiceId, String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String placing, Integer page, Integer pageSize, String driverCode);
+    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(Integer invoiceId, String compid, String beginTime, String endTime,
+                                               String eppCode, Byte upStatus, String builderCode, String placing,
+                                               Integer page, Integer pageSize, String driverCode);
 
     /**
      * 保存司机打卡时间
@@ -168,7 +172,9 @@ public interface DriverService {
      * @param invoiceId     小票id
      * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕
      */
-    void updateVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus);
+    void updateInvoiceVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus);
+
+    void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus);
 }
 
 

@@ -573,6 +573,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 produceList.add(produceDriverShiftLED);
             }
             //获取正在生产车辆的总数
+            assert produceDriverShiftLED != null;
             producingDriverList.setCarNum(producingDriverList.getCarNum()+produceDriverShiftLED.size());
         }
 

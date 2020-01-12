@@ -32,14 +32,14 @@ public interface DriverMapper {
      *
      * @param receiptPeople 签收人
      * @param receiptNum    签收数量
-     * @param jumpVehicle   泵车
+     * @param PumpVehicle   泵车
      * @param sign          签字图片
      * @param invoiceId     小票代号
      * @param signingTime   签收时间
      * @return 结果
      */
     void taskSaleInvoiceReceipt(String receiptPeople, Double receiptNum,
-                                String jumpVehicle, String sign, String invoiceId, String signingTime);
+                                String PumpVehicle, String sign, String invoiceId, String signingTime);
 
     /**
      * 获取司机姓名
@@ -156,7 +156,18 @@ public interface DriverMapper {
      *
      * @param compid        企业
      * @param invoiceId     小票id
-     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕  1:自动回厂
+     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕
+     * @param dateTime      修改车辆状态时间
      */
-    void updateVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus, Date dateTime);
+    void updateInvoiceVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus, Date dateTime);
+
+    /**
+     * 修改车辆表中的车辆状态
+     *
+     * @param compid        企业
+     * @param vehicleId     小票id
+     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕
+     * @param dateTime      修改车辆状态时间
+     */
+    void updateVehicleStatus(String compid, String vehicleId, Integer vehicleStatus, Date dateTime);
 }

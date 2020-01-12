@@ -3,7 +3,7 @@
 <mapper namespace="com.hntxrj.txerp.mapper.DriverMapper">
     <update id="taskSaleInvoiceReceipt">
         update PT_TaskSaleInvoice
-        set VehicleID_Jump=#{jumpVehicle},
+        set VehicleID_Jump=#{PumpVehicle},
             NumberOfSignings = #{receiptNum},
             SigningTime = #{signingTime},
             ReceiptMan = #{receiptPeople},
@@ -136,14 +136,13 @@
     </select>
 
     <!--修改小票表中的车辆状态-->
-    <update id="updateVehicleStatus">
+    <update id="updateInvoiceVehicleStatus">
         update PT_TaskSaleInvoice set VehicleStatus=#{vehicleStatus},
         UpDownMark=0
         <if test="vehicleStatus == 1 ">
             ,Arrive_STTime=#{dateTime}
         </if>
         <if test="vehicleStatus == 13 ">
-
             ,UnloadStarTime=#{dateTime}
         </if>
         <if test="vehicleStatus == 14 ">
@@ -280,4 +279,11 @@
         </if>
 
     </insert>
+
+
+    <!--修改车辆表中的车辆状态-->
+    <update id="updateVehicleStatus">
+        update  VM_VehicelManagement set VehicleStatus=#{vehicleStatus} ,UpDownMark=0
+        where compid=#{compid} and CarID=#{vehicleId}
+    </update>
 </mapper>
