@@ -54,7 +54,8 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
 
     @Autowired
     public EnterpriseServiceImpl(EnterpriseRepository enterpriseRepository
-            , EntityManager entityManager, UserService userService, AuthGroupService authGroupService, EnterpriseMapper enterpriseMapper) {
+            , EntityManager entityManager, UserService userService, AuthGroupService authGroupService,
+                                 EnterpriseMapper enterpriseMapper) {
         super(entityManager);
         this.userService = userService;
         this.authGroupService = authGroupService;
@@ -186,7 +187,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         }
         // 添加spterp中的企业
         OkHttpClient client = new OkHttpClient();
-         String phoneUrl =url+ "/comp/addComp";
+        String phoneUrl = url + "/comp/addComp";
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("compid", String.valueOf(savedEnterprise.getEid()))
