@@ -118,8 +118,6 @@ public class ControllerAspect {
                 .post(body)
                 .build();
 
-        client.newCall(request).execute();
-
         try {
             client.newCall(request).execute();
         } catch (IOException e) {
