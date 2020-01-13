@@ -15,6 +15,7 @@ public interface TaskSaleInvoiceMapper {
      * 获取小票签收列表
      *
      * @param compid      企业
+     * @param invoiceId    小票id
      * @param beginTime   开始时间
      * @param endTime     结束时间
      * @param eppCode     工程代号
@@ -23,7 +24,7 @@ public interface TaskSaleInvoiceMapper {
      * @param placing     浇筑部位
      * @return 小票签收列表
      */
-    List<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(String compid, String beginTime, String endTime,
+    List<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(String invoiceId,String compid, String beginTime, String endTime,
                                                        String eppCode, Byte upStatus, String builderCode,
                                                        String taskId, String placing, String taskStatus);
 
@@ -46,7 +47,8 @@ public interface TaskSaleInvoiceMapper {
      * @param qianNum     　签收数量
      * @param signingTime 签收时间
      */
-    void getTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double qianNum, String saleFileImage, Date signingTime);
+    void getTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double qianNum, String saleFileImage,
+                                   Date signingTime);
 
     TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String compid, String beginTime, String endTime,
                                                    String eppCode, Byte upStatus, String builderCode,

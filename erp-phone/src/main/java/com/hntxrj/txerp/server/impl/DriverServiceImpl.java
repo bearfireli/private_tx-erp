@@ -112,15 +112,15 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public PageVO<TaskSaleInvoiceDriverListVO> getTaskSaleInvoiceList(Integer id, String compid, String beginTime,
+    public PageVO<TaskSaleInvoiceDriverListVO> getTaskSaleInvoiceList(Integer invoiceId, String compid, String beginTime,
                                                                       String endTime, String eppCode, Byte upStatus,
                                                                       String builderCode, String placing,
                                                                       Integer page,
                                                                       Integer pageSize, String driverCode) {
         PageHelper.startPage(page, pageSize, "SendTime desc");
         List<TaskSaleInvoiceDriverListVO> taskSaleInvoiceLists =
-                driverMapper.driverGetTaskSaleInvoiceList(id, compid, beginTime,
-                        endTime, eppCode, upStatus, builderCode, placing, driverCode);
+                driverMapper.driverGetTaskSaleInvoiceList(invoiceId == null ? null : String.valueOf(invoiceId),
+                        compid, beginTime, endTime, eppCode, upStatus, builderCode, placing, driverCode);
 
 
         for (TaskSaleInvoiceDriverListVO taskSaleInvoice : taskSaleInvoiceLists) {
@@ -148,7 +148,7 @@ public class DriverServiceImpl implements DriverService {
         if (taskSaleInvoiceDetailVO != null) {
             taskSaleInvoiceDetailVO.setQianNum(taskSaleInvoiceDetailVO.getNumberOfSignings());
         }
-        return driverMapper.driverGetTaskSaleInvoiceDetail(id, compid);
+        return taskSaleInvoiceDetailVO;
     }
 
     @Override
@@ -191,8 +191,8 @@ public class DriverServiceImpl implements DriverService {
                                                       String endTime, String eppCode, Byte upStatus,
                                                       String builderCode, String placing,
                                                       Integer page, Integer pageSize, String driverCode) {
-        return driverMapper.getTaskSaleInvoiceSum(invoiceId, compid, beginTime,
-                endTime, eppCode, upStatus, builderCode, placing, driverCode);
+        return driverMapper.getTaskSaleInvoiceSum(invoiceId == null ? null : String.valueOf(invoiceId),
+                compid, beginTime, endTime, eppCode, upStatus, builderCode, placing, driverCode);
     }
 
     /**

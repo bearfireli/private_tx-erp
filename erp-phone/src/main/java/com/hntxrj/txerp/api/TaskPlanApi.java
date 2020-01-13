@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -150,6 +149,7 @@ public class TaskPlanApi {
      * 获取小票签收列表
      *
      * @param compid      企业
+     * @param id          小票id
      * @param beginTime   开始时间
      * @param endTime     结束时间
      * @param eppCode     工程代号
@@ -162,12 +162,12 @@ public class TaskPlanApi {
      * @return 小票签收列表
      */
     @PostMapping("/getTaskSaleInvoiceList")
-    public ResultVO getTaskSaleInvoiceList(String compid, Long beginTime, Long endTime, String eppCode, Byte upStatus,
-                                           String builderCode, String taskId, String placing, String taskStatus,
-                                           @RequestParam(defaultValue = "1") Integer page,
+    public ResultVO getTaskSaleInvoiceList(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
+                                           Byte upStatus, String builderCode, String taskId, String placing,
+                                           String taskStatus, @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(compid,
+        return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(id,compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 //upStatus属性老版本查询所有签收状态传的参数是-1，新版本传递的是null.兼顾新老版本，所以判断两次
@@ -197,7 +197,7 @@ public class TaskPlanApi {
         return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceCount(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
-                eppCode, upStatus , builderCode, taskId, placing, taskStatus));
+                eppCode, upStatus, builderCode, taskId, placing, taskStatus));
     }
 
     /**

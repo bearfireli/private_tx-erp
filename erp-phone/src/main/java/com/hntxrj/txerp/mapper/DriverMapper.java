@@ -81,7 +81,7 @@ public interface DriverMapper {
      * @param driverCode  司机代号
      * @return 小票签收列表
      */
-    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceList(Integer invoiceId, String compid, String beginTime,
+    List<TaskSaleInvoiceDriverListVO> driverGetTaskSaleInvoiceList(String invoiceId, String compid, String beginTime,
                                                                    String endTime, String eppCode, Byte upStatus,
                                                                    String builderCode, String placing, String driverCode);
 
@@ -100,7 +100,7 @@ public interface DriverMapper {
      * @param upStatus    签收状态
      * @return 小票签收列表
      */
-    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(Integer invoiceId, String compid, String beginTime, String endTime,
+    TaskSaleInvoiceSumVO getTaskSaleInvoiceSum(String invoiceId, String compid, String beginTime, String endTime,
                                                String eppCode, Byte upStatus, String builderCode, String placing,
                                                String driverCode);
 

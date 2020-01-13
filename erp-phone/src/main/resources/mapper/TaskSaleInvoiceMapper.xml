@@ -6,7 +6,7 @@
         vv.VehicleStatus,
         tsi.VehicleID,
         (tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) SaleNum,
-        tsi.NumberOfSignings qianNum,
+        tsi.NumberOfSignings numberOfSignings,
         tsi.PersonalCode,
         vm.PersonalName,
         tsi.VehiceNumber,
@@ -41,6 +41,9 @@
         where tsi.compid=#{compid}
         and tsi.RecStatus=1
         and tsi.InvoiceType!=6
+        <if test="invoiceId != null ">
+            and tsi.ID like '%'+#{invoiceId}+'%'
+        </if>
         <if test="beginTime != null and beginTime != '' ">
             and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
         </if>
@@ -74,7 +77,7 @@
                ps4.PI_TypeName                        InvoiceTypeName,
                tsi.VehicleID,
                (tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) SaleNum,
-               tsi.NumberOfSignings  qianNum,
+               tsi.NumberOfSignings  numberOfSignings,
                e.EPPName,
                e.EppCode,
                b.BuilderName,

@@ -27,13 +27,14 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
 
 
     @Override
-    public PageVO<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(String compid, String beginTime, String endTime,
-                                                                String eppCode, Byte upStatus, String builderCode,
-                                                                String taskId, String placing, String taskStatus,
-                                                                Integer page, Integer pageSize) {
+    public PageVO<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(Integer invoiceId, String compid, String beginTime,
+                                                                String endTime, String eppCode, Byte upStatus,
+                                                                String builderCode, String taskId, String placing,
+                                                                String taskStatus, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize, "SendTime desc");
-        List<TaskSaleInvoiceListVO> taskSaleInvoiceLists = taskSaleInvoiceMapper.getTaskSaleInvoiceList(compid,
-                beginTime, endTime, eppCode, upStatus, builderCode, taskId, placing,taskStatus);
+        List<TaskSaleInvoiceListVO> taskSaleInvoiceLists =
+                taskSaleInvoiceMapper.getTaskSaleInvoiceList(invoiceId == null ? null : String.valueOf(invoiceId),
+                        compid, beginTime, endTime, eppCode, upStatus, builderCode, taskId, placing, taskStatus);
         PageInfo<TaskSaleInvoiceListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
         PageVO<TaskSaleInvoiceListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -41,10 +42,14 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
     }
 
 
-
     @Override
     public TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetail(String compid, Integer id) {
-        return taskSaleInvoiceMapper.getTaskSaleInvoiceDetailVO(id, compid);
+        TaskSaleInvoiceDetailVO taskSaleInvoiceDetailVO = taskSaleInvoiceMapper.getTaskSaleInvoiceDetailVO(id, compid);
+        //兼容老版本，老版本前台用的签收方量时qianNum字段。
+        if (taskSaleInvoiceDetailVO != null) {
+            taskSaleInvoiceDetailVO.setQianNum(taskSaleInvoiceDetailVO.getNumberOfSignings());
+        }
+        return taskSaleInvoiceDetailVO;
     }
 
 
@@ -74,7 +79,7 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
     public TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String compid, String beginTime, String endTime,
                                                           String eppCode, Byte upStatus, String builderCode,
                                                           String taskId, String placing, String taskStatus) {
-        return taskSaleInvoiceMapper.getTaskSaleInvoiceCount(compid,beginTime,endTime,eppCode,upStatus,builderCode,
-                taskId,placing,taskStatus);
+        return taskSaleInvoiceMapper.getTaskSaleInvoiceCount(compid, beginTime, endTime, eppCode, upStatus, builderCode,
+                taskId, placing, taskStatus);
     }
 }
