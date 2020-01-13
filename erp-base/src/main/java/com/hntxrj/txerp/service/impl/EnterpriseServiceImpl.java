@@ -182,7 +182,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         }
         // 添加spterp中的企业
         OkHttpClient client = new OkHttpClient();
-        String url = "https://dev.erp.hntxrj.com/comp/addComp";
+        String url = "192.168.31.198:8088/comp/addComp";
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("compid", String.valueOf(savedEnterprise.getEid()))

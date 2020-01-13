@@ -52,5 +52,23 @@ public class CompController {
         return ResultVO.create(compService.addComp(userComp));
     }
 
+    @PostMapping("/deleteComp")
+    public ResultVO deleteComp(String compid, String securityKey) throws ErpException {
+        if (!"adsfbnhjkwegbrw".equals(securityKey)) {
+            throw new ErpException(ErrEumn.DELETE_ENTERPRISE_ERROR);
+        }
+        compService.deleteComp(compid);
+        return ResultVO.create();
+    }
+
+    @PostMapping("/updateComp")
+    public ResultVO updateComp(String compName, String compShortName, String compid, String securityKey) throws ErpException {
+        if (!"adsfbnhjkwegbrw".equals(securityKey)) {
+            throw new ErpException(ErrEumn.UPDATE_ENTERPRISE_ERROR);
+        }
+        compService.updateComp(compid, compName, compShortName);
+        return ResultVO.create();
+    }
+
 
 }
