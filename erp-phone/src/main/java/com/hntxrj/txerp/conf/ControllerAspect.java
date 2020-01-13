@@ -1,8 +1,11 @@
 package com.hntxrj.txerp.conf;
 
-import com.squareup.okhttp.*;
 import lombok.extern.slf4j.Slf4j;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -65,10 +68,9 @@ public class ControllerAspect {
     private Object mappingAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
 
+        String functionName;  //拦截到的方法对应的中文名称
 
-        String functionName ;  //拦截到的方法对应的中文名称
-
-        String compid ;  //公司代号
+        String compid;  //公司代号
         Map<String, Object> map = new HashMap<>();
 
 
@@ -99,14 +101,13 @@ public class ControllerAspect {
     }
 
 
-
     //向tx-erp项目发送请求，把methodName，functionName，compid传递过去，存入数据库统计表中。
     private void sendRequest(String methodName, String functionName, String compid) throws IOException {
 
-        String baseurl ;
+        String baseurl;
         baseurl = url + "/statistic/functionClick";
         OkHttpClient client = new OkHttpClient();
-        RequestBody body = new FormEncodingBuilder()
+        RequestBody body = new FormBody.Builder()
                 .add("methodName", methodName)
                 .add("functionName", functionName)
                 .add("appCode", "1")
@@ -118,6 +119,7 @@ public class ControllerAspect {
                 .build();
 
         client.newCall(request).execute();
+
     }
 
 }
