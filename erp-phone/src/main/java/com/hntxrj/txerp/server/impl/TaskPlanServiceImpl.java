@@ -58,13 +58,13 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         PageHelper.startPage(page, pageSize);
         List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.getTaskPlanList(beginTime, endTime, eppCode,
                 builderCode, placing, taskId, taskStatus, compid, verifyStatus);
-        //循环截取preTime，格式为年月日
+        //循环截取预计时间preTime，格式为年月日
         for (TaskPlanListVO t : taskPlanListVOList) {
             if (!"".equals(t.getPreTime())) {
                 t.setPreTime(t.getPreTime().substring(0, 16));
             }
             if (t.getOverNum() == null) {
-                t.setOverNum(new BigDecimal(0.0));
+                t.setOverNum(new BigDecimal("0.0"));
             }
         }
         PageInfo<TaskPlanListVO> pageInfo = new PageInfo<>(taskPlanListVOList);
@@ -112,9 +112,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (StringUtils.isEmpty(taskPlan.getCompid())) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_COMPID);
         }
-//        if (StringUtils.isEmpty(taskPlan.getTaskId())) {
-//            throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_TASKID);
-//        }
         if (taskPlan.getPreTime() == null) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_PRETIME);
         }
@@ -171,7 +168,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         // 设置记录有效
         taskPlan.setRecStatus('1');
         taskPlan.setTaskType(1);
-        // TODO:等待打通手机和pc用户以后需要把这块操作员替换掉
         taskPlan.setOpId("0225");
         if ("".equals(taskPlan.getDefaultJump())) {
             taskPlan.setDefaultJump("自卸");
@@ -262,7 +258,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      */
     @Override
     public PageVO<SendCarDistanceVO> getSendCarDistance(String compid, String taskId) {
-        // TODO: 司机只能查询自己的信息
         List<SendCarDistanceVO> sendCarList = taskPlanMapper.getSendCarDistance(compid, taskId);
         PageInfo<SendCarDistanceVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarDistanceVO> pageVO = new PageVO<>();
@@ -294,7 +289,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      */
     @Override
     public PageVO<SendCarTotalNumVO> getSendCarTodayNum(String compid, Integer page, Integer pageSize) {
-        // TODO: 司机只能查询自己的信息
         List<SendCarTotalNumVO> sendCarTotalNumVO = taskPlanMapper.getSendCarTodayNum(compid);
         PageInfo<SendCarTotalNumVO> pageInfo = new PageInfo<>(sendCarTotalNumVO);
         PageVO<SendCarTotalNumVO> pageVO = new PageVO<>();
@@ -311,7 +305,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public PageVO<SendCarTotalNumVO> getSendCarYesterDayNum(String compid, Integer page, Integer pageSize,
                                                             String time) throws ParseException {
-        // TODO: 司机只能查询自己的信息
         SendCarTotalNumVO totalNum = new SendCarTotalNumVO();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date today = sdf.parse(sdf.format(new Date()));
@@ -334,9 +327,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      */
     @Override
     public PageVO<SendCarTotalNumVO> getMonthTotalNum(String compid, Integer page, Integer pageSize,
-                                                      String monthStart, String monthEnd) throws ParseException {
-        // TODO: 司机只能查询自己的信息
-        SendCarTotalNumVO totalnum = new SendCarTotalNumVO();
+                                                      String monthStart, String monthEnd) {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
 
@@ -529,7 +520,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
         //各个线号正在生产的车辆
         Map<String, List<DispatchVehicle>> productMap = new HashMap<>();
-        for (DispatchVehicle productCar : driverLEDMap.get(String.valueOf(DirverLEDListVO.PRODUCTION_VEHICLE_STATUS)).getCars()) {
+        for (DispatchVehicle productCar :
+                driverLEDMap.get(String.valueOf(DirverLEDListVO.PRODUCTION_VEHICLE_STATUS)).getCars()) {
             //循环正在生产的车辆，按照线号分类
             if (productMap.get(productCar.getStirId()) == null) {
                 List<DispatchVehicle> dispatchStirIdVehicles = new ArrayList<>();
@@ -795,11 +787,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         //根据传递过来的type，判断查询的是今日，昨日还是本月的方量。
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        // TODO: 前台处理月份累加机制。
+
         String _tmpMo = endTime.substring(5, 7);
         if ("13".equals(_tmpMo)) {
-            Integer year = Integer.parseInt(endTime.substring(0, 4));
-            endTime = endTime.replace(year.toString() + "-13", String.valueOf(year + 1) + "-01");
+            int year = Integer.parseInt(endTime.substring(0, 4));
+            endTime = endTime.replace(year + "-13", (year + 1) + "-01");
         }
 
         if (type == 3) {
@@ -953,11 +945,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public boolean isExistence(String compid, String taskId) {
         Integer taskIdCount = taskPlanMapper.checkTaskIdExit(compid, taskId);
-        if (taskIdCount != null && taskIdCount != 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return taskIdCount != null && taskIdCount != 0;
     }
 
     /**
@@ -1089,7 +1077,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 t.setPreTime(t.getPreTime().substring(0, 16));
             }
             if (t.getOverNum() == null) {
-                t.setOverNum(new BigDecimal(0.0));
+                t.setOverNum(new BigDecimal("0.0"));
             }
         }
         PageInfo<TaskPlanListVO> pageInfo = new PageInfo<>(taskPlanListVOList);
