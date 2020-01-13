@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.api;
 
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.server.BuilderService;
 import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.log4j.Log4j;
@@ -51,12 +52,12 @@ public class BuilderApi {
     /**
      * 工地端App产销统计
      *
-     * @param buildId   　企业
-     * @param type   　type: 查询时间类型; 1:派车时间；0:离场时间
+     * @param buildId   　施工方用户id
+     * @param type      　type: 查询时间类型; 1:派车时间；0:离场时间
      * @param eppCode   　工程代码
      * @param placing   　浇筑部位
      * @param taskId    　　任务单号
-     * @param stgId     　　　砼标记
+     * @param stgId     　　　砼标号
      * @param beginTime 　　开始时间
      * @param endTime   　　　结束时间
      * @param page      　　　　页数
@@ -68,7 +69,7 @@ public class BuilderApi {
                                             String taskId, String stgId,
                                             Long beginTime, Long endTime, Integer type,
                                             @RequestParam(defaultValue = "1") Integer page,
-                                            @RequestParam(defaultValue = "10") Integer pageSize) {
+                                            @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
         log.info("getConcreteCount");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(builderService.getBuilderConcreteCount(buildId, eppCode, placing, taskId,
@@ -80,19 +81,19 @@ public class BuilderApi {
     /**
      * 工地端App发货总量（销量）统计
      *
-     * @param buildId   　企业
-     * @param type   　type: 查询时间类型; 1:派车时间；0:离场时间
+     * @param buildId   　施工方用户id
+     * @param type      　type: 查询时间类型; 1:派车时间；0:离场时间
      * @param eppCode   　工程代码
      * @param placing   　浇筑部位
      * @param taskId    　　任务单号
-     * @param stgId     　　　砼标记
+     * @param stgId     　　　砼标号
      * @param beginTime 　　开始时间
      * @param endTime   　　　结束时间
-     * */
+     */
     @PostMapping("/getBuildConcreteSum")
     public ResultVO getBuilderConcreteSum(Integer buildId, String eppCode, String placing,
-                                            String taskId, String stgId,
-                                            Long beginTime, Long endTime, Integer type) {
+                                          String taskId, String stgId,
+                                          Long beginTime, Long endTime, Integer type) throws ErpException {
         log.info("getBuilderConcreteSum");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(builderService.getBuilderConcreteSum(buildId, eppCode, placing, taskId,
@@ -116,10 +117,10 @@ public class BuilderApi {
      * @return 小票签收列表
      */
     @PostMapping("/getBuildTaskSaleInvoiceList")
-    public ResultVO getBuildTaskSaleInvoiceList(Integer buildId, Long beginTime, Long endTime, String eppCode, Byte upStatus,
-                                                String builderCode, String taskId, String placing, String taskStatus,
-                                                @RequestParam(defaultValue = "1") Integer page,
-                                                @RequestParam(defaultValue = "10") Integer pageSize) {
+    public ResultVO getBuildTaskSaleInvoiceList(Integer buildId, Long beginTime, Long endTime, String eppCode,
+                                                Byte upStatus, String builderCode, String taskId, String placing,
+                                                String taskStatus, @RequestParam(defaultValue = "1") Integer page,
+                                                @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(builderService.getBuildTaskSaleInvoiceList(buildId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -131,7 +132,7 @@ public class BuilderApi {
     /**
      * 调度派车列表
      *
-     * @param buildId    企业代号
+     * @param buildId    施工方用户id
      * @param searchName 搜索关键字
      * @param page       页码
      * @param pageSize   每页数量
@@ -141,7 +142,7 @@ public class BuilderApi {
     public ResultVO getBuildSendCarList(Integer buildId,
                                         @RequestParam(defaultValue = "1") Integer page,
                                         @RequestParam(defaultValue = "10") Integer pageSize,
-                                        String searchName) {
+                                        String searchName) throws ErpException {
         return ResultVO.create(builderService.getBuildSendCarList(buildId, searchName, page, pageSize));
     }
 

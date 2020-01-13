@@ -38,12 +38,14 @@ public interface BuilderMapper {
      * @param eppCode             　工程代码
      * @param placing             　浇筑部位
      * @param taskId              　　任务单号
-     * @param stgId               　　　砼标记
+     * @param stgId               　　　砼标号
      * @param beginTime           　　开始时间
      * @param endTime             　　　结束时间
      * @return 产销统计列表
      */
-    List<ConcreteVO> getBuilderConcreteCount(List<String> contractDetailCodes, List<String> contractUIDList, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
+    List<ConcreteVO> getBuilderConcreteCount(List<String> contractDetailCodes, List<String> contractUIDList,
+                                             String eppCode, String placing, String taskId, String stgId,
+                                             String beginTime, String endTime, Integer type);
 
     /**
      * 从生产消耗表中查询生产方量
@@ -54,7 +56,8 @@ public interface BuilderMapper {
      * @param produceBeginTime    　　开始生产时间
      * @param produceEndTime      　　　结束生产时间
      */
-    BigDecimal getProductConcreteByTaskId(List<String> contractDetailCodes, List<String> contractUIDList, String taskId, String produceBeginTime, String produceEndTime);
+    BigDecimal getProductConcreteByTaskId(List<String> contractDetailCodes, List<String> contractUIDList,
+                                          String taskId, String produceBeginTime, String produceEndTime);
 
     /**
      * 获取小票签收列表
@@ -70,17 +73,22 @@ public interface BuilderMapper {
      * @param placing             浇筑部位
      * @return 小票签收列表
      */
-    List<TaskSaleInvoiceListVO> getBuildTaskSaleInvoiceList(List<String> contractDetailCodes, List<String> contractUIDList, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String taskId, String placing, String taskStatus);
+    List<TaskSaleInvoiceListVO> getBuildTaskSaleInvoiceList(List<String> contractDetailCodes,
+                                                            List<String> contractUIDList, String beginTime,
+                                                            String endTime, String eppCode, Byte upStatus,
+                                                            String builderCode, String taskId, String placing,
+                                                            String taskStatus);
 
     /**
-     * 调度派车列表
+     * 工地端调度派车列表
      *
      * @param contractDetailCodes 企业代号
      * @param contractUIDList     企业代号
      * @param searchName          搜索关键字
      * @return 调度派车列表
      */
-    List<SendCarListVO> getBuildSendCarList(List<String> contractDetailCodes, List<String> contractUIDList, String searchName);
+    List<SendCarListVO> getBuildSendCarList(List<String> contractDetailCodes, List<String> contractUIDList,
+                                            String searchName);
 
     /**
      * 查询产销统计中发货方量统计
@@ -90,11 +98,13 @@ public interface BuilderMapper {
      * @param eppCode             　工程代码
      * @param placing             　浇筑部位
      * @param taskId              　　任务单号
-     * @param stgId               　　　砼标记
+     * @param stgId               　　　砼标号
      * @param beginTime           　　开始时间
      * @param endTime             　　　结束时间
      */
-    BigDecimal getBuilderConcreteSum(List<String> contractDetailCodes, List<String> contractUIDList, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
+    BigDecimal getBuilderConcreteSum(List<String> contractDetailCodes, List<String> contractUIDList, String eppCode,
+                                     String placing, String taskId, String stgId, String beginTime, String endTime,
+                                     Integer type);
 
 
     /**
@@ -105,5 +115,6 @@ public interface BuilderMapper {
      * @param taskIds             任务单号集合
      * @return 车辆集合
      */
-    List<DispatchVehicle> getCarsByTaskIds(List<String> contractDetailCodes, List<String> contractUIDList, List<String> taskIds);
+    List<DispatchVehicle> getCarsByTaskIds(List<String> contractDetailCodes, List<String> contractUIDList,
+                                           List<String> taskIds);
 }

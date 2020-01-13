@@ -3,6 +3,8 @@ package com.hntxrj.txerp.server.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.dao.BuilderDao;
 import com.hntxrj.txerp.entity.BuilderInfo;
 import com.hntxrj.txerp.entity.PageBean;
@@ -84,7 +86,8 @@ public class BuilderServiceImpl implements BuilderService {
     }
 
     @Override
-    public PageVO<BuilderDropDownVO> getBuilderDropDown(String compid, String builderName, Integer page, Integer pageSize) {
+    public PageVO<BuilderDropDownVO> getBuilderDropDown(String compid, String builderName, Integer page,
+                                                        Integer pageSize) {
         PageHelper.startPage(page, pageSize, "createTime desc");
         List<BuilderDropDownVO> builderDropDownVOS = builderMapper.getBuilderDropDown(compid, builderName);
         PageInfo<BuilderDropDownVO> pageInfo = new PageInfo<>(builderDropDownVOS);
@@ -106,34 +109,33 @@ public class BuilderServiceImpl implements BuilderService {
      * @param eppCode   　工程代码
      * @param placing   　浇筑部位
      * @param taskId    　　任务单号
-     * @param stgId     　　　砼标记
+     * @param stgId     　　　砼标号
      * @param beginTime 　　开始时间
      * @param endTime   　　　结束时间
      * @param page      　　　　页数
      * @param pageSize  　　每页显示多少条
      */
     @Override
-    public PageVO<ConcreteVO> getBuilderConcreteCount(Integer buildId, String eppCode, String placing,
-                                                      String taskId, String stgId, String beginTime,
-                                                      String endTime, Integer timeStatus, Integer page, Integer pageSize) {
+    public PageVO<ConcreteVO> getBuilderConcreteCount(Integer buildId, String eppCode, String placing, String taskId,
+                                                      String stgId, String beginTime, String endTime, Integer type,
+                                                      Integer page, Integer pageSize) throws ErpException {
         PageVO<ConcreteVO> pageVO = new PageVO<>();
-        if (timeStatus == null) {
-            timeStatus = 1;
+        if (type == null) {
+            type = 1;
         }
 
         //首先根据buildId查询出施工方用户关联的合同列表
         List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
         List<String> contractUIDList = constructionMapper.getContractUID(buildId);
         if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
-            pageVO.setArr(new ArrayList<>());
-            return pageVO;
+            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
         }
 
         PageHelper.startPage(page, pageSize);
         //查询施工方用户关联合同下的产销统计
-        List<ConcreteVO> concreteVOS = builderMapper.getBuilderConcreteCount(contractDetailCodes, contractUIDList, eppCode, placing, taskId,
-                stgId, beginTime, endTime, timeStatus);
-
+        List<ConcreteVO> concreteVOS = builderMapper.getBuilderConcreteCount(contractDetailCodes, contractUIDList,
+                eppCode, placing, taskId,
+                stgId, beginTime, endTime, type);
 
 
         //再根据合同列表为条件查询关联的任务单的生产消耗
@@ -167,13 +169,16 @@ public class BuilderServiceImpl implements BuilderService {
      * @param stgId     　　　砼标记
      * @param beginTime 　　开始时间
      * @param endTime   　　　结束时间
+     * @param type   　　type: 查询时间类型; 1:派车时间；0:离场时间　结束时间
      */
     @Override
-    public Map<String, BigDecimal> getBuilderConcreteSum(Integer buildId, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus) {
+    public Map<String, BigDecimal> getBuilderConcreteSum(Integer buildId, String eppCode, String placing,
+                                                         String taskId, String stgId, String beginTime,
+                                                         String endTime, Integer type) throws ErpException {
 
 
-        if (timeStatus == null) {
-            timeStatus = 1;
+        if (type == null) {
+            type = 1;
         }
         Map<String, BigDecimal> map = new HashMap<>();
         //首先根据buildId查询出施工方用户关联的合同列表
@@ -181,10 +186,10 @@ public class BuilderServiceImpl implements BuilderService {
         List<String> contractUIDList = constructionMapper.getContractUID(buildId);
 
         if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
-            return null;
+            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
         }
-        BigDecimal totalSaleNum = builderMapper.getBuilderConcreteSum(contractDetailCodes, contractUIDList, eppCode, placing, taskId,
-                stgId, beginTime, endTime, timeStatus);
+        BigDecimal totalSaleNum = builderMapper.getBuilderConcreteSum(contractDetailCodes, contractUIDList,
+                eppCode, placing, taskId, stgId, beginTime, endTime, type);
 
 
         map.put("totalSaleNum", totalSaleNum);
@@ -193,27 +198,29 @@ public class BuilderServiceImpl implements BuilderService {
     }
 
     @Override
-    public PageVO<TaskSaleInvoiceListVO> getBuildTaskSaleInvoiceList(Integer buildId, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String taskId, String placing, String taskStatus, Integer page, Integer pageSize) {
+    public PageVO<TaskSaleInvoiceListVO> getBuildTaskSaleInvoiceList(Integer buildId, String beginTime, String endTime,
+                                                                     String eppCode, Byte upStatus, String builderCode,
+                                                                     String taskId, String placing, String taskStatus,
+                                                                     Integer page, Integer pageSize) throws ErpException {
         PageVO<TaskSaleInvoiceListVO> pageVO = new PageVO<>();
         //首先根据buildId查询出施工方用户关联的合同列表
         List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
         List<String> contractUIDList = constructionMapper.getContractUID(buildId);
         if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
-
-            pageVO.setArr(new ArrayList<>());
-            return pageVO;
+            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
         }
 
         PageHelper.startPage(page, pageSize, "SendTime desc");
-        List<TaskSaleInvoiceListVO> taskSaleInvoiceLists = builderMapper.getBuildTaskSaleInvoiceList(contractDetailCodes, contractUIDList, beginTime,
-                endTime, eppCode, upStatus, builderCode, taskId, placing, taskStatus);
+        List<TaskSaleInvoiceListVO> taskSaleInvoiceLists = builderMapper.getBuildTaskSaleInvoiceList(contractDetailCodes,
+                contractUIDList, beginTime, endTime, eppCode, upStatus, builderCode, taskId, placing, taskStatus);
         PageInfo<TaskSaleInvoiceListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
         pageVO.format(pageInfo);
         return pageVO;
     }
 
     @Override
-    public PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page, Integer pageSize) {
+    public PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page,
+                                                     Integer pageSize) throws ErpException {
         PageVO<SendCarListVO> pageVO = new PageVO<>();
 
         //首先根据buildId查询出施工方用户关联的合同列表
@@ -222,12 +229,12 @@ public class BuilderServiceImpl implements BuilderService {
 
         if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
             //说明施工方用户未绑定合同
-            pageVO.setArr(new ArrayList<>());
-            return pageVO;
+            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
         }
 
         PageHelper.startPage(page, pageSize);
-        List<SendCarListVO> sendCarList = builderMapper.getBuildSendCarList(contractDetailCodes, contractUIDList, searchName);
+        List<SendCarListVO> sendCarList = builderMapper.getBuildSendCarList(contractDetailCodes, contractUIDList,
+                searchName);
 
 
         //查询出所有正在生产的任务单号集合。
@@ -241,12 +248,10 @@ public class BuilderServiceImpl implements BuilderService {
             }
 
         }
-
-
         //根据任务单号集合查询出所有的车号。
         List<DispatchVehicle> cars = new ArrayList<>();
         if (taskIds.size() > 0) {
-            cars = builderMapper.getCarsByTaskIds(contractDetailCodes,contractUIDList, taskIds);
+            cars = builderMapper.getCarsByTaskIds(contractDetailCodes, contractUIDList, taskIds);
         }
 
         //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中

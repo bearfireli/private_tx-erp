@@ -22,7 +22,7 @@
 
     <!--工地端App砼产量统计-->
     <select id="getBuilderConcreteCount" resultType="com.hntxrj.txerp.vo.ConcreteVO">
-        <if test="timeStatus ==1">
+        <if test="type ==1">
             select
             convert(varchar(10),tsi.sendtime,120) as sendTime,
             tsi.taskId,
@@ -68,7 +68,7 @@
             stgid
             ORDER BY convert(varchar(10),tsi.sendTime,120),tsi.taskId
         </if>
-        <if test="timeStatus ==0">
+        <if test="type ==0">
             select
             convert(varchar(10),tsi.Leave_STTime,120) as sendTime,
             tsi.taskId,
@@ -282,7 +282,7 @@
         order by pt.TaskId
     </select>
     <select id="getBuilderConcreteSum" resultType="java.math.BigDecimal">
-        <if test="timeStatus ==1">
+        <if test="type ==1">
             select
             sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
             from PT_TaskSaleInvoice tsi
@@ -315,7 +315,7 @@
                 and tsi.sendTime <![CDATA[ <= ]]> #{endTime}
             </if>
         </if>
-        <if test="timeStatus ==0">
+        <if test="type ==0">
             select
             sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
             from PT_TaskSaleInvoice tsi

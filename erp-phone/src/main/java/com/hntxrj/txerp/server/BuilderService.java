@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.server;
 
 import com.alibaba.fastjson.JSONArray;
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.entity.BuilderInfo;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.vo.*;
@@ -43,8 +44,9 @@ public interface BuilderService {
      * @param RecStatus_8        记录状态(有效)   0未启用 1启用(0无效1有效)
      */
     JSONArray insertUpDel_SM_BUILDERINFO(Integer Mark, String compid, String OpId, String BuilderCode,
-                                         String BuilderName_1, String BuilderShortName_2, String Address_3, Timestamp CreateTime_4,
-                                         String Corporation_5, String Fax_6, String LinkTel_7, byte RecStatus_8);
+                                         String BuilderName_1, String BuilderShortName_2, String Address_3,
+                                         Timestamp CreateTime_4, String Corporation_5, String Fax_6,
+                                         String LinkTel_7, byte RecStatus_8);
 
 
     /**
@@ -63,8 +65,8 @@ public interface BuilderService {
      * 获取施工单位信息
      *
      * @param builderCode 施工单位编号
-     * @param compid 企业id
-     * */
+     * @param compid      企业id
+     */
     BuilderInfo getBuilderInfo(String builderCode, String compid);
 
     /**
@@ -77,11 +79,14 @@ public interface BuilderService {
      * @param stgId     　　　砼标记
      * @param beginTime 　　开始时间
      * @param endTime   　　　结束时间
+     * @param type      　type: 查询时间类型; 1:派车时间；0:离场时间
      * @param page      　　　　页数
      * @param pageSize  　　每页显示多少条
      * @return 产销统计列表
      */
-    PageVO<ConcreteVO> getBuilderConcreteCount(Integer buildId, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus, Integer page, Integer pageSize);
+    PageVO<ConcreteVO> getBuilderConcreteCount(Integer buildId, String eppCode, String placing,
+                                               String taskId, String stgId, String beginTime, String endTime,
+                                               Integer type, Integer page, Integer pageSize) throws ErpException;
 
     /**
      * 获取小票签收列表
@@ -98,7 +103,10 @@ public interface BuilderService {
      * @param pageSize    每页数量
      * @return 小票签收列表
      */
-    PageVO<TaskSaleInvoiceListVO> getBuildTaskSaleInvoiceList(Integer buildId, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String taskId, String placing, String taskStatus, Integer page, Integer pageSize);
+    PageVO<TaskSaleInvoiceListVO> getBuildTaskSaleInvoiceList(Integer buildId, String beginTime, String endTime,
+                                                              String eppCode, Byte upStatus, String builderCode,
+                                                              String taskId, String placing, String taskStatus,
+                                                              Integer page, Integer pageSize) throws ErpException;
 
     /**
      * 调度派车列表
@@ -109,7 +117,7 @@ public interface BuilderService {
      * @param pageSize   每页数量
      * @return 调度派车列表
      */
-    PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page, Integer pageSize);
+    PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page, Integer pageSize) throws ErpException;
 
     /**
      * 工地端App产销总量统计
@@ -121,6 +129,8 @@ public interface BuilderService {
      * @param stgId     　　　砼标记
      * @param beginTime 　　开始时间
      * @param endTime   　　　结束时间
-     * */
-    Map<String, BigDecimal> getBuilderConcreteSum(Integer buildId, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus);
+     * @param type   　　　type: 查询时间类型; 1:派车时间；0:离场时间
+     */
+    Map<String, BigDecimal> getBuilderConcreteSum(Integer buildId, String eppCode, String placing, String taskId,
+                                                  String stgId, String beginTime, String endTime, Integer type) throws ErpException;
 }
