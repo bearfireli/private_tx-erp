@@ -37,7 +37,7 @@
         left join DD_PublicInfo it on it.PI_Class = 51 and tsi.InvoiceType=it.PI_Values
         and tsi.compid = it.compid
         left join VM_PersonalInfo vm on tsi.PersonalCode =vm.PersonalCode and tsi.compid =vm.compid
-        left join  VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
+        left join VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
         where tsi.compid=#{compid}
         and tsi.RecStatus=1
         and tsi.InvoiceType!=6
@@ -137,7 +137,7 @@
     <!--小票签收审核-->
     <update id="getTaskSaleInvoiceExamine">
         UPDATE PT_TaskSaleInvoice
-        set NumberOfSignings       = #{qiannum},
+        set NumberOfSignings       = #{numberOfSignings},
             upStatus      = 1,
             ReceiptMan    = #{opid},
             saleFileImage =#{saleFileImage},

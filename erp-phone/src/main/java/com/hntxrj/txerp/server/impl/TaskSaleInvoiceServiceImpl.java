@@ -56,19 +56,19 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
     /**
      * 小票签收审核
      *
-     * @param compid  　企业id
-     * @param id      　　　小票id
-     * @param opid    　　当前用户
-     * @param qiannum 　签收数量
+     * @param compid           　企业id
+     * @param id               　　　小票id
+     * @param opid             　　当前用户
+     * @param numberOfSignings 　签收数量
      * @throws ErpException 定义的异常
      */
     @Override
-    public void getTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double qiannum,
+    public void getTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double numberOfSignings,
                                           String saleFileImage) throws ErpException {
         try {
             //获取签收时间
             Date SigningTime = new Date();
-            taskSaleInvoiceMapper.getTaskSaleInvoiceExamine(compid, id, opid, qiannum, saleFileImage, SigningTime);
+            taskSaleInvoiceMapper.getTaskSaleInvoiceExamine(compid, id, opid, numberOfSignings, saleFileImage, SigningTime);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.VERIFY_TICKET_ERROR);
