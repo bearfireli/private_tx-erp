@@ -185,7 +185,7 @@ public class DriverApi {
 
 
     /**
-     * 保存小票签收签收图片并保存到数据库(新版本)
+     * 保存小票签收图片并保存到数据库(新版本)
      *
      * @param image     图片
      * @param invoiceId 小票id

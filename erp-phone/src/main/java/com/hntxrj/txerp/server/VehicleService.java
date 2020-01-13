@@ -400,5 +400,6 @@ public interface VehicleService {
      * @param beginTime  开始时间
      * @param endTime    结束时间
      */
-    Map<String,Double> getWorkloadStatisticsCount(String compid, String eppCode, String empName, Integer weightType, String beginTime, String endTime);
+    Map<String,Double> getWorkloadStatisticsCount(String compid, String eppCode, String empName,
+                                                  Integer weightType, String beginTime, String endTime);
 }

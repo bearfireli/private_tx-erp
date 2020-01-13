@@ -30,15 +30,15 @@ public interface DriverMapper {
     /**
      * 小票签收
      *
-     * @param receiptPeople 签收人
-     * @param receiptNum    签收数量
-     * @param pumpVehicle   泵车
-     * @param sign          签字图片
-     * @param invoiceId     小票代号
-     * @param signingTime   签收时间
+     * @param receiptPeople    签收人
+     * @param numberOfSignings 签收数量
+     * @param pumpVehicle      泵车
+     * @param sign             签字图片
+     * @param invoiceId        小票代号
+     * @param signingTime      签收时间
      * @return 结果
      */
-    void taskSaleInvoiceReceipt(String receiptPeople, Double receiptNum,
+    void taskSaleInvoiceReceipt(String receiptPeople, Double numberOfSignings,
                                 String pumpVehicle, String sign, String invoiceId, String signingTime);
 
     /**
@@ -138,22 +138,22 @@ public interface DriverMapper {
     /**
      * 保存签收人手写图片
      *
-     * @param compid        用户手写签名
-     * @param saleFileImage 图片名称
-     * @param invoiceId     小票id
-     * @param signingTime   签订时间
-     * @param receiptNum    签收方量
+     * @param compid           用户手写签名
+     * @param saleFileImage    图片名称
+     * @param invoiceId        小票id
+     * @param signingTime      签订时间
+     * @param numberOfSignings 签收方量
      */
-    void saveSaleFileImage(String compid, String saleFileImage, String invoiceId, String signingTime, Double receiptNum);
+    void saveSaleFileImage(String compid, String saleFileImage, String invoiceId, String signingTime, Double numberOfSignings);
 
     /**
      * 编辑签收方量
      *
-     * @param compid     公司代号
-     * @param receiptNum 签收方量
-     * @param invoiceId  小票id
+     * @param compid           公司代号
+     * @param numberOfSignings 签收方量
+     * @param invoiceId        小票id
      */
-    void saveNumberOfSignings(String compid, Double receiptNum, String invoiceId, String signingTime);
+    void saveNumberOfSignings(String compid, Double numberOfSignings, String invoiceId, String signingTime);
 
     /**
      * 修改小票中的车辆状态

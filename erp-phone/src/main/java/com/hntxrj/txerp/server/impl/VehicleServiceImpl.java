@@ -130,7 +130,8 @@ public class VehicleServiceImpl implements VehicleService {
      * @param pageSize  每页显示条数
      */
     @Override
-    public PageVO<VehicleWorkloadDetailVO> getVehicleWorkloadDetail(String compid, String personalName, String eppCode, String placing,
+    public PageVO<VehicleWorkloadDetailVO> getVehicleWorkloadDetail(String compid, String personalName,
+                                                                    String eppCode, String placing,
                                                                     String taskId, String vehicleId,
                                                                     String beginTime, String endTime,
                                                                     Integer page, Integer pageSize) {
@@ -189,7 +190,8 @@ public class VehicleServiceImpl implements VehicleService {
      * @return 乔亚北
      */
     @Override
-    public PageVO<VehicleWorkloadSummaryVO> getVehicleWorkloadSummaryCount(String compid, String personalName, String eppCode,
+    public PageVO<VehicleWorkloadSummaryVO> getVehicleWorkloadSummaryCount(String compid, String personalName,
+                                                                           String eppCode,
                                                                            String placing, String taskId,
                                                                            String vehicleId,
                                                                            String beginTime, String endTime,
@@ -218,8 +220,9 @@ public class VehicleServiceImpl implements VehicleService {
      * @param pageSize  每页显示条数
      */
     @Override
-    public PageVO<VehicleWorkTowingPumpDetailVO> getVehicleWorkTowingPumpDetail(String compid, String personalName, String eppCode,
-                                                                                String placing, String taskId,
+    public PageVO<VehicleWorkTowingPumpDetailVO> getVehicleWorkTowingPumpDetail(String compid, String personalName,
+                                                                                String eppCode, String placing,
+                                                                                String taskId,
                                                                                 String vehicleId,
                                                                                 String beginTime, String endTime,
                                                                                 Integer page, Integer pageSize) {
@@ -247,8 +250,9 @@ public class VehicleServiceImpl implements VehicleService {
      * @param pageSize  每页显示条数
      */
     @Override
-    public PageVO<VehicleWorkTowingPumpCountVO> getVehicleWorkTowingPumpCount(String compid, String personalName, String eppCode,
-                                                                              String placing, String taskId,
+    public PageVO<VehicleWorkTowingPumpCountVO> getVehicleWorkTowingPumpCount(String compid, String personalName,
+                                                                              String eppCode, String placing,
+                                                                              String taskId,
                                                                               String vehicleId,
                                                                               String beginTime, String endTime,
                                                                               Integer page, Integer pageSize) {
@@ -342,7 +346,8 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public PageVO<DriverTransportationCountVO> getDriverTransportationCount(String compid, String eppCode,
                                                                             String placing, String taskId,
-                                                                            String vehicleId, String personalName,String isNewVersion,
+                                                                            String vehicleId, String personalName,
+                                                                            String isNewVersion,
                                                                             String beginTime, String endTime,
                                                                             Integer page, Integer pageSize) {
 
@@ -454,7 +459,8 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public PageVO<DriverTransportationCountVO> getDriverDragPumpCount(String compid, String eppCode,
                                                                       String placing, String taskId,
-                                                                      String vehicleId, String personalName,String isNewVersion,
+                                                                      String vehicleId, String personalName,
+                                                                      String isNewVersion,
                                                                       String beginTime, String endTime,
                                                                       Integer page, Integer pageSize) {
 
@@ -463,8 +469,8 @@ public class VehicleServiceImpl implements VehicleService {
             PageVO<DriverTransportationCountVO> pageVO = new PageVO<>();
             PageHelper.startPage(page, pageSize);
             List<DriverTransportationCountVO> vehicleWorkloadSummaryVOS =
-                    vehicleWorkloadMapper.getDriverDragPumpCountNew(compid, eppCode, placing, taskId, vehicleId, personalName,
-                            beginTime, endTime);
+                    vehicleWorkloadMapper.getDriverDragPumpCountNew(compid, eppCode, placing, taskId,
+                            vehicleId, personalName, beginTime, endTime);
             PageInfo<DriverTransportationCountVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
             pageVO.format(pageInfo);
             return pageVO;
@@ -472,8 +478,8 @@ public class VehicleServiceImpl implements VehicleService {
             PageVO<DriverTransportationCountVO> pageVO = new PageVO<>();
             PageHelper.startPage(page, pageSize);
             List<DriverTransportationCountVO> vehicleWorkloadSummaryVOS =
-                    vehicleWorkloadMapper.getDriverDragPumpCount(compid, eppCode, placing, taskId, vehicleId, personalName,
-                            beginTime, endTime);
+                    vehicleWorkloadMapper.getDriverDragPumpCount(compid, eppCode, placing, taskId,
+                            vehicleId, personalName, beginTime, endTime);
             PageInfo<DriverTransportationCountVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
             pageVO.format(pageInfo);
             return pageVO;
@@ -633,7 +639,8 @@ public class VehicleServiceImpl implements VehicleService {
      */
     @Override
     public PageVO<PumpTruckWorkloadStatisticsVO> getPumpTruckWorkloadStatistics(String compid, String eppCode,
-                                                                                String personalName, String taskId,String stirId,
+                                                                                String personalName, String taskId,
+                                                                                String stirId,
                                                                                 String vehicleId, String beginTime,
                                                                                 String endTime, Integer page,
                                                                                 Integer pageSize) {
@@ -693,8 +700,10 @@ public class VehicleServiceImpl implements VehicleService {
      * @param endTime    结束时间
      */
     @Override
-    public Map<String, Double> getWorkloadStatisticsCount(String compid, String eppCode, String empName, Integer weightType, String beginTime, String endTime) {
-        Double totalNum=vehicleWorkloadMapper.getWorkloadStatisticsCount(compid,eppCode,empName,weightType,beginTime,endTime);
+    public Map<String, Double> getWorkloadStatisticsCount(String compid, String eppCode, String empName,
+                                                          Integer weightType, String beginTime, String endTime) {
+        Double totalNum=vehicleWorkloadMapper.getWorkloadStatisticsCount(compid,eppCode,empName,weightType,
+                beginTime,endTime);
         Map<String, Double> map = new HashMap<>();
         map.put("totalNum", totalNum);
         return map;

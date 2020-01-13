@@ -4,7 +4,7 @@
     <update id="taskSaleInvoiceReceipt">
         update PT_TaskSaleInvoice
         set VehicleID_Jump=#{pumpVehicle},
-            NumberOfSignings = #{receiptNum},
+            NumberOfSignings = #{numberOfSignings},
             SigningTime = #{signingTime},
             ReceiptMan = #{receiptPeople},
             SaleFileImage = #{sign},
@@ -15,7 +15,7 @@
 
     <update id="saveSaleFileImage">
         update PT_TaskSaleInvoice
-        set NumberOfSignings=#{receiptNum},
+        set NumberOfSignings=#{numberOfSignings},
         SigningTime = #{signingTime},
             SaleFileImage = #{saleFileImage},
             updownmark=0,
@@ -27,7 +27,7 @@
     <update id="saveNumberOfSignings">
         update PT_TaskSaleInvoice
         set SigningTime = #{signingTime},
-            NumberOfSignings = #{receiptNum},
+            NumberOfSignings = #{numberOfSignings},
             updownmark=0,
             upStatus=1
         where ID = #{invoiceId}
@@ -107,9 +107,9 @@
         left join VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
         where tsi.compid=#{compid}
         and tsi.PersonalCode=#{driverCode}
-        and tsi.InvoiceType not in('1','2','6')
+        and tsi.InvoiceType not in('1','2','6','4')
         and tsi.recStatus = 1
-        and (tsi.InvoiceType !=4 and vv.VehicleStatus !=3)
+        and vv.VehicleStatus !=3
         <if test="invoiceId != null ">
             and tsi.ID like #{invoiceId}
         </if>
@@ -192,8 +192,7 @@
                uc.longname as companyName,
                ps4.PI_TypeName                        InvoiceTypeName,
                tsi.VehicleID,
-               (tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) SaleNum,
-               tsi.NumberOfSignings as qianNum,
+               tsi.NumberOfSignings as numberOfSignings,
                e.EPPName,
                e.EppCode,
                b.BuilderName,

@@ -61,7 +61,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void taskSaleInvoiceReceipt(String receiptPeople, Double receiptNum,
+    public void taskSaleInvoiceReceipt(String receiptPeople, Double numberOfSignings,
                                        String jumpVehicle, String sign, String invoiceId) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (receiptPeople == null) {
@@ -70,7 +70,7 @@ public class DriverServiceImpl implements DriverService {
         if (sign == null) {
             sign = "";
         }
-        driverMapper.taskSaleInvoiceReceipt(receiptPeople, receiptNum, jumpVehicle == null ? "" : jumpVehicle,
+        driverMapper.taskSaleInvoiceReceipt(receiptPeople, numberOfSignings, jumpVehicle == null ? "" : jumpVehicle,
                 sign, invoiceId, dateFormat.format(new Date()));
     }
 
@@ -143,19 +143,24 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetail(String compid, Integer id) {
+        TaskSaleInvoiceDetailVO taskSaleInvoiceDetailVO = driverMapper.driverGetTaskSaleInvoiceDetail(id, compid);
+        //兼容老版本，老版本前台用的签收方量时qianNum.
+        if (taskSaleInvoiceDetailVO != null) {
+            taskSaleInvoiceDetailVO.setQianNum(taskSaleInvoiceDetailVO.getNumberOfSignings());
+        }
         return driverMapper.driverGetTaskSaleInvoiceDetail(id, compid);
     }
 
     @Override
-    public void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double receiptNum) {
+    public void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double numberOfSignings) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        driverMapper.saveSaleFileImage(compid, saleFileImage, invoiceId, dateFormat.format(new Date()), receiptNum);
+        driverMapper.saveSaleFileImage(compid, saleFileImage, invoiceId, dateFormat.format(new Date()), numberOfSignings);
     }
 
     @Override
-    public void saveNumberOfSignings(String compid, Double receiptNum, String invoiceId) {
+    public void saveNumberOfSignings(String compid, Double numberOfSignings, String invoiceId) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        driverMapper.saveNumberOfSignings(compid, receiptNum, invoiceId, dateFormat.format(new Date()));
+        driverMapper.saveNumberOfSignings(compid, numberOfSignings, invoiceId, dateFormat.format(new Date()));
     }
 
 

@@ -40,6 +40,9 @@ pagehelper:
   params: countSql
 
 app:
+  timsdk:
+    sdkAppID: 1400290495
+    key: 79658d8c62dbd5cf02b5fc80d70ead6005801bcf57efa7b477c3a133aeec3738
   spterp:
     #  uploadpath: /Users/lhr/Desktop/blogUpload/articleImage/
     uploadpath: D:\spterp\header

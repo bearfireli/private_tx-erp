@@ -82,8 +82,12 @@ public class ControllerAspect {
         for (String key : keySet) {
             if (key.equals(methodName)) {
                 functionName = functionMap.get(key);
-                Object[] args = joinPoint.getArgs();   //   获取拦截方法的参数值   例：['01','P1910254685']
-                String[] argNames = ((MethodSignature) joinPoint.getSignature()).getParameterNames(); // 获取拦截方法的参数名 例：[compid,taskId]
+
+                //   获取拦截方法的参数值   例：['01','P1910254685']
+                Object[] args = joinPoint.getArgs();
+
+                // 获取拦截方法的参数名 例：[compid,taskId]
+                String[] argNames = ((MethodSignature) joinPoint.getSignature()).getParameterNames();
                 //得到拦截方法的参数compid
                 if (args != null && args.length > 0) {// 无参数
                     for (int i = 0; i < args.length; i++) {

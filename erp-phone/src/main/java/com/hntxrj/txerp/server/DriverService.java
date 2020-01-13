@@ -53,13 +53,13 @@ public interface DriverService {
     /**
      * 小票签收
      *
-     * @param receiptPeople 签收人
-     * @param receiptNum    签收数量
-     * @param jumpVehicle   泵车
-     * @param sign          签字图片
-     * @param invoiceId     小票代号
+     * @param receiptPeople    签收人
+     * @param numberOfSignings 签收数量
+     * @param jumpVehicle      泵车
+     * @param sign             签字图片
+     * @param invoiceId        小票代号
      */
-    void taskSaleInvoiceReceipt(String receiptPeople, Double receiptNum,
+    void taskSaleInvoiceReceipt(String receiptPeople, Double numberOfSignings,
                                 String jumpVehicle, String sign, String invoiceId);
 
     /**
@@ -79,7 +79,8 @@ public interface DriverService {
     /**
      * 获取签收人手写图片
      **/
-    void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath, String fileName, HttpServletResponse response) throws ErpException;
+    void getTaskSaleInvoiceReceiptSign(String taskSaleInvoiceUploadPath, String fileName,
+                                       HttpServletResponse response) throws ErpException;
 
     /**
      * 获取小票签收列表
@@ -151,19 +152,21 @@ public interface DriverService {
     /**
      * 保存签收人手写图片
      *
-     * @param saleFileImage 用户手写签名
-     * @param invoiceId     小票id
+     * @param saleFileImage    用户手写签名
+     * @param invoiceId        小票id
+     * @param compid           企业id
+     * @param numberOfSignings 签收方量
      */
-    void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double receiptNum);
+    void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double numberOfSignings);
 
     /**
      * 编辑签收方量
      *
-     * @param compid     公司代号
-     * @param receiptNum 签收方量
-     * @param invoiceId  小票id
+     * @param compid           公司代号
+     * @param numberOfSignings 签收方量
+     * @param invoiceId        小票id
      */
-    void saveNumberOfSignings(String compid, Double receiptNum, String invoiceId);
+    void saveNumberOfSignings(String compid, Double numberOfSignings, String invoiceId);
 
     /**
      * 修改小票中的车辆状态

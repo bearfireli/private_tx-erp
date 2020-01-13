@@ -494,7 +494,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             } else {
                 driverLEDMap.get(dispatchVehicle.getVehicleStatus()).getCars().add(dispatchVehicle);
                 //总车辆加1
-                driverLEDMap.get(dispatchVehicle.getVehicleStatus()).setCarNum(driverLEDMap.get(dispatchVehicle.getVehicleStatus()).getCarNum() + 1);
+                driverLEDMap.get(dispatchVehicle.getVehicleStatus()).setCarNum(
+                        driverLEDMap.get(dispatchVehicle.getVehicleStatus()).getCarNum() + 1);
             }
         }
 
@@ -1120,7 +1121,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     //派车LED模块：根据公司代号查询出不同生产状态的车辆和每种状态的车辆总数
     private DirverLEDListVO getDriverLEDListVO(DirverLEDListVO driverLEDListVO, String compid, String stirId,
                                                Integer vehicleStatus, String vehicleClass) {
-        List<DispatchVehicle> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass);
+        List<DispatchVehicle> driverShiftLED = taskPlanMapper.getDriverShiftLED(compid, stirId,
+                vehicleStatus, vehicleClass);
         if (driverShiftLED != null) {
             driverLEDListVO.setCars(driverShiftLED);
             driverLEDListVO.setCarNum(driverShiftLED.size());

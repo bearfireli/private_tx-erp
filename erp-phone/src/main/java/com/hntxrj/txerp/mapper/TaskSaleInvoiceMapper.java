@@ -48,5 +48,7 @@ public interface TaskSaleInvoiceMapper {
      */
     void getTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double qianNum, String saleFileImage, Date signingTime);
 
-    TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String compid, String beginTime, String endTime, String eppCode, Byte upStatus, String builderCode, String taskId, String placing, String taskStatus);
+    TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String compid, String beginTime, String endTime,
+                                                   String eppCode, Byte upStatus, String builderCode,
+                                                   String taskId, String placing, String taskStatus);
 }

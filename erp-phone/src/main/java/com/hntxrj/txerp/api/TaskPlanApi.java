@@ -171,7 +171,8 @@ public class TaskPlanApi {
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 //upStatus属性老版本查询所有签收状态传的参数是-1，新版本传递的是null.兼顾新老版本，所以判断两次
-                eppCode, upStatus == null ? null : (upStatus == -1 ? null : upStatus), builderCode, taskId, placing, taskStatus, page, pageSize));
+                eppCode, upStatus == null ? null : (upStatus == -1 ? null : upStatus), builderCode, taskId,
+                placing, taskStatus, page, pageSize));
     }
 
 
@@ -652,7 +653,7 @@ public class TaskPlanApi {
                                       String placing, String taskId,
                                       Integer taskStatus, String compid, Integer verifyStatus, Integer buildId,
                                       @RequestParam(defaultValue = "1") Integer page,
-                                      @RequestParam(defaultValue = "10") Integer pageSize) {
+                                      @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskPlanService.buildTaskPlanList(
                 beginTime == null ? null : sdf.format(new Date(beginTime)),

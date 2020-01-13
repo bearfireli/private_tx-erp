@@ -96,7 +96,8 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
      * @param towerCranePrice 塔吊价格
      */
     @Override
-    public void insertStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice, String towerCranePrice) {
+    public void insertStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice,
+                                  String towerCranePrice) {
         //用户如果输入的价格包含空格，替换掉空格，防止程序报错。
         pumpPrice = pumpPrice.replaceAll(" ", "");
         notPumpPrice = pumpPrice.replaceAll(" ", "");

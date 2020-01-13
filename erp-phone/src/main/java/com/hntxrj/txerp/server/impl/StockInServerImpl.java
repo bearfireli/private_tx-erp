@@ -150,9 +150,12 @@ public class StockInServerImpl implements StockInServer {
      * @return 原材料统计汇总
      */
     @Override
-    public PageVO<WeightMatNameVO> getWeightByMat(String empName, String compid, String vehicleId, String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize) {
+    public PageVO<WeightMatNameVO> getWeightByMat(String empName, String compid, String vehicleId,
+                                                  String stoName, String supName, String beginTime,
+                                                  String endTime, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<WeightMatNameVO> stockInWeighmatNsVOS = stockInWeighmatNsMapper.getWeightByMat(empName, compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
+        List<WeightMatNameVO> stockInWeighmatNsVOS = stockInWeighmatNsMapper.getWeightByMat(empName, compid, vehicleId,
+                stoName, supName, beginTime, endTime, page, pageSize);
         for (WeightMatNameVO raw : stockInWeighmatNsVOS) {
             raw.setTlWeight(raw.getTlWeight() / 1000);
             if (!"G".equals(raw.getMatParentCode()) && !"S".equals(raw.getMatParentCode())) {

@@ -70,5 +70,6 @@ public class TaskSaleInvoiceDetailVO implements Serializable {
     private  String invoiceTypeName;
     private String eppCode;
     private double qianNum;
+    private double numberOfSignings;
     private String attribute;
 }
