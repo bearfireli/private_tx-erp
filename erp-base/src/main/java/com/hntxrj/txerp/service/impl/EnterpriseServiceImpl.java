@@ -45,6 +45,9 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     @Value("${app.pay.imgFilePath}")
     private String imgFilePath;
 
+    @Value("${app.host}")
+    private String url;  //请求erpPhone项目的路径
+
     private final EnterpriseMapper enterpriseMapper;
 
 
@@ -97,7 +100,6 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                                                long pageSize) throws ErpException {
         QEnterprise qEnterprise = QEnterprise.enterprise;
 
-        User user = userService.tokenGetUser(token);
         BooleanBuilder builder = new BooleanBuilder();
         if (epName != null && !"".equals(epName)) {
             builder.and(qEnterprise.epName.like("%" + epName + "%"));
@@ -180,9 +182,9 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                 }
             }
         }
-        // 添加spterp中的企业
+        // 向spterp项目发送请求，向spterp项目的user_comp表中同步添加的企业
         OkHttpClient client = new OkHttpClient();
-        String url = "192.168.31.198:8088/comp/addComp";
+        String phoneUrl = url + "/comp/addComp";
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("compid", String.valueOf(savedEnterprise.getEid()))
@@ -192,7 +194,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                 .build();
 
         Request request = new Request.Builder()
-                .url(url)
+                .url(phoneUrl)
                 .post(requestBody)
                 .build();
 
@@ -200,10 +202,10 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         try {
             Response response = call.execute();
             if (response.body() != null) {
-                log.info("【老版本企业添加】val={}", response.body().string());
+                log.info("【向spterp项目添加企业】val={}", response.body().string());
             }
         } catch (IOException e) {
-            log.error("【老版本企业添加失败】err={}", e.getMessage());
+            log.error("【向spterp项目添加企业失败】err={}", e.getMessage());
             e.printStackTrace();
         }
 
@@ -212,25 +214,22 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     }
 
     /**
-     * @param enterprise
-     * @param eidCode    新ｉｄ
-     * @return
-     * @throws ErpException
+     * 修改企业
+     *
+     * @param enterprise 修改的企业对象
+     * @param eidCode    修改企业的id
      */
     @Override
     public Enterprise updateEnterprise(Enterprise enterprise, Integer eidCode) throws ErpException {
 
-        Enterprise enterpriseOld = new Enterprise();
         Integer eid = enterprise.getEid();
         //判断新ｉｄ与老id 是否一致 如果不一致则说明修改了ｉｄ．
         if (!enterprise.getEid().equals(eidCode)) {
-//            enterprise.setEid(eidcode);
             // 判断新修改的ｉｄ是否已经存在，主要用与ｉｄ不能重复
             Optional<Enterprise> optionalEnterprise =
                     enterpriseRepository.findById(eidCode);
             // 如果存在则不能修改，在前台提示．
             if (optionalEnterprise.isPresent()) {
-                enterpriseOld = optionalEnterprise.get();
                 throw new ErpException(ErrEumn.ENTERPRISE_id_EXIST);
             } else {
                 //判断新ｉｄ是否为空
@@ -238,7 +237,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                     enterprise.setEid(eidCode);
                 }
                 //进行修改操作，并返回
-                int request = enterpriseMapper.updateId(enterprise, eid);
+                enterpriseMapper.updateId(enterprise, eid);
             }
         } else {
             if (enterprise.getEid() != null && !"".equals(enterprise.getEid())) {
@@ -263,7 +262,35 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             }
 
         }
-        return enterpriseRepository.save(enterprise);
+        Enterprise enterpriseNew = enterpriseRepository.save(enterprise);
+        // 添加spterp中的企业
+        OkHttpClient client = new OkHttpClient();
+        String phoneUrl = url + "/comp/updateComp";
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("compid", String.valueOf(enterprise.getEid()))
+                .addFormDataPart("compName", enterprise.getEpName())
+                .addFormDataPart("compShortName", enterprise.getEpShortName())
+                .addFormDataPart("securityKey", "adsfbnhjkwegbrw")
+                .build();
+
+        Request request = new Request.Builder()
+                .url(phoneUrl)
+                .post(requestBody)
+                .build();
+
+        Call call = client.newCall(request);
+        try {
+            Response response = call.execute();
+            if (response.body() != null) {
+                log.info("【修改spterp项目企业】val={}", response.body().string());
+            }
+        } catch (IOException e) {
+            log.error("【修改spterp项目企业失败】err={}", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return enterpriseNew;
     }
 
     @Override
@@ -278,6 +305,31 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         }
         enterpriseOld.setDelete(enterpriseOld.getDelete() == 1 ? 0 : 1);
         enterpriseRepository.save(enterpriseOld);
+
+
+        // 删除spterp中的企业
+        OkHttpClient client = new OkHttpClient();
+        String phoneUrl = url + "/comp/deleteComp";
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("compid", String.valueOf(eid))
+                .addFormDataPart("securityKey", "adsfbnhjkwegbrw")
+                .build();
+        Request request = new Request.Builder()
+                .url(phoneUrl)
+                .post(requestBody)
+                .build();
+
+        Call call = client.newCall(request);
+        try {
+            Response response = call.execute();
+            if (response.body() != null) {
+                log.info("【删除spterp项目企业】val={}", response.body().string());
+            }
+        } catch (IOException e) {
+            log.error("【删除spterp项目企业失败】err={}", e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -25,7 +25,7 @@ public interface CompService {
     /**
      * 通过企业id 获取企业对象
      *
-     * @param compid 企业ID
+     * @param compid 企业id
      * @return 企业对象
      */
     UserComp getByCompId(String compid) throws SQLException;
@@ -41,7 +41,7 @@ public interface CompService {
     /**
      * 更新企业
      *
-     * @param compid        企业
+     * @param compid        企业id
      * @param compName      公司名称
      * @param compShortName 工地简称
      */
@@ -51,7 +51,7 @@ public interface CompService {
     /**
      * 删除企业
      *
-     * @param compid        企业
+     * @param compid        企业id
      * */
     void deleteComp(String compid);
 }
