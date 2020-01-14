@@ -198,11 +198,11 @@
         select tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
         dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId,dd2.StirName
         from PT_TaskSaleInvoice tsi
-        left join  PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+        left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
         left join VM_VehicelManagement vm on tsi.compid = vm.compid and tsi.VehicleID = vm.CarID
-        left join  DD_PublicInfo dd on vm.VehicleStatus =dd.PI_Values and dd.compid =vm.compid and dd.PI_Class =22
+        left join DD_PublicInfo dd on vm.VehicleStatus =dd.PI_Values and dd.compid =vm.compid and dd.PI_Class =22
         left join DD_StirInfoSet dd2 on vm.compid =dd2.compid and vm.StirId =dd2.StirId
-        where  tsi.compid =#{compid} and  tsi.TaskId in
+        where tsi.compid =#{compid} and tsi.TaskId in
         <foreach collection="taskIds" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
@@ -219,7 +219,8 @@
         left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
         where pt.compid = #{compid}
         <if test="searchName != null and searchName != '' ">
-            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like '%'+#{searchName}+'%')
+            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
+            '%'+#{searchName}+'%')
         </if>
         and pt.RecStatus = 1
         and pt.TaskStatus = 1
@@ -401,10 +402,6 @@
     </select>
 
 
-
-
-
-
     <!--施工方App使用的LED功能，只查询生产中的车辆-->
     <select id="getProductDriverShiftLED" resultType="com.hntxrj.txerp.vo.ProductDriverLEDVo">
         select top 3
@@ -543,11 +540,15 @@
         UpDownMark=0
         where compid =#{compid} and taskid =#{taskId}
     </update>
+    <select id="checkDriverScheduling" resultType="java.lang.Integer">
+        select count(1) from VM_PERSONALWORKCLASS
+        where compid=#{compid} and WorkClass=#{workClass} and PersonalCode=#{personalCode}
+    </select>
 
     <select id="selectId" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
         select TaskIdI
         from PT_TaskPlan
-        where TaskId like #{taskId} + '%' and len(TaskId)=10
+        where TaskId like #{taskId} + '%' and len(TaskId) = 10
     </select>
 
     <!--任务单生产配比日志查询-->

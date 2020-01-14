@@ -343,6 +343,16 @@ public interface TaskPlanMapper {
 
 
     /**
+     * 查询司机是否已经排班
+     *
+     * @param compid       企业代号
+     * @param personalCode 司机代号
+     * @param workClass    班次
+     */
+    Integer checkDriverScheduling(String compid,String personalCode,String workClass);
+
+
+    /**
      * 调度派车中今日调度
      **/
     List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
