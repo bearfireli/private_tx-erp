@@ -55,6 +55,7 @@ public class CompController {
         userComp.setShortname(compShortName);
         userComp.setLongname(compName);
         userComp.setCompid(compid);
+        userComp.setRecstatus("1");
         EntityTools.setEntityDefaultValue(userComp);
         return ResultVO.create(compService.addComp(userComp));
     }
@@ -68,9 +69,6 @@ public class CompController {
     public ResultVO deleteComp(String compid, String securityKey) throws ErpException {
         if (!"adsfbnhjkwegbrw".equals(securityKey)) {
             throw new ErpException(ErrEumn.DELETE_ENTERPRISE_ERROR);
-        }
-        if (compid.length() <= 1) {
-            compid = "0" + compid;
         }
         compService.deleteComp(compid);
         return ResultVO.create();
@@ -88,9 +86,6 @@ public class CompController {
     public ResultVO updateComp(String compName, String compShortName, String compid, String securityKey) throws ErpException {
         if (!"adsfbnhjkwegbrw".equals(securityKey)) {
             throw new ErpException(ErrEumn.UPDATE_ENTERPRISE_ERROR);
-        }
-        if (compid.length() <= 1) {
-            compid = "0" + compid;
         }
         compService.updateComp(compid, compName, compShortName);
         return ResultVO.create();

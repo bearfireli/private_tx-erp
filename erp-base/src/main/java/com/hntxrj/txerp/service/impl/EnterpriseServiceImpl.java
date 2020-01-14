@@ -268,7 +268,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         String phoneUrl = url + "/comp/updateComp";
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("compid", String.valueOf(enterprise.getEid()))
+                .addFormDataPart("compid", String.valueOf(eidCode))
                 .addFormDataPart("compName", enterprise.getEpName())
                 .addFormDataPart("compShortName", enterprise.getEpShortName())
                 .addFormDataPart("securityKey", "adsfbnhjkwegbrw")

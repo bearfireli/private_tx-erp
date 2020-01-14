@@ -12,11 +12,10 @@
 
     <!--更新企业-->
     <update id="updateComp">
-        update user_comp set longname = #{compName},
-         shortname=#{compShortName},
+        update user_comp set compid=#{compid},
          updtime=#{updTime},
          UpDownMark=0
-        where compid=#{compid}
+        where  longname = #{compName} and shortname=#{compShortName}
     </update>
 
 
