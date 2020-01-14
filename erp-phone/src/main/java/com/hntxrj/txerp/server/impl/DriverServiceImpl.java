@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -43,7 +42,6 @@ public class DriverServiceImpl implements DriverService {
      * @param stirId        线号
      * @param vehicleStatus 车辆状态
      * @param vehicleClass  班次
-     * @return
      */
     @Override
     public JSONArray getDriverScheduling(String compId, String stirId, String vehicleStatus, String vehicleClass) {
@@ -91,8 +89,7 @@ public class DriverServiceImpl implements DriverService {
         if (compid.length() == 1) {
             compid = "0" + compid;
         }
-        String driverName = driverMapper.getDriverNames(compid, driverCode);
-        return driverName;
+        return driverMapper.getDriverNames(compid, driverCode);
     }
 
     @Override
@@ -170,7 +167,6 @@ public class DriverServiceImpl implements DriverService {
      * @param compid        企业
      * @param id            小票id
      * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕；
-     * @return 小票签收列表
      */
     @Override
     public void updateInvoiceVehicleStatus(String compid, Integer id, Integer vehicleStatus) {

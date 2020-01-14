@@ -37,10 +37,9 @@ public interface VehicleWorkloadMapper {
      * @param vehicleId 车号
      * @param beginTime 开始时间
      * @param endTime   结束时间
-     *                  乔亚北
      */
-    List<VehicleWorkloadSummaryVO> getVehicleWorkloadSummary(String compid, String personalName, String eppCode, String placing,
-                                                             String taskId, String vehicleId,
+    List<VehicleWorkloadSummaryVO> getVehicleWorkloadSummary(String compid, String personalName, String eppCode,
+                                                             String placing, String taskId, String vehicleId,
                                                              String beginTime, String endTime);
 
     /**
@@ -53,7 +52,6 @@ public interface VehicleWorkloadMapper {
      * @param vehicleId 车号
      * @param beginTime 开始时间
      * @param endTime   结束时间
-     *                  乔亚北
      */
     List<VehicleWorkloadSummaryVO> getVehicleWorkloadSummaryCount(String compid, String personalName, String eppCode,
                                                                   String placing, String taskId,
@@ -71,10 +69,10 @@ public interface VehicleWorkloadMapper {
      * @param beginTime 开始时间
      * @param endTime   结束时间
      */
-    List<VehicleWorkTowingPumpDetailVO> getVehicleWorkTowingPumpDetail(String compid, String personalName, String eppCode,
-                                                                       String placing, String taskId,
-                                                                       String vehicleId,
-                                                                       String beginTime, String endTime);
+    List<VehicleWorkTowingPumpDetailVO> getVehicleWorkTowingPumpDetail(String compid, String personalName,
+                                                                       String eppCode, String placing, String taskId,
+                                                                       String vehicleId, String beginTime,
+                                                                       String endTime);
 
     /**
      * 搅拌车拖水拖泵汇总
@@ -316,13 +314,9 @@ public interface VehicleWorkloadMapper {
      * @param beginTime    开始时间
      * @param endTime      结束时间
      */
-    List<DriverTransportationCountVO> getDriverTransportationCarNumList(String compid,
-                                                                        String eppCode,
-                                                                        String placing,
-                                                                        String taskId,
-                                                                        String vehicleId,
-                                                                        String personalName,
-                                                                        String beginTime,
+    List<DriverTransportationCountVO> getDriverTransportationCarNumList(String compid, String eppCode, String placing,
+                                                                        String taskId, String vehicleId,
+                                                                        String personalName, String beginTime,
                                                                         String endTime);
 
 

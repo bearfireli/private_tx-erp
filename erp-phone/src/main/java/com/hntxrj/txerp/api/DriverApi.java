@@ -3,9 +3,7 @@ package com.hntxrj.txerp.api;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.server.DriverService;
-import com.hntxrj.txerp.server.TaskSaleInvoiceService;
 import com.hntxrj.txerp.vo.ResultVO;
-import com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,9 +165,7 @@ public class DriverApi {
     @RequestMapping("/uploadTaskSaleInvoiceReceiptSign")
     public ResultVO uploadTaskSaleInvoiceReceiptSign(MultipartFile image, String invoiceId) throws ErpException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
-        if (file.exists()) {
-            file.delete();
-        }
+        assert !file.exists() || file.delete();
         try {
             if (file.createNewFile()) {
                 IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
@@ -196,8 +192,12 @@ public class DriverApi {
                                                    String compid) throws ErpException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
         if (file.exists()) {
+            //通知Java虚拟机回收未用对象,确保此文件一定能够删除。
             System.gc();
-            file.delete();
+            boolean delete = file.delete();
+            if (!delete) {
+                throw new ErpException(ErrEumn.SAVE_PICTURE_ERROR);
+            }
 
         }
         try {
@@ -256,6 +256,9 @@ public class DriverApi {
 
     /**
      * 根据司机编号集合查询出司机名称集合
+     *
+     * @param compid      企业id
+     * @param driverCodes 司机代号
      */
     @RequestMapping("/getDriverNames")
     public ResultVO getDriverNames(String compid, String driverCodes) {

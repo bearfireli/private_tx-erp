@@ -86,7 +86,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         // 需要把任务单号修改为：P+企业代号(2为)+年后两位（2位）+顺序编号(5位)
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
-        String taskId = "P" + compid + String.valueOf(year).substring(2);
+        String taskId;
+        taskId = "P" + compid + String.valueOf(year).substring(2);
         if (lastTask == null || "".equals(lastTask)) {
             lastTask = "0";
         }
@@ -94,10 +95,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (lastTask.length() >= 5) {
             lastTask = lastTask.substring(lastTask.length() - 5);
         }
-        lastTask = String.valueOf(Integer.parseInt(lastTask) + 1);
-        while (lastTask.length() < 5) {
-            lastTask = "0" + lastTask;
+        StringBuilder lastTaskBuilder = new StringBuilder(String.valueOf(Integer.parseInt(lastTask) + 1));
+        while (lastTaskBuilder.length() < 5) {
+            lastTaskBuilder.insert(0, "0");
         }
+        lastTask = lastTaskBuilder.toString();
         return taskId + lastTask;
     }
 
@@ -132,11 +134,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
         if (StringUtils.isEmpty(taskPlan.getTaskId())) {
 
-
             /*
              * *****************拼接TaskId******start****************/
-            String taskid = taskPlanSplicing(taskPlan.getCompid());
-            taskPlan.setTaskId(taskid);
+            String taskTd = taskPlanSplicing(taskPlan.getCompid());
+            taskPlan.setTaskId(taskTd);
         }
 
         /*
@@ -567,7 +568,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         //获取全部线号
         List<StirIdVO> stirIds = stockMapper.getStirIds(compid);
         //获取所有正在生产的车辆的集合，根据线号分类
-        List produceList = new ArrayList();
+        List<List<ProductDriverLEDVo>> produceList = new ArrayList<>();
 
         for (StirIdVO stirId : stirIds) {
             List<ProductDriverLEDVo> produceDriverShiftLED =
@@ -584,12 +585,13 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
 
         //获取等待生产的车辆总数
+        assert waitDriverShiftLED != null;
         waitingDriverList.setCarNum(waitDriverShiftLED.size());
 
 
         producingDriverList.setCars(produceList);
         //创建一个集合，用于存储等待生产的车辆的集合，便于前台处理。
-        List waitList = new ArrayList();
+        List<List<ProductDriverLEDVo>> waitList = new ArrayList<>();
         waitList.add(waitDriverShiftLED);
         waitingDriverList.setCars(waitList);
         ProductDriverList.add(producingDriverList);

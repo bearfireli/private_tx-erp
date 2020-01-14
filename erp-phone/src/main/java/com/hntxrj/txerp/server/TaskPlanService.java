@@ -4,14 +4,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.*;
-import com.hntxrj.txerp.vo.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +51,6 @@ public interface TaskPlanService {
      * 添加任务单
      *
      * @param taskPlan 任务单实体类
-     * @return 成功或者失败
      * @throws ErpException 定义的异常
      */
     void addTaskPlan(TaskPlan taskPlan) throws ErpException;
@@ -67,7 +62,6 @@ public interface TaskPlanService {
      * @param taskId       任务单id
      * @param compid       企业id
      * @param verifyStatus 审核状态
-     * @return 成功或者失败
      * @throws ErpException 定义的异常
      */
     void verifyTaskPlan(String taskId, String compid, Integer verifyStatus) throws ErpException;
@@ -87,10 +81,10 @@ public interface TaskPlanService {
      *
      * @param compid    企业代号
      * @param vehicleId 车号
-     * @param beginTime
-     * @param endTime
-     * @param page
-     * @param pageSize
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param page      页码
+     * @param pageSize  每页大小
      * @return 调度派车列表
      */
     PageVO<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime,
@@ -149,7 +143,7 @@ public interface TaskPlanService {
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
      * @param vehicleClass  班次
      * @return 司机排班LED
-     *
+     * <p>
      * 目前前台司机派车LED页面调用的是这个方法，没有调用新版本
      */
     @Deprecated
@@ -164,7 +158,7 @@ public interface TaskPlanService {
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
      * @param vehicleClass  班次
      * @return 司机排班LED
-     *
+     * <p>
      * 此方法优化了老版本的代码，前台还未启用
      */
     Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, Integer vehicleStatus, String vehicleClass);
@@ -253,7 +247,6 @@ public interface TaskPlanService {
                               String workOverTime, String remarks) throws ErpException;
 
 
-
     /**
      * 任务单生产配比日志查询
      *
@@ -313,10 +306,9 @@ public interface TaskPlanService {
     /**
      * 获取今日预计方量
      *
-     * @param compid  企业
-     * @param beginTime  开始时间
-     * @param endTime    结束时间
-     * @throws SQLException
+     * @param compid    企业
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
     JSONArray phoneStatistics(String compid, String beginTime, String endTime) throws SQLException;
 
@@ -326,22 +318,22 @@ public interface TaskPlanService {
     /**
      * 获取默认的任务单号
      *
-     * @param compid  企业
+     * @param compid 企业
      */
     Map<String, String> makeAutoTaskPlanId(String compid) throws SQLException;
 
     /**
      * 判断任务单编号是否存在
      *
-     * @param compid  企业
-     * @param taskId  任务单号
+     * @param compid 企业
+     * @param taskId 任务单号
      */
     boolean isExistence(String compid, String taskId);
 
     /**
      * 得到所有加价项目下拉
      *
-     * @param compid  企业
+     * @param compid 企业
      */
     List<PriceMarkupVO> getPriceMarkup(String compid);
 
@@ -349,8 +341,8 @@ public interface TaskPlanService {
     /**
      * 通过加价项目编号得到加价项目数据
      *
-     * @param compid  企业
-     * @param ppCode  加价项目
+     * @param compid 企业
+     * @param ppCode 加价项目
      */
     PriceMarkupVO getPriceMarkupByPPCode(String compid, String ppCode);
 
@@ -358,8 +350,8 @@ public interface TaskPlanService {
     /**
      * 添加任务单和加价项目
      *
-     * @param taskId  任务单id
-     * @param compid  企业id
+     * @param taskId        任务单id
+     * @param compid        企业id
      * @param priceMarkupVO 加价项目对象
      */
     void addTaskPriceMarkup(String compid, String taskId, PriceMarkupVO priceMarkupVO);
@@ -381,7 +373,6 @@ public interface TaskPlanService {
      * @param compid 企业
      */
     List<DirverLEDListVO> getProduceCars(String compid);
-
 
 
     /**

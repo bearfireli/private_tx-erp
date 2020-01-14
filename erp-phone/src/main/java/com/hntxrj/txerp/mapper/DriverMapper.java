@@ -36,7 +36,6 @@ public interface DriverMapper {
      * @param sign             签字图片
      * @param invoiceId        小票代号
      * @param signingTime      签收时间
-     * @return 结果
      */
     void taskSaleInvoiceReceipt(String receiptPeople, Double numberOfSignings,
                                 String pumpVehicle, String sign, String invoiceId, String signingTime);

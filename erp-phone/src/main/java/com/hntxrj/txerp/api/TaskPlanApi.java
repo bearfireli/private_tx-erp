@@ -89,12 +89,12 @@ public class TaskPlanApi {
      * @param ppCodes 加价项目编号
      */
     @PostMapping("/addTaskPriceMarkup")
-    public ResultVO addTaskPriceMarkup(String compid, String taskId, String ppCodes) throws ErpException {
+    public ResultVO addTaskPriceMarkup(String compid, String taskId, String ppCodes) {
 
         //删除任务单加价项目
         taskPlanService.deletePPCodeStatus(compid, taskId);
 
-        if (ppCodes != "" && ppCodes != null) {
+        if (!"".equals(ppCodes) && ppCodes != null) {
             String[] ppCodeArray = ppCodes.split(",");
 
             //拼接加价项目名称
@@ -381,8 +381,9 @@ public class TaskPlanApi {
      * @throws ErpException 异常处理
      */
     @PostMapping("getDriverShiftInsert")
-    public ResultVO getDriverShiftInsert(String compid, String opId, String personalCode, String vehicleId, String workClass,
-                                         Long workStarTime, Long workOverTime, String remarks) throws ErpException {
+    public ResultVO getDriverShiftInsert(String compid, String opId, String personalCode, String vehicleId,
+                                         String workClass, Long workStarTime, Long workOverTime,
+                                         String remarks) throws ErpException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         taskPlanService.getDriverShiftInsert(compid, opId, personalCode,
                 vehicleId, workClass, workStarTime == null ? null : sdf.format(new Date(workStarTime)),
@@ -405,8 +406,9 @@ public class TaskPlanApi {
      * @throws ErpException 异常
      */
     @PostMapping("getDriverShiftUpdate")
-    public ResultVO getDriverShiftUpdate(Integer id, String compid, String personalCode, String vehicleId, String workClass,
-                                         Long workStarTime, Long workOverTime, String remarks) throws ErpException {
+    public ResultVO getDriverShiftUpdate(Integer id, String compid, String personalCode, String vehicleId,
+                                         String workClass, Long workStarTime, Long workOverTime,
+                                         String remarks) throws ErpException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         taskPlanService.getDriverShiftUpdate(id, compid, personalCode,
                 vehicleId, workClass, workStarTime == null ? null : sdf.format(new Date(workStarTime)),
@@ -537,8 +539,8 @@ public class TaskPlanApi {
     @PostMapping("/getTheoreticalproportioning")
     public ResultVO getTheoreticalproportioning(String compid,
                                                 Long beginTime, Long endTime,
-                                                String formulaCode, String stgId, String stirId, String eppCode, String placing,
-                                                String taskId,
+                                                String formulaCode, String stgId, String stirId, String eppCode,
+                                                String placing, String taskId,
                                                 @RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -573,7 +575,6 @@ public class TaskPlanApi {
      * @param compid    企业
      * @param beginTime 开始时间
      * @param endTime   结束时间
-     * @throws SQLException
      */
     @RequestMapping("/phoneStatistics")
     public String phoneStatistics(String compid, String beginTime, String endTime) throws SQLException {
@@ -589,7 +590,7 @@ public class TaskPlanApi {
     /**
      * 生成任务单Id
      *
-     * @param compid
+     * @param compid 企业id
      */
     @PostMapping("/makeAutoTaskPlanId")
     public ResultVO makeAutoTaskPlanId(String compid) throws SQLException {
