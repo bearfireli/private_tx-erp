@@ -170,7 +170,7 @@ public interface DriverMapper {
      *
      * @param compid        企业
      * @param vehicleId     小票id
-     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕
+     * @param vehicleStatus 车辆状态  1：场内待班
      * @param dateTime      修改车辆状态时间
      */
     void updateVehicleStatus(String compid, String vehicleId, Integer vehicleStatus, Date dateTime);

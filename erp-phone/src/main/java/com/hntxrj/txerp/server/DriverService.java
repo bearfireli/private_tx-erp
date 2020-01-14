@@ -177,6 +177,15 @@ public interface DriverService {
      */
     void updateInvoiceVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus);
 
+    /**
+     * 修改车辆表中的车辆状态
+     *
+     * @param compid        企业
+     * @param vehicleId     车号
+     * @param id            小票id
+     * @param vehicleStatus 车辆状态    1：场内待班
+     * @return 小票签收列表
+     */
     void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus);
 }
 
