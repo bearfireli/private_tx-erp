@@ -4,7 +4,9 @@
 
     <!--删除企业-->
     <update id="deleteComp">
-        update user_comp set RecStatus = 0, UpDownMark=0
+        update user_comp set RecStatus = 0,
+        updtime=#{updTime},
+         UpDownMark=0
         where compid=#{compid}
     </update>
 
@@ -12,6 +14,7 @@
     <update id="updateComp">
         update user_comp set longname = #{compName},
          shortname=#{compShortName},
+         updtime=#{updTime},
          UpDownMark=0
         where compid=#{compid}
     </update>

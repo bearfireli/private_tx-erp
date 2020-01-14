@@ -2,6 +2,8 @@ package com.hntxrj.txerp.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Date;
+
 @Mapper
 public interface CompMapper {
 
@@ -10,7 +12,7 @@ public interface CompMapper {
      *
      * @param compid 企业id
      * */
-    void deleteComp(String compid);
+    void deleteComp(String compid, Date updTime);
 
 
     /**
@@ -20,5 +22,5 @@ public interface CompMapper {
      * @param compName       企业名称
      * @param compShortName  企业简称
      * */
-    void updateComp(String compid, String compName, String compShortName);
+    void updateComp(String compid, String compName, String compShortName,Date updTime);
 }

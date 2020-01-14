@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * @author lhr
@@ -60,11 +61,11 @@ public class CompServiceImpl implements CompService {
 
     @Override
     public void updateComp(String compid, String compName, String compShortName) {
-        compMapper.updateComp(compid, compName, compShortName);
+        compMapper.updateComp(compid, compName, compShortName,new Date());
     }
 
     @Override
     public void deleteComp(String compid) {
-        compMapper.deleteComp(compid);
+        compMapper.deleteComp(compid,new Date());
     }
 }
