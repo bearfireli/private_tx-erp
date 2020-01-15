@@ -549,9 +549,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         producingDriverList.setVehicleStatus(3);
         producingDriverList.setVehicleStatusName("正在生产");
         //等待生产的车辆
-        ProductDriverListvo waitingDriverList = new ProductDriverListvo();
-        waitingDriverList.setVehicleStatus(1);
-        waitingDriverList.setVehicleStatusName("等待生产");
+        ProductDriverListvo waitDriverList = new ProductDriverListvo();
+        waitDriverList.setVehicleStatus(1);
+        waitDriverList.setVehicleStatusName("等待生产");
 
         //从系统变量表中查询出用户的设置信息，包括是否显示等待派车，和显示几辆
         DriverWaitLEDVO driverWaitLEDVO = systemVarInitMapper.getDriverWaitLED(compid);
@@ -586,17 +586,17 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
         //获取等待生产的车辆总数
         assert waitDriverShiftLED != null;
-        waitingDriverList.setCarNum(waitDriverShiftLED.size());
+        waitDriverList.setCarNum(waitDriverShiftLED.size());
 
 
         producingDriverList.setCars(produceList);
         //创建一个集合，用于存储等待生产的车辆的集合，便于前台处理。
         List<List<ProductDriverLEDVo>> waitList = new ArrayList<>();
         waitList.add(waitDriverShiftLED);
-        waitingDriverList.setCars(waitList);
+        waitDriverList.setCars(waitList);
         ProductDriverList.add(producingDriverList);
         if (driverWaitLEDVO.getIsShow()) {
-            ProductDriverList.add(waitingDriverList);
+            ProductDriverList.add(waitDriverList);
         }
 
         return ProductDriverList;

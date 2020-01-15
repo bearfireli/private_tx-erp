@@ -153,7 +153,7 @@
 
     <!--司机App小票汇总-->
     <select id="getTaskSaleInvoiceSum" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceSumVO">
-        select count(*) as totalCarNum, sum(SaleNum) as totalNum, sum(tsi.Distance) as distance
+        select count(*) as totalCarNum, sum(SaleNum) as totalSaleNum,sum(tsi.NumberOfSignings) as totalSignNum, sum(tsi.Distance) as distance
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
         left join VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
@@ -169,7 +169,8 @@
             and tp.EPPCode = #{eppCode}
         </if>
         <if test="upStatus != null">
-            and tsi.upStatus = #{upStatus}
+            <if test="upStatus==0">and (tsi.upStatus=0 or tsi.upStatus is null)</if>
+            <if test="upStatus==1">and tsi.upStatus = #{upStatus}</if>
         </if>
         <if test="builderCode != null and builderCode != '' ">
             and tp.builderCode = #{builderCode}
