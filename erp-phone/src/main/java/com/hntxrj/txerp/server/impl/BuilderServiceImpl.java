@@ -215,7 +215,7 @@ public class BuilderServiceImpl implements BuilderService {
     }
 
     @Override
-    public PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page,
+    public PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchWords, Integer page,
                                                      Integer pageSize) throws ErpException {
         PageVO<SendCarListVO> pageVO = new PageVO<>();
 
@@ -230,7 +230,7 @@ public class BuilderServiceImpl implements BuilderService {
 
         PageHelper.startPage(page, pageSize);
         List<SendCarListVO> sendCarList = builderMapper.getBuildSendCarList(contractDetailCodes, contractUIDList,
-                searchName);
+                searchWords);
 
 
         //查询出所有正在生产的任务单号集合。

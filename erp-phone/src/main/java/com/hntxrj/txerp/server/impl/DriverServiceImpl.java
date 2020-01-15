@@ -12,6 +12,7 @@ import com.hntxrj.txerp.vo.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -174,6 +175,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    @Transactional
     public void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus) {
         Date date = new Date();
         //修改小票表中的车辆状态为回厂待班。

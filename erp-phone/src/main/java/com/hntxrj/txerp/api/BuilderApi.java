@@ -124,7 +124,7 @@ public class BuilderApi {
      * 调度派车列表
      *
      * @param buildId    施工方用户id
-     * @param searchName 搜索关键字
+     * @param searchName 搜索关键字(以后此字段用searchWords代替)
      * @param page       页码
      * @param pageSize   每页数量
      * @return 调度派车列表

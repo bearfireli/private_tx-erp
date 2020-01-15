@@ -273,9 +273,9 @@
         <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
-        <if test="searchName != null and searchName != '' ">
-            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
-            '%'+#{searchName}+'%')
+        <if test="searchWords != null and searchWords != '' ">
+            and (pt.Taskid like '%'+#{searchWords}+'%' or EPPName like '%'+#{searchWords}+'%' or Placing like
+            '%'+#{searchWords}+'%')
         </if>
         and pt.TaskStatus = 1
         and DeleteMark = 0

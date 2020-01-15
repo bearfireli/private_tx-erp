@@ -113,12 +113,12 @@ public interface BuilderService {
      * 调度派车列表
      *
      * @param buildId    企业代号
-     * @param searchName 搜索关键字
+     * @param searchWords 搜索关键字
      * @param page       页码
      * @param pageSize   每页数量
      * @return 调度派车列表
      */
-    PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page,
+    PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchWords, Integer page,
                                               Integer pageSize) throws ErpException;
 
     /**

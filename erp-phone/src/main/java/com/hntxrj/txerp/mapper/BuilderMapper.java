@@ -48,7 +48,7 @@ public interface BuilderMapper {
                                              String beginTime, String endTime, Integer type);
 
     /**
-     * 从生产消耗表中查询生产方量
+     * 从生产消耗表中查询生产方量（此方法没有被调用，工地App不需要查询生产方量）
      *
      * @param contractDetailCodes 　子合同号集合
      * @param contractUIDList     　主合同号集合
@@ -84,11 +84,11 @@ public interface BuilderMapper {
      *
      * @param contractDetailCodes 企业代号
      * @param contractUIDList     企业代号
-     * @param searchName          搜索关键字
+     * @param searchWords          搜索关键字
      * @return 调度派车列表
      */
     List<SendCarListVO> getBuildSendCarList(List<String> contractDetailCodes, List<String> contractUIDList,
-                                            String searchName);
+                                            String searchWords);
 
     /**
      * 查询产销统计中发货方量统计
