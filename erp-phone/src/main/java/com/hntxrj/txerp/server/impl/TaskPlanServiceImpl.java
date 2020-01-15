@@ -814,11 +814,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 if (queryTime != null) {
                     beginTime = beginTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
-                    endTime = sdf1.format(new Date());
                 } else {
                     beginTime = beginTime.substring(0, 10) + " 00:00:00";
-                    endTime = sdf1.format(new Date());
                 }
+                endTime = sdf1.format(new Date());
             }
             if (type == 2) {
                 int queryType = 1;
@@ -868,11 +867,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (queryTime != null) {
             beginTime = beginTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
-            endTime = sdf.format(new Date());
         } else {
             beginTime = beginTime.substring(0, 10) + " 00:00:00";
-            endTime = sdf.format(new Date());
         }
+        endTime = sdf.format(new Date());
         SquareQuantityVO squareQuantityVO = taskPlanMapper.phoneStatistics(compid, beginTime, endTime);
         if (taskPlanPreNum != null) {
             if (squareQuantityVO != null) {

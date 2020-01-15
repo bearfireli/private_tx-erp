@@ -2,11 +2,8 @@ package com.hntxrj.txerp.server;
 
 import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.core.exception.ErpException;
-import com.hntxrj.txerp.util.jdbc.sql.Page;
 import com.hntxrj.txerp.vo.*;
-
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -184,7 +181,6 @@ public interface DriverService {
      * @param vehicleId     车号
      * @param id            小票id
      * @param vehicleStatus 车辆状态    1：场内待班
-     * @return 小票签收列表
      */
     void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus);
 }

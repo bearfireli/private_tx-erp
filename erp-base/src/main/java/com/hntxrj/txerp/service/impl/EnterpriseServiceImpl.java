@@ -102,7 +102,6 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                                                long pageSize) throws ErpException {
         QEnterprise qEnterprise = QEnterprise.enterprise;
 
-        User user = userService.tokenGetUser(token);
         BooleanBuilder builder = new BooleanBuilder();
         if (epName != null && !"".equals(epName)) {
             builder.and(qEnterprise.epName.like("%" + epName + "%"));
@@ -217,10 +216,8 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     }
 
     /**
-     * @param enterprise
+     * @param enterprise  企业id
      * @param eidCode    新ｉｄ
-     * @return
-     * @throws ErpException
      */
     @Override
     public Enterprise updateEnterprise(Enterprise enterprise, Integer eidCode) throws ErpException {

@@ -5,10 +5,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.dao.VehicleDao;
 import com.hntxrj.txerp.entity.PageBean;
-import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.mapper.VehicleWorkloadMapper;
 import com.hntxrj.txerp.server.VehicleService;
-import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -505,7 +503,7 @@ public class VehicleServiceImpl implements VehicleService {
     public PageVO<PumpTruckCountVO> getPumpTruckCount(String compid, String eppCode, String personalName,
                                                       String stirId, String vehicleId,String taskId,
                                                       String beginTime, String endTime,
-                                                      Integer page, Integer pageSize) throws ErpException {
+                                                      Integer page, Integer pageSize) {
         PageVO<PumpTruckCountVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         try {
@@ -548,7 +546,7 @@ public class VehicleServiceImpl implements VehicleService {
                                                               String personalName, String stirId,
                                                               String vehicleId,String taskId,String isNewVersion,
                                                               String beginTime, String endTime,
-                                                              Integer page, Integer pageSize) throws ErpException {
+                                                              Integer page, Integer pageSize) {
 
         if ("1".equals(isNewVersion)) {
             //说明是新版本

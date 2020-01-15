@@ -35,7 +35,7 @@
     </select>
 
     <!--原材料过磅统计。车辆代号-->
-    <select id="getWeightByVechicId" resultType="com.hntxrj.txerp.vo.WeightVechicIdVO">
+    <select id="getWeightByVehicleId" resultType="com.hntxrj.txerp.vo.WeightVechicIdVO">
         select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as
         Proportion,si.VehicleID
         from MP_StockIn si left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
