@@ -76,10 +76,10 @@ public interface TaskPlanService {
      * 调度派车列表
      *
      * @param compid     企业代号
-     * @param searchName 搜索关键字
+     * @param searchWords 搜索关键字
      * @return 调度派车列表
      */
-    PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize);
+    PageVO<SendCarListVO> getSendCarList(String compid, String searchWords, Integer page, Integer pageSize);
 
     /**
      * 调度派车中每个车辆的今日调度

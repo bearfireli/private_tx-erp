@@ -54,10 +54,10 @@ public interface TaskPlanMapper {
      * 调度派车列表
      *
      * @param compid     企业代号
-     * @param searchName 搜索关键字
+     * @param searchWords 搜索关键字
      * @return 调度派车列表
      */
-    List<SendCarListVO> getSendCarList(String compid, String searchName);
+    List<SendCarListVO> getSendCarList(String compid, String searchWords);
 
 
     /**
@@ -376,9 +376,9 @@ public interface TaskPlanMapper {
      * 任务单号集合
      *
      * @param compid     企业
-     * @param searchName 搜索关键字
+     * @param searchWords 搜索关键字
      */
-    List<String> getTaskIds(String compid, String searchName);
+    List<String> getTaskIds(String compid, String searchWords);
 
 
     /**

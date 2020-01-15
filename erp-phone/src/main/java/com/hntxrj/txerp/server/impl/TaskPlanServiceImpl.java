@@ -193,9 +193,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     @Override
-    public PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize) {
+    public PageVO<SendCarListVO> getSendCarList(String compid, String searchWords, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
+        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchWords);
 
         //查询出所有正在生产的任务单号集合。
         List<String> taskIds = new ArrayList<>();

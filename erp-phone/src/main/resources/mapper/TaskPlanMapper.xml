@@ -183,9 +183,9 @@
         on p.PI_Values = pt.PlaceStyle
         and pt.compid = p.compid
         where pt.compid = #{compid}
-        <if test="searchName != null and searchName != '' ">
-            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
-            '%'+#{searchName}+'%')
+        <if test="searchWords != null and searchWords != '' ">
+            and (pt.Taskid like '%'+#{searchWords}+'%' or EPPName like '%'+#{searchWords}+'%' or Placing like
+            '%'+#{searchWords}+'%')
         </if>
         and pt.RecStatus = 1
         and pt.TaskStatus = 1
@@ -218,9 +218,9 @@
         from PT_TaskPlan pt
         left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
         where pt.compid = #{compid}
-        <if test="searchName != null and searchName != '' ">
-            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
-            '%'+#{searchName}+'%')
+        <if test="searchWords != null and searchWords != '' ">
+            and (pt.Taskid like '%'+#{searchWords}+'%' or EPPName like '%'+#{searchWords}+'%' or Placing like
+            '%'+#{searchWords}+'%')
         </if>
         and pt.RecStatus = 1
         and pt.TaskStatus = 1
