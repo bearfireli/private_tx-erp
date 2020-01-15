@@ -23,6 +23,7 @@ public interface BuilderService {
      *
      * @param builderName 工程名
      * @param pageBean    页码相关实体
+     * @param compid      企业id
      */
     JSONArray getEppList(String builderName, PageBean pageBean, String compid);
 
@@ -30,23 +31,23 @@ public interface BuilderService {
     /**
      * 添加修改删除  施工单位
      *
-     * @param Mark               操作标识 0 插入 1 更新 2 删除
-     * @param compid             企业ID
-     * @param OpId               操作员ID
-     * @param BuilderCode        施工单位代号
-     * @param BuilderName_1      施工单位名
-     * @param BuilderShortName_2 施工单位名简称
-     * @param Address_3          地址
-     * @param CreateTime_4       创建时间
-     * @param Corporation_5      法人
-     * @param Fax_6              传真
-     * @param LinkTel_7          联系电话
-     * @param RecStatus_8        记录状态(有效)   0未启用 1启用(0无效1有效)
+     * @param Mark             操作标识 0 插入 1 更新 2 删除
+     * @param compid           企业ID
+     * @param opid             操作员ID
+     * @param BuilderCode      施工单位代号
+     * @param BuilderName      施工单位名
+     * @param BuilderShortName 施工单位名简称
+     * @param Address          地址
+     * @param CreateTime       创建时间
+     * @param Corporation      法人
+     * @param Fax              传真
+     * @param LinkTel          联系电话
+     * @param RecStatus        记录状态(有效)   0未启用 1启用(0无效1有效)
      */
-    JSONArray insertUpDel_SM_BUILDERINFO(Integer Mark, String compid, String OpId, String BuilderCode,
-                                         String BuilderName_1, String BuilderShortName_2, String Address_3,
-                                         Timestamp CreateTime_4, String Corporation_5, String Fax_6,
-                                         String LinkTel_7, byte RecStatus_8);
+    JSONArray insertUpDel_SM_BUILDERINFO(Integer Mark, String compid, String opid, String BuilderCode,
+                                         String BuilderName, String BuilderShortName, String Address,
+                                         Timestamp CreateTime, String Corporation, String Fax,
+                                         String LinkTel, byte RecStatus);
 
 
     /**
@@ -117,7 +118,8 @@ public interface BuilderService {
      * @param pageSize   每页数量
      * @return 调度派车列表
      */
-    PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page, Integer pageSize) throws ErpException;
+    PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchName, Integer page,
+                                              Integer pageSize) throws ErpException;
 
     /**
      * 工地端App产销总量统计
@@ -129,8 +131,9 @@ public interface BuilderService {
      * @param stgId     　　　砼标记
      * @param beginTime 　　开始时间
      * @param endTime   　　　结束时间
-     * @param type   　　　type: 查询时间类型; 1:派车时间；0:离场时间
+     * @param type      　　　type: 查询时间类型; 1:派车时间；0:离场时间
      */
     Map<String, BigDecimal> getBuilderConcreteSum(Integer buildId, String eppCode, String placing, String taskId,
-                                                  String stgId, String beginTime, String endTime, Integer type) throws ErpException;
+                                                  String stgId, String beginTime, String endTime,
+                                                  Integer type) throws ErpException;
 }

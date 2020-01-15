@@ -18,14 +18,10 @@ import java.util.Date;
 @Log4j
 public class BuilderApi {
     private final BuilderService builderService;
-    private ResultVO resultVO;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public BuilderApi(BuilderService builderService) {
-        resultVO = new ResultVO();
-        resultVO.setMsg("ok");
-        resultVO.setCode(0);
-        resultVO.setData(null);
         this.builderService = builderService;
 
     }
@@ -44,23 +40,22 @@ public class BuilderApi {
     public ResultVO getDropDown(String builderName, String compid,
                                 @RequestParam(defaultValue = "1") Integer page,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        resultVO.setData(builderService.getBuilderDropDown(compid, builderName, page, pageSize));
-        return resultVO;
+        return ResultVO.create(builderService.getBuilderDropDown(compid, builderName, page, pageSize));
     }
 
 
     /**
-     * 工地端App产销统计
+     * 工地端App发货统计
      *
-     * @param buildId   　施工方用户id
-     * @param type      　type: 查询时间类型; 1:派车时间；0:离场时间
-     * @param eppCode   　工程代码
-     * @param placing   　浇筑部位
-     * @param taskId    　　任务单号
-     * @param stgId     　　　砼标号
-     * @param beginTime 　　开始时间
-     * @param endTime   　　　结束时间
-     * @param page      　　　　页数
+     * @param buildId   　 施工方用户id
+     * @param type      　 type: 查询时间类型; 1:派车时间；0:离场时间
+     * @param eppCode   　 工程代码
+     * @param placing   　 浇筑部位
+     * @param taskId    　 任务单号
+     * @param stgId     　 砼标号
+     * @param beginTime 　 开始时间
+     * @param endTime   　 结束时间
+     * @param page      　　页数
      * @param pageSize  　　每页显示多少条
      * @return 产销统计列表
      */
@@ -70,8 +65,6 @@ public class BuilderApi {
                                             Long beginTime, Long endTime, Integer type,
                                             @RequestParam(defaultValue = "1") Integer page,
                                             @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
-        log.info("getConcreteCount");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(builderService.getBuilderConcreteCount(buildId, eppCode, placing, taskId,
                 stgId, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), type, page, pageSize));
@@ -94,8 +87,6 @@ public class BuilderApi {
     public ResultVO getBuilderConcreteSum(Integer buildId, String eppCode, String placing,
                                           String taskId, String stgId,
                                           Long beginTime, Long endTime, Integer type) throws ErpException {
-        log.info("getBuilderConcreteSum");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(builderService.getBuilderConcreteSum(buildId, eppCode, placing, taskId,
                 stgId, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), type));
@@ -121,7 +112,7 @@ public class BuilderApi {
                                                 Byte upStatus, String builderCode, String taskId, String placing,
                                                 String taskStatus, @RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         return ResultVO.create(builderService.getBuildTaskSaleInvoiceList(buildId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),

@@ -11,7 +11,6 @@ import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.mapper.BuilderMapper;
 import com.hntxrj.txerp.mapper.ConstructionMapper;
 import com.hntxrj.txerp.server.BuilderService;
-import com.hntxrj.txerp.server.TaskListServer;
 import com.hntxrj.txerp.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -53,6 +52,7 @@ public class BuilderServiceImpl implements BuilderService {
      *
      * @param builderName 工程名
      * @param pageBean    页码相关实体
+     * @param compid      企业id
      */
     @Override
     public JSONArray getEppList(String builderName, PageBean pageBean, String compid) {
@@ -63,26 +63,26 @@ public class BuilderServiceImpl implements BuilderService {
     /**
      * 添加修改删除  施工单位
      *
-     * @param Mark               操作标识 0 插入 1 更新 2 删除
-     * @param compid             企业ID
-     * @param OpId               操作员ID
-     * @param BuilderCode        施工单位代号
-     * @param BuilderName_1      施工单位名
-     * @param BuilderShortName_2 施工单位名简称
-     * @param Address_3          地址
-     * @param CreateTime_4       创建时间
-     * @param Corporation_5      法人
-     * @param Fax_6              传真
-     * @param LinkTel_7          联系电话
-     * @param RecStatus_8        记录状态(有效)   0未启用 1启用(0无效1有效)
+     * @param Mark             操作标识 0 插入 1 更新 2 删除
+     * @param compid           企业ID
+     * @param opid             操作员ID
+     * @param BuilderCode      施工单位代号
+     * @param BuilderName      施工单位名
+     * @param BuilderShortName 施工单位名简称
+     * @param Address          地址
+     * @param CreateTime       创建时间
+     * @param Corporation      法人
+     * @param Fax              传真
+     * @param LinkTel          联系电话
+     * @param RecStatus        记录状态(有效)   0未启用 1启用(0无效1有效)
      */
     @Override
-    public JSONArray insertUpDel_SM_BUILDERINFO(Integer Mark, String compid, String OpId, String BuilderCode,
-                                                String BuilderName_1, String BuilderShortName_2, String Address_3,
-                                                Timestamp CreateTime_4, String Corporation_5, String Fax_6,
-                                                String LinkTel_7, byte RecStatus_8) {
-        return builderDao.insertUpDel_SM_BUILDERINFO(Mark, compid, OpId, BuilderCode, BuilderName_1, BuilderShortName_2,
-                Address_3, CreateTime_4, Corporation_5, Fax_6, LinkTel_7, RecStatus_8);
+    public JSONArray insertUpDel_SM_BUILDERINFO(Integer Mark, String compid, String opid, String BuilderCode,
+                                                String BuilderName, String BuilderShortName, String Address,
+                                                Timestamp CreateTime, String Corporation, String Fax,
+                                                String LinkTel, byte RecStatus) {
+        return builderDao.insertUpDel_SM_BUILDERINFO(Mark, compid, opid, BuilderCode, BuilderName, BuilderShortName,
+                Address, CreateTime, Corporation, Fax, LinkTel, RecStatus);
     }
 
     @Override
@@ -134,23 +134,20 @@ public class BuilderServiceImpl implements BuilderService {
         PageHelper.startPage(page, pageSize);
         //查询施工方用户关联合同下的产销统计
         List<ConcreteVO> concreteVOS = builderMapper.getBuilderConcreteCount(contractDetailCodes, contractUIDList,
-                eppCode, placing, taskId,
-                stgId, beginTime, endTime, type);
+                eppCode, placing, taskId, stgId, beginTime, endTime, type);
 
 
-        //再根据合同列表为条件查询关联的任务单的生产消耗
-        for (ConcreteVO c : concreteVOS) {
-
+        for (ConcreteVO concreteVO : concreteVOS) {
             // 保留小数点后两位数
-            if (c.getProduceNum() != null && !"".equals(c.getProduceNum())) {
-                String produceNum = c.getProduceNum();
+            if (concreteVO.getProduceNum() != null && !"".equals(concreteVO.getProduceNum())) {
+                String produceNum = concreteVO.getProduceNum();
                 produceNum = produceNum.substring(0, produceNum.indexOf(".") + 3);
-                c.setProduceNum(produceNum);
+                concreteVO.setProduceNum(produceNum);
             }
-            if (c.getSaleNum() != null && !"".equals(c.getSaleNum())) {
-                String saleNum = c.getSaleNum();
+            if (concreteVO.getSaleNum() != null && !"".equals(concreteVO.getSaleNum())) {
+                String saleNum = concreteVO.getSaleNum();
                 saleNum = saleNum.substring(0, saleNum.indexOf(".") + 3);
-                c.setSaleNum(saleNum);
+                concreteVO.setSaleNum(saleNum);
             }
         }
         PageInfo<ConcreteVO> pageInfo = new PageInfo<>(concreteVOS);
@@ -169,7 +166,7 @@ public class BuilderServiceImpl implements BuilderService {
      * @param stgId     　　　砼标记
      * @param beginTime 　　开始时间
      * @param endTime   　　　结束时间
-     * @param type   　　type: 查询时间类型; 1:派车时间；0:离场时间　结束时间
+     * @param type      　　type: 查询时间类型; 1:派车时间；0:离场时间
      */
     @Override
     public Map<String, BigDecimal> getBuilderConcreteSum(Integer buildId, String eppCode, String placing,
@@ -190,7 +187,6 @@ public class BuilderServiceImpl implements BuilderService {
         }
         BigDecimal totalSaleNum = builderMapper.getBuilderConcreteSum(contractDetailCodes, contractUIDList,
                 eppCode, placing, taskId, stgId, beginTime, endTime, type);
-
 
         map.put("totalSaleNum", totalSaleNum);
 
