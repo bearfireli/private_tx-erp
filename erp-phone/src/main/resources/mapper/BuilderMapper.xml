@@ -148,7 +148,7 @@
         vv.VehicleStatus,
         tsi.VehicleID,
         (tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) SaleNum,
-        tsi.QianNum,
+        tsi.NumberOfSignings as numberOfSignings,
         tsi.PersonalCode,
         vm.PersonalName,
         tsi.VehiceNumber,
