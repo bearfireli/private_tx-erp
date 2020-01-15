@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class TaskSaleInvoiceListVO {
 
+    private String compid;
+
     private Integer id;
     // 车号
     private String vehicleID;

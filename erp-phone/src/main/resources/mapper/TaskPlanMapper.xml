@@ -904,7 +904,7 @@
         tp.PreTime,
         tp.TaskOverTime,
         tp.PreNum,
-        sum(ProduceNum) overNum,
+        sum(pt.SaleNum - pt.ReturnNum - pt.RemnantNum - pt.ScrapNum) overNum,
         tp.ContractUID,
         tp.CContractCode as contractDetailCode,
         tp.TaskStatus,
