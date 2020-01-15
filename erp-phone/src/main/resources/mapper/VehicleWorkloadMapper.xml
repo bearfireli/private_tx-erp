@@ -794,4 +794,29 @@
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
     </select>
+
+
+    <!--搅拌车过磅方量统计-->
+    <select id="getWorkloadStatisticsCount" resultType="java.lang.Double">
+        select sum(vm.WeightFang) totalNum
+        from VM_VehicleWeight vm
+        left join User_employee us on vm.compid = us.compid and vm.OPER1 =us.OpId
+        left join PT_TaskPlan tp on vm.compid = tp.compid and tp.TaskId = vm.TaskId
+        where vm.compid = #{compid}
+        <if test="weightType != null">
+            and vm.WeightType=#{weightType}
+        </if>
+        <if test="eppCode != null and eppCode != ''">
+            and tp.eppCode = #{eppCode}
+        </if>
+        <if test="empName != null and empName != ''">
+            and us.empname like '%'+#{empName}+'%'
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            and vm.SecondTime <![CDATA[ >= ]]>  #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and vm.SecondTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+    </select>
 </mapper>
