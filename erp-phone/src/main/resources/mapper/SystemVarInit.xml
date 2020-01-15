@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.SystemVarInitMapper">
+
+    <select id="getDriverWaitLED" resultType="com.hntxrj.txerp.vo.DriverWaitLEDVO">
+        select SystemVarValue as isShow,VarValue as value
+        from De_SystemVarInit
+        where compid=#{compid} and SystemVar='driverWaitLEDIsShow'
+    </select>
+</mapper>

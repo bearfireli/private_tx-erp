@@ -49,7 +49,7 @@ public interface StockMapper {
      * @param pageSize  每页数量
      * @return 原材料统计汇总
      */
-    List<WeightVechicIdVO> getWeightByVechicId(String empName, String compid, String vehicleId, String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize);
+    List<WeightVechicIdVO> getWeightByVehicleId(String empName, String compid, String vehicleId, String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize);
 
     /**
      /*原材料过磅统计。供应商名（老版本）

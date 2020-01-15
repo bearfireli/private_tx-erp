@@ -198,11 +198,11 @@
         select tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
         dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId,dd2.StirName
         from PT_TaskSaleInvoice tsi
-        left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+        left join  PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
         left join VM_VehicelManagement vm on tsi.compid = vm.compid and tsi.VehicleID = vm.CarID
-        left join DD_PublicInfo dd on vm.VehicleStatus =dd.PI_Values and dd.compid =vm.compid and dd.PI_Class =22
+        left join  DD_PublicInfo dd on vm.VehicleStatus =dd.PI_Values and dd.compid =vm.compid and dd.PI_Class =22
         left join DD_StirInfoSet dd2 on vm.compid =dd2.compid and vm.StirId =dd2.StirId
-        where tsi.compid =#{compid} and tsi.TaskId in
+        where  tsi.compid =#{compid} and  tsi.TaskId in
         <foreach collection="taskIds" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
@@ -402,9 +402,13 @@
     </select>
 
 
-    <!--施工方App使用的LED功能，只查询生产中的车辆-->
+
+
+
+
+    <!--司机App使用的LED功能，只查询生产中的车辆-->
     <select id="getProductDriverShiftLED" resultType="com.hntxrj.txerp.vo.ProductDriverLEDVo">
-        select top 3
+        select
         vm.CarID,
         vm.StirId,
         dd.StirName
@@ -412,8 +416,10 @@
         left join DD_StirInfoSet dd on vm.compid =dd.compid and vm.StirId =dd.StirId
         where vm.compid = #{compid} and vm.RecStatus=1 and dd.RecStatus=1
         and VehicleClass ='1'
-        and vm.VehicleStatus =3
-        and vm.StirId =#{stirId}
+        and vm.VehicleStatus =#{vehicleStatus}
+        <if test="stirId !=null and stirId != '' ">
+            and vm.StirId =#{stirId}
+        </if>
         order by vm.CreateTime
     </select>
 
@@ -546,9 +552,9 @@
     </select>
 
     <select id="selectId" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
-        select TaskIdI
+        select TaskId
         from PT_TaskPlan
-        where TaskId like #{taskId} + '%' and len(TaskId) = 10
+        where TaskId like #{taskId} + '%' and len(TaskId)=10
     </select>
 
     <!--任务单生产配比日志查询-->

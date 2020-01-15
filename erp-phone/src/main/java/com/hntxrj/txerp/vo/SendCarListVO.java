@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class SendCarListVO {
 
+    private String compid;
     private String taskId;                                  //任务单号
     private String stgId;                                 //标号
     private String eppName;                                 //工程名称

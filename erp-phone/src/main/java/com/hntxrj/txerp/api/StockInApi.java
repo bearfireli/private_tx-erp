@@ -274,7 +274,7 @@ public class StockInApi {
     }
 
     /**
-     * /*原材料过磅统计  材料名称
+     * 原材料过磅统计  材料名称
      *
      * @param compid    企业id
      * @param beginTime 开始时间
@@ -317,7 +317,7 @@ public class StockInApi {
     public ResultVO getWeighByVechicId(String empName, String compid, String vehicleId,
                                        String stoName, String supName, Long beginTime, Long endTime, Integer page, Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(stockInServer.getWeightByVechicId(empName, compid, vehicleId, stoName, supName,
+        return ResultVO.create(stockInServer.getWeightByVehicleId(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }

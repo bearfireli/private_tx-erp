@@ -29,9 +29,9 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
      * @param compid   企业id
      * @param stgId    砼标号
      * @param grade    强度等级
-     * @param page
-     * @param pageSize
-     * @return
+     * @param page     页码
+     * @param pageSize 每页大小
+     * @return 砼标号列表
      */
     @Override
     public PageVO<StgidManageVO> getStgidManage(String compid, String stgId, String grade, Integer page, Integer pageSize) {
@@ -48,14 +48,12 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
     }
 
 
-
     /**
      * 砼标号详情
      *
-     * @param compid   企业id
-     * @param stgId    砼标号
-     * @param grade    强度等级
-     * @return
+     * @param compid 企业id
+     * @param stgId  砼标号
+     * @param grade  强度等级
      */
     @Override
     public StgidManageVO getStgIdManageDetail(String compid, String stgId, String grade) {
@@ -66,7 +64,6 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
 
         return stgidManageVO;
     }
-
 
 
     /**
@@ -96,7 +93,12 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
      * @param towerCranePrice 塔吊价格
      */
     @Override
-    public void insertStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice, String towerCranePrice) {
+    public void insertStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice,
+                                  String towerCranePrice) {
+        //用户如果输入的价格包含空格和/r/t，将其替换掉，防止程序报错。
+        pumpPrice = pumpPrice.replaceAll("\\s*", "");
+        notPumpPrice = pumpPrice.replaceAll("\\s*", "");
+        towerCranePrice = pumpPrice.replaceAll("\\s*", "");
         stgIdMangeMapper.insertStgIdManage(compid, stgId, grade, pumpPrice, notPumpPrice, towerCranePrice);
     }
 
@@ -104,8 +106,8 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
     /**
      * 删除砼标号
      *
-     * @param compid          企业id
-     * @param stgId           砼标号
+     * @param compid 企业id
+     * @param stgId  砼标号
      */
     @Override
     public void deleteStgManage(String compid, String stgId) {
