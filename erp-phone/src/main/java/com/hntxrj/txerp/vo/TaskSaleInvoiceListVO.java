@@ -45,6 +45,7 @@ public class TaskSaleInvoiceListVO {
     private String  placing;
     private String arriveSttime;
     private double qianNum;
+    private double numberOfSignings; // 签收方量
     private double saleNum;
     private  String vehicleStatus;
     private  String attribute;

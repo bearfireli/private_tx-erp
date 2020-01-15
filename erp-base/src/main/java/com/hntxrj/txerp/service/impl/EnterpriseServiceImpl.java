@@ -45,12 +45,17 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     @Value("${app.pay.imgFilePath}")
     private String imgFilePath;
 
+    @Value("${app.host}")
+    private String url;
+
+
     private final EnterpriseMapper enterpriseMapper;
 
 
     @Autowired
     public EnterpriseServiceImpl(EnterpriseRepository enterpriseRepository
-            , EntityManager entityManager, UserService userService, AuthGroupService authGroupService, EnterpriseMapper enterpriseMapper) {
+            , EntityManager entityManager, UserService userService, AuthGroupService authGroupService,
+                                 EnterpriseMapper enterpriseMapper) {
         super(entityManager);
         this.userService = userService;
         this.authGroupService = authGroupService;
@@ -97,7 +102,6 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                                                long pageSize) throws ErpException {
         QEnterprise qEnterprise = QEnterprise.enterprise;
 
-        User user = userService.tokenGetUser(token);
         BooleanBuilder builder = new BooleanBuilder();
         if (epName != null && !"".equals(epName)) {
             builder.and(qEnterprise.epName.like("%" + epName + "%"));
@@ -182,7 +186,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         }
         // 添加spterp中的企业
         OkHttpClient client = new OkHttpClient();
-        String url = "https://dev.erp.hntxrj.com/comp/addComp";
+        String phoneUrl = url + "/comp/addComp";
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("compid", String.valueOf(savedEnterprise.getEid()))
@@ -192,7 +196,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                 .build();
 
         Request request = new Request.Builder()
-                .url(url)
+                .url(phoneUrl)
                 .post(requestBody)
                 .build();
 
@@ -212,10 +216,8 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     }
 
     /**
-     * @param enterprise
+     * @param enterprise  企业id
      * @param eidCode    新ｉｄ
-     * @return
-     * @throws ErpException
      */
     @Override
     public Enterprise updateEnterprise(Enterprise enterprise, Integer eidCode) throws ErpException {

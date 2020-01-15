@@ -36,6 +36,7 @@
         select *
         from DD_StirInfoSet
         where compid = #{compid}
+        order by StirId
     </select>
 
 </mapper>

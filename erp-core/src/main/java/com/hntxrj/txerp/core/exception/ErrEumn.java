@@ -204,8 +204,9 @@ public enum ErrEumn {
     add_feedback_error(-100201, "反馈失败"),
 
 
-
     ADD_EPP_ADDRESS_EPP_CODE_IS_NULL(-100202, "工程代号不能为空"),
+    GET_PICTURE_ERROR(-100203, "获取图片失败"),
+    SAVE_PICTURE_ERROR(-100204, "保存图片失败"),
 
     ;
 
