@@ -161,7 +161,8 @@ public interface TaskPlanService {
      * <p>
      * 此方法优化了老版本的代码，前台还未启用
      */
-    Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, Integer vehicleStatus, String vehicleClass);
+    Map<String, DirverLEDListVO> getDriverShiftLEDNew(String compid, String stirId, Integer vehicleStatus,
+                                                      String vehicleClass);
 
 
     /**

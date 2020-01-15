@@ -99,8 +99,9 @@ public interface TaskPlanMapper {
      * @param beginTime    　　　　　开始时间
      * @param endTime      结束时间
      */
-    List<DriverShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode, String personalName,
-                                                  String workClass, String beginTime, String endTime);
+    List<DriverShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode,
+                                                  String personalName, String workClass, String beginTime,
+                                                  String endTime);
 
     /**
      * 查询司机
@@ -295,7 +296,8 @@ public interface TaskPlanMapper {
      * @param towerCranePrice 塔吊价
      * @param otherPrice      其他价
      */
-    void addTaskPriceMarkup(String compid, String taskId, String ppCode, BigDecimal unitPrice, BigDecimal selfDiscPrice, BigDecimal jumpPrice, BigDecimal towerCranePrice, BigDecimal otherPrice);
+    void addTaskPriceMarkup(String compid, String taskId, String ppCode, BigDecimal unitPrice, BigDecimal selfDiscPrice,
+                            BigDecimal jumpPrice, BigDecimal towerCranePrice, BigDecimal otherPrice);
 
     /**
      * 获取加价项目编号

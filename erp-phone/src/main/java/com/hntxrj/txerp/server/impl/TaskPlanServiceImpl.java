@@ -239,7 +239,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     @Override
-    public PageVO<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime, Integer page, Integer pageSize) {
+    public PageVO<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime,
+                                                 Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<SendCarDetailVO> sendCarDetailVOS = taskPlanMapper.getSendDetail(compid, vehicleId, beginTime, endTime);
 
@@ -258,7 +259,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      */
     @Override
     public PageVO<SendCarDistanceVO> getSendCarDistance(String compid, String taskId) {
-        // TODO: 司机只能查询自己的信息
         List<SendCarDistanceVO> sendCarList = taskPlanMapper.getSendCarDistance(compid, taskId);
         PageInfo<SendCarDistanceVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<SendCarDistanceVO> pageVO = new PageVO<>();
@@ -290,7 +290,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      */
     @Override
     public PageVO<SendCarTotalNumVO> getSendCarTodayNum(String compid, Integer page, Integer pageSize) {
-        // TODO: 司机只能查询自己的信息
+
         List<SendCarTotalNumVO> sendCarTotalNumVO = taskPlanMapper.getSendCarTodayNum(compid);
         PageInfo<SendCarTotalNumVO> pageInfo = new PageInfo<>(sendCarTotalNumVO);
         PageVO<SendCarTotalNumVO> pageVO = new PageVO<>();
@@ -841,12 +841,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     Date date = sdf.parse(beginTime);
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(date);
+                    cal.add(Calendar.DATE, -1);
                     if (queryTime != null) {
-                        cal.add(Calendar.DATE, -1);
                         beginTime = sdf.format(cal.getTime()) + " " + queryTime.getQueryStartTime();
                         endTime = endTime + " " + queryTime.getQueryStartTime();
                     } else {
-                        cal.add(Calendar.DATE, -1);
                         beginTime = sdf.format(cal.getTime()) + " " + "00:00:00";
                         endTime = endTime.substring(0, 10) + " " + "00:00:00";
                     }
@@ -966,16 +965,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      */
     @Override
     public List<PriceMarkupVO> getPriceMarkup(String compid) {
-        return  taskPlanMapper.getPriceMarkup(compid);
+        return taskPlanMapper.getPriceMarkup(compid);
     }
 
 
     /**
      * 通过加价项目编号得到加价项目数据
-     * */
+     */
     @Override
-    public PriceMarkupVO getPriceMarkupByPPCode(String compid,String ppCode) {
-        return taskPlanMapper.getPriceMarkupByPPCode(compid,ppCode);
+    public PriceMarkupVO getPriceMarkupByPPCode(String compid, String ppCode) {
+        return taskPlanMapper.getPriceMarkupByPPCode(compid, ppCode);
     }
 
     /**
