@@ -193,9 +193,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     @Override
-    public PageVO<SendCarListVO> getSendCarList(String compid, String searchName, Integer page, Integer pageSize) {
+    public PageVO<SendCarListVO> getSendCarList(String compid, String searchWords, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchName);
+        List<SendCarListVO> sendCarList = taskPlanMapper.getSendCarList(compid, searchWords);
 
         //查询出所有正在生产的任务单号集合。
         List<String> taskIds = new ArrayList<>();
@@ -290,6 +290,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
      */
     @Override
     public PageVO<SendCarTotalNumVO> getSendCarTodayNum(String compid, Integer page, Integer pageSize) {
+
         List<SendCarTotalNumVO> sendCarTotalNumVO = taskPlanMapper.getSendCarTodayNum(compid);
         PageInfo<SendCarTotalNumVO> pageInfo = new PageInfo<>(sendCarTotalNumVO);
         PageVO<SendCarTotalNumVO> pageVO = new PageVO<>();
@@ -713,12 +714,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         Integer upDown = 0;
         Integer upDownMark = 0;
         Integer recStatus = 1;
+        Integer count = taskPlanMapper.checkDriverScheduling(compid, personalCode, workClass);
+        if (count > 0) {
+            //此司机已经在此班次绑定过车辆
+            throw new ErpException(ErrEumn.DRIVER_IS_BIND);
+        }
+
         try {
             taskPlanMapper.getDriverShiftInsert(compid, opId, personalCode,
                     vehicleId, workClass, workStarTime,
                     workOverTime, remarks, createTime, workTime, upDown, upDownMark, recStatus);
         } catch (Exception e) {
-            throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
+            throw new ErpException(ErrEumn.ADD_ERROR);
         }
     }
 
@@ -740,6 +747,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                                      String vehicleId, String workClass,
                                      String workStarTime, String workOverTime, String remarks) throws ErpException {
         Date createTime = new Date();
+        Integer count = taskPlanMapper.checkDriverScheduling(compid, personalCode, workClass);
+        if (count > 0) {
+            //此司机已经在此班次绑定过车辆
+            throw new ErpException(ErrEumn.DRIVER_IS_BIND);
+        }
+
         try {
             taskPlanMapper.getDriverShiftUpdate(id, compid, personalCode, vehicleId,
                     workClass, workStarTime,
@@ -828,12 +841,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     Date date = sdf.parse(beginTime);
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(date);
+                    cal.add(Calendar.DATE, -1);
                     if (queryTime != null) {
-                        cal.add(Calendar.DATE, -1);
                         beginTime = sdf.format(cal.getTime()) + " " + queryTime.getQueryStartTime();
                         endTime = endTime + " " + queryTime.getQueryStartTime();
                     } else {
-                        cal.add(Calendar.DATE, -1);
                         beginTime = sdf.format(cal.getTime()) + " " + "00:00:00";
                         endTime = endTime.substring(0, 10) + " " + "00:00:00";
                     }

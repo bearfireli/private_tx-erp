@@ -195,7 +195,7 @@ public enum ErrEumn {
     IMGAGDFILE_FAIL(-100133, "读取地址失败"),
     TO_TRANSFARTO_IMGFILE_FAIL(-100134, "保存文件失败"),
     NOT_FOUNDNOT_FILE(-100135, "找不到文件"),
-    JOURNALISM_NEWS_NULL(-100135, "新闻不存在"),
+    JOURNALISM_NEWS_NULL(-100139, "新闻不存在"),
     JOURNALISM_TITLE_NULL(-100136, "新闻标题为空"),
     JOURNALISM_CONTENT_NULL(-100137, "新闻内容为空"),
     JOURNALISM_IMG_NULL(-100138, "新闻图片为空"),
@@ -207,6 +207,7 @@ public enum ErrEumn {
     ADD_EPP_ADDRESS_EPP_CODE_IS_NULL(-100202, "工程代号不能为空"),
     GET_PICTURE_ERROR(-100203, "获取图片失败"),
     SAVE_PICTURE_ERROR(-100204, "保存图片失败"),
+    DRIVER_IS_BIND(-100203,"已有车辆排班此司机,请重新设置"),
 
     ;
 

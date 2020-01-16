@@ -135,7 +135,11 @@
                  left join SM_ContractMaster sm on task.ContractUID = sm.ContractUID and task.compid = sm.compid
         where task.compid = #{compid}
           and task.taskid = #{taskId}
-        group by  task.compid,task.TaskId, sm.ContractId, task.ContractUID, task.CContractCode, task.EPPCode, EPPName, task.BuilderCode, BuilderName, stgid, Attribute, TechnicalRequirements, task.preCarNum, task.grade, task.Address, task.linkTel, task.distance, Placing, PreNum, ConcreteMark, StoneAsk, dd.PI_TypeName, PreTime, task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus, ts.PI_TypeName, preRemark, task.placeStyle, ps.PI_TypeName
+        group by  task.compid,task.TaskId, sm.ContractId, task.ContractUID, task.CContractCode, task.EPPCode,
+        EPPName, task.BuilderCode, BuilderName, stgid, Attribute, TechnicalRequirements, task.preCarNum, task.grade,
+        task.Address, task.linkTel, task.distance, Placing, PreNum, ConcreteMark, StoneAsk, dd.PI_TypeName, PreTime,
+        task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus, ts.PI_TypeName,
+        preRemark, task.placeStyle, ps.PI_TypeName
     </select>
 
     <select id="getSendCarList" resultType="com.hntxrj.txerp.vo.SendCarListVO">
@@ -183,9 +187,9 @@
         on p.PI_Values = pt.PlaceStyle
         and pt.compid = p.compid
         where pt.compid = #{compid}
-        <if test="searchName != null and searchName != '' ">
-            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like
-            '%'+#{searchName}+'%')
+        <if test="searchWords != null and searchWords != '' ">
+            and (pt.Taskid like '%'+#{searchWords}+'%' or EPPName like '%'+#{searchWords}+'%' or Placing like
+            '%'+#{searchWords}+'%')
         </if>
         and pt.RecStatus = 1
         and pt.TaskStatus = 1
@@ -218,8 +222,9 @@
         from PT_TaskPlan pt
         left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
         where pt.compid = #{compid}
-        <if test="searchName != null and searchName != '' ">
-            and (pt.Taskid like '%'+#{searchName}+'%' or EPPName like '%'+#{searchName}+'%' or Placing like '%'+#{searchName}+'%')
+        <if test="searchWords != null and searchWords != '' ">
+            and (pt.Taskid like '%'+#{searchWords}+'%' or EPPName like '%'+#{searchWords}+'%' or Placing like
+            '%'+#{searchWords}+'%')
         </if>
         and pt.RecStatus = 1
         and pt.TaskStatus = 1
@@ -335,24 +340,6 @@
         from PT_TaskSaleInvoice as ti
         where ti.compid = #{compid}
     </select>
-    <!--  <select id="getSendCarYesterDayNum" resultType="SendCarTotalNumVO">
-
-           select sum(ti.ProduceNum) as yesterdayTotalNum
-           from PT_TaskSaleInvoice as ti
-           where ti.compid = #{compid}  and ti.SendTime = #{time}
-          <if test="time != null and time != '' ">
-              and ti.SendTime = #{time}
-          </if>
-      </select>
-      <select id="getMonthTotalNum" resultType="SendCarTotalNumVO">
-
-           select sum(ti.ProduceNum) as monthTotalNum
-           from PT_TaskSaleInvoice as ti
-           where ti.compid = #{compid}
-          <if test="monthStart != null and monthEnd != '' ">
-              and ti.SendTime between #{monthStart} and #{monthEnd}
-          </if>
-      </select>-->
 
     <!--司机排班LED-->
     <select id="getDriverShiftLED" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
@@ -405,7 +392,7 @@
 
 
 
-    <!--施工方App使用的LED功能，只查询生产中和等待中的车辆-->
+    <!--司机App使用的LED功能，只查询生产中的车辆-->
     <select id="getProductDriverShiftLED" resultType="com.hntxrj.txerp.vo.ProductDriverLEDVo">
         select
         vm.CarID,
@@ -545,6 +532,10 @@
         UpDownMark=0
         where compid =#{compid} and taskid =#{taskId}
     </update>
+    <select id="checkDriverScheduling" resultType="java.lang.Integer">
+        select count(1) from VM_PERSONALWORKCLASS
+        where compid=#{compid} and WorkClass=#{workClass} and PersonalCode=#{personalCode}
+    </select>
 
     <select id="selectId" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
         select TaskId
@@ -904,7 +895,7 @@
         tp.PreTime,
         tp.TaskOverTime,
         tp.PreNum,
-        sum(pt.SaleNum - pt.ReturnNum - pt.RemnantNum - pt.ScrapNum) overNum,
+        sum(ProduceNum) overNum,
         tp.ContractUID,
         tp.CContractCode as contractDetailCode,
         tp.TaskStatus,
