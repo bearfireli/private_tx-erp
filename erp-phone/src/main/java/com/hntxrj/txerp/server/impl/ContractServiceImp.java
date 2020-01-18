@@ -789,7 +789,7 @@ public class ContractServiceImp implements ContractService {
      * @param cContractCode 子合同号
      * @param compid        站别代号
      * @param distance      运输距离
-     * @param recStatus     标志
+     * @param recStatus     标志   0:禁用； 1：启用
      * @param remarks       备注
      * @param upDown        网络标识
      * @param upDownMark    网络下发标识

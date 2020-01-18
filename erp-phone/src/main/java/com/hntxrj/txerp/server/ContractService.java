@@ -26,7 +26,7 @@ public interface ContractService {
      * @param LinkMan_4    联系人
      * @param LinkTel_5    联系电话
      * @param Remarks_6    简介
-     * @param RecStatus_7  状态 默认为1    where RecStatus = 1
+     * @param RecStatus_7  标志   0:禁用； 1：启用
      * @param shortName_8  施工单位简称
      * @return 返回jsonArray
      */
@@ -419,8 +419,8 @@ public interface ContractService {
      * @param remarks      备注
      * @param compid       公司代号
      * @param address      交货地址
-     * @param linkMan      交货地址
-     * @param linkTel      交货地址
+     * @param linkMan      联系人
+     * @param linkTel      联系电话
      * @param opid         操作员代号
      */
     void addContract(String contractId, String salesman, Date signDate, Date expiresDate, Date effectDate,
@@ -556,7 +556,7 @@ public interface ContractService {
      * @param contractDetailCode 子合同号
      * @param compid             站别代号
      * @param distance           运输距离
-     * @param recStatus          标志
+     * @param recStatus          标志   0:禁用； 1：启用
      * @param remarks            备注
      * @param upDown             网络标识
      * @param upDownMark         上传标识
