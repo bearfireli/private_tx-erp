@@ -21,6 +21,7 @@ public enum ErrEumn {
     ADD_CONTRACTDISTANCESET_ERROR(-21011, "该站距记录已经存在，请从新输入"),
     ADD_CONTRACTPRICEMARKUP_ERROR(-21012, "添加特殊材料失败！"),
     VERIFY_CONTRACT_ERROR(-21013, "合同已经审核，无法编辑！"),
+    NOT_BIND_CONTRACT(-21014, "您尚未绑定合同,请先绑定合同"),
 
 
     /* 任务单 21101-21199*/
@@ -196,7 +197,7 @@ public enum ErrEumn {
     IMGAGDFILE_FAIL(-100133, "读取地址失败"),
     TO_TRANSFARTO_IMGFILE_FAIL(-100134, "保存文件失败"),
     NOT_FOUNDNOT_FILE(-100135, "找不到文件"),
-    JOURNALISM_NEWS_NULL(-100135, "新闻不存在"),
+    JOURNALISM_NEWS_NULL(-100139, "新闻不存在"),
     JOURNALISM_TITLE_NULL(-100136, "新闻标题为空"),
     JOURNALISM_CONTENT_NULL(-100137, "新闻内容为空"),
     JOURNALISM_IMG_NULL(-100138, "新闻图片为空"),
@@ -205,8 +206,10 @@ public enum ErrEumn {
     add_feedback_error(-100201, "反馈失败"),
 
 
-
     ADD_EPP_ADDRESS_EPP_CODE_IS_NULL(-100202, "工程代号不能为空"),
+    GET_PICTURE_ERROR(-100203, "获取图片失败"),
+    SAVE_PICTURE_ERROR(-100204, "保存图片失败"),
+    DRIVER_IS_BIND(-100203,"已有车辆排班此司机,请重新设置"),
 
     ;
 

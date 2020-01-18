@@ -54,10 +54,10 @@ public interface TaskPlanMapper {
      * 调度派车列表
      *
      * @param compid     企业代号
-     * @param searchName 搜索关键字
+     * @param searchWords 搜索关键字
      * @return 调度派车列表
      */
-    List<SendCarListVO> getSendCarList(String compid, String searchName);
+    List<SendCarListVO> getSendCarList(String compid, String searchWords);
 
 
     /**
@@ -82,11 +82,12 @@ public interface TaskPlanMapper {
     /**
      * 司机App中的司机排班LED
      *
-     * @param compid 企业id
-     * @param stirId 线号
+     * @param compid        企业id
+     * @param stirId        线号
+     * @param vehicleStatus 车辆状态
      * @return 司机排班LED
      */
-    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId);
+    List<ProductDriverLEDVo> getProductDriverShiftLED(String compid, String stirId, Integer vehicleStatus);
 
     /**
      * 司机排班列表信息
@@ -98,8 +99,9 @@ public interface TaskPlanMapper {
      * @param beginTime    　　　　　开始时间
      * @param endTime      结束时间
      */
-    List<DriverShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode, String personalName,
-                                                  String workClass, String beginTime, String endTime);
+    List<DriverShiftListVO> getDriverShiftListNew(String compid, String vehicleId, String personalCode,
+                                                  String personalName, String workClass, String beginTime,
+                                                  String endTime);
 
     /**
      * 查询司机
@@ -294,7 +296,8 @@ public interface TaskPlanMapper {
      * @param towerCranePrice 塔吊价
      * @param otherPrice      其他价
      */
-    void addTaskPriceMarkup(String compid, String taskId, String ppCode, BigDecimal unitPrice, BigDecimal selfDiscPrice, BigDecimal jumpPrice, BigDecimal towerCranePrice, BigDecimal otherPrice);
+    void addTaskPriceMarkup(String compid, String taskId, String ppCode, BigDecimal unitPrice, BigDecimal selfDiscPrice,
+                            BigDecimal jumpPrice, BigDecimal towerCranePrice, BigDecimal otherPrice);
 
     /**
      * 获取加价项目编号
@@ -343,6 +346,16 @@ public interface TaskPlanMapper {
 
 
     /**
+     * 查询司机是否已经排班
+     *
+     * @param compid       企业代号
+     * @param personalCode 司机代号
+     * @param workClass    班次
+     */
+    Integer checkDriverScheduling(String compid,String personalCode,String workClass);
+
+
+    /**
      * 调度派车中今日调度
      **/
     List<SendCarDetailVO> getSendDetail(String compid, String vehicleId, String beginTime, String endTime);
@@ -366,9 +379,9 @@ public interface TaskPlanMapper {
      * 任务单号集合
      *
      * @param compid     企业
-     * @param searchName 搜索关键字
+     * @param searchWords 搜索关键字
      */
-    List<String> getTaskIds(String compid, String searchName);
+    List<String> getTaskIds(String compid, String searchWords);
 
 
     /**

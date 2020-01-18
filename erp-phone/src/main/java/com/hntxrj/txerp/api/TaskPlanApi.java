@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -90,16 +89,16 @@ public class TaskPlanApi {
      * @param ppCodes 加价项目编号
      */
     @PostMapping("/addTaskPriceMarkup")
-    public ResultVO addTaskPriceMarkup(String compid, String taskId, String ppCodes) throws ErpException {
+    public ResultVO addTaskPriceMarkup(String compid, String taskId, String ppCodes) {
 
         //删除任务单加价项目
         taskPlanService.deletePPCodeStatus(compid, taskId);
 
-        if (ppCodes != "" && ppCodes != null) {
+        if (!"".equals(ppCodes) && ppCodes != null) {
             String[] ppCodeArray = ppCodes.split(",");
 
             //拼接加价项目名称
-            StringBuilder ppNames=new StringBuilder();
+            StringBuilder ppNames = new StringBuilder();
             for (String ppCode : ppCodeArray) {
                 //根据ppCode从加价从加价项目表中查询出数据
                 PriceMarkupVO priceMarkupVO = taskPlanService.getPriceMarkupByPPCode(compid, ppCode);
@@ -150,6 +149,7 @@ public class TaskPlanApi {
      * 获取小票签收列表
      *
      * @param compid      企业
+     * @param id          小票id
      * @param beginTime   开始时间
      * @param endTime     结束时间
      * @param eppCode     工程代号
@@ -162,16 +162,42 @@ public class TaskPlanApi {
      * @return 小票签收列表
      */
     @PostMapping("/getTaskSaleInvoiceList")
-    public ResultVO getTaskSaleInvoiceList(String compid, Long beginTime, Long endTime, String eppCode, Byte upStatus,
-                                           String builderCode, String taskId, String placing, String taskStatus,
-                                           @RequestParam(defaultValue = "1") Integer page,
+    public ResultVO getTaskSaleInvoiceList(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
+                                           Byte upStatus, String builderCode, String taskId, String placing,
+                                           String taskStatus, @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(compid,
+        return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 //upStatus属性老版本查询所有签收状态传的参数是-1，新版本传递的是null.兼顾新老版本，所以判断两次
-                eppCode, upStatus == null ? null : (upStatus == -1 ? null : upStatus), builderCode, taskId, placing, taskStatus, page, pageSize));
+                eppCode, upStatus == null ? null : (upStatus == -1 ? null : upStatus), builderCode, taskId,
+                placing, taskStatus, page, pageSize));
+    }
+
+
+    /**
+     * 获取小票发货，签收方量汇总
+     *
+     * @param compid      企业
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param eppCode     工程代号
+     * @param upStatus    签收状态
+     * @param builderCode 施工单位代号
+     * @param taskId      任务单id
+     * @param placing     浇筑部位
+     * @param taskStatus  生产状态
+     * @return 小票签收列表
+     */
+    @PostMapping("/getTaskSaleInvoiceCount")
+    public ResultVO getTaskSaleInvoiceCount(String compid, Long beginTime, Long endTime, String eppCode, Byte upStatus,
+                                            String builderCode, String taskId, String placing, String taskStatus) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceCount(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)),
+                eppCode, upStatus, builderCode, taskId, placing, taskStatus));
     }
 
     /**
@@ -190,9 +216,9 @@ public class TaskPlanApi {
     /**
      * 调度派车列表
      *
-     * @param compid 企业代号
-     * @param searchName  搜索关键字
-     * @param page   页码
+     * @param compid     企业代号
+     * @param searchName 搜索关键字
+     * @param page       页码
      * @param pageSize   每页数量
      * @return 调度派车列表
      */
@@ -209,10 +235,10 @@ public class TaskPlanApi {
      *
      * @param compid    企业代号
      * @param vehicleId 车号
-     * @param beginTime  开始时间
-     * @param endTime    结束时间
-     * @param page       页码
-     * @param pageSize   每页显示条数
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param page      页码
+     * @param pageSize  每页显示条数
      * @return 调度派车列表
      */
     @PostMapping("/getSendDetail")
@@ -263,12 +289,12 @@ public class TaskPlanApi {
      * @param compid        企业id
      * @param stirId        线号/搅拌楼楼号
      * @param vehicleStatus 　车状态  3 正在生产  1 等待生产
-     * @param isNewVersion 　新老版本标识： 1：新版本     null:老版本
+     * @param isNewVersion  　新老版本标识： 1：新版本     null:老版本
      * @param vehicleClass  班次
      */
     @PostMapping("getDriverShiftLED")
     public ResultVO getDriverShiftLED(String compid, String stirId,
-                                      Integer vehicleStatus,Integer isNewVersion,
+                                      Integer vehicleStatus, Integer isNewVersion,
                                       String vehicleClass) {
         if (isNewVersion == null) {
             return ResultVO.create(taskPlanService.getDriverShiftLED(compid, stirId, vehicleStatus, vehicleClass));
@@ -355,8 +381,9 @@ public class TaskPlanApi {
      * @throws ErpException 异常处理
      */
     @PostMapping("getDriverShiftInsert")
-    public ResultVO getDriverShiftInsert(String compid, String opId, String personalCode, String vehicleId, String workClass,
-                                         Long workStarTime, Long workOverTime, String remarks) throws ErpException {
+    public ResultVO getDriverShiftInsert(String compid, String opId, String personalCode, String vehicleId,
+                                         String workClass, Long workStarTime, Long workOverTime,
+                                         String remarks) throws ErpException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         taskPlanService.getDriverShiftInsert(compid, opId, personalCode,
                 vehicleId, workClass, workStarTime == null ? null : sdf.format(new Date(workStarTime)),
@@ -379,8 +406,9 @@ public class TaskPlanApi {
      * @throws ErpException 异常
      */
     @PostMapping("getDriverShiftUpdate")
-    public ResultVO getDriverShiftUpdate(Integer id, String compid, String personalCode, String vehicleId, String workClass,
-                                         Long workStarTime, Long workOverTime, String remarks) throws ErpException {
+    public ResultVO getDriverShiftUpdate(Integer id, String compid, String personalCode, String vehicleId,
+                                         String workClass, Long workStarTime, Long workOverTime,
+                                         String remarks) throws ErpException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         taskPlanService.getDriverShiftUpdate(id, compid, personalCode,
                 vehicleId, workClass, workStarTime == null ? null : sdf.format(new Date(workStarTime)),
@@ -511,8 +539,8 @@ public class TaskPlanApi {
     @PostMapping("/getTheoreticalproportioning")
     public ResultVO getTheoreticalproportioning(String compid,
                                                 Long beginTime, Long endTime,
-                                                String formulaCode, String stgId, String stirId, String eppCode, String placing,
-                                                String taskId,
+                                                String formulaCode, String stgId, String stirId, String eppCode,
+                                                String placing, String taskId,
                                                 @RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -544,10 +572,9 @@ public class TaskPlanApi {
     /**
      * 获取今日预计方量
      *
-     * @param compid  企业
-     * @param beginTime  开始时间
-     * @param endTime    结束时间
-     * @throws SQLException
+     * @param compid    企业
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
     @RequestMapping("/phoneStatistics")
     public String phoneStatistics(String compid, String beginTime, String endTime) throws SQLException {
@@ -563,7 +590,7 @@ public class TaskPlanApi {
     /**
      * 生成任务单Id
      *
-     * @param compid
+     * @param compid 企业id
      */
     @PostMapping("/makeAutoTaskPlanId")
     public ResultVO makeAutoTaskPlanId(String compid) throws SQLException {
@@ -574,8 +601,8 @@ public class TaskPlanApi {
     /**
      * 校验用户输入的任务单号是否存在
      *
-     * @param compid   企业
-     * @param taskId  任务单号
+     * @param compid 企业
+     * @param taskId 任务单号
      */
     @PostMapping("/isExistence")
     public ResultVO isExistence(String compid, String taskId) {
@@ -586,7 +613,7 @@ public class TaskPlanApi {
     /**
      * 获取特殊加价项目列表
      *
-     * @param compid   企业
+     * @param compid 企业
      */
     @PostMapping("/getPriceMarkup")
     public ResultVO getPriceMarkup(String compid) {
@@ -597,7 +624,7 @@ public class TaskPlanApi {
     /**
      * 调度派车中查询正在生产的搅拌车
      *
-     * @param compid  企业
+     * @param compid 企业
      */
 
     @PostMapping("/getProduceCars")
@@ -627,7 +654,7 @@ public class TaskPlanApi {
                                       String placing, String taskId,
                                       Integer taskStatus, String compid, Integer verifyStatus, Integer buildId,
                                       @RequestParam(defaultValue = "1") Integer page,
-                                      @RequestParam(defaultValue = "10") Integer pageSize) {
+                                      @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskPlanService.buildTaskPlanList(
                 beginTime == null ? null : sdf.format(new Date(beginTime)),

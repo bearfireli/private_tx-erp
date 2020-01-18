@@ -12,6 +12,8 @@ import java.sql.Timestamp;
 public class TaskSaleInvoiceDetailVO implements Serializable {
 
     private String taskId;
+    private Integer id;  //小票id
+    private String companyName;   //公司名称
     private String eppName;
     private String builderName;
     private String placing;
@@ -68,4 +70,6 @@ public class TaskSaleInvoiceDetailVO implements Serializable {
     private  String invoiceTypeName;
     private String eppCode;
     private double qianNum;
+    private double numberOfSignings;
+    private String attribute;
 }

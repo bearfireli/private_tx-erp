@@ -179,6 +179,29 @@ public class VehicleApi {
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
 
+
+
+    /**
+     * 搅拌车过磅查询汇总
+     *
+     * @param compid     企业
+     * @param eppCode    工程代码
+     * @param empName   过磅员
+     * @param weightType 过磅类别
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
+     */
+    @PostMapping("/getWorkloadStatisticsCount")
+    public ResultVO getWorkloadStatisticsCount(String compid, String eppCode, String empName,
+                                          @RequestParam(defaultValue = "0")Integer weightType,
+                                          Long beginTime, Long endTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(vehicleService.getWorkloadStatisticsCount(compid,
+                eppCode, empName, weightType,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
+    }
+
     /**
      * 司机砼运输明细
      *
