@@ -48,7 +48,9 @@
         </if>
     </select>
     <select id="getContractDetail" resultType="com.hntxrj.txerp.vo.ContractVO">
-        select cd.EPPCode,
+        select cm.LinkMan linkMan,
+        cm.LinkTel  linkTel,
+        cd.EPPCode,
         cd.BuilderCode,
         epp.EPPName,
         bu.BuilderShortName builderName,
