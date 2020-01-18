@@ -9,7 +9,6 @@ import com.hntxrj.txerp.entity.base.AuthGroup;
 import com.hntxrj.txerp.mapper.EnterpriseMapper;
 import com.hntxrj.txerp.entity.base.Enterprise;
 import com.hntxrj.txerp.entity.base.QEnterprise;
-import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.repository.EnterpriseRepository;
 import com.hntxrj.txerp.service.AuthGroupService;
 import com.hntxrj.txerp.service.EnterpriseService;
@@ -231,10 +230,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             if (optionalEnterprise.isPresent()) {
                 throw new ErpException(ErrEumn.ENTERPRISE_id_EXIST);
             } else {
-                //判断新ｉｄ是否为空
-                if (!"".equals(eidCode)) {
-                    enterprise.setEid(eidCode);
-                }
+                enterprise.setEid(eidCode);
                 //进行修改操作，并返回
                 enterpriseMapper.updateId(enterprise, eid);
             }
