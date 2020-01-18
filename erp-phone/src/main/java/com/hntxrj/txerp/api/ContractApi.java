@@ -83,10 +83,9 @@ public class ContractApi {
 
     /**
      * 获取合同砼价格列表
-     * <p>
-     * //     * @param contractUid        合同uid
-     * //     * @param contractDetailCode 子合同代号
      *
+     * @param contractUid        合同uid
+     * @param contractDetailCode 子合同代号
      * @param compid 企业id
      * @return 砼价格列表
      */
@@ -232,6 +231,9 @@ public class ContractApi {
      * @param remarks      备注
      * @param compid       公司代号
      * @param address      交货地址
+     * @param linkMan      合同联系人
+     * @param linkTel      合同联系电话
+     * @param opid      操作员id
      */
     @PostMapping("/addContract")
     public ResultVO addContract(String contractId,
@@ -248,22 +250,14 @@ public class ContractApi {
                                 BigDecimal preMoney,
                                 String remarks,
                                 String compid,
-                                String address) throws ErpException {
+                                String address,
+                                String linkMan,
+                                String linkTel,
+                                String opid) throws ErpException {
         contractService.addContract(contractId,
-                salesman,
-                new Date(signDate),
-                expiresDate == null ? null : new Date(expiresDate),
-                effectDate == null ? null : new Date(effectDate),
-                contractType,
-                priceStyle,
-                eppCode,
-                builderCode,
-                contractNum,
-                preNum,
-                preMoney,
-                remarks,
-                compid,
-                address);
+                salesman, new Date(signDate), expiresDate == null ? null : new Date(expiresDate),
+                effectDate == null ? null : new Date(effectDate), contractType, priceStyle, eppCode, builderCode,
+                contractNum, preNum, preMoney, remarks, compid, address,linkMan,linkTel,opid);
         return ResultVO.create();
     }
 
@@ -403,7 +397,7 @@ public class ContractApi {
      * @param compid        站别代号
      * @param distance      运输距离
      * @param remarks       备注
-     * @param recStatus     标志
+     * @param recStatus     标志   0:禁用； 1：启用
      * @param upDown        网络标识
      * @param upDownMark    网络下发标识
      * @return int

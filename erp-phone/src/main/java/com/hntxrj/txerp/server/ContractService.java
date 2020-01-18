@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.entity.Adjunct;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.*;
-import com.hntxrj.txerp.vo.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +26,7 @@ public interface ContractService {
      * @param LinkMan_4    联系人
      * @param LinkTel_5    联系电话
      * @param Remarks_6    简介
-     * @param RecStatus_7  状态 默认为1    where RecStatus = 1
+     * @param RecStatus_7  标志   0:禁用； 1：启用
      * @param shortName_8  施工单位简称
      * @return 返回jsonArray
      */
@@ -318,7 +317,7 @@ public interface ContractService {
      * @param contractCode 合同编号
      * @param eppCode      工程代号
      * @param buildCode    施工单位代号
-     * @param salesManCode     销售员代号
+     * @param salesManCode 销售员代号
      * @param compId       企业代号
      * @param page         页码
      * @param pageSize     每页数量
@@ -420,20 +419,24 @@ public interface ContractService {
      * @param remarks      备注
      * @param compid       公司代号
      * @param address      交货地址
+     * @param linkMan      联系人
+     * @param linkTel      联系电话
+     * @param opid         操作员代号
      */
     void addContract(String contractId, String salesman, Date signDate, Date expiresDate, Date effectDate,
                      Integer contractType, Integer priceStyle, String eppCode,
                      String builderCode, BigDecimal contractNum, BigDecimal preNum,
-                     BigDecimal preMoney, String remarks, String compid, String address) throws ErpException;
+                     BigDecimal preMoney, String remarks, String compid, String address,
+                     String linkMan, String linkTel, String opid) throws ErpException;
 
     /**
      * 上传合同附件
      *
-     * @param contractUid   合同uid
+     * @param contractUid        合同uid
      * @param contractDetailCode 子合同代号
-     * @param num           第几个文件
-     * @param file          文件对象
-     * @param compid        企业id
+     * @param num                第几个文件
+     * @param file               文件对象
+     * @param compid             企业id
      * @return 保存后的该合同附件内容
      * @throws ErpException 上传失败
      */
@@ -452,9 +455,9 @@ public interface ContractService {
     /**
      * 获取附件列表
      *
-     * @param contractUid   合同uid
+     * @param contractUid        合同uid
      * @param contractDetailCode 子合同代号
-     * @param compid        企业id
+     * @param compid             企业id
      * @return 保存后的该合同附件内容
      */
     List<Adjunct> getAdjunct(String contractUid, String contractDetailCode, String compid);
@@ -491,7 +494,7 @@ public interface ContractService {
      * @param compid             企业id
      * @param contractUid        主合同号
      * @param contractDetailCode 子合同号
-     * @param gradePriceVO         砼标号价格对象
+     * @param gradePriceVO       砼标号价格对象
      */
     void saveContractGradePrice(String compid, String contractUid,
                                 String contractDetailCode, String gradePriceVO) throws ErpException;
@@ -525,37 +528,38 @@ public interface ContractService {
     String makeAutoContractId(String compid) throws ErpException;
 
     /**
-     * @param compid        企业id
+     * @param compid             企业id
      * @param contractDetailCode 子合同号
-     * @param contractUID   合同法UID
-     *
+     * @param contractUID        合同法UID
      * @return ContractPumperVO
      */
-    List<ContractPumperVO> getContractPumperPrice(String compid, String contractDetailCode, String contractUID) throws ErpException;
+    List<ContractPumperVO> getContractPumperPrice(String compid, String contractDetailCode,
+                                                  String contractUID) throws ErpException;
 
 
     /**
      * 合同运距
      *
-     * @param compid        企业ID
-     * @param contractUID   合同UID
+     * @param compid             企业ID
+     * @param contractUID        合同UID
      * @param contractDetailCode 子合同号
      * @return 站名 运输距离
      */
-    ContractDistanceVO getContractDistance(String compid, String contractUID, String contractDetailCode) throws ErpException;
+    ContractDistanceVO getContractDistance(String compid, String contractUID,
+                                           String contractDetailCode) throws ErpException;
 
 
     /**
      * 添加合同运距
      *
-     * @param contractUID   合同UID号
+     * @param contractUID        合同UID号
      * @param contractDetailCode 子合同号
-     * @param compid        站别代号
-     * @param distance      运输距离
-     * @param recStatus     标志
-     * @param remarks       备注
-     * @param upDown        网络标识
-     * @param upDownMark    上传标识
+     * @param compid             站别代号
+     * @param distance           运输距离
+     * @param recStatus          标志   0:禁用； 1：启用
+     * @param remarks            备注
+     * @param upDown             网络标识
+     * @param upDownMark         上传标识
      * @return int
      */
     ResultVO saveContractDistance(String contractUID, String contractDetailCode, String compid, Double distance,
@@ -565,13 +569,14 @@ public interface ContractService {
 
     /**
      * 泵车类价格插入数据
-     * @param compid       企业代码
-     * @param opid         操作员代号
-     * @param contractUID  合同uid号
+     *
+     * @param compid             企业代码
+     * @param opid               操作员代号
+     * @param contractUID        合同uid号
      * @param contractDetailCode 子合同号
-     * @param pumptype     泵车类别
-     * @param pumPrice     泵送单价
-     * @param tableExpense 台班费
+     * @param pumptype           泵车类别
+     * @param pumPrice           泵送单价
+     * @param tableExpense       台班费
      * @return Integer
      */
     ResultVO insertPumpTruck(String compid, String opid, String contractUID, String contractDetailCode,
@@ -610,5 +615,6 @@ public interface ContractService {
      * @param pageSize   每页数量
      * @return 合同列表
      */
-    PageVO<ContractListVO> getBuildContractListByEppOrBuild(Integer buildId, String searchName, Integer page, Integer pageSize);
+    PageVO<ContractListVO> getBuildContractListByEppOrBuild(Integer buildId, String searchName, Integer page,
+                                                            Integer pageSize);
 }
