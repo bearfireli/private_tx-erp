@@ -46,8 +46,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     private String imgFilePath;
 
     @Value("${app.host}")
-    private String url;
-
+    private String url;  //请求erpPhone项目的路径
 
     private final EnterpriseMapper enterpriseMapper;
 
@@ -77,8 +76,6 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             booleanBuilder.and(qEnterprise.eid.in(userService.getEnterpriseIdsByToken(token)));
         }
 
-
-        // default select not delete enterprise
         List<Enterprise> enterprises = queryFactory.selectFrom(qEnterprise)
                 .where(qEnterprise.epName.like("%" + keyword + "%"))
                 .where(qEnterprise.delete.eq(0))
@@ -184,7 +181,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                 }
             }
         }
-        // 添加spterp中的企业
+        // 向spterp项目发送请求，向spterp项目的user_comp表中同步添加的企业
         OkHttpClient client = new OkHttpClient();
         String phoneUrl = url + "/comp/addComp";
         RequestBody requestBody = new MultipartBody.Builder()
@@ -204,10 +201,10 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         try {
             Response response = call.execute();
             if (response.body() != null) {
-                log.info("【老版本企业添加】val={}", response.body().string());
+                log.info("【向spterp项目添加企业】val={}", response.body().string());
             }
         } catch (IOException e) {
-            log.error("【老版本企业添加失败】err={}", e.getMessage());
+            log.error("【向spterp项目添加企业失败】err={}", e.getMessage());
             e.printStackTrace();
         }
 
@@ -216,31 +213,30 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     }
 
     /**
-     * @param enterprise  企业id
-     * @param eidCode    新ｉｄ
+     * 修改企业
+     *
+     * @param enterprise 修改的企业对象
+     * @param eidCode    修改企业的id
      */
     @Override
     public Enterprise updateEnterprise(Enterprise enterprise, Integer eidCode) throws ErpException {
 
-        Enterprise enterpriseOld = new Enterprise();
         Integer eid = enterprise.getEid();
         //判断新ｉｄ与老id 是否一致 如果不一致则说明修改了ｉｄ．
         if (!enterprise.getEid().equals(eidCode)) {
-//            enterprise.setEid(eidcode);
             // 判断新修改的ｉｄ是否已经存在，主要用与ｉｄ不能重复
             Optional<Enterprise> optionalEnterprise =
                     enterpriseRepository.findById(eidCode);
             // 如果存在则不能修改，在前台提示．
             if (optionalEnterprise.isPresent()) {
-                enterpriseOld = optionalEnterprise.get();
                 throw new ErpException(ErrEumn.ENTERPRISE_id_EXIST);
             } else {
                 //判断新ｉｄ是否为空
-                if (eidCode != null && !"".equals(eidCode)) {
+                if (!"".equals(eidCode)) {
                     enterprise.setEid(eidCode);
                 }
                 //进行修改操作，并返回
-                int request = enterpriseMapper.updateId(enterprise, eid);
+                enterpriseMapper.updateId(enterprise, eid);
             }
         } else {
             if (enterprise.getEid() != null && !"".equals(enterprise.getEid())) {
@@ -265,7 +261,35 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             }
 
         }
-        return enterpriseRepository.save(enterprise);
+        Enterprise enterpriseNew = enterpriseRepository.save(enterprise);
+        // 添加spterp中的企业
+        OkHttpClient client = new OkHttpClient();
+        String phoneUrl = url + "/comp/updateComp";
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("compid", String.valueOf(eidCode))
+                .addFormDataPart("compName", enterprise.getEpName())
+                .addFormDataPart("compShortName", enterprise.getEpShortName())
+                .addFormDataPart("securityKey", "adsfbnhjkwegbrw")
+                .build();
+
+        Request request = new Request.Builder()
+                .url(phoneUrl)
+                .post(requestBody)
+                .build();
+
+        Call call = client.newCall(request);
+        try {
+            Response response = call.execute();
+            if (response.body() != null) {
+                log.info("【修改spterp项目企业】val={}", response.body().string());
+            }
+        } catch (IOException e) {
+            log.error("【修改spterp项目企业失败】err={}", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return enterpriseNew;
     }
 
     @Override
@@ -280,6 +304,31 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         }
         enterpriseOld.setDelete(enterpriseOld.getDelete() == 1 ? 0 : 1);
         enterpriseRepository.save(enterpriseOld);
+
+
+        // 删除spterp中的企业
+        OkHttpClient client = new OkHttpClient();
+        String phoneUrl = url + "/comp/deleteComp";
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("compid", String.valueOf(eid))
+                .addFormDataPart("securityKey", "adsfbnhjkwegbrw")
+                .build();
+        Request request = new Request.Builder()
+                .url(phoneUrl)
+                .post(requestBody)
+                .build();
+
+        Call call = client.newCall(request);
+        try {
+            Response response = call.execute();
+            if (response.body() != null) {
+                log.info("【删除spterp项目企业】val={}", response.body().string());
+            }
+        } catch (IOException e) {
+            log.error("【删除spterp项目企业失败】err={}", e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -299,17 +348,20 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     public Enterprise setCollectionCode(Integer eid, MultipartFile imageFile, Integer type) throws ErpException {
         Enterprise enterprise = enterpriseRepository.findById(eid)
                 .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
-        String[] originalFilename = imageFile.getOriginalFilename().split("\\.");
+        String[] originalFilename = Objects.requireNonNull(imageFile.getOriginalFilename()).split("\\.");
         String fileName = UUID.randomUUID().toString()
                 + (originalFilename.length != 0 ? "." + originalFilename[originalFilename.length - 1] : "");
         String filePath = imgFilePath + fileName;
-        File imgfile = new File(filePath);
-        File file = imgfile.getParentFile();
+        File imgFile = new File(filePath);
+        File file = imgFile.getParentFile();
         if (!file.exists()) {
-            imgfile.getParentFile().mkdirs();
+            boolean mkdirs = imgFile.getParentFile().mkdirs();
+            if (!mkdirs) {
+                log.info("创建文件夹失败");
+            }
         }
         try {
-            imageFile.transferTo(imgfile);
+            imageFile.transferTo(imgFile);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.TO_TRANSFARTO_IMGFILE_FAIL);
         }
@@ -320,7 +372,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("fileName", fileName);
         jsonObject.put("filePath", filePath);
-        jsonObject.put("imgfile", imgfile);
+        jsonObject.put("imgfile", imgFile);
         jsonObject.put("type", type);
         array.add(jsonObject);
         enterprise.setCollectionCode(String.valueOf(array));
@@ -333,7 +385,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     public void getCollectionCode(Integer eid, Integer type, HttpServletResponse response) throws ErpException {
         Enterprise enterprise = enterpriseRepository.findById(eid)
                 .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
-        String fileName = "";
+        String fileName ;
         if (enterprise.getCollectionCode() != null && !enterprise.getCollectionCode().equals("")) {
             fileName = enterprise.getCollectionCode();
         } else {
@@ -361,10 +413,16 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     public String uploadFeedbackImg(MultipartFile multipartFile) throws ErpException {
         String fileName = UUID.randomUUID().toString();
         File dir = new File(imgFilePath);
-        dir.mkdirs();
+        boolean mkdirs = dir.mkdirs();
+        if (!mkdirs) {
+            log.info("文件夹创建失败");
+        }
         File file = new File(imgFilePath + fileName);
         try {
-            file.createNewFile();
+            boolean newFile = file.createNewFile();
+            if (!newFile) {
+                log.info("文件创建失败");
+            }
             IOUtils.copy(multipartFile.getInputStream(), new FileOutputStream(file));
         } catch (Exception e) {
             e.printStackTrace();
@@ -378,13 +436,13 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         Enterprise enterprise = enterpriseRepository.findById(eid)
                 .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
         String fileName = "noimage.png";
-        String image = "";
+        String image;
         if (enterprise.getCollectionCode() != null && !enterprise.getCollectionCode().equals("")) {
             JSONObject array = (JSONObject) JSON.parse(enterprise.getCollectionCode());
             for (int i = 0; i < array.size(); i++) {
                 if (type == 1) {
                     JSONObject jObject3 = (JSONObject) JSON.parse(array.getString("wechat"));
-                    if (jObject3 != null || "".equals(jObject3)) {
+                    if (jObject3 != null) {
                         int wechat = Integer.parseInt(jObject3.getString("wechat"));
                         if (wechat == 1) {
                             image = jObject3.getString("fileName");
@@ -394,7 +452,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                 }
                 if (type == 2) {
                     JSONObject jObject3 = (JSONObject) JSON.parse(array.getString("alipay"));
-                    if (jObject3 != null || "".equals(jObject3)) {
+                    if (jObject3 != null) {
                         int alipay = Integer.parseInt(jObject3.getString("alipay"));
                         if (alipay == 2) {
                             image = jObject3.getString("fileName");
