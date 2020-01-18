@@ -61,11 +61,11 @@ public class CompServiceImpl implements CompService {
 
     @Override
     public void updateComp(String compid, String compName, String compShortName) {
-        compMapper.updateComp(compid, compName, compShortName,new Date());
+        compMapper.updateComp(compid, compName, compShortName, new Date());
     }
 
     @Override
     public void deleteComp(String compid) {
-        compMapper.deleteComp(compid,new Date());
+        compMapper.deleteComp(compid, new Date());
     }
 }

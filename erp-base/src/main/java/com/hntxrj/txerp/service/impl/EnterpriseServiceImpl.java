@@ -53,7 +53,8 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
 
     @Autowired
     public EnterpriseServiceImpl(EnterpriseRepository enterpriseRepository
-            , EntityManager entityManager, UserService userService, AuthGroupService authGroupService, EnterpriseMapper enterpriseMapper) {
+            , EntityManager entityManager, UserService userService, AuthGroupService authGroupService,
+                                 EnterpriseMapper enterpriseMapper) {
         super(entityManager);
         this.userService = userService;
         this.authGroupService = authGroupService;
@@ -75,8 +76,6 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             booleanBuilder.and(qEnterprise.eid.in(userService.getEnterpriseIdsByToken(token)));
         }
 
-
-        // default select not delete enterprise
         List<Enterprise> enterprises = queryFactory.selectFrom(qEnterprise)
                 .where(qEnterprise.epName.like("%" + keyword + "%"))
                 .where(qEnterprise.delete.eq(0))
@@ -233,7 +232,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                 throw new ErpException(ErrEumn.ENTERPRISE_id_EXIST);
             } else {
                 //判断新ｉｄ是否为空
-                if (eidCode != null && !"".equals(eidCode)) {
+                if (!"".equals(eidCode)) {
                     enterprise.setEid(eidCode);
                 }
                 //进行修改操作，并返回
@@ -349,17 +348,20 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     public Enterprise setCollectionCode(Integer eid, MultipartFile imageFile, Integer type) throws ErpException {
         Enterprise enterprise = enterpriseRepository.findById(eid)
                 .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
-        String[] originalFilename = imageFile.getOriginalFilename().split("\\.");
+        String[] originalFilename = Objects.requireNonNull(imageFile.getOriginalFilename()).split("\\.");
         String fileName = UUID.randomUUID().toString()
                 + (originalFilename.length != 0 ? "." + originalFilename[originalFilename.length - 1] : "");
         String filePath = imgFilePath + fileName;
-        File imgfile = new File(filePath);
-        File file = imgfile.getParentFile();
+        File imgFile = new File(filePath);
+        File file = imgFile.getParentFile();
         if (!file.exists()) {
-            imgfile.getParentFile().mkdirs();
+            boolean mkdirs = imgFile.getParentFile().mkdirs();
+            if (!mkdirs) {
+                log.info("创建文件夹失败");
+            }
         }
         try {
-            imageFile.transferTo(imgfile);
+            imageFile.transferTo(imgFile);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.TO_TRANSFARTO_IMGFILE_FAIL);
         }
@@ -370,7 +372,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("fileName", fileName);
         jsonObject.put("filePath", filePath);
-        jsonObject.put("imgfile", imgfile);
+        jsonObject.put("imgfile", imgFile);
         jsonObject.put("type", type);
         array.add(jsonObject);
         enterprise.setCollectionCode(String.valueOf(array));
@@ -383,7 +385,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     public void getCollectionCode(Integer eid, Integer type, HttpServletResponse response) throws ErpException {
         Enterprise enterprise = enterpriseRepository.findById(eid)
                 .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
-        String fileName = "";
+        String fileName ;
         if (enterprise.getCollectionCode() != null && !enterprise.getCollectionCode().equals("")) {
             fileName = enterprise.getCollectionCode();
         } else {
@@ -411,10 +413,16 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     public String uploadFeedbackImg(MultipartFile multipartFile) throws ErpException {
         String fileName = UUID.randomUUID().toString();
         File dir = new File(imgFilePath);
-        dir.mkdirs();
+        boolean mkdirs = dir.mkdirs();
+        if (!mkdirs) {
+            log.info("文件夹创建失败");
+        }
         File file = new File(imgFilePath + fileName);
         try {
-            file.createNewFile();
+            boolean newFile = file.createNewFile();
+            if (!newFile) {
+                log.info("文件创建失败");
+            }
             IOUtils.copy(multipartFile.getInputStream(), new FileOutputStream(file));
         } catch (Exception e) {
             e.printStackTrace();
@@ -428,13 +436,13 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         Enterprise enterprise = enterpriseRepository.findById(eid)
                 .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
         String fileName = "noimage.png";
-        String image = "";
+        String image;
         if (enterprise.getCollectionCode() != null && !enterprise.getCollectionCode().equals("")) {
             JSONObject array = (JSONObject) JSON.parse(enterprise.getCollectionCode());
             for (int i = 0; i < array.size(); i++) {
                 if (type == 1) {
                     JSONObject jObject3 = (JSONObject) JSON.parse(array.getString("wechat"));
-                    if (jObject3 != null || "".equals(jObject3)) {
+                    if (jObject3 != null) {
                         int wechat = Integer.parseInt(jObject3.getString("wechat"));
                         if (wechat == 1) {
                             image = jObject3.getString("fileName");
@@ -444,7 +452,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
                 }
                 if (type == 2) {
                     JSONObject jObject3 = (JSONObject) JSON.parse(array.getString("alipay"));
-                    if (jObject3 != null || "".equals(jObject3)) {
+                    if (jObject3 != null) {
                         int alipay = Integer.parseInt(jObject3.getString("alipay"));
                         if (alipay == 2) {
                             image = jObject3.getString("fileName");

@@ -23,7 +23,7 @@ public interface CompService {
 
 
     /**
-     * 通过企业id 获取企业对象
+     * 通过企业id 获取企业对象（没有被调用）
      *
      * @param compid 企业id
      * @return 企业对象
@@ -51,7 +51,7 @@ public interface CompService {
     /**
      * 删除企业
      *
-     * @param compid        企业id
-     * */
+     * @param compid 企业id
+     */
     void deleteComp(String compid);
 }
