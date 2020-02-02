@@ -36,7 +36,8 @@
         tp.OpenTime,
         tp.StgId as stgId,
         tp.Slump as slump,
-        tp.Attribute as attribute
+        tp.Attribute as attribute,
+        tp.client_type clientType
         from PT_TaskPlan AS tp
         left join PT_TaskSaleInvoice pt on tp.compid = pt.compid and tp.TaskId = pt.TaskId
         and pt.InvoiceType !=6
@@ -117,7 +118,8 @@
                ts.PI_TypeName as TaskStatusName,
                preRemark,
                task.placeStyle,
-               ps.PI_TypeName    placeStyleName
+               ps.PI_TypeName    placeStyleName,
+               task.client_type clientType
         from PT_TaskPlan task
                  left join PT_TaskSaleInvoice pt on task.compid = pt.compid and task.TaskId = pt.TaskId
                                                         and pt.InvoiceType !=6
