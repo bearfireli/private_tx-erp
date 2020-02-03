@@ -388,6 +388,7 @@
         where compid=#{compid}
         and CContractCode=#{contractDetailCode}
         and RecStatus=1
+        and verifyStatus =1
     </select>
 
 
