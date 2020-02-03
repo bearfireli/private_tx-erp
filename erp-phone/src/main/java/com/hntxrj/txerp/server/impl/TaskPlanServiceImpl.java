@@ -3,9 +3,9 @@ package com.hntxrj.txerp.server.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.mapper.*;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
@@ -110,7 +110,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     @Override
-    public void addTaskPlan(TaskPlan taskPlan,Integer type) throws ErpException {
+    public void addTaskPlan(TaskPlan taskPlan,String type) throws ErpException {
         if (StringUtils.isEmpty(taskPlan.getCompid())) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_COMPID);
         }
@@ -129,9 +129,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (StringUtils.isEmpty(taskPlan.getStgId())) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_STGID);
         }
-        if (type == 1 ){
-            /* type 下任务单标识  1 工地端 ，0、null 手机端*/
+        if (type.equals("1")) {
+            /* type 下任务单标识  1 工地端 ，0 手机端*/
             taskPlan.setClientType(1);
+        }else {
+            taskPlan.setClientType(0);
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

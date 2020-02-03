@@ -78,7 +78,7 @@
         tp.PreNum,
         tp.ContractUID, tp.CContractCode, tp.TaskStatus, tp.VerifyStatus, tp.EPPCode, ei.EPPName,
         tp.BuilderCode, dd.PI_TypeName, bi.BuilderName, Placing, ConcreteMark,tp.placeStyle,ps.PI_TypeName,
-        tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute
+        tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute,tp.client_type
         order by tp.PreTime desc, tp.TaskId desc
     </select>
 
@@ -141,7 +141,7 @@
         EPPName, task.BuilderCode, BuilderName, stgid, Attribute, TechnicalRequirements, task.preCarNum, task.grade,
         task.Address, task.linkTel, task.distance, Placing, PreNum, ConcreteMark, StoneAsk, dd.PI_TypeName, PreTime,
         task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus, ts.PI_TypeName,
-        preRemark, task.placeStyle, ps.PI_TypeName
+        preRemark, task.placeStyle, ps.PI_TypeName,task.client_type
     </select>
 
     <select id="getSendCarList" resultType="com.hntxrj.txerp.vo.SendCarListVO">

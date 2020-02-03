@@ -235,6 +235,6 @@ public class TaskPlan implements Serializable {
     @Column(name = "accountverifystatus")
     private Integer accountVerifyStatus;
     /* 下任务单单位标识 */
-    @Column(name = "clienttype")
+    @Column(name = "client_type")
     private Integer clientType;
 }
