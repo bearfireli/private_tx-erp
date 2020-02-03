@@ -387,6 +387,7 @@
         select ContractUID from SM_ContractDetail
         where compid=#{compid}
         and CContractCode=#{contractDetailCode}
+        and RecStatus=1
     </select>
 
 
