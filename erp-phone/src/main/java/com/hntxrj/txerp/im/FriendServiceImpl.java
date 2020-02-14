@@ -1,22 +1,22 @@
 package com.hntxrj.txerp.im;
 
-        import com.arronlong.httpclientutil.HttpClientUtil;
-        import com.arronlong.httpclientutil.common.HttpConfig;
-        import com.arronlong.httpclientutil.common.HttpHeader;
-        import com.arronlong.httpclientutil.exception.HttpProcessException;
-        import lombok.extern.slf4j.Slf4j;
-        import okhttp3.FormBody;
-        import okhttp3.OkHttpClient;
-        import okhttp3.Request;
-        import okhttp3.RequestBody;
-        import org.apache.http.Header;
-        import org.json.JSONArray;
-        import com.alibaba.fastjson.JSONObject;
-        import org.springframework.beans.factory.annotation.Value;
-        import org.springframework.stereotype.Service;
+import com.arronlong.httpclientutil.HttpClientUtil;
+import com.arronlong.httpclientutil.common.HttpConfig;
+import com.arronlong.httpclientutil.common.HttpHeader;
+import com.arronlong.httpclientutil.exception.HttpProcessException;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import org.apache.http.Header;
+import org.json.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-        import java.io.IOException;
-        import java.util.*;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -34,25 +34,34 @@ public class FriendServiceImpl implements FriendService {
      * 导入好友
      * */
     @Override
-    public JSONArray friendImport(String phone,Integer eid) {
+    public JSONArray friendImport(String phone, Integer eid) {
 
         String friendImportUrl;
         friendImportUrl = url + "/friend_import";
+
         Integer sdkAppId = ImBaseData.sdkAppId;
         String identifier = ImBaseData.identifier;
         String getUserSig = ImBaseData.getUserSig();
         long getRandom = ImBaseData.getRandom();
+        //创建json,保存该用户ID
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("From_Account", phone);
+
+        //查询这个企业下所有用户。
         List<String> objects = getuserAll(eid);
         JSONArray jsonArray = new JSONArray();
-        for (String s: objects) {
+
+        //把查询的用户拼接到参数中，
+        for (String s : objects) {
             JSONObject jsonObject2 = new JSONObject();
-            jsonObject2.put("To_Account",s);
-            jsonObject2.put("AddSource","AddSource_Type_erpPhone");
+            jsonObject2.put("To_Account", s);
+            jsonObject2.put("AddSource", "AddSource_Type_erpPhone");
             jsonArray.put(jsonObject2);
         }
         jsonObject.put("AddFriendItem", jsonArray);
+
+        //拼接get请求地址。https://console.tim.qq.com/v4/sns/friend_import?sdkappid=88888888&identifier=admin&
+        // usersig=xxx&random=99999999&contenttype=json
         friendImportUrl = friendImportUrl + "?" + "sdkappid=" + sdkAppId + "&" + "identifier=" + identifier + "&" +
                 "usersig=" + getUserSig + "&" + "random=" + getRandom + "&" + "contenttype=" + jsonObject;
         OkHttpClient client = new OkHttpClient();
