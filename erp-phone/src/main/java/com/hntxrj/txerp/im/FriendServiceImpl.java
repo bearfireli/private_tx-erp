@@ -45,18 +45,15 @@ public class FriendServiceImpl implements FriendService {
         long getRandom = ImBaseData.getRandom();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("From_Account", user.getPhone());
-
+        List<String> objects = getuserAll(eid);
         JSONArray jsonArray = new JSONArray();
-        List<Object> objects = getuserAll(eid);
-//        for (User user: objects) {
-//            JSONObject jsonObject2 = new JSONObject();
-//            jsonObject2.put("To_Account",user.getuid);
-//        }
-
-
+        for (String s: objects) {
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("To_Account",s);
+            jsonObject2.put("AddSource","AddSource_Type_erpPhone");
+            jsonArray.put(jsonObject2);
+        }
         jsonObject.put("AddFriendItem", jsonArray);
-
-
         friendImportUrl = friendImportUrl + "?" + "sdkappid=" + sdkAppId + "&" + "identifier=" + identifier + "&" +
                 "usersig=" + getUserSig + "&" + "random=" + getRandom + "&" + "contenttype=" + jsonObject;
         OkHttpClient client = new OkHttpClient();
@@ -90,7 +87,7 @@ public class FriendServiceImpl implements FriendService {
      * @param eid 企业id
      * @return 返回是否通过
      */
-    private List<Object> getuserAll(int eid) {
+    private List<String> getuserAll(int eid) {
         String baseUrl = "";
         baseUrl = url + "/user/userAll";
         Map<String, Object> map = new HashMap<>();
@@ -105,13 +102,14 @@ public class FriendServiceImpl implements FriendService {
                 .map(map)
                 .encoding("utf-8")
                 .inenc("utf-8");
-        List<Object> list = new ArrayList<>();
+        List<String> list = new ArrayList<>();
         try {
             String result = HttpClientUtil.post(config);
             com.alibaba.fastjson.JSONArray array = JSONObject.parseObject(result).getJSONArray("data");
 
             for (Object o : array) {
-                list.add(o.getClass());
+                String uid = JSONObject.parseObject(JSONObject.toJSONString(o)).getString("uid");
+                list.add(uid);
             }
         } catch (HttpProcessException e) {
             e.printStackTrace();
