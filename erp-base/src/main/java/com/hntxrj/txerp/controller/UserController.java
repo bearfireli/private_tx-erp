@@ -387,7 +387,7 @@ public class UserController {
 
     @PostMapping("/userAll")
     public String userAll(Integer eid){
-        resultVO.setData(userService.userAll(eid));
+        resultVO.setData(JSON.toJSONString(userService.userAll(eid)));
         return  JSON.toJSONString(resultVO);
     };
 

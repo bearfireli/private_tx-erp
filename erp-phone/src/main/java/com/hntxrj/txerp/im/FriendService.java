@@ -1,6 +1,8 @@
 package com.hntxrj.txerp.im;
 
-import org.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
+import com.hntxrj.txerp.entity.base.User;
+import org.json.JSONArray;
 
 public interface FriendService {
 
@@ -16,7 +18,7 @@ public interface FriendService {
      * 往同一个用户导入好友时建议采用批量导入的方式，避免并发写导致的写冲突。
      * @return 接口返回参数
      */
-    Object friendImport();
+    JSONArray friendImport(User user,Integer eid);
 
 
 
