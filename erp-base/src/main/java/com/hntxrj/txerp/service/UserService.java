@@ -232,4 +232,6 @@ public interface UserService {
      * 从auth_value表中查询出该权限组的所有信息
      * */
     List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid);
+
+    List<User> userAll(Integer eid);
 }

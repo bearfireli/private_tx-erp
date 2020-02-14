@@ -41,4 +41,6 @@ public interface UserMapper {
     List<AuthValue> getAuthValueByGroupId(Integer groupId,Integer pid);
 
     List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid);
+
+    List<User> userAll(Integer eid);
 }

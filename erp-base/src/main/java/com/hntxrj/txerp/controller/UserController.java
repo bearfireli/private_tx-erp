@@ -385,4 +385,10 @@ public class UserController {
         return resultVO.create();
     }
 
+    @PostMapping("/userAll")
+    public String userAll(Integer eid){
+        resultVO.setData(userService.userAll(eid));
+        return  JSON.toJSONString(resultVO);
+    };
+
 }
