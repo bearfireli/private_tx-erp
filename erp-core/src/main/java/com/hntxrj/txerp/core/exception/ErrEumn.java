@@ -211,6 +211,10 @@ public enum ErrEumn {
     SAVE_PICTURE_ERROR(-100204, "保存图片失败"),
     DRIVER_IS_BIND(-100203,"已有车辆排班此司机,请重新设置"),
 
+    USER_IS_NULL( -100204,"该账户为登录，请先登录账户"),
+    ADD_FRIENDS_NULL(-100205,"没有添加好友，请输入好友账号"),
+    ADDSOURCE_IS_NULL(-100206,"好友来源为空，请输入好友来源"),
+
     ;
 
 

@@ -4,6 +4,9 @@ import com.arronlong.httpclientutil.HttpClientUtil;
 import com.arronlong.httpclientutil.common.HttpConfig;
 import com.arronlong.httpclientutil.common.HttpHeader;
 import com.arronlong.httpclientutil.exception.HttpProcessException;
+import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.vo.FriendsVO;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -26,15 +29,84 @@ public class FriendServiceImpl implements FriendService {
     private String url;
 
     @Override
-    public Object friendAdd() {
-        return null;
+    public String friendAdd(String userID, List<FriendsVO> friends) throws ErpException {
+        if (!"".equals(userID) && null != userID) {
+            throw new ErpException(ErrEumn.USER_IS_NULL);
+        }
+        if (friends.size() < 0) {
+            throw new ErpException(ErrEumn.ADD_FRIENDS_NULL);
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("From_Account", userID);
+        JSONArray jsonArray = new JSONArray();
+
+        for (FriendsVO friendsVO : friends) {
+            JSONObject jsonObject2 = new JSONObject();
+            jsonObject2.put("To_Account", friendsVO.getToAccount());
+            if (friendsVO.getRemark()!=null && !"".equals(friendsVO.getRemark())){
+                jsonObject2.put("Remark",friendsVO.getRemark());
+            }
+            if (friendsVO.getGroupName()!=null && !"".equals(friendsVO.getGroupName())){
+                jsonObject2.put("GroupName",friendsVO.getGroupName());
+            }
+            if (friendsVO.getAddSource()==null || "".equals(friendsVO.getAddSource())){
+                //为测试通过，默认添加
+                jsonObject2.put("AddSource","AddSource_Type_erpPhone");
+                throw new ErpException(ErrEumn.ADDSOURCE_IS_NULL);
+            }else{
+                jsonObject2.put("AddSource",friendsVO.getAddSource());
+            }
+            if (friendsVO.getAddWording()!=null && !"".equals(friendsVO.getAddWording())){
+                jsonObject2.put("AddWording",friendsVO.getAddWording());
+            }
+            if (friendsVO.getAddType()!=null && !"".equals(friendsVO.getAddType())){
+              //加好友方式（默认双向加好友方式)
+                jsonObject2.put("AddType","Add_Type_Both");
+            }else {
+                jsonObject2.put("AddType",friendsVO.getAddType());
+            }
+            if (friendsVO.getForceAddFlags()==1){
+                jsonObject2.put("ForceAddFlags",1);
+            }
+            if (friendsVO.getForceAddFlags()==0){
+                jsonObject2.put("ForceAddFlags",0);
+            }
+            jsonArray.put(jsonObject2);
+        }
+        jsonObject.put("AddFriendItem", jsonArray);
+
+        String friendImportUrl ="";
+        friendImportUrl = url + "/friend_add";
+        Header[] headers = HttpHeader.custom()
+                .other("sdkappid", ImBaseData.sdkAppId.toString())
+                .other("identifier",ImBaseData.identifier)
+                .other("usersig",ImBaseData.getUserSig())
+                .other("random", String.valueOf(ImBaseData.getRandom()))
+                .other("contenttype", String.valueOf(jsonObject))
+                .build();
+        //插件式配置请求参数（网址、请求参数、编码、client）
+        HttpConfig config = HttpConfig.custom()
+                .headers(headers)
+                .url(friendImportUrl)
+                .encoding("utf-8")
+                .inenc("utf-8");
+        String result = null;
+        try {
+            result = HttpClientUtil.get(config);
+            
+        } catch (HttpProcessException e) {
+            e.printStackTrace();
+        }
+
+        
+        return result;
     }
 
     /*
      * 导入好友
      * */
     @Override
-    public JSONArray friendImport(String phone, Integer eid) {
+    public JSONArray friendImport(String userID, Integer eid) {
 
         String friendImportUrl;
         friendImportUrl = url + "/friend_import";
@@ -45,7 +117,7 @@ public class FriendServiceImpl implements FriendService {
         long getRandom = ImBaseData.getRandom();
         //创建json,保存该用户ID
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("From_Account", phone);
+        jsonObject.put("From_Account", userID);
 
         //查询这个企业下所有用户。
         List<String> objects = getuserAll(eid);
@@ -54,7 +126,7 @@ public class FriendServiceImpl implements FriendService {
         //把查询的用户拼接到参数中，
         for (String s : objects) {
             //判断不导入自己为好友
-            if(!s.equals(phone)){
+            if (!s.equals(userID)) {
                 JSONObject jsonObject2 = new JSONObject();
                 jsonObject2.put("To_Account", s);
                 jsonObject2.put("AddSource", "AddSource_Type_erpPhone");
