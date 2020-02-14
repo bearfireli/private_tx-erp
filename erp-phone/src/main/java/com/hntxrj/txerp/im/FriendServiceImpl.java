@@ -53,10 +53,13 @@ public class FriendServiceImpl implements FriendService {
 
         //把查询的用户拼接到参数中，
         for (String s : objects) {
-            JSONObject jsonObject2 = new JSONObject();
-            jsonObject2.put("To_Account", s);
-            jsonObject2.put("AddSource", "AddSource_Type_erpPhone");
-            jsonArray.put(jsonObject2);
+            //判断不导入自己为好友
+            if(!s.equals(phone)){
+                JSONObject jsonObject2 = new JSONObject();
+                jsonObject2.put("To_Account", s);
+                jsonObject2.put("AddSource", "AddSource_Type_erpPhone");
+                jsonArray.put(jsonObject2);
+            }
         }
         jsonObject.put("AddFriendItem", jsonArray);
 
