@@ -214,6 +214,7 @@ public enum ErrEumn {
     USER_IS_NULL( -100204,"该账户为登录，请先登录账户"),
     ADD_FRIENDS_NULL(-100205,"没有添加好友，请输入好友账号"),
     ADDSOURCE_IS_NULL(-100206,"好友来源为空，请输入好友来源"),
+    DEL_FRIENDS_NULL(-100207,"没有选择好友，请选择要删除的好友"),
 
     ;
 

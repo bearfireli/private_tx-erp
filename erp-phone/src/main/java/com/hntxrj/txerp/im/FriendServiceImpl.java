@@ -75,8 +75,8 @@ public class FriendServiceImpl implements FriendService {
         }
         jsonObject.put("AddFriendItem", jsonArray);
 
-        String friendImportUrl ="";
-        friendImportUrl = url + "/friend_add";
+        String friendAddUrl ="";
+        friendAddUrl = url + "/friend_add";
         Header[] headers = HttpHeader.custom()
                 .other("sdkappid", ImBaseData.sdkAppId.toString())
                 .other("identifier",ImBaseData.identifier)
@@ -87,7 +87,7 @@ public class FriendServiceImpl implements FriendService {
         //插件式配置请求参数（网址、请求参数、编码、client）
         HttpConfig config = HttpConfig.custom()
                 .headers(headers)
-                .url(friendImportUrl)
+                .url(friendAddUrl)
                 .encoding("utf-8")
                 .inenc("utf-8");
         String result = null;
@@ -160,8 +160,58 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public JSONObject friendDelete() {
-        return null;
+    public String friendDelete(String userID, List<FriendsVO> friends, String deleteType) throws ErpException {
+        if (!"".equals(userID) && null != userID) {
+            throw new ErpException(ErrEumn.USER_IS_NULL);
+        }
+        if (friends.size() < 0) {
+            throw new ErpException(ErrEumn.DEL_FRIENDS_NULL);
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("From_Account", userID);
+        JSONArray jsonArray = new JSONArray();
+        for (FriendsVO friendsVO : friends) {
+            if (friendsVO.getToAccount() != null && !"".equals(friendsVO.getToAccount())) {
+                jsonArray.put(friendsVO.getToAccount());
+            }
+        }
+        jsonObject.put("To_Account",jsonArray);
+        //判断删除模式
+        if (!"".equals(deleteType) && null!=deleteType){
+            //单向删除
+            if (deleteType.equals("Delete_Type_Single")){
+                jsonObject.put("DeleteType","Delete_Type_Single");
+            }else {
+                //双向删除
+                jsonObject.put("DeleteType","Delete_Type_Both");
+            }
+        }
+
+        String friendDeleteUrl ="";
+        friendDeleteUrl = url + "/friend_delete";
+        Header[] headers = HttpHeader.custom()
+                .other("sdkappid", ImBaseData.sdkAppId.toString())
+                .other("identifier",ImBaseData.identifier)
+                .other("usersig",ImBaseData.getUserSig())
+                .other("random", String.valueOf(ImBaseData.getRandom()))
+                .other("contenttype", String.valueOf(jsonObject))
+                .build();
+        //插件式配置请求参数（网址、请求参数、编码、client）
+        HttpConfig config = HttpConfig.custom()
+                .headers(headers)
+                .url(friendDeleteUrl)
+                .encoding("utf-8")
+                .inenc("utf-8");
+        String result = null;
+        try {
+            result = HttpClientUtil.get(config);
+
+        } catch (HttpProcessException e) {
+            e.printStackTrace();
+        }
+
+
+        return result;
     }
 
     /**
