@@ -4,7 +4,6 @@ package com.hntxrj.txerp.im;
         import com.arronlong.httpclientutil.common.HttpConfig;
         import com.arronlong.httpclientutil.common.HttpHeader;
         import com.arronlong.httpclientutil.exception.HttpProcessException;
-        import com.hntxrj.txerp.entity.base.User;
         import lombok.extern.slf4j.Slf4j;
         import okhttp3.FormBody;
         import okhttp3.OkHttpClient;
@@ -35,7 +34,7 @@ public class FriendServiceImpl implements FriendService {
      * 导入好友
      * */
     @Override
-    public JSONArray friendImport(User user,Integer eid) {
+    public JSONArray friendImport(String phone,Integer eid) {
 
         String friendImportUrl;
         friendImportUrl = url + "/friend_import";
@@ -44,7 +43,7 @@ public class FriendServiceImpl implements FriendService {
         String getUserSig = ImBaseData.getUserSig();
         long getRandom = ImBaseData.getRandom();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("From_Account", user.getPhone());
+        jsonObject.put("From_Account", phone);
         List<String> objects = getuserAll(eid);
         JSONArray jsonArray = new JSONArray();
         for (String s: objects) {
