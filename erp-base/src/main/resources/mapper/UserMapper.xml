@@ -205,9 +205,10 @@
         LEFT JOIN user u on ua.uid =u.uid
         where
         1=1
-        <if test="eid != null">
+        <if test="eid != null and eid!='' ">
         and ua.eid =#{eid}
         </if>
+        and u.uid is not null
     </select>
 
 
