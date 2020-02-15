@@ -26,9 +26,10 @@ import java.util.*;
 @Slf4j
 public class FriendServiceImpl implements FriendService {
 
-    @Value("${app.cloud.friendImUrl}")
+    @Value("${app.cloud.CommunicationUrl}")
     private String url;
-
+    @Value("${app.cloud.host}")
+    private String erpurl;
     @Override
     public String friendAdd(String userID, List<FriendsVO> friends) throws ErpException {
         if (!"".equals(userID) && null != userID) {
@@ -76,7 +77,7 @@ public class FriendServiceImpl implements FriendService {
         }
         jsonObject.put("AddFriendItem", jsonArray);
         String friendAddUrl ="";
-        friendAddUrl = url + "/friend_add";
+        friendAddUrl = url + "/sns/friend_add";
         Map<String, Object> map = new HashMap<>();
         map.put("contenttype", jsonObject);
         Header[] headers = HttpHeader.custom()
@@ -112,7 +113,7 @@ public class FriendServiceImpl implements FriendService {
     public JSONArray friendImport(String userID, Integer eid) {
 
         String friendImportUrl;
-        friendImportUrl = url + "/friend_import";
+        friendImportUrl = url + "/sns/friend_import";
 
         Integer sdkAppId = ImBaseData.sdkAppId;
         String identifier = ImBaseData.identifier;
@@ -141,12 +142,12 @@ public class FriendServiceImpl implements FriendService {
         //拼接get请求地址。https://console.tim.qq.com/v4/sns/friend_import?sdkappid=88888888&identifier=admin&
         // usersig=xxx&random=99999999&contenttype=json
         friendImportUrl = friendImportUrl + "?" + "sdkappid=" + sdkAppId + "&" + "identifier=" + identifier + "&" +
-                "usersig=" + getUserSig + "&" + "random=" + getRandom + "&" + "contenttype=" + jsonObject;
+                "usersig=" + getUserSig + "&" + "random=" + getRandom;
         OkHttpClient client = new OkHttpClient();
         RequestBody body = new FormBody.Builder()
 //               .add("methodName", methodName)
 //               .add("functionName", functionName)
-//               .add("appCode", "1")
+               .add("contenttype", String.valueOf(jsonObject))
 //               .add("compid", compid)
                 .build();
         Request request = new Request.Builder()
@@ -191,7 +192,7 @@ public class FriendServiceImpl implements FriendService {
         }
 
         String friendDeleteUrl ="";
-        friendDeleteUrl = url + "/friend_delete";
+        friendDeleteUrl = url + "/sns/friend_delete";
         Header[] headers = HttpHeader.custom()
                 .other("sdkappid", ImBaseData.sdkAppId.toString())
                 .other("identifier",ImBaseData.identifier)
@@ -225,7 +226,7 @@ public class FriendServiceImpl implements FriendService {
      */
     private List<String> getuserAll(int eid) {
         String baseUrl = "";
-        baseUrl = url + "/user/userAll";
+        baseUrl = erpurl + "/user/userAll";
         Map<String, Object> map = new HashMap<>();
         map.put("eid", eid);
         Header[] headers = HttpHeader.custom()

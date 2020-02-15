@@ -56,7 +56,7 @@ app:
     taskSaleInvoiceUploadPath: /Users/haoranliu/IdeaProjects/spterp-phone/upload/
   cloud:
     #添加、导入、删除好友 地址
-    friendImUrl: https://console.tim.qq.com/v4/sns
+    CommunicationUrl: https://console.tim.qq.com/v4
     #    host: http://localhost:9501
     host: http://192.168.31.178:9501
     auth: ${app.cloud.host}/user/tokenUse

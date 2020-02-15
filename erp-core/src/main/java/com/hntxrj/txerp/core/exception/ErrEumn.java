@@ -215,6 +215,8 @@ public enum ErrEumn {
     ADD_FRIENDS_NULL(-100205,"没有添加好友，请输入好友账号"),
     ADDSOURCE_IS_NULL(-100206,"好友来源为空，请输入好友来源"),
     DEL_FRIENDS_NULL(-100207,"没有选择好友，请选择要删除的好友"),
+    TOACCOUNT_IS_NULL(-100208,"请选择消息接收人。"),
+    MsgBody_IS_NULL(-100209,"消息不能为空。"),
 
     ;
 
