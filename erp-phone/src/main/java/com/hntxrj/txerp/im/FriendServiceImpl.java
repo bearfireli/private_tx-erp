@@ -13,6 +13,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.apache.http.Header;
+import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,25 +75,27 @@ public class FriendServiceImpl implements FriendService {
             jsonArray.put(jsonObject2);
         }
         jsonObject.put("AddFriendItem", jsonArray);
-
         String friendAddUrl ="";
         friendAddUrl = url + "/friend_add";
+        Map<String, Object> map = new HashMap<>();
+        map.put("contenttype", jsonObject);
         Header[] headers = HttpHeader.custom()
                 .other("sdkappid", ImBaseData.sdkAppId.toString())
                 .other("identifier",ImBaseData.identifier)
                 .other("usersig",ImBaseData.getUserSig())
                 .other("random", String.valueOf(ImBaseData.getRandom()))
-                .other("contenttype", String.valueOf(jsonObject))
+//                .other("contenttype", String.valueOf(jsonObject))
                 .build();
         //插件式配置请求参数（网址、请求参数、编码、client）
         HttpConfig config = HttpConfig.custom()
                 .headers(headers)
                 .url(friendAddUrl)
                 .encoding("utf-8")
+                .map(map)
                 .inenc("utf-8");
         String result = null;
         try {
-            result = HttpClientUtil.get(config);
+            result = HttpClientUtil.post(config);
             
         } catch (HttpProcessException e) {
             e.printStackTrace();
