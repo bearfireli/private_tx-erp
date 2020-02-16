@@ -200,7 +200,9 @@
         from auth_value av
         where av.group_id=#{groupId}  and av.value=1
     </select>
-
+    <select id="selectAllUser" resultType="com.hntxrj.txerp.entity.base.User">
+         SELECT uid FROM USER
+    </select>
 
 
 </mapper>

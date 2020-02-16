@@ -385,4 +385,10 @@ public class UserController {
         return resultVO.create();
     }
 
+    @PostMapping("/selectAllUser")
+    public String selectAllUser(){
+        resultVO.setData(JSON.toJSONString(userService.selectAllUser()));
+        return  JSON.toJSONString(resultVO);
+    };
+
 }
