@@ -1,10 +1,9 @@
 package com.hntxrj.txerp.im;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.FriendsVO;
-import org.json.JSONArray;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface FriendService {
@@ -28,7 +27,7 @@ public interface FriendService {
      * @param eid    企业代号
      * @return 接口返回参数
      */
-    JSONArray friendImport(String userID, Integer eid);
+    String friendImport(String userID, Integer eid) throws IOException;
 
 
     /**

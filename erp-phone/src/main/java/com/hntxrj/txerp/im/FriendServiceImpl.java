@@ -8,12 +8,14 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.vo.FriendsVO;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import org.apache.http.Header;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -110,15 +112,11 @@ public class FriendServiceImpl implements FriendService {
      * 导入好友
      * */
     @Override
-    public JSONArray friendImport(String userID, Integer eid) {
-
+    public String friendImport(String userID, Integer eid) throws IOException {
         String friendImportUrl;
-        friendImportUrl = url + "/sns/friend_import";
+        friendImportUrl = url + "/sns/friend_import"+ "?" + "sdkappid=" + ImBaseData.sdkAppId + "&" + "identifier=" + ImBaseData.identifier + "&" +
+                "usersig=" + ImBaseData.getUserSig() + "&" + "random=" + ImBaseData.getRandom();
 
-        Integer sdkAppId = ImBaseData.sdkAppId;
-        String identifier = ImBaseData.identifier;
-        String getUserSig = ImBaseData.getUserSig();
-        long getRandom = ImBaseData.getRandom();
         //创建json,保存该用户ID
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("From_Account", userID);
@@ -141,26 +139,36 @@ public class FriendServiceImpl implements FriendService {
 
         //拼接get请求地址。https://console.tim.qq.com/v4/sns/friend_import?sdkappid=88888888&identifier=admin&
         // usersig=xxx&random=99999999&contenttype=json
-        friendImportUrl = friendImportUrl + "?" + "sdkappid=" + sdkAppId + "&" + "identifier=" + identifier + "&" +
-                "usersig=" + getUserSig + "&" + "random=" + getRandom;
-        OkHttpClient client = new OkHttpClient();
-        RequestBody body = new FormBody.Builder()
-//               .add("methodName", methodName)
-//               .add("functionName", functionName)
-               .add("contenttype", String.valueOf(jsonObject))
-//               .add("compid", compid)
-                .build();
-        Request request = new Request.Builder()
-                .url(friendImportUrl)
-                .post(body)
-                .build();
-
-        try {
-            client.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
+        HttpPost httpPost = new HttpPost(friendImportUrl);
+        CloseableHttpClient client = HttpClients.createDefault();
+        StringEntity entity = new StringEntity(jsonObject.toString(),"utf-8");//解决中文乱码问题
+        entity.setContentEncoding("UTF-8");
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
+        String respContent = null;
+        HttpResponse resp = client.execute(httpPost);
+        if(resp.getStatusLine().getStatusCode() == 200) {
+            HttpEntity he = resp.getEntity();
+            respContent = EntityUtils.toString(he,"UTF-8");
         }
-        return null;
+//        OkHttpClient client = new OkHttpClient();
+//        RequestBody body = new FormBody.Builder()
+////               .add("methodName", methodName)
+////               .add("functionName", functionName)
+//               .add("contenttype", String.valueOf(jsonObject))
+////               .add("compid", compid)
+//                .build();
+//        Request request = new Request.Builder()
+//                .url(friendImportUrl)
+//                .post(body)
+//                .build();
+//
+//        try {
+//            client.newCall(request).execute();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        return respContent;
     }
 
     @Override
