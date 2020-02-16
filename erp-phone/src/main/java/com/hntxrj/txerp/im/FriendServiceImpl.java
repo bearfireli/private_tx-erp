@@ -11,9 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -139,18 +142,18 @@ public class FriendServiceImpl implements FriendService {
 
         //拼接get请求地址。https://console.tim.qq.com/v4/sns/friend_import?sdkappid=88888888&identifier=admin&
         // usersig=xxx&random=99999999&contenttype=json
-        HttpPost httpPost = new HttpPost(friendImportUrl);
-        CloseableHttpClient client = HttpClients.createDefault();
-        StringEntity entity = new StringEntity(jsonObject.toString(),"utf-8");//解决中文乱码问题
-        entity.setContentEncoding("UTF-8");
-        entity.setContentType("application/json");
-        httpPost.setEntity(entity);
-        String respContent = null;
-        HttpResponse resp = client.execute(httpPost);
-        if(resp.getStatusLine().getStatusCode() == 200) {
-            HttpEntity he = resp.getEntity();
-            respContent = EntityUtils.toString(he,"UTF-8");
-        }
+//        HttpPost httpPost = new HttpPost(friendImportUrl);
+//        CloseableHttpClient client = HttpClients.createDefault();
+//        StringEntity entity = new StringEntity(jsonObject.toString(),"utf-8");//解决中文乱码问题
+//        entity.setContentEncoding("UTF-8");
+//        entity.setContentType("application/json");
+//        httpPost.setEntity(entity);
+//        String respContent = null;
+//        HttpResponse resp = client.execute(httpPost);
+//        if(resp.getStatusLine().getStatusCode() == 200) {
+//            HttpEntity he = resp.getEntity();
+//            respContent = EntityUtils.toString(he,"UTF-8");
+//        }
 //        OkHttpClient client = new OkHttpClient();
 //        RequestBody body = new FormBody.Builder()
 ////               .add("methodName", methodName)
@@ -168,7 +171,22 @@ public class FriendServiceImpl implements FriendService {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        return respContent;
+        HttpClient httpClient = new DefaultHttpClient();//httpClient(org.apache.http.client.HttpClient)
+        HttpPost httpPost = new HttpPost(friendImportUrl);//post(org.apache.http.client.methods.HttpPost)
+        httpPost.addHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");//请求头
+        StringEntity stringEntity = new StringEntity(String.valueOf(jsonObject),"UTF-8");//(org.apache.http.entity.StringEntity)
+        httpPost.setEntity(stringEntity);//请求主体
+        HttpResponse httpResponse = httpClient.execute(httpPost);//发送请求(org.apache.http.HttpResponse)
+        HttpEntity httpEntity = httpResponse.getEntity();//获取请求返回体(org.apache.http.HttpEntity)
+        String backResult =EntityUtils.toString(httpEntity,"UTF-8");//请求返回结果(org.apache.http.util.EntityUtils)
+        if(httpResponse != null){
+        try{
+            EntityUtils.consume(httpResponse.getEntity());
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        }//释放资源
+        return backResult;
     }
 
     @Override
