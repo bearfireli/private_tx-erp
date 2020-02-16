@@ -211,6 +211,12 @@ public enum ErrEumn {
     SAVE_PICTURE_ERROR(-100204, "保存图片失败"),
     DRIVER_IS_BIND(-100203,"已有车辆排班此司机,请重新设置"),
 
+    ACCOUNT_NULL_ERROR(100301, "导入账号不能为空"),
+    IM_SDK_ERROR(100302, "请求腾讯云即时通讯IM错误"),
+    GROUP_NAME_NULL_ERROR(100302, "群组名称不能为空"),
+    GROUP_TYPE_NULL_EOORO(100302, "群组类型不能为空"),
+    GROUP_ID_NULL_ERROR(100303, "群组账号不能为空"),
+
     ;
 
 

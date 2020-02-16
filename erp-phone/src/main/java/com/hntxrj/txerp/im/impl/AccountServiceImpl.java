@@ -1,6 +1,5 @@
 package com.hntxrj.txerp.im.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.arronlong.httpclientutil.HttpClientUtil;
 import com.arronlong.httpclientutil.common.HttpConfig;
 import com.arronlong.httpclientutil.common.HttpHeader;
@@ -35,11 +34,11 @@ public class AccountServiceImpl implements AccountService {
     private String erpurl;
 
     @Override
-    public Object accountImport(IMUserVO imUserVO) throws ErpException {
+    public JSONObject accountImport(IMUserVO imUserVO) throws ErpException {
 
         JSONObject jsonObject = new JSONObject();
         if (imUserVO == null) {
-            throw new ErpException(ErrEumn.NEWS_ERROR);
+            throw new ErpException(ErrEumn.ACCOUNT_NULL_ERROR);
         }
         jsonObject.put("Identifier", imUserVO.getIdentifier());
         jsonObject.put("Nick", imUserVO.getNick());
@@ -47,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
 
 
 
-            String result = getUrl("account_import", jsonObject);
+            JSONObject result = getUrl("account_import", jsonObject);
             return result;
 
 
@@ -55,8 +54,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Object multiAccountImport() throws ErpException {
-        String result = "";
+    public JSONObject multiAccountImport() throws ErpException {
+        JSONObject result=new JSONObject();
         int i = 1;
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -82,7 +81,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Object accountDelete(List<IMUserVO> imUserVOList) throws ErpException {
+    public JSONObject accountDelete(List<IMUserVO> imUserVOList) throws ErpException {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
         for (IMUserVO imUserVO : imUserVOList) {
@@ -91,12 +90,12 @@ public class AccountServiceImpl implements AccountService {
             jsonArray.put(json);
         }
         jsonObject.put("DeleteItem", jsonArray);
-        String result = getUrl("account_delete", jsonObject);
+        JSONObject result = getUrl("account_delete", jsonObject);
         return result;
     }
 
     @Override
-    public Object accountCheck(List<IMUserVO> imUserVOList) throws ErpException {
+    public JSONObject accountCheck(List<IMUserVO> imUserVOList) throws ErpException {
 
 
         JSONArray jsonArray = new JSONArray();
@@ -107,25 +106,25 @@ public class AccountServiceImpl implements AccountService {
             jsonArray.put(json);
         }
         jsonObject.put("CheckItem", jsonArray);
-        String result = getUrl("account_check", jsonObject);
+        JSONObject result = getUrl("account_check", jsonObject);
         return result;
     }
 
     @Override
-    public Object kick(IMUserVO imUserVO) throws ErpException {
+    public JSONObject kick(IMUserVO imUserVO) throws ErpException {
         JSONObject jsonObject = new JSONObject();
         if (imUserVO == null) {
-            throw new ErpException(ErrEumn.NEWS_ERROR);
+            throw new ErpException(ErrEumn.ACCOUNT_NULL_ERROR);
         }
         jsonObject.put("Identifier", imUserVO.getIdentifier());
 
 
 
-        String result = getUrl("kick", jsonObject);
+        JSONObject result = getUrl("kick", jsonObject);
         return result;
     }
 
-    private String getUrl(String method,JSONObject jsonObject) throws ErpException {
+    public JSONObject getUrl(String method,JSONObject jsonObject) throws ErpException {
         //拼接请求腾讯云即时通讯IM接口的url路径
         StringBuilder url=new StringBuilder(IMBaseUrl);
         url.append(method).append("?sdkappid=").append(sdkAppId).append("&identifier=").append(identifier)
@@ -146,12 +145,13 @@ public class AccountServiceImpl implements AccountService {
             Response response = client.newCall(request).execute();
             assert response.body() != null;
             String str = response.body().string();
+            JSONObject result = new JSONObject(str);
 
-            System.out.println(str);
-            return str;
+            System.out.println(result);
+            return result;
         } catch (IOException e) {
             e.printStackTrace();
-            throw new ErpException(ErrEumn.NEWS_ERROR);
+            throw new ErpException(ErrEumn.IM_SDK_ERROR);
         }
     }
 
