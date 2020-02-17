@@ -8,35 +8,32 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.vo.FriendsVO;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
 public class FriendServiceImpl implements FriendService {
+    private static final MediaType _JSON = MediaType.parse("application/json; charset=utf-8");
+
+    private String urlParams = "?sdkappid={{sdkappid}}&identifier=system&usersig={{usersig}}&random={{random}}&contenttype=json";
 
     @Value("${app.cloud.CommunicationUrl}")
     private String url;
     @Value("${app.cloud.host}")
     private String erpurl;
     @Override
-    public String friendAdd(String userID, List<FriendsVO> friends) throws ErpException {
+    public Boolean friendAdd(String userID, List<FriendsVO> friends) throws ErpException {
         if (!"".equals(userID) && null != userID) {
             throw new ErpException(ErrEumn.USER_IS_NULL);
         }
@@ -81,45 +78,48 @@ public class FriendServiceImpl implements FriendService {
             jsonArray.put(jsonObject2);
         }
         jsonObject.put("AddFriendItem", jsonArray);
-        String friendAddUrl ="";
-        friendAddUrl = url + "/sns/friend_add";
-        Map<String, Object> map = new HashMap<>();
-        map.put("contenttype", jsonObject);
-        Header[] headers = HttpHeader.custom()
-                .other("sdkappid", ImBaseData.sdkAppId.toString())
-                .other("identifier",ImBaseData.identifier)
-                .other("usersig",ImBaseData.getUserSig())
-                .other("random", String.valueOf(ImBaseData.getRandom()))
-//                .other("contenttype", String.valueOf(jsonObject))
+        RequestBody requestBody = RequestBody.create(_JSON, com.alibaba.fastjson.JSON.toJSONBytes(jsonObject));
+        Request request = new Request.Builder()
+                .url(url + "/sns/friend_add" + urlParams)
+                .post(requestBody)
                 .build();
-        //插件式配置请求参数（网址、请求参数、编码、client）
-        HttpConfig config = HttpConfig.custom()
-                .headers(headers)
-                .url(friendAddUrl)
-                .encoding("utf-8")
-                .map(map)
-                .inenc("utf-8");
-        String result = null;
+        ResponseBody responseBody = null;
+        JSONObject resultJSON = null;
+        OkHttpClient client = new OkHttpClient();
         try {
-            result = HttpClientUtil.post(config);
-            
-        } catch (HttpProcessException e) {
+            Response response = client.newCall(request).execute();
+            responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                resultJSON = JSONObject.parseObject(result);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+            log.error("请求失败!");
+            return false;
+        } finally {
+            if (responseBody != null) {
+                responseBody.close();
+            }
+        }
+        if (resultJSON != null && resultJSON.getInteger("ErrorCode") == 0) {
+            return true;
         }
 
-        
-        return result;
+
+        if (resultJSON != null) {
+            // 打印tim rest api 返回的错误信息
+            log.error("【tim sdk】error:{}", resultJSON.getString("ErrorInfo"));
+        }
+        return false;
+
     }
 
     /*
      * 导入好友
      * */
     @Override
-    public String friendImport(String userID, Integer eid) throws IOException {
-        String friendImportUrl;
-        friendImportUrl = url + "/sns/friend_import"+ "?" + "sdkappid=" + ImBaseData.sdkAppId + "&" + "identifier=" + ImBaseData.identifier + "&" +
-                "usersig=" + ImBaseData.getUserSig() + "&" + "random=" + ImBaseData.getRandom();
-
+    public Boolean friendImport(String userID, Integer eid) throws IOException {
         //创建json,保存该用户ID
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("From_Account", userID);
@@ -138,60 +138,47 @@ public class FriendServiceImpl implements FriendService {
                 jsonArray.put(jsonObject2);
             }
         }
-        jsonObject.put("AddFriendItem", jsonArray);
 
-        //拼接get请求地址。https://console.tim.qq.com/v4/sns/friend_import?sdkappid=88888888&identifier=admin&
-        // usersig=xxx&random=99999999&contenttype=json
-//        HttpPost httpPost = new HttpPost(friendImportUrl);
-//        CloseableHttpClient client = HttpClients.createDefault();
-//        StringEntity entity = new StringEntity(jsonObject.toString(),"utf-8");//解决中文乱码问题
-//        entity.setContentEncoding("UTF-8");
-//        entity.setContentType("application/json");
-//        httpPost.setEntity(entity);
-//        String respContent = null;
-//        HttpResponse resp = client.execute(httpPost);
-//        if(resp.getStatusLine().getStatusCode() == 200) {
-//            HttpEntity he = resp.getEntity();
-//            respContent = EntityUtils.toString(he,"UTF-8");
-//        }
-//        OkHttpClient client = new OkHttpClient();
-//        RequestBody body = new FormBody.Builder()
-////               .add("methodName", methodName)
-////               .add("functionName", functionName)
-//               .add("contenttype", String.valueOf(jsonObject))
-////               .add("compid", compid)
-//                .build();
-//        Request request = new Request.Builder()
-//                .url(friendImportUrl)
-//                .post(body)
-//                .build();
-//
-//        try {
-//            client.newCall(request).execute();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        HttpClient httpClient = new DefaultHttpClient();//httpClient(org.apache.http.client.HttpClient)
-        HttpPost httpPost = new HttpPost(friendImportUrl);//post(org.apache.http.client.methods.HttpPost)
-        httpPost.addHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");//请求头
-        StringEntity stringEntity = new StringEntity(String.valueOf(jsonObject),"UTF-8");//(org.apache.http.entity.StringEntity)
-        httpPost.setEntity(stringEntity);//请求主体
-        HttpResponse httpResponse = httpClient.execute(httpPost);//发送请求(org.apache.http.HttpResponse)
-        HttpEntity httpEntity = httpResponse.getEntity();//获取请求返回体(org.apache.http.HttpEntity)
-        String backResult =EntityUtils.toString(httpEntity,"UTF-8");//请求返回结果(org.apache.http.util.EntityUtils)
-        if(httpResponse != null){
-        try{
-            EntityUtils.consume(httpResponse.getEntity());
-        }catch(IOException e){
+        RequestBody requestBody = RequestBody.create(_JSON, com.alibaba.fastjson.JSON.toJSONBytes(jsonObject));
+        Request request = new Request.Builder()
+                .url(url + "/sns/friend_import" + urlParams)
+                .post(requestBody)
+                .build();
+        ResponseBody responseBody = null;
+        JSONObject resultJSON = null;
+        OkHttpClient client = new OkHttpClient();
+        try {
+            Response response = client.newCall(request).execute();
+            responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                resultJSON = JSONObject.parseObject(result);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+            log.error("请求失败!");
+            return false;
+        } finally {
+            if (responseBody != null) {
+                responseBody.close();
+            }
         }
-        }//释放资源
-        return backResult;
+        if (resultJSON != null && resultJSON.getInteger("ErrorCode") == 0) {
+            return true;
+        }
+
+
+        if (resultJSON != null) {
+            // 打印tim rest api 返回的错误信息
+            log.error("【tim sdk】error:{}", resultJSON.getString("ErrorInfo"));
+        }
+        return false;
+
     }
 
     @Override
-    public String friendDelete(String userID, List<FriendsVO> friends, String deleteType) throws ErpException {
-        if (!"".equals(userID) && null != userID) {
+    public Boolean friendDelete(String userID, List<FriendsVO> friends, String deleteType) throws ErpException {
+        if ("".equals(userID) && null == userID) {
             throw new ErpException(ErrEumn.USER_IS_NULL);
         }
         if (friends.size() < 0) {
@@ -217,31 +204,41 @@ public class FriendServiceImpl implements FriendService {
             }
         }
 
-        String friendDeleteUrl ="";
-        friendDeleteUrl = url + "/sns/friend_delete";
-        Header[] headers = HttpHeader.custom()
-                .other("sdkappid", ImBaseData.sdkAppId.toString())
-                .other("identifier",ImBaseData.identifier)
-                .other("usersig",ImBaseData.getUserSig())
-                .other("random", String.valueOf(ImBaseData.getRandom()))
-                .other("contenttype", String.valueOf(jsonObject))
+        RequestBody requestBody = RequestBody.create(_JSON, com.alibaba.fastjson.JSON.toJSONBytes(jsonObject));
+        Request request = new Request.Builder()
+                .url(url + "/sns/friend_import" + urlParams)
+                .post(requestBody)
                 .build();
-        //插件式配置请求参数（网址、请求参数、编码、client）
-        HttpConfig config = HttpConfig.custom()
-                .headers(headers)
-                .url(friendDeleteUrl)
-                .encoding("utf-8")
-                .inenc("utf-8");
-        String result = null;
+        ResponseBody responseBody = null;
+        JSONObject resultJSON = null;
+        OkHttpClient client = new OkHttpClient();
         try {
-            result = HttpClientUtil.get(config);
-
-        } catch (HttpProcessException e) {
+            Response response = client.newCall(request).execute();
+            responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                resultJSON = JSONObject.parseObject(result);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+            log.error("请求失败!");
+            return false;
+        } finally {
+            if (responseBody != null) {
+                responseBody.close();
+            }
+        }
+        if (resultJSON != null && resultJSON.getInteger("ErrorCode") == 0) {
+            return true;
         }
 
 
-        return result;
+        if (resultJSON != null) {
+            // 打印tim rest api 返回的错误信息
+            log.error("【tim sdk】error:{}", resultJSON.getString("ErrorInfo"));
+        }
+        return false;
+
     }
 
     /**

@@ -1,27 +1,29 @@
 package com.hntxrj.txerp.im;
 
-import com.arronlong.httpclientutil.HttpClientUtil;
-import com.arronlong.httpclientutil.common.HttpConfig;
-import com.arronlong.httpclientutil.exception.HttpProcessException;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.vo.SendmsgVO;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 
 
 @Service
+@Slf4j
 public class MsgServiceImpl implements MsgService {
     @Value("${app.cloud.CommunicationUrl}")
     private String url;
-
+    private static final MediaType _JSON = MediaType.parse("application/json; charset=utf-8");
+    private String urlParams = "?sdkappid={{sdkappid}}&identifier=system&usersig={{usersig}}&random={{random}}&contenttype=json";
     @Override
-    public String sendMsg(SendmsgVO sendmsgVO) throws ErpException {
+    public Boolean sendMsg(SendmsgVO sendmsgVO) throws ErpException {
         if ("".equals(sendmsgVO.getToAccount()) || null ==sendmsgVO.getToAccount()){
             throw new ErpException(ErrEumn.TOACCOUNT_IS_NULL);
         }
@@ -72,34 +74,45 @@ public class MsgServiceImpl implements MsgService {
         jsonArray.put(jsonObject1);
         jsonObject.put("MsgBody",jsonObject);
 
-        String sendMsgUrl="";
-        sendMsgUrl = url + "/openim/sendmsg"+ "?" + "sdkappid=" + ImBaseData.sdkAppId + "&" + "identifier=" + ImBaseData.identifier + "&" +
-                "usersig=" + ImBaseData.getUserSig() + "&" + "random=" + ImBaseData.getRandom();
-        Map<String, Object> map = new HashMap<>();
-        map.put("contenttype", jsonObject);
-//        Header[] headers = HttpHeader.custom()
-//                .other("version", "1")
-//                .build();
-        //插件式配置请求参数（网址、请求参数、编码、client）
-        HttpConfig config = HttpConfig.custom()
-//                .headers(headers)
-                .url(url)
-                .map(map)
-                .url(sendMsgUrl)
-                .encoding("utf-8")
-                .inenc("utf-8");
-        String result=null;
+        RequestBody requestBody = RequestBody.create(_JSON, com.alibaba.fastjson.JSON.toJSONBytes(jsonObject));
+        Request request = new Request.Builder()
+                .url(url + "/openim/sendmsg" + urlParams)
+                .post(requestBody)
+                .build();
+        ResponseBody responseBody = null;
+        com.alibaba.fastjson.JSONObject resultJSON = null;
+        OkHttpClient client = new OkHttpClient();
         try {
-            result = HttpClientUtil.post(config);
-        } catch (HttpProcessException e) {
+            Response response = client.newCall(request).execute();
+            responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                resultJSON = com.alibaba.fastjson.JSONObject.parseObject(result);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+            log.error("请求失败!");
+            return false;
+        } finally {
+            if (responseBody != null) {
+                responseBody.close();
+            }
         }
-        sendMsgUrl = "";
-        return result;
+        if (resultJSON != null && resultJSON.getInteger("ErrorCode") == 0) {
+            return true;
+        }
+
+
+        if (resultJSON != null) {
+            // 打印tim rest api 返回的错误信息
+            log.error("【tim sdk】error:{}", resultJSON.getString("ErrorInfo"));
+        }
+        return false;
+
     }
 
     @Override
-    public String batchSendMsg(SendmsgVO sendmsgVO) throws ErpException {
+    public Boolean batchSendMsg(SendmsgVO sendmsgVO) throws ErpException {
         if ("".equals(sendmsgVO.getToAccount()) || null ==sendmsgVO.getToAccount()){
             throw new ErpException(ErrEumn.TOACCOUNT_IS_NULL);
         }
@@ -154,31 +167,41 @@ public class MsgServiceImpl implements MsgService {
         jsonObject1.put("jsonObject2",jsonObject2);
         jsonArray.put(jsonObject1);
         jsonObject.put("MsgBody",jsonObject);
-
-        String sendMsgUrl="";
-        sendMsgUrl = url + "/openim/batchsendmsg"+ "?" + "sdkappid=" + ImBaseData.sdkAppId + "&" + "identifier=" + ImBaseData.identifier + "&" +
-                "usersig=" + ImBaseData.getUserSig() + "&" + "random=" + ImBaseData.getRandom();
-        Map<String, Object> map = new HashMap<>();
-        map.put("contenttype", jsonObject);
-//        Header[] headers = HttpHeader.custom()
-//                .other("version", "1")
-//                .build();
-        //插件式配置请求参数（网址、请求参数、编码、client）
-        HttpConfig config = HttpConfig.custom()
-//                .headers(headers)
-                .url(url)
-                .map(map)
-                .url(sendMsgUrl)
-                .encoding("utf-8")
-                .inenc("utf-8");
-        String result=null;
+        RequestBody requestBody = RequestBody.create(_JSON, com.alibaba.fastjson.JSON.toJSONBytes(jsonObject));
+        Request request = new Request.Builder()
+                .url(url + "/openim/batchsendmsg" + urlParams)
+                .post(requestBody)
+                .build();
+        ResponseBody responseBody = null;
+        com.alibaba.fastjson.JSONObject resultJSON = null;
+        OkHttpClient client = new OkHttpClient();
         try {
-            result = HttpClientUtil.post(config);
-        } catch (HttpProcessException e) {
+            Response response = client.newCall(request).execute();
+            responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                resultJSON = com.alibaba.fastjson.JSONObject.parseObject(result);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+            log.error("请求失败!");
+            return false;
+        } finally {
+            if (responseBody != null) {
+                responseBody.close();
+            }
         }
-        sendMsgUrl = "";
-        return result;
+        if (resultJSON != null && resultJSON.getInteger("ErrorCode") == 0) {
+            return true;
+        }
+
+
+        if (resultJSON != null) {
+            // 打印tim rest api 返回的错误信息
+            log.error("【tim sdk】error:{}", resultJSON.getString("ErrorInfo"));
+        }
+        return false;
+
     }
 
 }

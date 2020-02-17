@@ -16,7 +16,7 @@ public interface FriendService {
      * @param friends 添加的好友
      * @return
      */
-    String friendAdd(String userID, List<FriendsVO> friends) throws ErpException;
+    Boolean friendAdd(String userID, List<FriendsVO> friends) throws ErpException;
 
     /**
      * 导入好友
@@ -27,7 +27,7 @@ public interface FriendService {
      * @param eid    企业代号
      * @return 接口返回参数
      */
-    String friendImport(String userID, Integer eid) throws IOException;
+    Boolean friendImport(String userID, Integer eid) throws IOException;
 
 
     /**
@@ -38,5 +38,5 @@ public interface FriendService {
      * @param deleteType 删除模式 Delete_Type_Single 单向删除/Delete_Type_Both 双向删除
      * @return 接口返回参数
      */
-    String friendDelete(String userID, List<FriendsVO> friends, String deleteType) throws ErpException;
+    Boolean friendDelete(String userID, List<FriendsVO> friends, String deleteType) throws ErpException;
 }
