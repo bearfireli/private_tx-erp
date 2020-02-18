@@ -1,5 +1,8 @@
 package com.hntxrj.txerp.im.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.arronlong.httpclientutil.HttpClientUtil;
 import com.arronlong.httpclientutil.common.HttpConfig;
 import com.arronlong.httpclientutil.common.HttpHeader;
@@ -12,8 +15,7 @@ import com.hntxrj.txerp.vo.IMUserVO;
 import lombok.extern.log4j.Log4j;
 import okhttp3.*;
 import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,11 @@ import java.util.List;
 @Service
 @Log4j
 public class AccountServiceImpl implements AccountService {
-    String IMBaseUrl = "https://console.tim.qq.com/v4/im_open_login_svc/";
+    public static final MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+    //腾讯云即时通讯API接口路径
+    String IMBaseUrl = "https://console.tim.qq.com/v4/";
+    String interfaceUrl = "im_open_login_svc/";
+    //请求腾讯云需要的标识
     Integer sdkAppId = ImBaseData.sdkAppId;
     String identifier = ImBaseData.identifier;
     String userSig = ImBaseData.getUserSig();
@@ -45,69 +51,66 @@ public class AccountServiceImpl implements AccountService {
         jsonObject.put("FaceUrl", imUserVO.getFaceUrl());
 
 
-
-            JSONObject result = getUrl("account_import", jsonObject);
-            return result;
-
+        return requestIMApi(interfaceUrl, "account_import", jsonObject);
 
 
     }
 
     @Override
     public JSONObject multiAccountImport() throws ErpException {
-        JSONObject result=new JSONObject();
+        JSONObject result = new JSONObject();
         int i = 1;
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         List<String> userList = getUserAll();
         for (String uid : userList) {
-            jsonArray.put(uid);
+            jsonArray.add(uid);
             i++;
             //批量导入用户一次最多只能导入100个。
             if (i >= 100) {
                 //调用腾讯云即时通讯IM批量导入用户的接口
                 jsonObject.put("Accounts", jsonArray);
-                result=getUrl("multiaccount_import", jsonObject);
+                result = requestIMApi(interfaceUrl, "multiaccount_import", jsonObject);
                 jsonArray = new JSONArray();
-                i=1;
+                i = 1;
             }
 
         }
-        if (jsonArray .length()!=0) {
+        //最后一批小于100人的用户导入即时通讯
+        if (jsonArray.size() != 0) {
             jsonObject.put("Accounts", jsonArray);
-            result=getUrl("multiaccount_import", jsonObject);
+            result = requestIMApi(interfaceUrl, "multiaccount_import", jsonObject);
         }
         return result;
     }
 
     @Override
-    public JSONObject accountDelete(List<IMUserVO> imUserVOList) throws ErpException {
+    public JSONObject accountDelete(List<String> imUserIDs) throws ErpException {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        for (IMUserVO imUserVO : imUserVOList) {
+        for (String imUserID : imUserIDs) {
             JSONObject json = new JSONObject();
-            json.put("UserID", imUserVO.getIdentifier());
-            jsonArray.put(json);
+            json.put("UserID", imUserID);
+            jsonArray.add(json);
         }
         jsonObject.put("DeleteItem", jsonArray);
-        JSONObject result = getUrl("account_delete", jsonObject);
-        return result;
+        return requestIMApi(interfaceUrl, "account_delete", jsonObject);
     }
 
     @Override
-    public JSONObject accountCheck(List<IMUserVO> imUserVOList) throws ErpException {
+    public JSONObject accountCheck(List<String> imUserIDs) throws ErpException {
 
 
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        for (IMUserVO imUserVO : imUserVOList) {
+        for (String imUserID : imUserIDs) {
             JSONObject json = new JSONObject();
-            json.put("UserID", imUserVO.getIdentifier());
-            jsonArray.put(json);
+            json.put("UserID", imUserID);
+            jsonArray.add(json);
         }
         jsonObject.put("CheckItem", jsonArray);
-        JSONObject result = getUrl("account_check", jsonObject);
-        return result;
+
+        return requestIMApi(interfaceUrl, "account_check", jsonObject);
     }
 
     @Override
@@ -118,37 +121,32 @@ public class AccountServiceImpl implements AccountService {
         }
         jsonObject.put("Identifier", imUserVO.getIdentifier());
 
-
-
-        JSONObject result = getUrl("kick", jsonObject);
-        return result;
+        return requestIMApi(interfaceUrl, "kick", jsonObject);
     }
 
-    public JSONObject getUrl(String method,JSONObject jsonObject) throws ErpException {
-        //拼接请求腾讯云即时通讯IM接口的url路径
-        StringBuilder url=new StringBuilder(IMBaseUrl);
-        url.append(method).append("?sdkappid=").append(sdkAppId).append("&identifier=").append(identifier)
-                .append("&usersig=").append(userSig).append("&random=").append(random);
-
+    //请求腾讯云即时通讯IM的api的接口
+    public JSONObject requestIMApi(String interfaceUrl, String method, JSONObject jsonObject) throws ErpException {
 
         OkHttpClient client = new OkHttpClient();
-
-        RequestBody body = new FormBody.Builder()
-                .add("contenttype", String.valueOf(jsonObject))
-                .build();
+        RequestBody requestBody = RequestBody.create(mediaType, JSON.toJSONBytes(jsonObject));
+        //请求腾讯云即时通讯IM的路径
+        String url = IMBaseUrl + interfaceUrl + method + "?sdkappid=" + sdkAppId + "&identifier=" + identifier +
+                "&usersig=" + userSig + "&random=" + random + "&contenttype=json";
         Request request = new Request.Builder()
-                .url(url.toString())
-                .post(body)
+                .url(url)
+                .post(requestBody)
                 .build();
 
+        JSONObject resultJSON = null;
         try {
             Response response = client.newCall(request).execute();
-            assert response.body() != null;
-            String str = response.body().string();
-            JSONObject result = new JSONObject(str);
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                resultJSON = JSONObject.parseObject(result);
+            }
 
-            System.out.println(result);
-            return result;
+            return resultJSON;
         } catch (IOException e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.IM_SDK_ERROR);
@@ -156,17 +154,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-
-
-
     /**
      * 查询所有企业所有用户
      *
-     * @return 返回是否通过
+     * @return 所有用户的id集合
      */
     private List<String> getUserAll() {
-        String baseUrl = "";
-        baseUrl = erpurl + "/user/selectAllUser";
+        String baseUrl = erpurl + "/user/selectAllUser";
         Header[] headers = HttpHeader.custom()
                 .other("version", "1")
                 .build();
@@ -179,10 +173,10 @@ public class AccountServiceImpl implements AccountService {
         List<String> list = new ArrayList<>();
         try {
             String result = HttpClientUtil.post(config);
-            com.alibaba.fastjson.JSONArray array = com.alibaba.fastjson.JSONObject.parseObject(result).getJSONArray("data");
+            JSONArray array = JSONObject.parseObject(result).getJSONArray("data");
 
             for (Object o : array) {
-                String uid = com.alibaba.fastjson.JSONObject.parseObject(com.alibaba.fastjson.JSONObject.toJSONString(o)).getString("uid");
+                String uid = JSONObject.parseObject(JSONObject.toJSONString(o)).getString("uid");
                 list.add(uid);
             }
         } catch (HttpProcessException e) {

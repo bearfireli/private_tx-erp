@@ -1,21 +1,30 @@
 package com.hntxrj.txerp.im.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.im.GroupService;
 import com.hntxrj.txerp.vo.IMGroupMemberVO;
 import com.hntxrj.txerp.vo.IMGroupVO;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.log4j.Log4j;
+import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
+@Service
+@Log4j
 public class GroupServiceImpl implements GroupService {
 
-    @Autowired
     private AccountServiceImpl accountService;
+
+    //腾讯云即时通讯IM的请求路径
+    String interfaceUrl = "group_open_http_svc/";
+
+    public GroupServiceImpl(AccountServiceImpl accountService) {
+        this.accountService = accountService;
+    }
+
     @Override
     public JSONObject createGroup(IMGroupVO imGroupVO) throws ErpException {
         JSONObject jsonObject = new JSONObject();
@@ -25,7 +34,7 @@ public class GroupServiceImpl implements GroupService {
         }
 
         if (imGroupVO.getOwnerAccount() != null) {
-            jsonObject.put("Owner_Account",imGroupVO.getOwnerAccount());
+            jsonObject.put("Owner_Account", imGroupVO.getOwnerAccount());
         }
         if (imGroupVO.getName() == null) {
             throw new ErpException(ErrEumn.GROUP_NAME_NULL_ERROR);
@@ -37,8 +46,7 @@ public class GroupServiceImpl implements GroupService {
         jsonObject.put("Type", imGroupVO.getType());
 
 
-        JSONObject result = accountService.getUrl("create_group", jsonObject);
-        return result;
+        return accountService.requestIMApi(interfaceUrl, "create_group", jsonObject);
     }
 
     @Override
@@ -55,15 +63,14 @@ public class GroupServiceImpl implements GroupService {
                 json.put("Member_Account", imGroupMemberVO.getMemberAccount());
             }
             if (!"Admin".equals(imGroupMemberVO.getRole())) {
-                json.put("Role", "Member");
+                json.put("Role", imGroupMemberVO.getRole());
             }
-            json.put("JoinTime", String.valueOf(new Date()));
-            jsonArray.put(json);
+            json.put("JoinTime", String.valueOf(System.currentTimeMillis()));
+            jsonArray.add(json);
         }
 
         jsonObject.put("GroupId", groupId);
         jsonObject.put("MemberList", jsonArray);
-        JSONObject result = accountService.getUrl("import_group_member", jsonObject);
-        return result;
+        return accountService.requestIMApi(interfaceUrl, "import_group_member", jsonObject);
     }
 }
