@@ -6,32 +6,42 @@ import com.arronlong.httpclientutil.common.HttpHeader;
 import com.arronlong.httpclientutil.exception.HttpProcessException;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.core.util.TLSSigAPIv2;
 import com.hntxrj.txerp.vo.FriendsVO;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
 public class FriendServiceImpl implements FriendService {
     private static final MediaType _JSON = MediaType.parse("application/json; charset=utf-8");
-
+    private TLSSigAPIv2 tlsSigAPIv2;
     private String urlParams = "?sdkappid={{sdkappid}}&identifier=system&usersig={{usersig}}&random={{random}}&contenttype=json";
+
 
     @Value("${app.cloud.CommunicationUrl}")
     private String url;
     @Value("${app.cloud.host}")
     private String erpurl;
+
+    @Autowired
+    public FriendServiceImpl(@Value("${app.timsdk.sdkAppID}") Integer sdkAppId, @Value("${app.timsdk.key}") String key) {
+        tlsSigAPIv2 = new TLSSigAPIv2(sdkAppId, key);
+        urlParams = urlParams
+                .replace("{{sdkappid}}", String.valueOf(sdkAppId))
+                .replace("{{usersig}}", tlsSigAPIv2.genSig("system", (365 * 24 * 60 * 60)))
+                .replace("{{random}}", String.valueOf(new Random().nextInt()));
+    }
+    
     @Override
     public Boolean friendAdd(String userID, List<FriendsVO> friends) throws ErpException {
         if (!"".equals(userID) && null != userID) {

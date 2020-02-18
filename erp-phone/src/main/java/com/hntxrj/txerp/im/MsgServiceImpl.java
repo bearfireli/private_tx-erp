@@ -1,12 +1,15 @@
 package com.hntxrj.txerp.im;
 
+import com.alibaba.fastjson.JSON;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.core.util.TLSSigAPIv2;
 import com.hntxrj.txerp.vo.SendmsgVO;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +24,20 @@ public class MsgServiceImpl implements MsgService {
     @Value("${app.cloud.CommunicationUrl}")
     private String url;
     private static final MediaType _JSON = MediaType.parse("application/json; charset=utf-8");
+    private TLSSigAPIv2 tlsSigAPIv2;
     private String urlParams = "?sdkappid={{sdkappid}}&identifier=system&usersig={{usersig}}&random={{random}}&contenttype=json";
+
+    @Autowired
+    public MsgServiceImpl(@Value("${app.timsdk.sdkAppID}") Integer sdkAppId, @Value("${app.timsdk.key}") String key) {
+        tlsSigAPIv2 = new TLSSigAPIv2(sdkAppId, key);
+        urlParams = urlParams
+                .replace("{{sdkappid}}", String.valueOf(sdkAppId))
+                .replace("{{usersig}}", tlsSigAPIv2.genSig("system", (365 * 24 * 60 * 60)))
+                .replace("{{random}}", String.valueOf(new Random().nextInt()));
+    }
+
     @Override
-    public Boolean sendMsg(SendmsgVO sendmsgVO) throws ErpException {
+    public void sendMsg(SendmsgVO sendmsgVO) throws ErpException {
         if ("".equals(sendmsgVO.getToAccount()) || null ==sendmsgVO.getToAccount()){
             throw new ErpException(ErrEumn.TOACCOUNT_IS_NULL);
         }
@@ -74,40 +88,64 @@ public class MsgServiceImpl implements MsgService {
         jsonArray.put(jsonObject1);
         jsonObject.put("MsgBody",jsonObject);
 
-        RequestBody requestBody = RequestBody.create(_JSON, com.alibaba.fastjson.JSON.toJSONBytes(jsonObject));
+//        RequestBody requestBody = RequestBody.create(_JSON, com.alibaba.fastjson.JSON.toJSONBytes(jsonObject));
+//        Request request = new Request.Builder()
+//                .url(url + "/openim/sendmsg" + urlParams)
+//                .post(requestBody)
+//                .build();
+//        ResponseBody responseBody = null;
+//        com.alibaba.fastjson.JSONObject resultJSON = null;
+//        OkHttpClient client = new OkHttpClient();
+//        try {
+//            Response response = client.newCall(request).execute();
+//            responseBody = response.body();
+//            if (responseBody != null) {
+//                String result = responseBody.string();
+//                resultJSON = com.alibaba.fastjson.JSONObject.parseObject(result);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            log.error("请求失败!");
+//            return false;
+//        } finally {
+//            if (responseBody != null) {
+//                responseBody.close();
+//            }
+//        }
+//        if (resultJSON != null && resultJSON.getInteger("ErrorCode") == 0) {
+//            return true;
+//        }
+//
+//
+//        if (resultJSON != null) {
+//            // 打印tim rest api 返回的错误信息
+//            log.error("【tim sdk】error:{}", resultJSON.getString("ErrorInfo"));
+//        }
+//        return false;
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody requestBody = RequestBody.create(_JSON, JSON.toJSONBytes(jsonObject));
         Request request = new Request.Builder()
                 .url(url + "/openim/sendmsg" + urlParams)
                 .post(requestBody)
                 .build();
         ResponseBody responseBody = null;
-        com.alibaba.fastjson.JSONObject resultJSON = null;
-        OkHttpClient client = new OkHttpClient();
         try {
             Response response = client.newCall(request).execute();
             responseBody = response.body();
             if (responseBody != null) {
                 String result = responseBody.string();
-                resultJSON = com.alibaba.fastjson.JSONObject.parseObject(result);
+                System.out.println(result);
+//                resultUserStates = JSONObject.parseObject(result, UserStateResult.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
             log.error("请求失败!");
-            return false;
         } finally {
             if (responseBody != null) {
                 responseBody.close();
             }
         }
-        if (resultJSON != null && resultJSON.getInteger("ErrorCode") == 0) {
-            return true;
-        }
-
-
-        if (resultJSON != null) {
-            // 打印tim rest api 返回的错误信息
-            log.error("【tim sdk】error:{}", resultJSON.getString("ErrorInfo"));
-        }
-        return false;
 
     }
 

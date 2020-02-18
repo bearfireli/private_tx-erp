@@ -13,7 +13,7 @@ public interface MsgService {
      * @return 接口返回参数
      * @param sendmsgVO 消息类
      */
-    Boolean sendMsg(SendmsgVO sendmsgVO) throws ErpException;
+    void sendMsg(SendmsgVO sendmsgVO) throws ErpException;
 
 
     /**
