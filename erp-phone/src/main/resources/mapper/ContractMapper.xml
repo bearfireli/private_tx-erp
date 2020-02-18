@@ -40,15 +40,17 @@
         <if test="endTime != null">
             and cm.SignDate <![CDATA[ <= ]]>  #{endTime}
         </if>
-        <if test="contractCode != null">
-            and cm.ContractId like '%'+#{contractCode}+'%'
+        <if test="contractDetailCode != null">
+            and cm.ContractId like '%'+#{contractDetailCode}+'%'
         </if>
         <if test="verifyStatus != null">
             and cd.verifyStatus = #{verifyStatus}
         </if>
     </select>
     <select id="getContractDetail" resultType="com.hntxrj.txerp.vo.ContractVO">
-        select cd.EPPCode,
+        select cm.LinkMan linkMan,
+        cm.LinkTel  linkTel,
+        cd.EPPCode,
         cd.BuilderCode,
         epp.EPPName,
         bu.BuilderShortName builderName,
@@ -85,7 +87,7 @@
         where cd.compid = #{compid}
         and cd.ContractUID = #{contractUid}
         <if test="contractDetailCode != null and contractDetailCode != ''">
-           and cd.CContractCode =#{contractDetailCode}
+            and cd.CContractCode =#{contractDetailCode}
         </if>
     </select>
     <select id="getContractGradePrice" resultType="com.hntxrj.txerp.vo.ContractGradePriceVO">
@@ -186,7 +188,7 @@
              ON SP.compid = SM.compid
                  AND SP.Pumptype = SM.Pumptype
         where SP.compid = #{compid}
-          AND SP.CContractCode = #{cContractCode}
+          AND SP.CContractCode = #{contractDetailCode}
           AND SP.ContractUID = #{contractUID}
           AND SP.RecStatus = '1'
     </select>
@@ -201,7 +203,7 @@
                ,
                  #{contractUID}
                ,
-                 #{contractCode}
+                 #{contractDetailCode}
                ,
                  #{opid}
                ,
@@ -216,6 +218,30 @@
 
     </insert>
 
+    <!-- 查询泵车价格 -->
+    <select id="selectPumpTruck"  resultType="java.lang.Integer">
+        select Pumptype from SM_PumpPriceSet
+        where compid=#{compid}
+        and Pumptype=#{pumpType}
+        and contractUID=#{contractUID}
+        and CContractCode=#{contractDetailCode}
+    </select>
+
+
+    <!-- 修改合同泵车价格 -->
+    <select id="updatePumpTruck" >
+        update SM_PumpPriceSet set
+          OpId=#{opid},
+          PumpPrice=#{pumPrice},
+          TableExpense=#{tableExpense},
+          CreateTime=#{createTime},
+          RecStatus=1,
+          UpDownMark=0,
+          UpDown=0
+        where compid=#{compid} and  Pumptype=#{pumpType}
+        and  ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
+    </select>
+
 
     <!--/**
      * 合同运距
@@ -225,7 +251,7 @@
         from SM_ContractDistanceSet sc
                  left join User_comp us on sc.compid = us.compid
         where sc.compid = #{compid}
-          and sc.CContractCode = #{cContractCode}
+          and sc.CContractCode = #{contractDetailCode}
           and sc.ContractUID = #{contractUID}
           and SC.RecStatus = 1
     </select>
@@ -245,7 +271,7 @@
          UpDown,
          UpDownMark)
         VALUES (#{contractUID},
-                #{cContractCode},
+                #{contractDetailCode},
                 #{compid},
                 #{distance},
                 #{remarks},
@@ -254,6 +280,20 @@
                 #{upDownMark})
 
     </insert>
+
+    <!--修改合同运距-->
+
+    <insert id="updateContractDistance">
+       update SM_ContractDistanceSet set
+         Distance=#{distance},
+         RecStatus=#{recStatus},
+         Remarks=#{remarks},
+         UpDownMark=0,
+         UpDown=0
+        where compid=#{compid} and ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
+
+    </insert>
+
 
     <!--添加特殊材料-->
     <insert id="saveContractPriceMarkup" useGeneratedKeys="true">
@@ -282,9 +322,16 @@
                 #{isDefault})
     </insert>
 
-    <!--
-    查询泵车列表
-    -->
+    <!--查询特殊加价材料-->
+    <select id="getContractPriceMarkup"  resultType="java.lang.String">
+         select PPCode from SM_ContractPriceMarkup
+         where compid=#{compid}
+         and ContractUID=#{contractUid}
+         and CContractCode=#{contractDetailCode}
+         and PPCode=#{pPCode}
+    </select>
+
+    <!--查询泵车列表-->
     <select id="selectPumpTruckList" resultType="com.hntxrj.txerp.vo.PumpTruckListVO">
         select SM.PumpTypeName, SM.Pumptype
         from SM_PumpPublicPriceSet AS SM
@@ -294,6 +341,92 @@
             and SM.PumpTypeName like '%'+#{builderName}+'%'
         </if>
         group by SM.PumpTypeName, SM.Pumptype
+    </select>
+
+
+    <select id="getContractListByEppOrBuild" resultType="com.hntxrj.txerp.vo.ContractListVO">
+        select cd.EPPCode,
+        cd.BuilderCode,
+        epp.EPPName,
+        bu.BuilderShortName builderName,
+        cm.ContractUID,
+        cm.ContractId,
+        cd.CContractCode contractDetailCode,
+        cm.compid,
+        cd.Address,
+        cd.ContractNum,
+        cd.ContractStatus,
+        cm.SignDate,
+        cm.Salesman,
+        bg.ScaleName,
+        cd.VerifyStatus
+        from SM_ContractMaster cm
+        left join SM_ContractDetail cd on cm.ContractUID = cd.ContractUID and cm.compid=cd.compid
+        left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid=epp.compid
+        left join SM_BuilderInfo bu on cd.BuilderCode = bu.BuilderCode and cd.compid=bu.compid
+        left join (select * from SM_BusinessGroup where compid = #{compid}) bg on bg.SalesmanCode = cm.Salesman
+        where cd.compid = #{compid}
+        and cm.RecStatus=1
+        and cd.RecStatus=1
+        and cd.verifyStatus = 1
+        <if test="searchName != null and searchName!='' ">
+            and epp.EPPName like '%'+#{searchName}+'%' or bu.BuilderShortName like '%'+#{searchName}+'%'
+        </if>
+
+    </select>
+
+    <select id="getContractVerifyStatus" resultType="java.lang.Boolean">
+        select VerifyStatus from SM_ContractDetail
+        where ContractUID=#{contractUID}
+         and CContractCode=#{contractDetailCode}
+          and compid=#{compid}
+          and RecStatus=1
+    </select>
+
+    <select id="getContractUID" resultType="java.lang.String">
+        select ContractUID from SM_ContractDetail
+        where compid=#{compid}
+        and CContractCode=#{contractDetailCode}
+    </select>
+
+
+    <!--工地端App添加任务单时选择合同调用的接口，只能查询已绑定的合同-->
+    <select id="getBuildContractListByEppOrBuild" resultType="com.hntxrj.txerp.vo.ContractListVO">
+        select cd.EPPCode,
+        cd.BuilderCode,
+        epp.EPPName,
+        bu.BuilderShortName builderName,
+        cm.ContractUID,
+        cm.ContractId,
+        cd.CContractCode contractDetailCode,
+        cm.compid as compid,
+        cd.Address,
+        cd.ContractNum,
+        cd.ContractStatus,
+        cm.SignDate,
+        cm.Salesman,
+        bg.ScaleName,
+        cd.VerifyStatus
+        from SM_ContractMaster cm
+        left join SM_ContractDetail cd on cm.ContractUID = cd.ContractUID and cm.compid=cd.compid
+        left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid=epp.compid
+        left join SM_BuilderInfo bu on cd.BuilderCode = bu.BuilderCode and cd.compid=bu.compid
+        left join  SM_BusinessGroup bg on  bg.compid = cm.compid  and  bg.SalesmanCode = cm.Salesman
+        where  cm.RecStatus=1
+        and cd.RecStatus=1
+        and cd.verifyStatus = 1
+        and cd.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and cm.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="searchName != null and searchName!='' ">
+            and (epp.EPPName like '%'+#{searchName}+'%' or bu.BuilderShortName like '%'+#{searchName}+'%')
+        </if>
+
     </select>
 
 </mapper>

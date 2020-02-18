@@ -6,29 +6,29 @@ import java.math.BigDecimal;
 
 @Data
 public class TaskPlanListVO {
-    //预计时间
-    private String preTime;
-    //时间
-    private String createTime;
 
-    private String taskId;
-    private String eppName;
-    private String builderName;
-    // 浇筑部位
-    private String placing;
-    private BigDecimal preNum;
-    // 完成方量
-    private BigDecimal overNum;
-    // 砼标记
-    private String concreteMark;
-    private Integer taskStatus;
-    private Integer verifyStatus;
-    private String preRemark;
+    private String preTime;  //预计时间
+    private String createTime; //时间
+    private String taskId;   //任务单号
+    private String eppName;  // 工程名称
+    private String builderName; // 施工单位
+    private String placing;    // 浇筑部位
+    private BigDecimal preNum;  //预计方量
+    private BigDecimal overNum; // 完成方量
+    private String concreteMark;  // 砼标记
+    private Integer taskStatus;   //任务状态代号
+    private String taskStatusName;  //任务单状态名称
+    private Integer verifyStatus;  //审核状态
+    private String preRemark;  //备注
+    private String placeStyle;   //浇筑方式代号
+    private String placeStyleName;  //浇筑方式名称
+    private String stoneAskName;  //石料要求
+    private double produceNum;  //生产方量
+    private String OpenTime;  //开盘时间
+    private String stgId;   //砼标号
+    private String slump;   //坍塌度
+    private String attribute;  //砼特性
+    private String contractDetailCode; // 子合同号
+    private String compid; //公司代号
 
-    private String placeStyle;
-    private String placeStyleName;
-    //石料要求
-    private String stoneAskName;
-    private String taskStatusName;
-    private double produceNum;
 }

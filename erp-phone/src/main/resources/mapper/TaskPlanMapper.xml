@@ -19,9 +19,9 @@
         tp.PreTime,
         tp.TaskOverTime,
         tp.PreNum,
-        sum(ProduceNum)overNum,
+        sum(ProduceNum) overNum,
         tp.ContractUID,
-        tp.CContractCode,
+        tp.CContractCode as contractDetailCode,
         tp.TaskStatus,
         tp.VerifyStatus,
         tp.EPPCode,
@@ -30,7 +30,13 @@
         dd.PI_TypeName AS stoneAskName,
         bi.BuilderName,
         Placing,
-        ConcreteMark
+        ConcreteMark,
+        tp.placeStyle,
+        ps.PI_TypeName placeStyleName,
+        tp.OpenTime,
+        tp.StgId as stgId,
+        tp.Slump as slump,
+        tp.Attribute as attribute
         from PT_TaskPlan AS tp
         left join PT_TaskSaleInvoice pt on tp.compid = pt.compid and tp.TaskId = pt.TaskId
         and pt.InvoiceType !=6
@@ -40,8 +46,9 @@
         and tp.compid =DD_PublicInfo_3.compid
         left join SM_EPPInfo ei on tp.EPPCode=ei.EPPCode and tp.compid=ei.compid
         left join SM_BuilderInfo bi on tp.BuilderCode = bi.BuilderCode and bi.compid=tp.compid
-        left join DD_PublicInfo dd on tp.StoneAsk =dd.PI_Values and dd.PI_Class ='31'
-        and tp.compid =dd.compid
+        left join DD_PublicInfo dd on tp.StoneAsk =dd.PI_Values and dd.PI_Class ='31' and tp.compid =dd.compid
+        left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
+        and tp.compid = ps.compid
         where tp.DeleteMark = 0
         and tp.RecStatus = 1
         <if test="beginTime != null and endTime != null">
@@ -62,20 +69,25 @@
         <if test="taskStatus != null">
             and tp.taskStatus = #{taskStatus}
         </if>
+        <if test="verifyStatus != null">
+            and tp.VerifyStatus = #{verifyStatus}
+        </if>
         and tp.compid = #{compid}
         group by tp.compid, DD_PublicInfo_3.PI_TypeName, tp.TaskId, tp.CreateTime, tp.PreTime, tp.TaskOverTime,
         tp.PreNum,
         tp.ContractUID, tp.CContractCode, tp.TaskStatus, tp.VerifyStatus, tp.EPPCode, ei.EPPName,
-        tp.BuilderCode, dd.PI_TypeName, bi.BuilderName, Placing, ConcreteMark
+        tp.BuilderCode, dd.PI_TypeName, bi.BuilderName, Placing, ConcreteMark,tp.placeStyle,ps.PI_TypeName,
+        tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute
         order by tp.PreTime desc, tp.TaskId desc
     </select>
 
 
     <select id="getTaskPlanByTaskId" resultType="com.hntxrj.txerp.vo.TaskPlanVO">
         select task.TaskId,
+               task.compid,
                sm.ContractId,
                task.ContractUID,
-               task.CContractCode,
+               task.CContractCode as contractDetailCode,
                task.EPPCode,
                EPPName,
                task.BuilderCode,
@@ -123,56 +135,136 @@
                  left join SM_ContractMaster sm on task.ContractUID = sm.ContractUID and task.compid = sm.compid
         where task.compid = #{compid}
           and task.taskid = #{taskId}
-        group by  task.TaskId, sm.ContractId, task.ContractUID, task.CContractCode, task.EPPCode, EPPName, task.BuilderCode, BuilderName, stgid, Attribute, TechnicalRequirements, task.preCarNum, task.grade, task.Address, task.linkTel, task.distance, Placing, PreNum, ConcreteMark, StoneAsk, dd.PI_TypeName, PreTime, task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus, ts.PI_TypeName, preRemark, task.placeStyle, ps.PI_TypeName
+        group by  task.compid,task.TaskId, sm.ContractId, task.ContractUID, task.CContractCode, task.EPPCode,
+        EPPName, task.BuilderCode, BuilderName, stgid, Attribute, TechnicalRequirements, task.preCarNum, task.grade,
+        task.Address, task.linkTel, task.distance, Placing, PreNum, ConcreteMark, StoneAsk, dd.PI_TypeName, PreTime,
+        task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus, ts.PI_TypeName,
+        preRemark, task.placeStyle, ps.PI_TypeName
     </select>
 
     <select id="getSendCarList" resultType="com.hntxrj.txerp.vo.SendCarListVO">
         select totalProduceNum,
-               ScrapNum,
-               Attribute,
-               pt.Taskid,
-               stgid,
-               EPPName,
-               BuilderName,
-               Placing,
-               PreNum,
-               VehiceNumber,
-               PI_TypeName as PlaceStyleName,
-               pt.TotalNum    SaleNumTotal,
-               VehicleStatus,
-               pp.RemnantNum  remnantNum,
-               pt.adjustmentTime,
-               pt.concreteMark,
-               pt.defaultJump,
-               pt.PreCarNum
+        ScrapNum,
+        Attribute,
+        pt.Taskid,
+        stgid,
+        pt.Slump as slump,
+        EPPName,
+        BuilderName,
+        Placing,
+        PreNum,
+        PI_TypeName as PlaceStyleName,
+        pp.totalSaleNum saleNumTotal,
+        pp.vehiceNumber,
+        pp.RemnantNum remnantNum,
+        pp.numberOfSignings,
+        pt.adjustmentTime,
+        pt.concreteMark,
+        pt.defaultJump,
+        pt.PreCarNum
         from PT_TaskPlan pt
-                 left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
-                 left join SM_BuilderInfo sb on pt.compid = sb.compid and pt.BuilderCode = sb.BuilderCode
-                 left join (select TaskId,
-                                   compid,
-                                   VehicleStatus,
-                                   sum(RemnantNum)RemnantNum,
-                                   sum(ProduceNum) as  totalProduceNum,
-                                   sum(ScrapNum)   as  ScrapNum,
-                                   count(VehiceNumber) VehiceNumber
-                            from PT_TaskSaleInvoice
-                            where InvoiceType != 6
-                             and VehicleStatus not in ('8', '9', '10', '11')
-                            and VehicleStatus is not null
-                            group by TaskId, compid, VehicleStatus) pp
-                           on pt.compid = pp.compid and pt.TaskId = pp.TaskId
-                 left join(select PI_TypeName, PI_Values, compid
-                           from DD_PublicInfo
-                           where PI_Class = 24
-                             and PI_Status = 1
-                           group by PI_TypeName, PI_Values, compid) p
-                          on p.PI_Values = pt.PlaceStyle
-                              and pt.compid = p.compid
+        left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
+        left join SM_BuilderInfo sb on pt.compid = sb.compid and pt.BuilderCode = sb.BuilderCode
+        left join (select TaskId,
+        compid,
+        sum(RemnantNum)RemnantNum,
+        sum(ProduceNum) as totalProduceNum,
+        sum(ScrapNum) as ScrapNum,
+        sum(SaleNum - ReturnNum - RemnantNum - ScrapNum) totalSaleNum,
+        count(VehiceNumber) vehiceNumber,
+        sum(NumberOfSignings) numberOfSignings
+        from PT_TaskSaleInvoice
+        where InvoiceType != 6
+        and VehicleStatus not in ('8', '9', '10', '11')
+        and VehicleStatus is not null
+        group by TaskId, compid) pp
+        on pt.compid = pp.compid and pt.TaskId = pp.TaskId
+        left join(select PI_TypeName, PI_Values, compid
+        from DD_PublicInfo
+        where PI_Class = 24
+        and PI_Status = 1
+        group by PI_TypeName, PI_Values, compid) p
+        on p.PI_Values = pt.PlaceStyle
+        and pt.compid = p.compid
         where pt.compid = #{compid}
-          and pt.RecStatus = 1
-          and pt.TaskStatus = 1
-          and DeleteMark = 0
+        <if test="searchWords != null and searchWords != '' ">
+            and (pt.Taskid like '%'+#{searchWords}+'%' or EPPName like '%'+#{searchWords}+'%' or Placing like
+            '%'+#{searchWords}+'%')
+        </if>
+        and pt.RecStatus = 1
+        and pt.TaskStatus = 1
+        and DeleteMark = 0
         order by pt.TaskId
+    </select>
+
+    <!--查询所有正在生产的任务单的车辆情况-->
+    <select id="getCarsByTaskIds" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
+        select tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
+        dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId,dd2.StirName
+        from PT_TaskSaleInvoice tsi
+        left join  PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+        left join VM_VehicelManagement vm on tsi.compid = vm.compid and tsi.VehicleID = vm.CarID
+        left join  DD_PublicInfo dd on vm.VehicleStatus =dd.PI_Values and dd.compid =vm.compid and dd.PI_Class =22
+        left join DD_StirInfoSet dd2 on vm.compid =dd2.compid and vm.StirId =dd2.StirId
+        where  tsi.compid =#{compid} and  tsi.TaskId in
+        <foreach collection="taskIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and InvoiceType in ('1', '2', '3', '4')
+        and vm.VehicleStatus in ('2','3')
+        order by dd.PI_TypeName, tsi.SendTime desc
+    </select>
+
+
+    <!--查询所有正在生产的任务单号-->
+    <select id="getTaskIds" resultType="java.lang.String">
+        select TaskId
+        from PT_TaskPlan pt
+        left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
+        where pt.compid = #{compid}
+        <if test="searchWords != null and searchWords != '' ">
+            and (pt.Taskid like '%'+#{searchWords}+'%' or EPPName like '%'+#{searchWords}+'%' or Placing like
+            '%'+#{searchWords}+'%')
+        </if>
+        and pt.RecStatus = 1
+        and pt.TaskStatus = 1
+        and DeleteMark = 0
+        order by pt.TaskId
+    </select>
+
+    <!--调度派车中今日调度-->
+    <select id="getSendDetail" resultType="com.hntxrj.txerp.vo.SendCarDetailVO">
+        select ps.ProduceNum totalProduceNum,
+        pt.Taskid,
+        stgid,
+        pt.Slump as slump,
+        EPPName,
+        ps.SendTime as sendTime,
+        ps.Arrive_STTime as arriveTime,
+        Placing,
+        (SaleNum - ReturnNum - RemnantNum - ScrapNum) saleNumTotal,
+        ps.StirId,
+        ds.StirName as stirName,
+        ps.VehicleID as vehicleID
+        from PT_TaskPlan pt
+        left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
+        left join PT_TaskSaleInvoice ps on ps.compid=pt.compid and ps.TaskId=pt.TaskId
+        left join DD_StirInfoSet ds on ds.compid=pt.compid and ds.StirId=ps.StirId
+        where pt.compid = #{compid}
+        <if test="vehicleId !=null and vehicleId != '' ">
+            and ps.vehicleID =#{vehicleId}
+        </if>
+        <if test="beginTime != null and beginTime != ''">
+            and ps.SendTime <![CDATA[ >= ]]>   #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and ps.SendTime <![CDATA[ <= ]]>  #{endTime}
+        </if>
+        and pt.RecStatus = 1
+        and DeleteMark = 0
+        and ps.InvoiceType != 6 and ps.VehicleStatus not in ('8', '9', '10', '11')
+        and ps.VehicleStatus is not null
+        order by ps.SendTime desc
     </select>
 
 
@@ -217,56 +309,49 @@
     <select id="getSendCarCountNum" resultType="com.hntxrj.txerp.vo.SendCarTotalNumVO">
         select count(*) as conuntNum
         from PT_TaskPlan pt
-                 left join (select TaskId,
-                                   compid,
-                                   VehicleStatus,
-                                   sum(ProduceNum) as  totalProduceNum,
-                                   sum(ScrapNum)   as  num,
-                                   count(VehiceNumber) VehiceNumber
-                            from PT_TaskSaleInvoice
-                            where InvoiceType != 6
-                            group by TaskId, compid, VehicleStatus) pp
-                       on pt.compid = pp.compid and pt.TaskId = pp.TaskId
+        left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
+        left join SM_BuilderInfo sb on pt.compid = sb.compid and pt.BuilderCode = sb.BuilderCode
+        left join (select TaskId,
+        compid,
+        sum(RemnantNum)RemnantNum,
+        sum(ProduceNum) as totalProduceNum,
+        sum(ScrapNum) as ScrapNum,
+        count(VehiceNumber) VehiceNumber
+        from PT_TaskSaleInvoice
+        where InvoiceType != 6
+        and VehicleStatus not in ('8', '9', '10', '11')
+        and VehicleStatus is not null
+        group by TaskId, compid) pp
+        on pt.compid = pp.compid and pt.TaskId = pp.TaskId
+        left join(select PI_TypeName, PI_Values, compid
+        from DD_PublicInfo
+        where PI_Class = 24
+        and PI_Status = 1
+        group by PI_TypeName, PI_Values, compid) p
+        on p.PI_Values = pt.PlaceStyle
+        and pt.compid = p.compid
         where pt.compid = #{compid}
           and pt.RecStatus = 1
           and pt.TaskStatus = 1
           and DeleteMark = 0
-          and VehicleStatus not in ('8', '9', '10', '11')
-          and VehicleStatus is not null
     </select>
     <select id="getSendCarTodayNum" resultType="com.hntxrj.txerp.vo.SendCarTotalNumVO">
         select sum(ti.ProduceNum) as todayTotalNum
         from PT_TaskSaleInvoice as ti
         where ti.compid = #{compid}
     </select>
-    <!--  <select id="getSendCarYesterDayNum" resultType="SendCarTotalNumVO">
-
-           select sum(ti.ProduceNum) as yesterdayTotalNum
-           from PT_TaskSaleInvoice as ti
-           where ti.compid = #{compid}  and ti.SendTime = #{time}
-          <if test="time != null and time != '' ">
-              and ti.SendTime = #{time}
-          </if>
-      </select>
-      <select id="getMonthTotalNum" resultType="SendCarTotalNumVO">
-
-           select sum(ti.ProduceNum) as monthTotalNum
-           from PT_TaskSaleInvoice as ti
-           where ti.compid = #{compid}
-          <if test="monthStart != null and monthEnd != '' ">
-              and ti.SendTime between #{monthStart} and #{monthEnd}
-          </if>
-      </select>-->
 
     <!--司机排班LED-->
-    <select id="getDriverShiftLED" resultType="com.hntxrj.txerp.vo.DriverShiftLEDVO">
+    <select id="getDriverShiftLED" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
         select
         vm.CarID,
         vm.StirId,
         dd.StirName,
-        vm.VehicleStatus
+        vm.VehicleStatus,
+        dp.PI_TypeName as statusName
         from VM_VehicelManagement vm
         left join DD_StirInfoSet dd on vm.compid =dd.compid and vm.StirId =dd.StirId
+        left join DD_PublicInfo dp on vm.compid=dp.compid and dp.PI_Class=45 and vm.VehicleStatus=dp.PI_Values
         where vm.compid = #{compid} and vm.RecStatus=1 and dd.RecStatus=1
         and VehicleClass ='1'
         <if test="vehicleStatus != null and vehicleStatus != '' ">
@@ -284,9 +369,32 @@
         order by vm.CreateTime
     </select>
 
-    <!--施工方App使用的LED功能，只查询生产中的车辆-->
+    <!--调度派车中正在生产的搅拌车-->
+    <select id="getProduceCars" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
+        select
+        vm.CarID,
+        vm.StirId,
+        dd.StirName,
+        vm.VehicleStatus
+        from VM_VehicelManagement vm
+        left join DD_StirInfoSet dd on vm.compid =dd.compid and vm.StirId =dd.StirId
+        where vm.compid = #{compid} and vm.RecStatus=1 and dd.RecStatus=1
+        and VehicleClass ='1'
+        and vm.VehicleStatus = 3
+        <if test="stirId !=null and stirId != '' ">
+            and vm.StirId =#{stirId}
+        </if>
+        order by vm.CreateTime
+    </select>
+
+
+
+
+
+
+    <!--司机App使用的LED功能，只查询生产中的车辆-->
     <select id="getProductDriverShiftLED" resultType="com.hntxrj.txerp.vo.ProductDriverLEDVo">
-        select top 3
+        select
         vm.CarID,
         vm.StirId,
         dd.StirName
@@ -294,12 +402,14 @@
         left join DD_StirInfoSet dd on vm.compid =dd.compid and vm.StirId =dd.StirId
         where vm.compid = #{compid} and vm.RecStatus=1 and dd.RecStatus=1
         and VehicleClass ='1'
-        and vm.VehicleStatus =3
-        and vm.StirId =#{stirId}
+        and vm.VehicleStatus =#{vehicleStatus}
+        <if test="stirId !=null and stirId != '' ">
+            and vm.StirId =#{stirId}
+        </if>
         order by vm.CreateTime
     </select>
 
-    <!--司机排班列表信息-->
+    <!--司机排班列表信息(老版本)-->
     <select id="getDriverShiftList" resultType="com.hntxrj.txerp.vo.DriverShiftListVO">
         SELECT vs.id,
         VehicleID,
@@ -331,6 +441,32 @@
         </if>
         <if test="endTime != null and endTime != ''">
             and vs.WorkOverTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+    </select>
+    <!--司机排班列表信息(新版本)-->
+    <select id="getDriverShiftListNew" resultType="com.hntxrj.txerp.vo.DriverShiftListVO">
+        SELECT vs.id,
+        VehicleID,
+        vs.PersonalCode,
+        PersonalName,
+        WorkStarTime,
+        WorkOverTime,
+        vs.WorkClass,
+        PI_TypeName as WorkClassName,
+        Remarks
+        FROM VM_PERSONALWORKCLASS vs
+        left join VM_PersonalInfo vo ON vs.PersonalCode = vo.PersonalCode and vs.compid = vo.compid
+        left join (
+        SELECT PI_TypeName, PI_Values,compid FROM DD_PublicInfo where PI_Class = 16) pu on vs.WorkClass = pu.PI_Values
+        and vs.compid = pu.compid
+        where vs.compid = #{compid}
+        and vs.recstatus = 1
+        <if test="workClass !=null and workClass != '' ">
+            and vs.Workclass = #{workClass}
+        </if>
+        <if test="personalName !=null or vehicleId !=null ">
+            and (PersonalName like '%'+#{personalName}+'%' or VehicleId like '%'+#{vehicleId}+'%')
         </if>
 
     </select>
@@ -384,18 +520,27 @@
             Remarks=#{remarks},
             WorkStarTime=#{workStarTime},
             WorkOverTime=#{workOverTime},
-            CreateTime=#{createTime}
+            CreateTime=#{createTime},
+            UpDownMark=0
         where compid = #{compid}
           and ID = #{id}
     </update>
     <update id="updateTechnicalRequirements">
-        update PT_TaskPlan set TechnicalRequirements = #{pPNames},concreteMark =#{concreteMark} where compid =#{compid} and taskid =#{taskId}
+        update PT_TaskPlan set
+        TechnicalRequirements = #{ppNames},
+        concreteMark =#{concreteMark} ,
+        UpDownMark=0
+        where compid =#{compid} and taskid =#{taskId}
     </update>
+    <select id="checkDriverScheduling" resultType="java.lang.Integer">
+        select count(1) from VM_PERSONALWORKCLASS
+        where compid=#{compid} and WorkClass=#{workClass} and PersonalCode=#{personalCode}
+    </select>
 
-    <select id="selectid" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
+    <select id="selectId" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
         select TaskId
         from PT_TaskPlan
-        where TaskId like #{taskid} + '%' and len(TaskId)=10
+        where TaskId like #{taskId} + '%' and len(TaskId)=10
     </select>
 
     <!--任务单生产配比日志查询-->
@@ -587,13 +732,14 @@
         select sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum,
                sum(ProduceNum)                                                   produceNum
         from PT_TaskSaleInvoice tsi
+        left join PT_TaskPlan pt on tsi.compid = pt.compid and tsi.TaskId = pt.TaskId
+        left join SM_EPPInfo sm on tsi.compid = sm.compid and pt.EPPCode = sm.EPPCode
         where tsi.compid = #{compid}
-          and (VehiceNumber > '0')
-          and (VehicleStatus = '3')
-          and tsi.InvoiceType != 6
-          and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
-          and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
-
+        and (VehiceNumber > '0')
+        and (VehicleStatus = '3')
+        and tsi.InvoiceType != 6
+        and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
+        and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
     </select>
     <select id="getQueryTime" resultType="com.hntxrj.txerp.vo.QueryTimeSetVO">
         select top 1 dd.compid,
@@ -701,7 +847,7 @@
           and compid = #{compid}
     </select>
 
-    <select id="getTaskIdCount" resultType="integer">
+    <select id="checkTaskIdExit" resultType="integer">
        select count(*) from PT_TaskPlan
        where compid=#{compid} and TaskId=#{taskId}
     </select>
@@ -729,7 +875,7 @@
     </insert>
 
 
-    <select id="getPPCodeBytaskId" resultType="string">
+    <select id="getPPCodeByTaskId" resultType="string">
         select PPCode from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
     </select>
     <select id="getSystemVarInit" resultType="com.hntxrj.txerp.vo.SystemVarInitVO">
@@ -739,6 +885,81 @@
     <delete id="deletePPCodeStatus">
         delete from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
     </delete>
+
+    <!--施工方App中查询任务单列表-->
+    <select id="buildTaskPlanList" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
+        select tp.compid,
+        DD_PublicInfo_3.PI_TypeName as taskStatusName,
+        tp.TaskId,
+        tp.CreateTime,
+        tp.PreTime,
+        tp.TaskOverTime,
+        tp.PreNum,
+        sum(ProduceNum) overNum,
+        tp.ContractUID,
+        tp.CContractCode as contractDetailCode,
+        tp.TaskStatus,
+        tp.VerifyStatus,
+        tp.EPPCode,
+        ei.EPPName,
+        tp.BuilderCode,
+        dd.PI_TypeName AS stoneAskName,
+        bi.BuilderName,
+        Placing,
+        ConcreteMark,
+        tp.placeStyle,
+        ps.PI_TypeName placeStyleName,
+        tp.OpenTime,
+        tp.StgId as stgId,
+        tp.Slump as slump,
+        tp.Attribute as attribute
+        from PT_TaskPlan AS tp
+        left join PT_TaskSaleInvoice pt on tp.compid = pt.compid and tp.TaskId = pt.TaskId
+        and pt.InvoiceType !=6
+        LEFT OUTER JOIN
+        dbo.DD_PublicInfo AS DD_PublicInfo_3
+        ON tp.TaskStatus = DD_PublicInfo_3.PI_Values and DD_PublicInfo_3.PI_Class = 23
+        and tp.compid =DD_PublicInfo_3.compid
+        left join SM_EPPInfo ei on tp.EPPCode=ei.EPPCode and tp.compid=ei.compid
+        left join SM_BuilderInfo bi on tp.BuilderCode = bi.BuilderCode and bi.compid=tp.compid
+        left join DD_PublicInfo dd on tp.StoneAsk =dd.PI_Values and dd.PI_Class ='31' and tp.compid =dd.compid
+        left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
+        and tp.compid = ps.compid
+        where tp.DeleteMark = 0
+        and tp.RecStatus = 1
+        and tp.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and tp.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="beginTime != null and endTime != null">
+            and (taskStatus = 1 or tp.preTime between #{beginTime} and #{endTime})
+        </if>
+        <if test="eppCode != null">
+            and tp.eppCode = #{eppCode}
+        </if>
+        <if test="placing != null">
+            and tp.placing like '%' + #{placing}+'%'
+        </if>
+        <if test="taskId != null">
+            and tp.taskId like '%' + #{taskId} + '%'
+        </if>
+        <if test="taskStatus != null">
+            and tp.taskStatus = #{taskStatus}
+        </if>
+        <if test="verifyStatus != null">
+            and tp.VerifyStatus = #{verifyStatus}
+        </if>
+        group by tp.compid, DD_PublicInfo_3.PI_TypeName, tp.TaskId, tp.CreateTime, tp.PreTime, tp.TaskOverTime,
+        tp.PreNum,
+        tp.ContractUID, tp.CContractCode, tp.TaskStatus, tp.VerifyStatus, tp.EPPCode, ei.EPPName,
+        tp.BuilderCode, dd.PI_TypeName, bi.BuilderName, Placing, ConcreteMark,tp.placeStyle,ps.PI_TypeName,
+        tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute
+        order by tp.PreTime desc, tp.TaskId desc
+    </select>
 
 
 </mapper>

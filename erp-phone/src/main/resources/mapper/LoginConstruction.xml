@@ -5,32 +5,48 @@
     <insert id="save" useGeneratedKeys="true">
         insert into bd_build_accounts
         (build_login_name,
-         build_password)
+         build_password,build_name)
         VALUES (#{userName},
-                #{passWord})
+                #{passWord},
+        #{buildName})
     </insert>
 
     <!--查询账户密码-->
     <select id="getAccountPassword" resultType="com.hntxrj.txerp.vo.LoginClibationVO">
         select build_id         as id,
                build_login_name as loginName,
-               build_password   as password
+               build_password   as password,
+                build_name    as buildName
         from bd_build_accounts
         where build_login_name = #{userName}
           and build_password = #{passWord}
     </select>
 
-    <select id="findBybuildId" resultType="com.hntxrj.txerp.vo.BuildAccountsVO">
+    <select id="findByBuildId" resultType="com.hntxrj.txerp.vo.BuildAccountsVO">
         select build_id         as id,
                build_login_name as loginName,
                build_password   as password
         from bd_build_accounts
         where build_login_name = #{userName}
     </select>
-    <select id="findByid" resultType="com.hntxrj.txerp.vo.InvitationVO">
+    <select id="findById" resultType="com.hntxrj.txerp.vo.InvitationVO">
         select build_invitation_code,
                use_status
         from bd_invitation_code
         where build_invitation_code = #{buildInvitationCode}
+    </select>
+
+    <select id="findUser" resultType="com.hntxrj.txerp.vo.BuildAccountsVO">
+        select build_id as id,
+            build_login_name as loginName,
+            build_password as password,
+            build_name as buildName
+        from bd_build_accounts
+       where build_id=#{buildId}
+    </select>
+    <!--修改密码-->
+    <select id="updatePassword" >
+        update  bd_build_accounts set build_password=#{newPassword}
+        where build_id=#{buildId}
     </select>
 </mapper>

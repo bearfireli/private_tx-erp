@@ -16,4 +16,8 @@ import java.util.List;
 public interface MenuMapper {
 
     List<Menu> getFunctionMenuList();
+
+
+    //通过funcName获取menu
+    Menu getMenuByfuncNameAndPid(String funcName,int pid);
 }

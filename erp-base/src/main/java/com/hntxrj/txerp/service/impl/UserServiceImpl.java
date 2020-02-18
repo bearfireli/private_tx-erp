@@ -642,7 +642,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         if (user.getUid() <= 0) {
             //当修改用户或找不到该用户的id时
-            throw new ErpException(ErrEumn.UPDATE_USER_PARAMS_ERR);
+            throw new ErpException(ErrEumn.USER_NO_EXIT);
         }
         if (user.getErpType() != null) {
             oldUser.setErpType(user.getErpType());
@@ -1049,6 +1049,11 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     public List<AuthValue> getAuthValue(Integer groupId,Integer pid) {
 
         return userMapper.getAuthValueByGroupId(groupId,pid);
+    }
+
+    @Override
+    public List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid) {
+        return userMapper.getAuthValueOld(groupId,pid);
     }
 
 

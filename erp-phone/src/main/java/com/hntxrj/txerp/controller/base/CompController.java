@@ -35,6 +35,13 @@ public class CompController {
     }
 
 
+    /**
+     * 添加企业
+     * @param compName       公司名称
+     * @param compShortName  公司简称
+     * @param compid         公司代号
+     * @param securityKey    令牌
+     * */
     @PostMapping("/addComp")
     public ResultVO add(String compName, String compShortName, String compid, String securityKey) throws ErpException {
         if (!"adsfbnhjkwegbrw".equals(securityKey)) {
@@ -48,8 +55,40 @@ public class CompController {
         userComp.setShortname(compShortName);
         userComp.setLongname(compName);
         userComp.setCompid(compid);
+        userComp.setRecstatus("1");
         EntityTools.setEntityDefaultValue(userComp);
         return ResultVO.create(compService.addComp(userComp));
+    }
+
+    /**
+     * 删除企业
+     * @param compid         公司代号
+     * @param securityKey    令牌
+     * */
+    @PostMapping("/deleteComp")
+    public ResultVO deleteComp(String compid, String securityKey) throws ErpException {
+        if (!"adsfbnhjkwegbrw".equals(securityKey)) {
+            throw new ErpException(ErrEumn.DELETE_ENTERPRISE_ERROR);
+        }
+        compService.deleteComp(compid);
+        return ResultVO.create();
+    }
+
+
+    /**
+     * 更改企业信息
+     * @param compName       公司名称
+     * @param compShortName  公司简称
+     * @param compid         公司代号
+     * @param securityKey    令牌
+     * */
+    @PostMapping("/updateComp")
+    public ResultVO updateComp(String compName, String compShortName, String compid, String securityKey) throws ErpException {
+        if (!"adsfbnhjkwegbrw".equals(securityKey)) {
+            throw new ErpException(ErrEumn.UPDATE_ENTERPRISE_ERROR);
+        }
+        compService.updateComp(compid, compName, compShortName);
+        return ResultVO.create();
     }
 
 

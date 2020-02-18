@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.*;
-import com.hntxrj.txerp.vo.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 功能: 搅拌车服务层接口
@@ -231,7 +231,7 @@ public interface VehicleService {
      */
     PageVO<DriverTransportationCountVO> getDriverTransportationCount(String compid, String eppCode,
                                                                      String placing, String taskId,
-                                                                     String vehicleId, String personalName,
+                                                                     String vehicleId, String personalName,String isNewVersion,
                                                                      String beginTime, String endTime,
                                                                      Integer page, Integer pageSize);
 
@@ -291,7 +291,7 @@ public interface VehicleService {
      */
     PageVO<DriverTransportationCountVO> getDriverDragPumpCount(String compid, String eppCode,
                                                                String placing, String taskId,
-                                                               String vehicleId, String personalName,
+                                                               String vehicleId, String personalName,String isNewVersion,
                                                                String beginTime, String endTime,
                                                                Integer page, Integer pageSize);
 
@@ -309,7 +309,7 @@ public interface VehicleService {
      * @param pageSize     每页显示条数
      */
     PageVO<PumpTruckCountVO> getPumpTruckCount(String compid, String eppCode, String personalName,
-                                               String stirId, String vehicleId, String beginTime,
+                                               String stirId, String vehicleId, String taskId,String beginTime,
                                                String endTime, Integer page, Integer pageSize) throws ErpException;
 
     /**
@@ -327,7 +327,7 @@ public interface VehicleService {
      */
     PageVO<PumpTruckCountVO> getPumpOperatorTruckCount(String compid, String eppCode,
                                                        String personalName,
-                                                       String stirId, String vehicleId,
+                                                       String stirId, String vehicleId,String taskId,String isNewVersion,
                                                        String beginTime, String endTime,
                                                        Integer page, Integer pageSize) throws ErpException;
 
@@ -345,7 +345,7 @@ public interface VehicleService {
      * @param pageSize     每页显示条数
      */
     PageVO<PumpTruckDetailsVO> getPumpTruckDetails(String compid, String eppCode, String personalName,
-                                                   String stirId, String vehicleId,
+                                                   String stirId, String vehicleId,String typeName,String taskId,
                                                    String beginTime, String endTime,
                                                    Integer page, Integer pageSize);
 
@@ -364,7 +364,7 @@ public interface VehicleService {
      */
     PageVO<PumpTruckWorkloadStatisticsVO> getPumpTruckWorkloadStatistics(String compid,
                                                                          String eppCode,
-                                                                         String personalName,
+                                                                         String personalName,String taskId,
                                                                          String stirId, String vehicleId,
                                                                          String beginTime, String endTime,
                                                                          Integer page, Integer pageSize);
@@ -388,4 +388,17 @@ public interface VehicleService {
                                                                          String stirId, String vehicleId,
                                                                          String beginTime, String endTime,
                                                                          Integer page, Integer pageSize);
+
+    /**
+     * 搅拌车过磅查询汇总
+     *
+     * @param compid     企业
+     * @param eppCode    工程代码
+     * @param empName   过磅员
+     * @param weightType 过磅类别
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
+     */
+    Map<String,Double> getWorkloadStatisticsCount(String compid, String eppCode, String empName,
+                                                  Integer weightType, String beginTime, String endTime);
 }

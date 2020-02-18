@@ -31,16 +31,16 @@ public class StockInCollectServiceImpl implements StockInCollectService {
      * @param endTime   结束时间
      * @param vehicleId 车号
      * @param supName   供货商
-     * @param MatName   材料名称
+     * @param matName   材料名称
      * @param page      页数
      * @param pageSize  每页数量
      * @return 原材料统计汇总
      */
 
     @Override
-    public PageVO<StockInCollectVO> getMatDetailsList(String vehicleId, String supName, String matSpecs, String compid, String beginTime, String endTime, Integer page, Integer pageSize, String MatName) {
+    public PageVO<StockInCollectVO> getMatDetailsList(String vehicleId, String supName, String matSpecs, String compid, String beginTime, String endTime, Integer page, Integer pageSize, String matName) {
         PageHelper.startPage(page, pageSize);
-        List<StockInCollectVO> stockInCollectDetailVOS = stoclinCollectMapper.getMatDetailsList(vehicleId, supName, matSpecs,compid, beginTime, endTime, page, pageSize, MatName);
+        List<StockInCollectVO> stockInCollectDetailVOS = stoclinCollectMapper.getMatDetailsList(vehicleId, supName, matSpecs,compid, beginTime, endTime, page, pageSize, matName);
         for (StockInCollectVO raw : stockInCollectDetailVOS) {
             raw.setClWeight(Double.valueOf(raw.getClWeight()));
 

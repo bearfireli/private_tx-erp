@@ -3,10 +3,10 @@
 <mapper namespace="com.hntxrj.txerp.mapper.StgIdMangeMapper">
    <!-- 砼标号管理-->
     <select id="getStgidManage" resultType="com.hntxrj.txerp.vo.StgidManageVO">
-       select StgId,grade,pumpPrice,notPumpPrice,towerCranePrice,PriceDifference
-       from SM_GradePriceInfo
+        select StgId,grade,pumpPrice,notPumpPrice,towerCranePrice,PriceDifference
+        from SM_GradePriceInfo
         where compid =#{compid}
-          and RecStatus =1
+        and RecStatus =1
         <if test="stgId !=null and stgId !='' ">
             and stgId like '%'+#{stgId}+'%'
         </if>
@@ -15,4 +15,43 @@
         </if>
     </select>
 
+
+
+    <!-- 砼标号详情-->
+    <select id="getStgidManageDetail" resultType="com.hntxrj.txerp.vo.StgidManageVO">
+        select StgId,grade,pumpPrice,notPumpPrice,towerCranePrice,PriceDifference
+        from SM_GradePriceInfo
+        where compid =#{compid}
+        and RecStatus =1
+        and stgId = #{stgId}
+        <if test="grade !=null and grade !='' ">
+            and grade like '%'+#{grade}+'%'
+        </if>
+    </select>
+
+
+    <!--编辑砼标号-->
+    <update id="updateStgIdManage">
+         update SM_GradePriceInfo set
+         Grade=#{grade} ,
+         PumpPrice=#{pumpPrice} ,
+         NotPumpPrice=#{notPumpPrice},
+         TowerCranePrice=#{towerCranePrice},
+         UpDownMark=0
+         where compid=#{compid} and StgId=#{stgId}
+    </update>
+
+    <!--添加砼标号-->
+    <insert id="insertStgIdManage">
+        insert into
+        SM_GradePriceInfo(compid, StgId, Grade, PumpPrice,  NotPumpPrice, TowerCranePrice)
+        values (#{compid},#{stgId},#{grade},#{pumpPrice},#{notPumpPrice},#{towerCranePrice})
+    </insert>
+
+    <!--删除砼标号-->
+    <delete id="deleteStgIdManage">
+       update SM_GradePriceInfo
+       set RecStatus=0 , UpDownMark=0
+       where compid=#{compid} and StgId=#{stgId}
+    </delete>
 </mapper>

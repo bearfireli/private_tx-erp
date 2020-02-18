@@ -44,7 +44,7 @@ public class TaskPlan implements Serializable {
     private String contractUid;
     /* 子合同号 */
     @Column(name = "ccontractcode")
-    private String cContractCode;
+    private String contractDetailCode;
     /* 任务状态 */
     @Column(name = "taskstatus")
     private Integer taskStatus;

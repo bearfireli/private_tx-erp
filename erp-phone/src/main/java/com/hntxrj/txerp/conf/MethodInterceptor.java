@@ -48,8 +48,8 @@ public class MethodInterceptor implements HandlerInterceptor {
             return true;
         }
         log.info("【验证权限】uri={}, token={}", uri, tk);
-        if (uri.equals("/comp/addComp")) {
-            // 该接口为tx-erp提供添加企业服务,通过key验证，不需要在此验证
+        if (uri.equals("/comp/addComp")||uri.equals("/comp/deleteComp")||uri.equals("/comp/updateComp")) {
+            // 该接口为tx-erp提供添加企业,修改企业，删除企业服务,通过key验证，不需要在此验证
             return true;
         }
         if (checkTokenIsNormal(tk)) {

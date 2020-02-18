@@ -10,10 +10,11 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.mapper.ConstructionMapper;
+import com.hntxrj.txerp.mapper.ContractMapper;
 import com.hntxrj.txerp.server.ConstructionService;
 import com.hntxrj.txerp.vo.InvitationVO;
 import com.hntxrj.txerp.vo.PageVO;
-import com.hntxrj.txerp.vo.bdBindVO;
+import com.hntxrj.txerp.vo.BdBindVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,13 +22,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author qyb
- *  ConstructionServiceImpl
- *  TODO
- *  19-7-25 下午4:08
+ * ConstructionServiceImpl
+ * TODO
+ * 19-7-25 下午4:08
  **/
 @Service
 @Slf4j
@@ -38,20 +38,30 @@ public class ConstructionServiceImpl implements ConstructionService {
 
     private final ConstructionMapper constructionMapper;
 
+    private final ContractMapper contractMapper;
 
-    public ConstructionServiceImpl(ConstructionMapper constructionMapper) {
+
+    public ConstructionServiceImpl(ConstructionMapper constructionMapper, ContractMapper contractMapper) {
         this.constructionMapper = constructionMapper;
+        this.contractMapper = contractMapper;
     }
 
     @Override
-    public InvitationVO getInvitationCode(String compid, Integer opid, String buildCode) throws ErpException {
-        String build_Invitation_Code = UUID.randomUUID().toString().replace("-", "");
-        Date date = new Date();
-        Integer use_Status = 0;
+    public InvitationVO getInvitationCode(String compid, Integer opid, String contractDetailCodes) throws ErpException {
+
+
+        String buildInvitationCode = UUID.randomUUID().toString().replace("-", "");
+        Integer useStatus = 0;
+        String[] codes = contractDetailCodes.split(",");
         try {
-            constructionMapper.getInvitationCode(build_Invitation_Code, compid, buildCode, use_Status, opid, date);
+            for (String code : codes) {
+                //先根据子合同号和compid从合同表中查询出每一个主合同号
+                String contractUID = contractMapper.getContractUID(compid, code);
+                //把邀请码，compid，子合同号，主合同号插入
+                constructionMapper.getInvitationCode(buildInvitationCode, compid, code, useStatus, opid, new Date(),contractUID);
+            }
             InvitationVO invitationVO = new InvitationVO();
-            invitationVO.setBuildinvitationcode(build_Invitation_Code);
+            invitationVO.setBuildinvitationcode(buildInvitationCode);
             return invitationVO;
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_INVITATION_ERROR);
@@ -71,6 +81,7 @@ public class ConstructionServiceImpl implements ConstructionService {
             Integer uid = Integer.valueOf(invitationVO.getCreateuser());
             String username = checkTokenIsNormal(uid);
             invitationVO.setCreateuser(username);
+            invitationVO.setCreatetime(invitationVO.getCreatetime().substring(0,16));
         }
         PageInfo<InvitationVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
@@ -78,10 +89,9 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     @Override
-    public void updateUseStatus(String compid, String buildInvitationCode) throws ErpException {
+    public void invalidInvitationCode(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
         try {
-            int useStatus = 2;
-            constructionMapper.updateUseStatus(compid, buildInvitationCode, useStatus);
+            constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, 2);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADJUNCT_UPDATE_ERROR);
         }
@@ -91,23 +101,29 @@ public class ConstructionServiceImpl implements ConstructionService {
     @Override
     @Transactional
     public void saveInvitation(String buildId, String buildInvitationCode) throws ErpException {
-        InvitationVO invitationVO = constructionMapper.selectInvitation(buildInvitationCode);
-        if (invitationVO != null) {
-            bdBindVO bdBindVOS = constructionMapper.selectCompid(invitationVO.getCompid(),buildId);
-            if (bdBindVOS == null) {
-                if (Integer.parseInt(invitationVO.getUsestatus()) == 0) {
-                    int usestatus = 1;
-                    String compid = invitationVO.getCompid();
-                    String buildCode = invitationVO.getBuildcode();
-                    constructionMapper.updateUseStatus(compid, buildInvitationCode, usestatus);
-                    constructionMapper.saveInvitation(buildId, compid, buildCode);
-                } else if (Integer.parseInt(invitationVO.getUsestatus()) == 1) {
-                    throw new ErpException(ErrEumn.INVITATION_USESTATUS_EXIST);
-                } else {
-                    throw new ErpException(ErrEumn.INVITATION_USESTATUS_VOID);
+        //获取此邀请码绑定的合同集合
+        List<InvitationVO> invitationVOS = constructionMapper.selectInvitation(buildInvitationCode);
+        if (invitationVOS != null && invitationVOS.size() > 0) {
+            for (InvitationVO invitationVO : invitationVOS) {
+                //查询此施工单位是否绑定过此合同
+                BdBindVO bdBindVO = constructionMapper.checkBindContract(invitationVO.getContractDetailCode(),invitationVO.getContractUID(), buildId);
+                if (bdBindVO == null) {
+                    //说明此用户没有绑定过此合同
+                    if (Integer.parseInt(invitationVO.getUsestatus()) == 0) {
+                        int useStatus = 1;
+                        String compid = invitationVO.getCompid();
+                        String contractDetailCode = invitationVO.getContractDetailCode();
+                        String contractUID = invitationVO.getContractUID();
+                        //修改邀请码的使用状态为已使用
+                        constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, useStatus);
+                        //给此用户绑定合同
+                        constructionMapper.saveInvitation(buildId, compid, contractDetailCode,contractUID);
+                    } else if (Integer.parseInt(invitationVO.getUsestatus()) == 1) {
+                        throw new ErpException(ErrEumn.INVITATION_USESTATUS_EXIST);
+                    } else {
+                        throw new ErpException(ErrEumn.INVITATION_USESTATUS_VOID);
+                    }
                 }
-            }else{
-                throw new ErpException(ErrEumn.INVITATION_COMPID_VOID);
             }
         } else {
             throw new ErpException(ErrEumn.INVITATION_NULL);
@@ -116,22 +132,15 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     @Override
-    public PageVO<bdBindVO> selectBind(String buildId, Integer page, Integer pageSize) {
-        PageVO<bdBindVO> pageVO = new PageVO<>();
-        PageHelper.startPage(page, pageSize);
-        List<bdBindVO> bdBindVOS =
-                constructionMapper.selectBind(buildId);
-        //去重
-        bdBindVOS = bdBindVOS.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(()
-                -> new TreeSet<>(Comparator.comparing(bdBindVO::getCompid))), ArrayList::new));
-
-        for (bdBindVO b : bdBindVOS) {
-            String epShortName = getEnterprise(Integer.parseInt(b.getCompid()));
-            b.setEpShortName(epShortName);
+    public Map<String, Boolean> checkBind(String buildId) {
+        Map<String, Boolean> map = new HashMap<>();
+        List<BdBindVO> bdBindVOs = constructionMapper.checkBind(buildId);
+        if (bdBindVOs != null && bdBindVOs.size() > 0) {
+            map.put("isBind", true);
+        } else {
+            map.put("isBind", false);
         }
-        PageInfo<bdBindVO> pageInfo = new PageInfo<>(bdBindVOS);
-        pageVO.format(pageInfo);
-        return pageVO;
+        return map;
     }
 
 
@@ -142,8 +151,7 @@ public class ConstructionServiceImpl implements ConstructionService {
      * @return 返回是否通过
      */
     private String checkTokenIsNormal(Integer uid) {
-        String baseUrl = "";
-        baseUrl = url + "/user/getUser";
+        String baseUrl = url + "/user/getUser";
         Map<String, Object> map = new HashMap<>();
         map.put("uid", uid);
         Header[] headers = HttpHeader.custom()
@@ -172,7 +180,6 @@ public class ConstructionServiceImpl implements ConstructionService {
 
             e.printStackTrace();
         }
-        baseUrl = "";
         return pass;
     }
 

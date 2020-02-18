@@ -62,7 +62,7 @@ public interface ConsumeMapper {
                                                   String vehicleId, String stgId , String taskId, String stirId,
                                                   Integer page, Integer pageSize);
     /**
-     * 原材料统计汇总
+     * 原材料统计汇总（老版本）
      *
      * @param compid    企业id
      * @param beginTime 开始时间
@@ -74,6 +74,21 @@ public interface ConsumeMapper {
      */
     List<RawCollectVO> getMatTotal(String compid, String beginTime, String endTime,
                                    String stgId, String vehicleId, String taskId, String stirId);
+
+    /**
+     * 原材料统计汇总(新版本)
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param taskId    任务单号
+     * @param stirId    站别代号
+     * @return 原材料统计汇总
+     */
+    List<RawCollectVO> getProductionConsumptionDetails(String compid, String beginTime, String endTime,
+                                                       String stgId, String vehicleId, String taskId, String stirId);
+
     /**
      * 生产消耗汇总合计方量
      * @param compid    企业id
@@ -93,5 +108,18 @@ public interface ConsumeMapper {
     List<StockVO> getProductDatail(String compid,Integer stirid);
 
     List<ProductConsume> getErroPan(String compid, String beginTime, String endTime);
+
+    /**
+     * 标号消耗汇总柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param taskId    任务单号
+     * @param stirId    站别代号
+     * @return 标号消耗汇总
+     */
+    List<ConsumptionHistogram> getConsumptionHistogram(String compid, String beginTime, String endTime, String vehicleId, String stgId, String taskId, String stirId);
 }
 

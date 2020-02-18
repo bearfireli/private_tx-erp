@@ -27,4 +27,14 @@ public class PumpTruckWorkloadStatisticsVO {
      * 方量合计
      */
     private  double numList;
+
+    /**
+    * 总车数
+    * */
+    private String carNumList;
+
+    /**
+     * 总运距
+     * */
+    private String distance;
 }

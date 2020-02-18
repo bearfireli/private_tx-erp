@@ -168,7 +168,7 @@ public class VehicleApi {
      */
     @PostMapping("/getWorkloadStatistics")
     public ResultVO getWorkloadStatistics(String compid, String eppCode, String empNameb,
-                                          Integer weightType,
+                                          @RequestParam(defaultValue = "0")Integer weightType,
                                           Long beginTime, Long endTime,
                                           @RequestParam(defaultValue = "1") Integer page,
                                           @RequestParam(defaultValue = "10") Integer pageSize) {
@@ -177,6 +177,29 @@ public class VehicleApi {
                 eppCode, empNameb, weightType,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
+    }
+
+
+
+    /**
+     * 搅拌车过磅查询汇总
+     *
+     * @param compid     企业
+     * @param eppCode    工程代码
+     * @param empName   过磅员
+     * @param weightType 过磅类别
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
+     */
+    @PostMapping("/getWorkloadStatisticsCount")
+    public ResultVO getWorkloadStatisticsCount(String compid, String eppCode, String empName,
+                                          @RequestParam(defaultValue = "0")Integer weightType,
+                                          Long beginTime, Long endTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(vehicleService.getWorkloadStatisticsCount(compid,
+                eppCode, empName, weightType,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
     }
 
     /**
@@ -215,6 +238,7 @@ public class VehicleApi {
      * @param taskId       任务单号
      * @param vehicleId    车号
      * @param personalName 司机
+     * @param isNewVersion 是否是新版本标识
      * @param beginTime    开始时间
      * @param endTime      结束时间
      * @param page         分页
@@ -223,13 +247,14 @@ public class VehicleApi {
     @PostMapping("/getDriverTransportationCount")
     public ResultVO getDriverTransportationCount(String compid, String eppCode, String placing,
                                                  String taskId, String vehicleId, String personalName,
+                                                 @RequestParam(defaultValue = "0") String isNewVersion,
                                                  Long beginTime, Long endTime,
                                                  @RequestParam(defaultValue = "1") Integer page,
                                                  @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("司机砼运输汇总: vehicleId=" + vehicleId);
         return ResultVO.create(vehicleService.getDriverTransportationCount(compid, eppCode,
-                placing, taskId, vehicleId, personalName,
+                placing, taskId, vehicleId, personalName,isNewVersion,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
@@ -262,7 +287,7 @@ public class VehicleApi {
     }
 
     /**
-     * 司机砼运输车数合计
+     * 司机拖水拖泵运输车数合计
      *
      * @param compid       企业
      * @param eppCode      工程代码
@@ -298,6 +323,7 @@ public class VehicleApi {
      * @param taskId       任务单号
      * @param vehicleId    车号
      * @param personalName 司机
+     * @param isNewVersion 是否是新版本
      * @param beginTime    开始时间
      * @param endTime      结束时间
      * @param page         分页
@@ -306,12 +332,13 @@ public class VehicleApi {
     @PostMapping("/getDriverDragPumpCount")
     public ResultVO getDriverDragPumpCount(String compid, String eppCode, String placing,
                                            String taskId, String vehicleId, String personalName,
+                                           @RequestParam(defaultValue = "0")String isNewVersion,
                                            Long beginTime, Long endTime,
                                            @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getDriverDragPumpCount(compid, eppCode, placing,
-                taskId, vehicleId, personalName,
+                taskId, vehicleId, personalName,isNewVersion,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
@@ -331,13 +358,13 @@ public class VehicleApi {
      * @param pageSize     每页显示条数
      */
     @PostMapping("/getPumpTruckCount")
-    public ResultVO getPumpTruckCount(String compid, String eppCode, String personalName,
+    public ResultVO getPumpTruckCount(String compid, String eppCode, String personalName,String taskId,
                                       String stirId, String vehicleId,
                                       Long beginTime, Long endTime,
                                       @RequestParam(defaultValue = "1") Integer page,
                                       @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(vehicleService.getPumpTruckCount(compid, eppCode, personalName, stirId, vehicleId,
+        return ResultVO.create(vehicleService.getPumpTruckCount(compid, eppCode, personalName, stirId, vehicleId,taskId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
@@ -351,6 +378,7 @@ public class VehicleApi {
      * @param personalName 司机
      * @param stirId       楼号
      * @param vehicleId    车号
+     * @param isNewVersion   是否是新版本
      * @param beginTime    开始时间
      * @param endTime      结束时间
      * @param page         分页
@@ -358,13 +386,14 @@ public class VehicleApi {
      */
     @PostMapping("/getPumpOperatorTruckCount")
     public ResultVO getPumpOperatorTruckCount(String compid, String eppCode, String personalName,
-                                              String stirId, String vehicleId,
+                                              String stirId, String vehicleId,String taskId,
+                                              @RequestParam(defaultValue = "0") String isNewVersion,
                                               Long beginTime, Long endTime,
                                               @RequestParam(defaultValue = "1") Integer page,
                                               @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getPumpOperatorTruckCount(compid, eppCode, personalName,
-                stirId, vehicleId,
+                stirId, vehicleId,taskId,isNewVersion,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
@@ -384,12 +413,12 @@ public class VehicleApi {
      */
     @PostMapping("/getPumpTruckDetails")
     public ResultVO getPumpTruckDetails(String compid, String eppCode, String personalName,
-                                        String stirId, String vehicleId,
+                                        String stirId, String vehicleId,String typeName,String taskId,
                                         Long beginTime, Long endTime,
                                         @RequestParam(defaultValue = "1") Integer page,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(vehicleService.getPumpTruckDetails(compid, eppCode, personalName, stirId, vehicleId,
+        return ResultVO.create(vehicleService.getPumpTruckDetails(compid, eppCode, personalName, stirId, vehicleId,typeName,taskId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
@@ -413,12 +442,13 @@ public class VehicleApi {
                                                    String personalName,
                                                    String stirId,
                                                    String vehicleId,
+                                                   String taskId,
                                                    Long beginTime,
                                                    Long endTime,
                                                    @RequestParam(defaultValue = "1") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(vehicleService.getPumpTruckWorkloadStatistics(compid, eppCode, personalName,
+        return ResultVO.create(vehicleService.getPumpTruckWorkloadStatistics(compid, eppCode, personalName,taskId,
                 stirId, vehicleId, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }

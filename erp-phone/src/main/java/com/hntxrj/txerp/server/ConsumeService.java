@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
 
+import java.util.List;
+
 public interface ConsumeService {
 
     /**
@@ -128,8 +130,23 @@ public interface ConsumeService {
                                                     String vehicleId, String stgId, String taskId, String stirId,
                                                     Integer page, Integer pageSize);
 
+
+
     /**
-     * 原材料统计汇总
+     * 标号消耗汇总柱状图
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param taskId    任务单号
+     * @param stirId    站别代号
+     * @return 标号消耗汇总
+     */
+    List<ConsumptionHistogram> getConsumptionHistogram(String compid, String beginTime, String endTime,
+                                                       String vehicleId, String stgId, String taskId, String stirId);
+    /**
+     * 原材料统计汇总(老版本)
      *
      * @param compid    企业id
      * @param beginTime 开始时间
@@ -146,6 +163,25 @@ public interface ConsumeService {
                                      String vehicleId, String taskId, String stirId,
                                      String stgId,
                                      Integer page, Integer pageSize);
+
+    /**
+     * 原材料统计汇总 (新版本)
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param taskId    任务单号
+     * @param stirId    站别代号
+     * @param stgId     线号
+     * @param page      页数
+     * @param pageSize  每页数量
+     * @return 原材料统计汇总
+     */
+    PageVO<RawCollectVO> getProductionConsumptionDetails(String compid, String beginTime, String endTime,
+                                                         String vehicleId, String taskId, String stirId,
+                                                         String stgId,
+                                                         Integer page, Integer pageSize);
 
     /**
      * 生产消耗汇总合计方量

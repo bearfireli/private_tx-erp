@@ -15,12 +15,12 @@ import java.util.UUID;
 
 //登录业务层
 @Service
-public class LoginCOnstructionImpl implements LoginConstructionService {
+public class LoginConstructionImpl implements LoginConstructionService {
 
     private final LoginConstructionMapper loginConstructionMapper;
     private final RedisUtil<LoginClibationVO> redisUtil;
 
-    public LoginCOnstructionImpl(LoginConstructionMapper loginConstructionMapper, RedisUtil<LoginClibationVO> redisUtil) {
+    public LoginConstructionImpl(LoginConstructionMapper loginConstructionMapper, RedisUtil<LoginClibationVO> redisUtil) {
         this.loginConstructionMapper = loginConstructionMapper;
         this.redisUtil = redisUtil;
     }
@@ -40,7 +40,6 @@ public class LoginCOnstructionImpl implements LoginConstructionService {
             System.out.println("是不是空:" + loginClibationVO);
             if (loginClibationVO != null) {
                 System.out.println("TOkens" + loginClibationVO.getSupplierToKen());
-                return loginClibationVO;
             }
         } else {
             passWord = getMd5Password(passWord);
@@ -51,28 +50,44 @@ public class LoginCOnstructionImpl implements LoginConstructionService {
                 loginClibationVO.setSupplierToKen(Code.saltEncoderMd5(UUID.randomUUID().toString()));
                 String token = loginClibationVO.getSupplierToKen();
                 redisUtil.redisSetKey(token, loginClibationVO);
-                return loginClibationVO;
             } else {
                 System.out.println("返回来的数据是空，都为null");
                 throw new ErpException(ErrEumn.USER_LOGIN_ERROR);
             }
         }
-        return null;
+        return loginClibationVO;
     }
 
     @Override
-    public void addUser(String userName, String passWord) throws ErpException {
-        BuildAccountsVO user = loginConstructionMapper.findBybuildId(userName);
+    public void addUser(String userName, String passWord,String buildName) throws ErpException {
+        BuildAccountsVO user = loginConstructionMapper.findByBuildId(userName);
         if (user != null) {
             throw new ErpException(ErrEumn.ADD_USER_PHONE_EXIST);
         }
         passWord =getMd5Password(passWord);
         try{
-            loginConstructionMapper.save(userName,passWord);
+            loginConstructionMapper.save(userName,passWord,buildName);
         }catch (Exception e){
             throw new ErpException(ErrEumn.ADD_ERROR);
         }
 
+    }
+
+    @Override
+    public void updatePassword(String buildId, String oldPassword, String newPassword) throws ErpException {
+        BuildAccountsVO buildAccountsVO= loginConstructionMapper.findUser(buildId);
+        if (buildAccountsVO == null) {
+            //用户不存在
+            throw new ErpException(ErrEumn.USER_NO_EXIT);
+        }
+        oldPassword = getMd5Password(oldPassword);
+        if (!oldPassword.equals(buildAccountsVO.getPassword())) {
+            //旧密码错误
+            throw new ErpException(ErrEumn.OLD_PASSWORD_ERROR);
+        }
+        //修改密码
+        newPassword = getMd5Password(newPassword);
+        loginConstructionMapper.updatePassword(buildId, newPassword);
     }
 
     //加密规则

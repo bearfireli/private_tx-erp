@@ -4,13 +4,17 @@
 
     <!--原材料过磅统计。材料名称-->
     <select id="getWeightByMat" resultType="com.hntxrj.txerp.vo.WeightMatNameVO">
-        select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as Proportion,mp.MatName
+        select dd.PI_TypeName matParentName,dd.PI_Values matParentCode, sum(si.ClWeight) AS tlWeight,
+        COUNT(*) AS VCount,sum(si.Proportion) as Proportion,mp.MatName,mp.mat,mp.MatSpecs as matSpecs
         from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
-        left join (select   MatName + '(' +MatSpecs+ ')' AS matName,compid,MatCode,empName from MP_MaterialInfor )
+        left join (select MatName + '(' +MatSpecs+ ')' AS matName,MatName as mat ,MatSpecs ,
+        compid,MatCode,empName from MP_MaterialInfor )
         mp on si.compid =mp.compid and si.MatCode =mp.MatCode
-        where si.compid = #{compid}  and si.RecStatus=1
+        left join MP_MaterialInfor mm  on  si.compid=mm.compid and si.MatCode=mm.MatCode
+        left join DD_PublicInfo dd on si.compid=dd.compid and dd.PI_Class=64 and dd.PI_Values=mm.MatParent
+        where si.compid = #{compid} and si.RecStatus=1
         <if test="empName != null">
             and mp.empName like '%'+#{empName}+'%'
         </if>
@@ -26,12 +30,12 @@
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
-        group by mp.MatName
+        group by mp.MatName,mp.mat,mp.MatSpecs,dd.PI_TypeName,dd.PI_Values
         order by mp.MatName
     </select>
 
     <!--原材料过磅统计。车辆代号-->
-    <select id="getWeightByVechicId" resultType="com.hntxrj.txerp.vo.WeightVechicIdVO">
+    <select id="getWeightByVehicleId" resultType="com.hntxrj.txerp.vo.WeightVechicIdVO">
         select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as
         Proportion,si.VehicleID
         from MP_StockIn si left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
@@ -55,10 +59,10 @@
         group by si.VehicleID
         ORDER BY si.VehicleID
     </select>
-    <!--原材料过磅统计。供应商名-->
+    <!--原材料过磅统计。供应商名（老版本）-->
     <select id="getWeightByStoName" resultType="com.hntxrj.txerp.vo.WeightSupNameVO">
         select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as
-        Proportion,mt.MatName,sl.Sup_Name
+        Proportion,mt.MatName,sl.Sup_Name,sl.Sup_LinkMan as supLinkMan
         from MP_StockIn si
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
@@ -81,8 +85,41 @@
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
-        group by mt.MatName, sl.Sup_Name
+        group by mt.MatName, sl.Sup_Name,sl.Sup_LinkMan
         ORDER BY sl.Sup_Name,mt.MatName
+    </select>
+
+
+
+
+    <!--原材料过磅统计。供应商名(新版本)-->
+    <select id="getWeightByStoNameNew" resultType="com.hntxrj.txerp.vo.WeightSupNameVO">
+        select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(si.NetWeight) as
+        Proportion,sl.Sup_Name
+        from MP_StockIn si
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+        left join (select MatName + '(' +MatSpecs+ ')' AS matName,compid,MatCode,empName from MP_MaterialInfor )
+        mt on si.compid =mt.compid and si.MatCode =mt.MatCode
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="empName != null">
+            and mt.empName like '%'+#{empName}+'%'
+        </if>
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="stoName != null">
+            and Sto_Name like '%'+#{stoName}+'%'
+        </if>
+
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        group by sl.Sup_Name
+        ORDER BY tlWeight desc
     </select>
     <!--原材料过磅统计。入库库位-->
     <select id="getWeightBySupName" resultType="com.hntxrj.txerp.vo.WeightStorageVO">
@@ -112,7 +149,7 @@
     </select>
     <!--原材料过磅统计。过磅员-->
     <select id="getWeightByEmpName" resultType="com.hntxrj.txerp.vo.WeightEmpNameVO">
-        select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(NetWeight) as  Proportion,us.empName
+        select sum(si.ClWeight) AS tlWeight, COUNT(*) AS VCount,sum(NetWeight) as Proportion,us.empName
         from MP_StockIn si
         left join User_employee us on si.compid =us.compid and si.OPER2 =us.OpId
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
@@ -138,7 +175,7 @@
     </select>
     <!--原材料过磅统计。综合信息-->
     <select id="getSynthesizeByMat" resultType="com.hntxrj.txerp.vo.WeightSynthesizeVO">
-        SELECT  convert ( varchar (10), SecondTime, 120) SecondTime,
+        SELECT convert ( varchar (10), SecondTime, 120) SecondTime,
         Sup_Name,
         mp.matName,
         SUM(si.ClWeight)AS tlWeight,
@@ -146,7 +183,7 @@
         from MP_StockIn si
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
         left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
-        left join (select   MatName + '(' + MatSpecs+ ')' AS matName,compid,MatCode,empName from MP_MaterialInfor )
+        left join (select MatName + '(' + MatSpecs+ ')' AS matName,compid,MatCode,empName from MP_MaterialInfor )
         mp on si.compid =mp.compid and si.MatCode =mp.MatCode
         where si.compid = #{compid} and si.RecStatus=1
         <if test="empName != null">
@@ -177,7 +214,7 @@
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
         where si.compid = #{compid} and si.RecStatus=1
         <if test="empName != null">
-            and mt.empName like   '%'+#{empName}+'%'
+            and mt.empName like '%'+#{empName}+'%'
         </if>
         <if test="vehicleId != null">
             and si.vehicleId like '%'+#{vehicleId}+'%'
@@ -196,7 +233,7 @@
 
     <!--原材料过磅统计。材料名称-->
     <select id="getWeightByMatParent" resultType="com.hntxrj.txerp.vo.WeightMatParentNameVO">
-        SELECT SUM(ClWeight) AS tlWeight,  dp.PI_TypeName as matName
+        SELECT SUM(ClWeight) AS tlWeight, dp.PI_TypeName as matName
         FROM V_MP_StockInQuery sl
         left join DD_PublicInfo dp on sl.MatParent = dp.PI_Values and sl.compid = dp.compid and PI_Class = 64
         where dp.compid=#{compid}
@@ -206,5 +243,104 @@
         GROUP BY dp.PI_TypeName
     </select>
 
+
+    <!--材料统计中按照公司名称分类的饼状图-->
+    <select id="getPieChartBySupName" resultType="com.hntxrj.txerp.vo.WeightChartVO">
+        select sum(si.ClWeight) AS tlWeight, sl.Sup_Name as supName
+        from MP_StockIn si
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+        left join (select MatName + '(' +MatSpecs+ ')' AS matName,compid,MatCode,empName from MP_MaterialInfor )
+        mt on si.compid =mt.compid and si.MatCode =mt.MatCode
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="empName != null">
+            and mt.empName like '%'+#{empName}+'%'
+        </if>
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="stoName != null">
+            and Sto_Name like '%'+#{stoName}+'%'
+        </if>
+
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        group by sl.Sup_Name
+        ORDER BY tlWeight desc
+    </select>
+
+
+    <!--材料统计中按照入库库位分类的柱状图-->
+    <select id="getHistogramByStoName" resultType="com.hntxrj.txerp.vo.WeightChartVO">
+        select sum(si.ClWeight) AS tlWeight, mk.Sto_Name as stoName
+        from MP_StockIn si
+        left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="empName != null">
+            and sl.empName like '%'+#{empName}+'%'
+        </if>
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="stoName != null">
+            and Sto_Name like '%'+#{stoName}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        group by mk.Sto_Name
+        ORDER BY tlWeight desc
+    </select>
+
+
+    <!--材料统计中按照材料类型分类的柱状图-->
+    <select id="getHistogramByMat" resultType="com.hntxrj.txerp.vo.WeightChartVO">
+        select sum(si.ClWeight) AS tlWeight, mp.MatName as matName
+        from MP_StockIn si
+        left join MP_Supplier sl on si.SupCode = sl.SupCode and si.compid = sl.compid
+        left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+        left join (select MatName + '(' + MatSpecs + ')' AS matName, compid, MatCode, empName, MatParent
+        from MP_MaterialInfor) mp on si.compid = mp.compid and si.MatCode = mp.MatCode
+        left join DD_PublicInfo dd on dd.compid = si.compid and dd.PI_Class = 64 and mp.MatParent=dd.PI_Values
+        where si.compid = #{compid}
+        and si.RecStatus = 1
+        <if test="empName != null">
+            and mp.empName like '%'+#{empName}+'%'
+        </if>
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="stoName != null">
+            and Sto_Name like '%'+#{stoName}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        <if test="matType != null">
+            <if test="matType == 1">
+            and (dd.PI_Values='S' or dd.PI_Values='G')
+            </if>
+            <if test="matType == 2">
+                and (dd.PI_Values='C' or dd.PI_Values='P' or dd.PI_Values='F' or dd.PI_Values='CY')
+            </if>
+            <if test="matType == 3">
+                and (dd.PI_Values='AE')
+            </if>
+
+        </if>
+        group by mp.MatName
+        order by mp.MatName
+    </select>
 
 </mapper>

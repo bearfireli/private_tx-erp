@@ -1,9 +1,6 @@
 package com.hntxrj.txerp.mapper;
 
-import com.hntxrj.txerp.entity.base.AuthValue;
-import com.hntxrj.txerp.entity.base.User;
-import com.hntxrj.txerp.entity.base.UserAccount;
-import com.hntxrj.txerp.entity.base.UserAuth;
+import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.AuthGroupVO;
 import com.hntxrj.txerp.vo.AuthValueVO;
 import com.hntxrj.txerp.vo.UserListVO;
@@ -42,4 +39,6 @@ public interface UserMapper {
 
 
     List<AuthValue> getAuthValueByGroupId(Integer groupId,Integer pid);
+
+    List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid);
 }

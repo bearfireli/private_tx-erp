@@ -32,8 +32,8 @@ public class TaskSaleInvoiceDriverListVO {
     //签收状态
     private int upStatus;
 
-
-    private String vehicleStatusName;
+    private int vehicleStatus;          //车辆状态代号
+    private String vehicleStatusName;   //车辆状态名称
 
     private int invoiceType;
     private String invoiceTypeName;
@@ -51,4 +51,6 @@ public class TaskSaleInvoiceDriverListVO {
     private String saleFileImage;   //签收人签名
 
     private String jumpVehicleID; // 泵车号
+    private String slump;
+    private String attribute;  //特性
 }

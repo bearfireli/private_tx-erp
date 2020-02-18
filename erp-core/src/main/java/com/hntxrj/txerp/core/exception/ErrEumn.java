@@ -5,19 +5,23 @@ public enum ErrEumn {
     /* 企业20100-20199 */
     ADD_ENTERPRISE_NAME_NULL(-20100, "添加企业名称不能为空"),
     ADD_ENTERPRISE_ERROR(-20101, "添加企业失败"),
+    UPDATE_ENTERPRISE_ERROR(-20102, "编辑企业失败"),
+    DELETE_ENTERPRISE_ERROR(-20103, "删除企业失败"),
 
 
     /* 合同21000-21099 */
     ADD_CONTRACT_NOT_FOUND_COMPID(-21001, "找不到企业id"),
     ADD_CONTRACT_NOT_FOUND_CONTRACTID(-21002, "找不到合同代号"),
     ADD_CONTRACT_NOT_FOUND_EPPCODE(-21003, "找不到工程代号"),
-    ADD_CONTRACT_NOT_FOUND_BUILDERCODE(-21003, "找不到施工单位代号"),
+    ADD_CONTRACT_NOT_FOUND_BUILDERCODE(-21005, "找不到施工单位代号"),
 //    ADD_CONTRACT_GRADE_PRICE_ERROR(-210004, "修改合同标号价格失败"),
 
 
     ADD_CONTRACT_GRADE_PRICE_ERROR(-21010, "修改合同标号价格失败"),
     ADD_CONTRACTDISTANCESET_ERROR(-21011, "该站距记录已经存在，请从新输入"),
     ADD_CONTRACTPRICEMARKUP_ERROR(-21012, "添加特殊材料失败！"),
+    VERIFY_CONTRACT_ERROR(-21013, "合同已经审核，无法编辑！"),
+    NOT_BIND_CONTRACT(-21014, "您尚未绑定合同,请先绑定合同"),
 
 
     /* 任务单 21101-21199*/
@@ -39,6 +43,7 @@ public enum ErrEumn {
     ADJUNCT_NOT_EXIST(-21203, "附件不存在"),
     ADJUNCT_STREAM_ERROR(-21204, "文件传输失败"),
     ADJUNCT_SAVE_ERROR(-21205, "保存失败,请重新添加泵车类价格，合同号可能已经存在"),
+    DRIVER_SAVE_ERROR(-21205, "添加失败,请重新选择排班信息"),
     ADJUNCT_UPDATE_ERROR(-21207, "修改失败,请重新检查后修改"),
     VERIFY_TICKET_ERROR(-21206, "小票审核状态失败"),
     ADD_PERSONALCODE_ERROR(-21208, "请选择司机"),
@@ -57,11 +62,12 @@ public enum ErrEumn {
     USER_NO_EXIT(-10000, "用户不存在"),
     ADD_USER_ERR(-10001, "添加用户失败"),
     UPDATE_USER_PARAMS_ERR(-10002, "修改用户-非法参数"),
-    UPDATE_USER_ERR(-10003, "修改用户-非法参数"),
+    UPDATE_USER_ERR(-10003, "编辑用户失败"),
     DELECT_USER_ERR(-10004, "删除用户失败"),
     LOGIN_ERR(-10005, "用户名或密码错误"),
     EXPIRE_TOKEN(-10006, "身份认证过期,请重新登录"),
     PARAM_IS_NULL(-10007, "参数为空"),
+    OLD_PASSWORD_ERROR(-10007, "旧密码输入错误"),
 
 
     ADD_USER_UID_IS_NULL(-10008, "uid不能为空！"),
@@ -191,7 +197,7 @@ public enum ErrEumn {
     IMGAGDFILE_FAIL(-100133, "读取地址失败"),
     TO_TRANSFARTO_IMGFILE_FAIL(-100134, "保存文件失败"),
     NOT_FOUNDNOT_FILE(-100135, "找不到文件"),
-    JOURNALISM_NEWS_NULL(-100135, "新闻不存在"),
+    JOURNALISM_NEWS_NULL(-100139, "新闻不存在"),
     JOURNALISM_TITLE_NULL(-100136, "新闻标题为空"),
     JOURNALISM_CONTENT_NULL(-100137, "新闻内容为空"),
     JOURNALISM_IMG_NULL(-100138, "新闻图片为空"),
@@ -200,8 +206,10 @@ public enum ErrEumn {
     add_feedback_error(-100201, "反馈失败"),
 
 
-
     ADD_EPP_ADDRESS_EPP_CODE_IS_NULL(-100202, "工程代号不能为空"),
+    GET_PICTURE_ERROR(-100203, "获取图片失败"),
+    SAVE_PICTURE_ERROR(-100204, "保存图片失败"),
+    DRIVER_IS_BIND(-100203,"已有车辆排班此司机,请重新设置"),
 
     ;
 

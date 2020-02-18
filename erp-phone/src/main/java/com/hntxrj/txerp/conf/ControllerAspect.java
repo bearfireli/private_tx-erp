@@ -1,8 +1,11 @@
 package com.hntxrj.txerp.conf;
 
-import com.squareup.okhttp.*;
 import lombok.extern.slf4j.Slf4j;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -65,10 +68,9 @@ public class ControllerAspect {
     private Object mappingAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
 
+        String functionName;  //拦截到的方法对应的中文名称
 
-        String functionName ;  //拦截到的方法对应的中文名称
-
-        String compid ;  //公司代号
+        String compid;  //公司代号
         Map<String, Object> map = new HashMap<>();
 
 
@@ -80,15 +82,19 @@ public class ControllerAspect {
         for (String key : keySet) {
             if (key.equals(methodName)) {
                 functionName = functionMap.get(key);
-                Object[] args = joinPoint.getArgs();//参数值
-                String[] argNames = ((MethodSignature) joinPoint.getSignature()).getParameterNames(); // 参数名
+
+                //   获取拦截方法的参数值   例：['01','P1910254685']
+                Object[] args = joinPoint.getArgs();
+
+                // 获取拦截方法的参数名 例：[compid,taskId]
+                String[] argNames = ((MethodSignature) joinPoint.getSignature()).getParameterNames();
                 //得到拦截方法的参数compid
                 if (args != null && args.length > 0) {// 无参数
                     for (int i = 0; i < args.length; i++) {
                         map.put(argNames[i], args[i]);
                     }
                     compid = String.valueOf(map.get("compid"));
-                    sendRequest(methodName, functionName, compid);
+                    insertMethodName(methodName, functionName, compid);
                     break;
                 }
             }
@@ -99,25 +105,27 @@ public class ControllerAspect {
     }
 
 
-
     //向tx-erp项目发送请求，把methodName，functionName，compid传递过去，存入数据库统计表中。
-    private void sendRequest(String methodName, String functionName, String compid) throws IOException {
-
-        String baseurl ;
-        baseurl = url + "/statistic/functionClick";
+    private void insertMethodName(String methodName, String functionName, String compid) {
+        String baseUrl;
+        baseUrl = url + "/statistic/functionClick";
         OkHttpClient client = new OkHttpClient();
-        RequestBody body = new FormEncodingBuilder()
+        RequestBody body = new FormBody.Builder()
                 .add("methodName", methodName)
                 .add("functionName", functionName)
                 .add("appCode", "1")
                 .add("compid", compid)
                 .build();
         Request request = new Request.Builder()
-                .url(baseurl)
+                .url(baseUrl)
                 .post(body)
                 .build();
 
-        client.newCall(request).execute();
+        try {
+            client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
