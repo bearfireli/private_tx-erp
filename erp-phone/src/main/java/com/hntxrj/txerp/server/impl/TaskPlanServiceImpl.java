@@ -14,8 +14,10 @@ import com.hntxrj.txerp.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +36,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final SystemVarInitMapper systemVarInitMapper;
     private final ConstructionMapper constructionMapper;
     private StirInfoSetServiceImpl stirInfoSetMapper;
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @Autowired
     public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository,
@@ -658,8 +662,22 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 shiftListVO.setWorkClass(d.getCode());
                 shiftListVO.setWorkName(d.getName());
                 workClass = d.getCode();
-                shiftListVO.setShiftList(taskPlanMapper.getDriverShiftListNew(compid, vehicleId,
-                        personalCode, personalName, workClass, beginTime, endTime));
+                List<DriverShiftListVO> driverShiftList = taskPlanMapper.getDriverShiftListNew(compid, vehicleId,
+                        personalCode, personalName, workClass, beginTime, endTime);
+                for (DriverShiftListVO driverShiftListVO : driverShiftList) {
+                    //缓存中的key值
+                    String key = compid + driverShiftListVO.getPersonalCode();
+                    //从缓存中取出该司机上一次请求的时间
+                    Date onlineTime = (Date) redisTemplate.opsForValue().get(key);
+                    driverShiftListVO.setOnlineStatus("不在线");
+                    if (onlineTime != null) {
+                        if (Math.abs(new Date().getTime() - onlineTime.getTime()) / 1000 < 90) {
+                            //司机上一次请求距离现在小于90秒，说明司机是在线状态
+                            driverShiftListVO.setOnlineStatus("在线");
+                        }
+                    }
+                }
+                shiftListVO.setShiftList(driverShiftList);
                 list.add(shiftListVO);
             }
         }
