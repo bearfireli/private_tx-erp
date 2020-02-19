@@ -52,8 +52,9 @@ public interface TaskPlanService {
      *
      * @param taskPlan 任务单实体类
      * @throws ErpException 定义的异常
+     * @param type 下任务单标识  1 工地端 ，0、null 手机端
      */
-    void addTaskPlan(TaskPlan taskPlan) throws ErpException;
+    void addTaskPlan(TaskPlan taskPlan,String type) throws ErpException;
 
 
     /**
