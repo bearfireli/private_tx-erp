@@ -234,5 +234,7 @@ public class TaskPlan implements Serializable {
     /* 结算审核完成标志 */
     @Column(name = "accountverifystatus")
     private Integer accountVerifyStatus;
-
+    /* 下任务单单位标识 */
+    @Column(name = "client_type")
+    private Integer clientType;
 }
