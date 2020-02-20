@@ -68,11 +68,6 @@ public class MsgServiceImpl implements MsgService {
             int time= sendmsgVO.getMsgLifeTime()*60*60*24;
             jsonObject.put("MsgLifeTime",time);
         }
-        if (sendmsgVO.getMsgLifeTime()==0){
-            jsonObject.put("MsgLifeTime",0);
-        }else if (sendmsgVO.getMsgLifeTime()==7){
-            jsonObject.put("MsgLifeTime",604800);
-        }
         long random =ImBaseData.getRandom();
         int intRandom = (int) random;
         //消息随机数
