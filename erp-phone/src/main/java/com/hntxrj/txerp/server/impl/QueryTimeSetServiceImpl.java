@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +35,7 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
     private String url;
 
     private final QueryTimeSetMapper queryTimeSetMapper;
+
 
     public QueryTimeSetServiceImpl(QueryTimeSetMapper queryTimeSetMapper) {
         this.queryTimeSetMapper = queryTimeSetMapper;
@@ -51,12 +54,12 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
         PageHelper.startPage(page, pageSize);
         //根据compid查询，设置的时间表
         List<QueryTimeSetVO> queryTimeSetVO = queryTimeSetMapper.getQueryTimeSetList(compid);
-        for (QueryTimeSetVO q:queryTimeSetVO) {
-            if (q.getQueryStartTime()!=null){
-                q.setQueryStartTime(q.getQueryStartTime().substring(0,5));
+        for (QueryTimeSetVO q : queryTimeSetVO) {
+            if (q.getQueryStartTime() != null) {
+                q.setQueryStartTime(q.getQueryStartTime().substring(0, 5));
             }
-            if (q.getQueryStopTime()!=null){
-                q.setQueryStopTime(q.getQueryStopTime().substring(0,5));
+            if (q.getQueryStopTime() != null) {
+                q.setQueryStopTime(q.getQueryStopTime().substring(0, 5));
             }
         }
         //查询menu表中的功能名称
@@ -91,6 +94,40 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
         PageVO<QueryTimeSetVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+    @Override
+    public void upDateQueryTime( List<QueryTimeSetVO> list){
+        if (list.size() > 0) {
+            for (QueryTimeSetVO q : list) {
+               String compid =null;
+               String queryName = null;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+               String queryTime = sdf.format(new Date());
+               String queryStartTime ="00:00";
+               String queryStopTime ="00:00";
+               int recstatus =0;
+               int updownmark =0;
+               int updown =0;
+                if (q.getCompid()!=null && !"".equals(q.getCompid())){
+                    compid =q.getCompid();
+                }
+                if (q.getQueryName()!=null && !"".equals(q.getQueryName())){
+                    queryName =q.getQueryName();
+                }
+                if (q.getQuerytime()!=null && !"".equals(q.getQuerytime())){
+                    queryTime =q.getQuerytime();
+                }
+                if (q.getQueryStartTime()!=null && !"".equals(q.getQueryStopTime())){
+                    queryStartTime =q.getQueryStartTime();
+                    queryStopTime =q.getQueryStopTime();
+                }
+                if (compid!=null && queryName!=null){
+                    queryTimeSetMapper.deelte(compid,queryName);
+                    queryTimeSetMapper.inset(compid,queryName,queryTime,queryStartTime,queryStopTime,recstatus,updownmark,updown);
+                }
+            }
+        }
     }
 
 
