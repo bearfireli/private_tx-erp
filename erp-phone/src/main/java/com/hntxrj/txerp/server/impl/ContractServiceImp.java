@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.dao.ContractDao;
+import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
 import com.hntxrj.txerp.repository.ContractGradePriceDetailRepository;
 import com.hntxrj.txerp.server.ContractService;
@@ -55,6 +56,9 @@ public class ContractServiceImp implements ContractService {
 
     private final ConstructionMapper constructionMapper;
 
+    private final MsgService msgService;
+    private final MsgMapper msgMapper;
+
     @Value("${app.spterp.contractAdjunctPath}")
     private String contractAdjunctPath;
 
@@ -63,7 +67,7 @@ public class ContractServiceImp implements ContractService {
                               ContractMasterMapper contractMasterMapper, ContractDetailMapper contractDetailMapper,
                               AdjunctMapper adjunctMapper,
                               ContractGradePriceDetailRepository contractGradePriceDetailRepository,
-                              ConstructionMapper constructionMapper) {
+                              ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -72,6 +76,8 @@ public class ContractServiceImp implements ContractService {
         this.adjunctMapper = adjunctMapper;
         this.contractGradePriceDetailRepository = contractGradePriceDetailRepository;
         this.constructionMapper = constructionMapper;
+        this.msgService = msgService;
+        this.msgMapper = msgMapper;
     }
 
 
@@ -448,11 +454,22 @@ public class ContractServiceImp implements ContractService {
 
     @Override
     public void verifyContract(String contractUid, String compid,
-                               String opId, Integer verifyStatus) {
+                               String opId, Integer verifyStatus) throws ErpException {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         contractMapper.verifyContract(contractUid, compid, opId, sdf.format(new Date()), verifyStatus);
+        int typeId = 3;
+        List<RecipientVO> recipoentList = msgMapper.getRecipoentList(compid,typeId);
+        for (RecipientVO r : recipoentList) {
+            SendmsgVO sendmsgVO = new SendmsgVO();
+            sendmsgVO.setSyncOtherMachine(2);
+            sendmsgVO.setToAccount(r.getName());
+            sendmsgVO.setMsgLifeTime(7);
+            String  msgContent ="合同号：["+contractUid+"]已审核.";
+            sendmsgVO.setMsgContent(msgContent);
+            msgService.sendMsg(sendmsgVO);
+        }
     }
 
     @Override
@@ -556,7 +573,17 @@ public class ContractServiceImp implements ContractService {
         contractMasterMapper.insert(contractMaster);
         EntityTools.setEntityDefaultValue(contractDetail);
         contractDetailMapper.insert(contractDetail);
-
+        int typeId = 3;
+        List<RecipientVO> recipoentList = msgMapper.getRecipoentList(compid,typeId);
+        for (RecipientVO r : recipoentList) {
+            SendmsgVO sendmsgVO = new SendmsgVO();
+            sendmsgVO.setSyncOtherMachine(2);
+            sendmsgVO.setToAccount(r.getName());
+            sendmsgVO.setMsgLifeTime(7);
+            String  msgContent ="有新合同,请审核";
+            sendmsgVO.setMsgContent(msgContent);
+            msgService.sendMsg(sendmsgVO);
+        }
     }
 
     @Override

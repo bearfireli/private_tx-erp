@@ -962,6 +962,11 @@
         tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute
         order by tp.PreTime desc, tp.TaskId desc
     </select>
+    <select id="getRecipoentList" resultType="com.hntxrj.txerp.vo.RecipientVO">
+        select * from Recipient
+        where compid=#{compid}
+        and typeId =#{typeId}
+    </select>
 
 
 </mapper>

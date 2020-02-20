@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.entity.TaskPlan;
+import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
@@ -34,12 +35,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final SystemVarInitMapper systemVarInitMapper;
     private final ConstructionMapper constructionMapper;
     private StirInfoSetServiceImpl stirInfoSetMapper;
+    private final MsgService msgService;
+
+    private final MsgMapper msgMapper;
 
     @Autowired
     public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository,
                                StockMapper stockMapper, ConcreteMapper concreteMapper,
                                PublicInfoMapper publicInfoMapper, SystemVarInitMapper systemVarInitMapper,
-                               ConstructionMapper constructionMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
+                               ConstructionMapper constructionMapper, StirInfoSetServiceImpl stirInfoSetMapper,
+                               MsgService msgService, MsgMapper msgMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
@@ -48,6 +53,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         this.systemVarInitMapper = systemVarInitMapper;
         this.constructionMapper = constructionMapper;
         this.stirInfoSetMapper = stirInfoSetMapper;
+        this.msgService = msgService;
+        this.msgMapper = msgMapper;
     }
 
     @Override
@@ -182,6 +189,17 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlan.setAdjustmentTime(taskPlan.getPreTime());
         try {
             taskPlanRepository.save(taskPlan);
+            int typeId =1;
+            List<RecipientVO> recipoentList = msgMapper.getRecipoentList(taskPlan.getCompid(),typeId);
+            for (RecipientVO r : recipoentList) {
+                SendmsgVO sendmsgVO = new SendmsgVO();
+                sendmsgVO.setSyncOtherMachine(2);
+                sendmsgVO.setToAccount(r.getName());
+                sendmsgVO.setMsgLifeTime(7);
+                sendmsgVO.setMsgContent("有新添加的任务单，请审核!");
+                msgService.sendMsg(sendmsgVO);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.ADD_TASK_ERROR);
@@ -192,6 +210,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public void verifyTaskPlan(String taskId, String compid, Integer verifyStatus) throws ErpException {
         try {
             taskPlanMapper.verifyTaskPlan(taskId, compid, verifyStatus, new Date());
+            if (verifyStatus==1){
+                int typeId = 2;
+                List<RecipientVO> recipoentList = msgMapper.getRecipoentList(compid,typeId);
+                for (RecipientVO r : recipoentList) {
+                    SendmsgVO sendmsgVO = new SendmsgVO();
+                    sendmsgVO.setSyncOtherMachine(2);
+                    sendmsgVO.setToAccount(r.getName());
+                    sendmsgVO.setMsgLifeTime(7);
+                    String  msgContent ="任务单：【"+taskId+"】已审核，请开配比。";
+                    sendmsgVO.setMsgContent(msgContent);
+                    msgService.sendMsg(sendmsgVO);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.VERIFY_TASK_ERROR);

@@ -392,4 +392,6 @@ public interface TaskPlanMapper {
      * @return 车辆集合
      */
     List<DispatchVehicle> getCarsByTaskIds(String compid, List<String> taskIds);
+
+
 }

@@ -68,10 +68,8 @@ public class MsgServiceImpl implements MsgService {
             int time= sendmsgVO.getMsgLifeTime()*60*60*24;
             jsonObject.put("MsgLifeTime",time);
         }
-        long random =ImBaseData.getRandom();
-        int intRandom = (int) random;
         //消息随机数
-        jsonObject.put("MsgRandom",intRandom);
+        jsonObject.put("MsgRandom",ImBaseData.getRandom());
         Date date =new Date();
         int time = (int) date.getTime();
         //消息时间戳
@@ -149,10 +147,8 @@ public class MsgServiceImpl implements MsgService {
             int time= sendmsgVO.getMsgLifeTime()*60*60*24;
             jsonObject.put("MsgLifeTime",time);
         }
-        long random =ImBaseData.getRandom();
-        int intRandom = (int) random;
         //消息随机数
-        jsonObject.put("MsgRandom",intRandom);
+        jsonObject.put("MsgRandom",ImBaseData.getRandom());
         Date date =new Date();
         int time = (int) date.getTime();
         //消息时间戳
