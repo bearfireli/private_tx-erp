@@ -78,15 +78,10 @@ public class MsgServiceImpl implements MsgService {
         jsonObject.put("MsgTimeStamp", time);
 
         JSONObject o =new JSONObject();
+        o.put("MsgType","TIMTextElem");
         JSONObject jsonObject2 =new JSONObject();
         JSONArray arr = new JSONArray();
-        if (!"".equals(sendmsgVO.getMsgType()) && null !=sendmsgVO.getMsgType()){
-            o.put("MsgType",sendmsgVO.getMsgType());
-        }else{
-            o.put("MsgType","TIMTextElem");
-        }
         //消息内容
-
         jsonObject2.put("Text",sendmsgVO.getMsgContent());
         o.put("MsgContent",jsonObject2);
         arr.add(o);
@@ -164,12 +159,8 @@ public class MsgServiceImpl implements MsgService {
         jsonObject.put("MsgTimeStamp", time);
 
         JSONObject jsonObject1 =new JSONObject();
+        jsonObject1.put("MsgType","TIMTextElem");
         JSONArray jsonArray =new JSONArray();
-        if (!"".equals(sendmsgVO.getMsgType()) && null !=sendmsgVO.getMsgType()){
-            jsonObject1.put("MsgType",sendmsgVO.getMsgType());
-        }else{
-            jsonObject1.put("MsgType","TIMTextElem");
-        }
         //消息内容
         JSONObject jsonObject2 =new JSONObject();
         jsonObject2.put("Text",sendmsgVO.getMsgContent());
