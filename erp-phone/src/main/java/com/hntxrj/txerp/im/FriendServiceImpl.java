@@ -44,7 +44,7 @@ public class FriendServiceImpl implements FriendService {
     
     @Override
     public Boolean friendAdd(String userID, List<FriendsVO> friends) throws ErpException {
-        if (!"".equals(userID) && null != userID) {
+        if ("".equals(userID) && null == userID) {
             throw new ErpException(ErrEumn.USER_IS_NULL);
         }
         if (friends.size() < 0) {

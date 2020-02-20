@@ -1,14 +1,16 @@
 package com.hntxrj.txerp.im;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.TLSSigAPIv2;
 import com.hntxrj.txerp.vo.SendmsgVO;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -63,7 +65,7 @@ public class MsgServiceImpl implements MsgService {
         //若不设置该字段，则默认保存7天
         if (sendmsgVO.getMsgLifeTime()>0){
             //前台传递的天， 把天转换成秒。
-           int time= sendmsgVO.getMsgLifeTime()*60*60*24;
+            int time= sendmsgVO.getMsgLifeTime()*60*60*24;
             jsonObject.put("MsgLifeTime",time);
         }
         if (sendmsgVO.getMsgLifeTime()==0){
@@ -71,57 +73,30 @@ public class MsgServiceImpl implements MsgService {
         }else if (sendmsgVO.getMsgLifeTime()==7){
             jsonObject.put("MsgLifeTime",604800);
         }
+        long random =ImBaseData.getRandom();
+        int intRandom = (int) random;
         //消息随机数
-        jsonObject.put("MsgRandom",ImBaseData.getRandom());
+        jsonObject.put("MsgRandom",intRandom);
+        Date date =new Date();
+        int time = (int) date.getTime();
         //消息时间戳
-        jsonObject.put("MsgTimeStamp", new Date());
+        jsonObject.put("MsgTimeStamp", time);
 
-        JSONObject jsonObject1 =new JSONObject();
-        JSONArray jsonArray =new JSONArray();
+        JSONObject o =new JSONObject();
+        JSONObject jsonObject2 =new JSONObject();
+        JSONArray arr = new JSONArray();
         if (!"".equals(sendmsgVO.getMsgType()) && null !=sendmsgVO.getMsgType()){
-            jsonObject1.put("MsgType",sendmsgVO.getMsgType());
+            o.put("MsgType",sendmsgVO.getMsgType());
+        }else{
+            o.put("MsgType","TIMTextElem");
         }
         //消息内容
-        JSONObject jsonObject2 =new JSONObject();
-        jsonObject2.put("Text",sendmsgVO.getMsgContent());
-        jsonObject1.put("jsonObject2",jsonObject2);
-        jsonArray.put(jsonObject1);
-        jsonObject.put("MsgBody",jsonObject);
 
-//        RequestBody requestBody = RequestBody.create(_JSON, com.alibaba.fastjson.JSON.toJSONBytes(jsonObject));
-//        Request request = new Request.Builder()
-//                .url(url + "/openim/sendmsg" + urlParams)
-//                .post(requestBody)
-//                .build();
-//        ResponseBody responseBody = null;
-//        com.alibaba.fastjson.JSONObject resultJSON = null;
-//        OkHttpClient client = new OkHttpClient();
-//        try {
-//            Response response = client.newCall(request).execute();
-//            responseBody = response.body();
-//            if (responseBody != null) {
-//                String result = responseBody.string();
-//                resultJSON = com.alibaba.fastjson.JSONObject.parseObject(result);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            log.error("请求失败!");
-//            return false;
-//        } finally {
-//            if (responseBody != null) {
-//                responseBody.close();
-//            }
-//        }
-//        if (resultJSON != null && resultJSON.getInteger("ErrorCode") == 0) {
-//            return true;
-//        }
-//
-//
-//        if (resultJSON != null) {
-//            // 打印tim rest api 返回的错误信息
-//            log.error("【tim sdk】error:{}", resultJSON.getString("ErrorInfo"));
-//        }
-//        return false;
+        jsonObject2.put("Text",sendmsgVO.getMsgContent());
+        o.put("MsgContent",jsonObject2);
+        arr.add(o);
+        jsonObject.put("MsgBody",arr);
+
         OkHttpClient client = new OkHttpClient();
 
         RequestBody requestBody = RequestBody.create(_JSON, JSON.toJSONBytes(jsonObject));
@@ -172,7 +147,7 @@ public class MsgServiceImpl implements MsgService {
         String [] toAccountList =sendmsgVO.getToAccount().split(",");
         JSONArray array =new JSONArray();
         for (int i =0;i<toAccountList.length;i++){
-            array.put(toAccountList[i]);
+            array.add(toAccountList[i]);
         }
         jsonObject.put("To_Account",array);
         //消息保存时长 （单位：秒）最长为7天（604800秒）
@@ -184,27 +159,28 @@ public class MsgServiceImpl implements MsgService {
             int time= sendmsgVO.getMsgLifeTime()*60*60*24;
             jsonObject.put("MsgLifeTime",time);
         }
-        if (sendmsgVO.getMsgLifeTime()==0){
-            jsonObject.put("MsgLifeTime",0);
-        }else if (sendmsgVO.getMsgLifeTime()==7){
-            jsonObject.put("MsgLifeTime",604800);
-        }
+        long random =ImBaseData.getRandom();
+        int intRandom = (int) random;
         //消息随机数
-        jsonObject.put("MsgRandom",ImBaseData.getRandom());
+        jsonObject.put("MsgRandom",intRandom);
+        Date date =new Date();
+        int time = (int) date.getTime();
         //消息时间戳
-        jsonObject.put("MsgTimeStamp", new Date());
+        jsonObject.put("MsgTimeStamp", time);
 
         JSONObject jsonObject1 =new JSONObject();
         JSONArray jsonArray =new JSONArray();
         if (!"".equals(sendmsgVO.getMsgType()) && null !=sendmsgVO.getMsgType()){
             jsonObject1.put("MsgType",sendmsgVO.getMsgType());
+        }else{
+            jsonObject1.put("MsgType","TIMTextElem");
         }
         //消息内容
         JSONObject jsonObject2 =new JSONObject();
         jsonObject2.put("Text",sendmsgVO.getMsgContent());
         jsonObject1.put("jsonObject2",jsonObject2);
-        jsonArray.put(jsonObject1);
-        jsonObject.put("MsgBody",jsonObject);
+        jsonArray.add(jsonObject1);
+        jsonObject.put("MsgBody",jsonArray);
         RequestBody requestBody = RequestBody.create(_JSON, com.alibaba.fastjson.JSON.toJSONBytes(jsonObject));
         Request request = new Request.Builder()
                 .url(url + "/openim/batchsendmsg" + urlParams)
@@ -218,6 +194,7 @@ public class MsgServiceImpl implements MsgService {
             responseBody = response.body();
             if (responseBody != null) {
                 String result = responseBody.string();
+                System.out.println(result);
                 resultJSON = com.alibaba.fastjson.JSONObject.parseObject(result);
             }
         } catch (IOException e) {
