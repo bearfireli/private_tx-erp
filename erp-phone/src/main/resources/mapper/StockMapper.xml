@@ -39,4 +39,9 @@
         order by StirId
     </select>
 
+    <select id="getStockList" resultType="com.hntxrj.txerp.vo.StockVO">
+        select Sto_Name as stoName
+        from MP_Stock where compid=#{compid} group by Sto_Name
+    </select>
+
 </mapper>
