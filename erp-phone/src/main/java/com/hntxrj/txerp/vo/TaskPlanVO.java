@@ -46,6 +46,7 @@ public class TaskPlanVO {
     private String placeStyleName;
     private String preRemark;
     private boolean receiptStatus;
+    private Integer clientType;
     private boolean excess;
     private boolean tax;
 
