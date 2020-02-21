@@ -119,7 +119,7 @@
                preRemark,
                task.placeStyle,
                ps.PI_TypeName    placeStyleName,
-               task.client_type clientType
+               task.client_type clientType,
                ps.PI_TypeName    placeStyleName,
                task.IsTax  tax,
                task.IsExcess excess
