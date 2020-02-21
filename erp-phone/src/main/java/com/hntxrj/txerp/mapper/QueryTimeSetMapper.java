@@ -1,6 +1,5 @@
 package com.hntxrj.txerp.mapper;
 
-import com.hntxrj.txerp.entity.QueryTimeSet;
 import com.hntxrj.txerp.vo.QueryTimeSetVO;
 import org.apache.ibatis.annotations.Mapper;
 
