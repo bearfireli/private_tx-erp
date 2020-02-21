@@ -532,7 +532,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         UserAccount userAccounts = userMapper.type(userId);
         List<UserVO> userVOS = userToUserVO(users, true);
         UserVO userVO = userVOS.get(0);
-        List<AuthGroupVO> authGroups = userMapper.findbyId(userId);
+        List<AuthGroupVO> authGroups = userMapper.findById(userId);
         StringBuilder epShortNamelist = new StringBuilder();
         StringBuilder agnamelist = new StringBuilder();
         for (AuthGroupVO authGroupVO : authGroups) {
