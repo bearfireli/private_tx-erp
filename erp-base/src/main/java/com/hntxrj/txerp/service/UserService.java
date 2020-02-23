@@ -48,6 +48,8 @@ public interface UserService {
      */
     UserVO tokenCanUse(String token) throws ErpException;
 
+    UserVO tokenCheck(String token) throws ErpException;
+
 
     /**
      * get user list ande select user list
@@ -234,4 +236,6 @@ public interface UserService {
     List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid);
 
     List<User> selectAllUser();
+
+
 }

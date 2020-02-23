@@ -144,6 +144,7 @@ public class ControllerAspect {
             }
 
         }
+
         if (enterprise <= 0) {
             ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.ENTERPRISE_ID_NOTEXIST));
         }
