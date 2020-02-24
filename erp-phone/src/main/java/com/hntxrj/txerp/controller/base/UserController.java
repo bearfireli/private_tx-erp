@@ -485,6 +485,20 @@ public class UserController {
         jsonVo.setData(permissService.getPermissionForToken(token));
         return jsonVo;
     }
+    /**
+     * 根据企业ID获取用户列表
+     *
+     * @param 企业ID compid
+     * @return {@link JsonVo}
+     */
+    @RequestMapping(value = "getUserListByCom")
+    public JsonVo getUserListByCom(String compid) {
+        JsonVo jsonVo = new JsonVo();
+        jsonVo.setCode(0);
+        jsonVo.setMsg("ok");
+        jsonVo.setData(userEmployeeService.getUserListByCom(compid));
+        return jsonVo;
+    }
 
 
 }

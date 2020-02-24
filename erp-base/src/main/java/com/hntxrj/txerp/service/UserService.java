@@ -48,6 +48,8 @@ public interface UserService {
      */
     UserVO tokenCanUse(String token) throws ErpException;
 
+    UserVO tokenCheck(String token) throws ErpException;
+
 
     /**
      * get user list ande select user list
@@ -278,7 +280,4 @@ public interface UserService {
      * 查询所有企业所有用户
      */
     List<User> selectAllUser();
-
-    /*根据eid 查询企业用户*/
-    List<User> userAll(Integer eid);
 }

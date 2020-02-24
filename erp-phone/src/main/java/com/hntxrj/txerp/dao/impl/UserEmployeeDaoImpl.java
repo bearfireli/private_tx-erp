@@ -293,4 +293,20 @@ public class UserEmployeeDaoImpl implements UserEmployeeDao {
     }
 
 
+    /**
+     * 通过企业ID获取用户列表
+     *
+     * @param 企业ID compid
+     * @return  List<UserEmployee>  用户列表
+     */
+    @Override
+    public List<UserEmployee> getUserListByCom(String compid) {
+
+        SqlBuilder sql = sqlBuilder.table("User_employee", UserEmployee.class)
+                .where("compid", compid)
+                .select();
+        return (List<UserEmployee>) sql.getResult();
+    }
+
+
 }

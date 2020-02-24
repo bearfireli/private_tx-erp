@@ -66,6 +66,7 @@ public enum ErrEumn {
     DELECT_USER_ERR(-10004, "删除用户失败"),
     LOGIN_ERR(-10005, "用户名或密码错误"),
     EXPIRE_TOKEN(-10006, "身份认证过期,请重新登录"),
+    OTHER_LOGIN(-20006, "账号其他设备登录,请重新登录"),
     PARAM_IS_NULL(-10007, "参数为空"),
     OLD_PASSWORD_ERROR(-10007, "旧密码输入错误"),
 
