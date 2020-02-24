@@ -3,7 +3,6 @@ package com.hntxrj.txerp.server;
 
 import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.vo.*;
-import com.hntxrj.txerp.vo.*;
 
 import java.util.List;
 
@@ -20,18 +19,19 @@ public interface ConsumeService {
      * @param stirId          线号
      * @param taskId          任务单好
      * @param stgId           砼标号
-     * @param empname         操作员
+     * @param empName         操作员
      * @param placing         浇筑部位
      * @param eppName         工程名称
-     * @param builderShorName 施工单位简称
+     * @param builderShortName 施工单位简称
      * @param openTime        查询时间
      * @param overTime        救赎时间
      * @return json
      */
     JSONArray spQueryVQueryProduceConsume(String compid, Integer currPage, Integer pageSize, String vehicleID,
-                                          String stirId, String taskId, String stgId, String empname,
-                                          String placing, String eppName, String builderShorName,
-                                          String openTime, String overTime, Integer mark, Integer taskstatus, String opid);
+                                          String stirId, String taskId, String stgId, String empName,
+                                          String placing, String eppName, String builderShortName,
+                                          String openTime, String overTime, Integer mark,
+                                          Integer taskstatus, String opid);
 
 
     /**
@@ -85,6 +85,7 @@ public interface ConsumeService {
      * @param beginTime 开始时间
      * @param endTime   结束时间
      * @param vehicleId 车号
+     * @param stgId     标号
      * @param taskId    任务单号
      * @param stirId    站别代号
      * @param page      页数
@@ -102,6 +103,7 @@ public interface ConsumeService {
      * @param beginTime 开始时间
      * @param endTime   结束时间
      * @param vehicleId 车号
+     * @param stgId     标号
      * @param taskId    任务单号
      * @param stirId    站别代号
      * @param page      页数
@@ -109,6 +111,24 @@ public interface ConsumeService {
      * @return 每盘配料明细
      */
     PageVO<PlatelngredientsVO> getFormulaDetails(String compid, String beginTime, String endTime,
+                                                 String vehicleId, String stgId, String taskId, String stirId,
+                                                 Integer page, Integer pageSize);
+
+    /**
+     * 超差盘数列表
+     *
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param stgId     标号
+     * @param taskId    任务单号
+     * @param stirId    站别代号
+     * @param page      页数
+     * @param pageSize  每页数量
+     * @return 超差盘数列表
+     */
+    List<PlatelngredientsVO> getErrorProductList(String compid, String beginTime, String endTime,
                                                  String vehicleId, String stgId, String taskId, String stirId,
                                                  Integer page, Integer pageSize);
 
@@ -131,7 +151,6 @@ public interface ConsumeService {
                                                     Integer page, Integer pageSize);
 
 
-
     /**
      * 标号消耗汇总柱状图
      *
@@ -145,6 +164,7 @@ public interface ConsumeService {
      */
     List<ConsumptionHistogram> getConsumptionHistogram(String compid, String beginTime, String endTime,
                                                        String vehicleId, String stgId, String taskId, String stirId);
+
     /**
      * 原材料统计汇总(老版本)
      *
@@ -200,7 +220,21 @@ public interface ConsumeService {
                                                 String vehicleId, String stgId, String taskId, String stirId,
                                                 Integer page, Integer pageSize);
 
+    /**
+     * 查询生产材料详细名称
+     *
+     * @param compid 企业id
+     * @param stirId  线号
+     * @return 查询材料名
+     */
     PageVO<StockVO> getProductDatail(String compid, Integer stirId);
 
-    Integer getErroPan(String compid,String beginTime,String endTime);
+    /**
+     * 获取指定时间的超差盘数
+     *
+     * @param compid    　企业
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     */
+    Integer getErrorPan(String compid, String beginTime, String endTime);
 }

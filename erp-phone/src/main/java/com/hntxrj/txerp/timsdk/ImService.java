@@ -1,6 +1,6 @@
 package com.hntxrj.txerp.timsdk;
 
-//import com.hntxrj.txerp.timsdk.po.UserStateResult;
+import com.hntxrj.txerp.timsdk.po.UserStateResult;
 
 /**
  * 消息服务
@@ -26,7 +26,7 @@ public interface ImService {
      * @param accounts 要查询的账号id
      * @return 账号在线状态
      */
-//    UserStateResult queryState(String[] accounts);
+    UserStateResult queryState(String[] accounts);
 
 
     /**

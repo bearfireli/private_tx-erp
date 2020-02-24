@@ -68,7 +68,7 @@ public class TaskPlanApi {
      *
      * @param taskPlan 任务单实体类
      * @return 成功或者失败
-     * @param type 下任务单标识  1 工地端 ，0、null 手机端
+     * @param type 下任务单标识  1:工地端 ; 0:手机端
      * @throws ErpException 定义的异常
      */
     @PostMapping("/addTaskPlan")

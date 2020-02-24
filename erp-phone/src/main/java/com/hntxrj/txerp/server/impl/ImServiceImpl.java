@@ -1,3 +1,6 @@
+/*
+这是浩然写的消息，因为idea报错，所以把整个类全部注释了；
+这个类没有被调用，代码可以为以后写消息功能当作参考，所以没有删除，暂时注释掉
 package com.hntxrj.txerp.server.impl;
 
 import com.alibaba.fastjson.JSON;
@@ -168,4 +171,4 @@ public class ImServiceImpl implements ImService {
         }
 //        return null;
     }
-}
+}*/
