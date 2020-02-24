@@ -12,7 +12,7 @@
         recstatus,
         updownmark,
         updown) VALUES (
-        #{compid},#{queryName},#{queryTime},#{queryStartTime},#{queryStopTime},#{recstatus},#{updownmark},#{updown}
+        #{compid},#{queryName},#{queryTime},#{queryStartTime},#{queryStopTime},#{recStatus},#{upDownMark},#{upDown}
         )
     </insert>
     <!--删除时间表-->
