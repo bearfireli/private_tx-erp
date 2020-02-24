@@ -1,11 +1,12 @@
 package com.hntxrj.txerp.api;
 
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.server.QueryTimeSetService;
+import com.hntxrj.txerp.vo.QueryTimeSetVO;
 import com.hntxrj.txerp.vo.ResultVO;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -32,5 +33,15 @@ public class QueryTimeSetApi {
     public ResultVO getQueryTimeSetList(String compid, @RequestParam(defaultValue = "1") Integer page,
                                         @RequestParam(defaultValue = "30") Integer pageSize){
         return ResultVO.create(queryTimeSetService.getQueryTimeSetList(compid, page, pageSize));
+    }
+
+    /**
+     * 编辑默认时间
+     * @param list 传递的json参数
+     */
+    @PostMapping("/upDateQueryTime")
+    public ResultVO upDateQueryTime(@RequestBody List<QueryTimeSetVO> list) {
+        queryTimeSetService.upDateQueryTime(list);
+        return ResultVO.create();
     }
 }

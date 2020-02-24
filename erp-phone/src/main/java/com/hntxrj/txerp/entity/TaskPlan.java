@@ -143,7 +143,7 @@ public class TaskPlan implements Serializable {
     private String defaultJump;
     /* 含税否 */
     @Column(name = "istax")
-    private String isTax;
+    private Boolean isTax;
     /* 接管状态 */
     @Column(name = "linkpipestatus")
     private Integer linkPipeStatus;
@@ -185,7 +185,7 @@ public class TaskPlan implements Serializable {
     private String concreteMark;
     /* null */
     @Column(name = "isexcess")
-    private String isExcess;
+    private Boolean isExcess;
     /* null */
     @Column(name = "jumpmark")
     private Integer jumpMark;

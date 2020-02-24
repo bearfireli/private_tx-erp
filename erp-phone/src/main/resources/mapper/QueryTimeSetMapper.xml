@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.QueryTimeSetMapper">
-
+    <!--添加默认时间表-->
+    <insert id="insetqueryTimeSet"  useGeneratedKeys="true">
+        insert into systime_querytimeset
+        (compid,
+        query_name,
+        query_time,
+        query_start_time,
+        query_stop_time,
+        recstatus,
+        updownmark,
+        updown) VALUES (
+        #{compid},#{queryName},#{queryTime},#{queryStartTime},#{queryStopTime},#{recstatus},#{updownmark},#{updown}
+        )
+    </insert>
+    <!--删除时间表-->
+    <delete id="deletequeryTimeSet">
+        delete from systime_querytimeset where compid=#{compid} and query_name =#{queryName}
+    </delete>
+    <!--查询默认时间表-->
     <select id="getQueryTimeSetList" resultType="com.hntxrj.txerp.vo.QueryTimeSetVO">
         select * from systime_querytimeset where compid =#{compid} and recstatus =0
     </select>
