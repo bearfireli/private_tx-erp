@@ -66,6 +66,7 @@ public enum ErrEumn {
     DELECT_USER_ERR(-10004, "删除用户失败"),
     LOGIN_ERR(-10005, "用户名或密码错误"),
     EXPIRE_TOKEN(-10006, "身份认证过期,请重新登录"),
+    OTHER_LOGIN(-20006, "账号其他设备登录,请重新登录"),
     PARAM_IS_NULL(-10007, "参数为空"),
     OLD_PASSWORD_ERROR(-10007, "旧密码输入错误"),
 
@@ -210,6 +211,12 @@ public enum ErrEumn {
     GET_PICTURE_ERROR(-100203, "获取图片失败"),
     SAVE_PICTURE_ERROR(-100204, "保存图片失败"),
     DRIVER_IS_BIND(-100203,"已有车辆排班此司机,请重新设置"),
+
+    ACCOUNT_NULL_ERROR(100301, "导入账号不能为空"),
+    IM_SDK_ERROR(100302, "请求腾讯云即时通讯IM错误"),
+    GROUP_NAME_NULL_ERROR(100302, "群组名称不能为空"),
+    GROUP_TYPE_NULL_EOORO(100302, "群组类型不能为空"),
+    GROUP_ID_NULL_ERROR(100303, "群组账号不能为空"),
 
     ;
 

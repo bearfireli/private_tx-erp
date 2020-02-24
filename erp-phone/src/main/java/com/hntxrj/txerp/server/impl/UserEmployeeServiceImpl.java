@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 功能:  用户服务层接口实现层
  *
@@ -150,6 +152,18 @@ public class UserEmployeeServiceImpl implements UserEmployeeService {
     @Override
     public JSONArray cancelWechatBind(String token) {
         return userEmployeeDao.cancelWechatBind(token);
+    }
+
+
+    /**
+     * 通过企业ID获取用户列表
+     *
+     * @param 企业ID compid
+     * @return  List<UserEmployee>  用户列表
+     */
+    @Override
+    public List<UserEmployee> getUserListByCom(String comid) {
+        return userEmployeeDao.getUserListByCom(comid);
     }
 
 
