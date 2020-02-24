@@ -180,7 +180,7 @@ public class UserController {
     @PostMapping("/tokenCheck")
     public ResultVO tokenCheck(String token) throws ErpException {
         log.debug("【验证token是否可用】token={}", token);
-        resultVO.setData(userService.tokenCheck(token));
+        userService.tokenCheck(token);
         return resultVO;
     }
 

@@ -459,6 +459,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         log.error("【tokenCanUse throw EXPIRE_TOKEN】 token={}", userLogin);
         throw new ErpException(ErrEumn.OTHER_LOGIN);
+//        if (userLogin == null) {
+//            throw new ErpException(ErrEumn.OTHER_LOGIN);
+//        }
+
     }
     @Override
     public PageVO<UserAuthVO> getUser(User user, String token, Integer enterpriseId, HttpServletRequest request,
