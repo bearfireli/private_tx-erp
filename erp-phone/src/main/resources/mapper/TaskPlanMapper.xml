@@ -119,7 +119,10 @@
                preRemark,
                task.placeStyle,
                ps.PI_TypeName    placeStyleName,
-               task.client_type clientType
+               task.client_type clientType,
+               ps.PI_TypeName    placeStyleName,
+               task.IsTax  tax,
+               task.IsExcess excess
         from PT_TaskPlan task
                  left join PT_TaskSaleInvoice pt on task.compid = pt.compid and task.TaskId = pt.TaskId
                                                         and pt.InvoiceType !=6
@@ -141,7 +144,7 @@
         EPPName, task.BuilderCode, BuilderName, stgid, Attribute, TechnicalRequirements, task.preCarNum, task.grade,
         task.Address, task.linkTel, task.distance, Placing, PreNum, ConcreteMark, StoneAsk, dd.PI_TypeName, PreTime,
         task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus, ts.PI_TypeName,
-        preRemark, task.placeStyle, ps.PI_TypeName,task.client_type
+        preRemark, task.placeStyle, ps.PI_TypeName,task.client_type,task.isTax,task.IsExcess
     </select>
 
     <select id="getSendCarList" resultType="com.hntxrj.txerp.vo.SendCarListVO">

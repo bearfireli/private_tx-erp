@@ -1,7 +1,10 @@
 package com.hntxrj.txerp.server;
 
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.QueryTimeSetVO;
+
+import java.util.List;
 
 public interface QueryTimeSetService {
 
@@ -14,4 +17,10 @@ public interface QueryTimeSetService {
      * @return 返回json
      */
     PageVO<QueryTimeSetVO> getQueryTimeSetList(String compid, Integer page, Integer pageSize);
+
+    /**
+     * 编辑默认时间
+     * @param list 传递的json参数
+     */
+    void upDateQueryTime( List<QueryTimeSetVO> list);
 }
