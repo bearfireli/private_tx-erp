@@ -203,6 +203,7 @@
     <select id="selectAllUser" resultType="com.hntxrj.txerp.entity.base.User">
          SELECT uid FROM USER
     </select>
+    <!--根据eid 查询企业用户-->
     <select id="userAll" resultType="com.hntxrj.txerp.entity.base.User">
         select u.* from user_auth ua
         LEFT JOIN user u on ua.uid =u.uid

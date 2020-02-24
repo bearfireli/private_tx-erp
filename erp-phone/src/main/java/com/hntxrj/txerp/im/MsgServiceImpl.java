@@ -38,6 +38,11 @@ public class MsgServiceImpl implements MsgService {
                 .replace("{{random}}", String.valueOf(new Random().nextInt()));
     }
 
+    /**
+     * 单发单聊消息
+     * @return 接口返回参数
+     * @param sendmsgVO 消息类
+     */
     @Override
     public void sendMsg(SendmsgVO sendmsgVO) throws ErpException {
         if ("".equals(sendmsgVO.getToAccount()) || null ==sendmsgVO.getToAccount()){
@@ -112,6 +117,11 @@ public class MsgServiceImpl implements MsgService {
 
     }
 
+    /**
+     * 批量发单聊消息
+     * @return 接口返回参数
+     * @param sendmsgVO 消息类
+     */
     @Override
     public Boolean batchSendMsg(SendmsgVO sendmsgVO) throws ErpException {
         if ("".equals(sendmsgVO.getToAccount()) || null ==sendmsgVO.getToAccount()){

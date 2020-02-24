@@ -279,5 +279,6 @@ public interface UserService {
      */
     List<User> selectAllUser();
 
+    /*根据eid 查询企业用户*/
     List<User> userAll(Integer eid);
 }

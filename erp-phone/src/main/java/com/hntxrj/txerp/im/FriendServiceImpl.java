@@ -25,7 +25,8 @@ import java.util.*;
 public class FriendServiceImpl implements FriendService {
     private static final MediaType _JSON = MediaType.parse("application/json; charset=utf-8");
     private TLSSigAPIv2 tlsSigAPIv2;
-    private String urlParams = "?sdkappid={{sdkappid}}&identifier=system&usersig={{usersig}}&random={{random}}&contenttype=json";
+    private String urlParams = "?sdkappid={{sdkappid}}&identifier=system&usersig={{usersig}}&random={{random}}" +
+            "&contenttype=json";
 
 
     @Value("${app.cloud.CommunicationUrl}")
@@ -41,7 +42,15 @@ public class FriendServiceImpl implements FriendService {
                 .replace("{{usersig}}", tlsSigAPIv2.genSig("system", (365 * 24 * 60 * 60)))
                 .replace("{{random}}", String.valueOf(new Random().nextInt()));
     }
-    
+
+    /**
+     * 添加好友
+     * 添加好友，支持批量添加好友。
+     *
+     * @param userID  当前用户
+     * @param friends 添加的好友
+     * @return
+     */
     @Override
     public Boolean friendAdd(String userID, List<FriendsVO> friends) throws ErpException {
         if ("".equals(userID) && null == userID) {
@@ -125,11 +134,17 @@ public class FriendServiceImpl implements FriendService {
 
     }
 
-    /*
+    /**
      * 导入好友
-     * */
+     * 支持批量导入单向好友。
+     * 往同一个用户导入好友时建议采用批量导入的方式，避免并发写导致的写冲突。
+     *
+     * @param userID 当前用户
+     * @param eid    企业代号
+     * @return 接口返回参数
+     */
     @Override
-    public Boolean friendImport(String userID, Integer eid) throws IOException {
+    public Boolean friendImport(String userID, Integer eid) {
         //创建json,保存该用户ID
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("From_Account", userID);
@@ -186,12 +201,20 @@ public class FriendServiceImpl implements FriendService {
 
     }
 
+    /**
+     * 删除好友
+     * 删除好友，支持单向删除好友和双向删除好友。
+     * @param userID 当前用户
+     * @param friends  选择删除的好友ID
+     * @param deleteType 删除模式 Delete_Type_Single 单向删除/Delete_Type_Both 双向删除
+     * @return 接口返回参数
+     */
     @Override
     public Boolean friendDelete(String userID, List<FriendsVO> friends, String deleteType) throws ErpException {
-        if ("".equals(userID) && null == userID) {
+        if ("".equals(userID) || null == userID) {
             throw new ErpException(ErrEumn.USER_IS_NULL);
         }
-        if (friends.size() < 0) {
+        if (friends.size() == 0) {
             throw new ErpException(ErrEumn.DEL_FRIENDS_NULL);
         }
         JSONObject jsonObject = new JSONObject();
