@@ -1,3 +1,6 @@
+/*
+这是浩然写的消息，因为idea报错，所以把整个类全部注释了；
+这个类没有被调用，代码可以为以后写消息功能当作参考，所以没有删除，暂时注释掉
 package com.hntxrj.txerp.server.impl;
 
 import com.alibaba.fastjson.JSON;
@@ -5,7 +8,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.util.TLSSigAPIv2;
 import com.hntxrj.txerp.timsdk.ImService;
-import com.hntxrj.txerp.timsdk.po.UserStateResult;
+//import com.hntxrj.txerp.timsdk.po.UserStateResult;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +30,14 @@ public class ImServiceImpl implements ImService {
     private String urlParams = "?sdkappid={{sdkappid}}&identifier=system&usersig={{usersig}}&random={{random}}&contenttype=json";
 
 
-    @Autowired
-    public ImServiceImpl(@Value("${app.timsdk.sdkAppID}") Integer sdkAppId, @Value("${app.timsdk.key}") String key) {
-        tlsSigAPIv2 = new TLSSigAPIv2(sdkAppId, key);
-        urlParams = urlParams
-                .replace("{{sdkappid}}", String.valueOf(sdkAppId))
-                .replace("{{usersig}}", tlsSigAPIv2.genSig("system", (365 * 24 * 60 * 60)))
-                .replace("{{random}}", String.valueOf(new Random().nextInt()));
-    }
+//    @Autowired
+//    public ImServiceImpl(@Value("${app.timsdk.sdkAppID}") Integer sdkAppId, @Value("${app.timsdk.key}") String key) {
+//        tlsSigAPIv2 = new TLSSigAPIv2(sdkAppId, key);
+//        urlParams = urlParams
+//                .replace("{{sdkappid}}", String.valueOf(sdkAppId))
+//                .replace("{{usersig}}", tlsSigAPIv2.genSig("system", (365 * 24 * 60 * 60)))
+//                .replace("{{random}}", String.valueOf(new Random().nextInt()));
+//    }
 
     @Override
     public Boolean accountImport(String identifier, String nick, String faceUrl, Integer type) {
@@ -82,48 +85,48 @@ public class ImServiceImpl implements ImService {
 
     }
 
-    @Override
-    public UserStateResult queryState(String[] accounts) {
-
-        OkHttpClient client = new OkHttpClient();
-
-        JSONObject json = new JSONObject();
-        json.put("To_Account", JSONArray.parseArray(JSON.toJSONString(accounts)));
-
-        RequestBody requestBody = RequestBody.create(_JSON, JSON.toJSONBytes(json));
-        Request request = new Request.Builder()
-                .url(baseUrl + "v4/openim/querystate" + urlParams)
-                .post(requestBody)
-                .build();
-        ResponseBody responseBody = null;
-        UserStateResult resultUserStates = null;
-        try {
-            Response response = client.newCall(request).execute();
-            responseBody = response.body();
-            if (responseBody != null) {
-                String result = responseBody.string();
-                resultUserStates = JSONObject.parseObject(result, UserStateResult.class);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error("请求失败!");
-            return null;
-        } finally {
-            if (responseBody != null) {
-                responseBody.close();
-            }
-        }
-        if (resultUserStates != null && resultUserStates.getErrorCode() == 0) {
-            return resultUserStates;
-        }
-
-
-        if (resultUserStates != null) {
-            // 打印tim rest api 返回的错误信息
-            log.error("【tim sdk】error:{}", resultUserStates.getErrorInfo());
-        }
-        return null;
-    }
+//    @Override
+//    public UserStateResult queryState(String[] accounts) {
+//
+//        OkHttpClient client = new OkHttpClient();
+//
+//        JSONObject json = new JSONObject();
+//        json.put("To_Account", JSONArray.parseArray(JSON.toJSONString(accounts)));
+//
+//        RequestBody requestBody = RequestBody.create(_JSON, JSON.toJSONBytes(json));
+//        Request request = new Request.Builder()
+//                .url(baseUrl + "v4/openim/querystate" + urlParams)
+//                .post(requestBody)
+//                .build();
+//        ResponseBody responseBody = null;
+//        UserStateResult resultUserStates = null;
+//        try {
+//            Response response = client.newCall(request).execute();
+//            responseBody = response.body();
+//            if (responseBody != null) {
+//                String result = responseBody.string();
+//                resultUserStates = JSONObject.parseObject(result, UserStateResult.class);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            log.error("请求失败!");
+//            return null;
+//        } finally {
+//            if (responseBody != null) {
+//                responseBody.close();
+//            }
+//        }
+//        if (resultUserStates != null && resultUserStates.getErrorCode() == 0) {
+//            return resultUserStates;
+//        }
+//
+//
+//        if (resultUserStates != null) {
+//            // 打印tim rest api 返回的错误信息
+//            log.error("【tim sdk】error:{}", resultUserStates.getErrorInfo());
+//        }
+//        return null;
+//    }
 
     @Override
     public void sendMsg() {
@@ -168,4 +171,4 @@ public class ImServiceImpl implements ImService {
         }
 //        return null;
     }
-}
+}*/

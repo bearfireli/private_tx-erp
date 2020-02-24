@@ -30,5 +30,6 @@ public class TaskPlanListVO {
     private String attribute;  //砼特性
     private String contractDetailCode; // 子合同号
     private String compid; //公司代号
+    private Integer clientType;
 
 }

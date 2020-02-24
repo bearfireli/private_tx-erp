@@ -37,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
     Long random = ImBaseData.getRandom();
 
     @Value("${app.cloud.host}")
-    private String erpurl;
+    private String erpUrl;
 
     @Override
     public JSONObject accountImport(IMUserVO imUserVO) throws ErpException {
@@ -160,7 +160,7 @@ public class AccountServiceImpl implements AccountService {
      * @return 所有用户的id集合
      */
     private List<String> getUserAll() {
-        String baseUrl = erpurl + "/user/selectAllUser";
+        String baseUrl = erpUrl + "/user/selectAllUser";
         Header[] headers = HttpHeader.custom()
                 .other("version", "1")
                 .build();
