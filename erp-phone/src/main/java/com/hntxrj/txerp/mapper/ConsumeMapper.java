@@ -105,7 +105,7 @@ public interface ConsumeMapper {
                                              String vehicleId, String stgId , String taskId, String stirId,
                                              Integer page, Integer pageSize);
 
-    List<StockVO> getProductDatail(String compid,Integer stirid);
+    List<StockVO> getProductDatail(String compid,Integer stirId);
 
     List<ProductConsume> getErroPan(String compid, String beginTime, String endTime);
 

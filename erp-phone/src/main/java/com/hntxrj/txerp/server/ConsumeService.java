@@ -200,7 +200,7 @@ public interface ConsumeService {
                                                 String vehicleId, String stgId, String taskId, String stirId,
                                                 Integer page, Integer pageSize);
 
-    PageVO<StockVO> getProductDatail(String compid, Integer stirid);
+    PageVO<StockVO> getProductDatail(String compid, Integer stirId);
 
     Integer getErroPan(String compid,String beginTime,String endTime);
 }

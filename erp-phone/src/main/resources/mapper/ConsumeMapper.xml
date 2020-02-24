@@ -305,7 +305,7 @@
         from MP_Stock mp
          left join  MP_MaterialInfor mm on mp.compid =mm.compid and mp.MatCode =mm.MatCode
         where mp.compid = #{compid}
-          and mp.StirId = #{stirid}
+          and mp.StirId = #{stirId}
           and mp.RecStatus = 1
         order by mp.OderBy
     </select>

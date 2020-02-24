@@ -125,8 +125,8 @@ public class ConsumeApi {
      * @return  查询材料名
      */
     @PostMapping("/getProductDatail")
-    public ResultVO getProductDatail(String compid,Integer stirid){
-        return ResultVO.create(consumeService.getProductDatail(compid,stirid));
+    public ResultVO getProductDatail(String compid,Integer stirId){
+        return ResultVO.create(consumeService.getProductDatail(compid,stirId));
 
     }
 

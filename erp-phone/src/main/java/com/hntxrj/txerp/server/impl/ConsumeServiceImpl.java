@@ -396,9 +396,9 @@ public class ConsumeServiceImpl implements ConsumeService {
     }
 
     @Override
-    public PageVO<StockVO> getProductDatail(String compid, Integer stirid) {
+    public PageVO<StockVO> getProductDatail(String compid, Integer stirId) {
 //        PageHelper.startPage(page, pageSize);
-        List<StockVO> consumptionTotalVOS = consumeMapper.getProductDatail(compid, stirid);
+        List<StockVO> consumptionTotalVOS = consumeMapper.getProductDatail(compid, stirId);
         PageInfo<StockVO> pageInfo = new PageInfo<>(consumptionTotalVOS);
         PageVO<StockVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
