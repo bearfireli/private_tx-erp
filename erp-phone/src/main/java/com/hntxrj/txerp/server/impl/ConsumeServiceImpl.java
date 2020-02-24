@@ -328,8 +328,8 @@ public class ConsumeServiceImpl implements ConsumeService {
     /**
      * 查询生产材料详细名称
      *
-     * @param compid 企业idI
-     * @param stird  线号
+     * @param compid 企业id
+     * @param stirId  线号
      * @return 查询材料名
      */
     @Override
