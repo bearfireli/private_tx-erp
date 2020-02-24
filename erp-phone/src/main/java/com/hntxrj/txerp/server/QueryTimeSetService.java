@@ -18,5 +18,9 @@ public interface QueryTimeSetService {
      */
     PageVO<QueryTimeSetVO> getQueryTimeSetList(String compid, Integer page, Integer pageSize);
 
+    /**
+     * 编辑默认时间
+     * @param list 传递的json参数
+     */
     void upDateQueryTime( List<QueryTimeSetVO> list);
 }

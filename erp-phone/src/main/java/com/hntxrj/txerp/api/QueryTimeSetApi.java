@@ -35,6 +35,10 @@ public class QueryTimeSetApi {
         return ResultVO.create(queryTimeSetService.getQueryTimeSetList(compid, page, pageSize));
     }
 
+    /**
+     * 编辑默认时间
+     * @param list 传递的json参数
+     */
     @PostMapping("/upDateQueryTime")
     public ResultVO upDateQueryTime(@RequestBody List<QueryTimeSetVO> list) {
         queryTimeSetService.upDateQueryTime(list);
