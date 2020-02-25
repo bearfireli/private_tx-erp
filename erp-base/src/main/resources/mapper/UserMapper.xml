@@ -201,7 +201,14 @@
         where av.group_id=#{groupId}  and av.value=1
     </select>
     <select id="selectAllUser" resultType="com.hntxrj.txerp.entity.base.User">
-         SELECT uid FROM USER
+        select u.* from user_auth ua
+        LEFT JOIN user u on ua.uid =u.uid
+        where
+        1=1
+        <if test="eid != null ">
+        and ua.eid =#{eid}
+        </if>
+        and u.uid is not null
     </select>
 
 

@@ -279,7 +279,7 @@ public interface UserService {
     /**
      * 查询所有企业所有用户
      */
-    List<User> selectAllUser();
+    List<User> selectAllUser(Integer compid);
 
 
 }

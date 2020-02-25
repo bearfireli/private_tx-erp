@@ -485,8 +485,8 @@ public class UserController {
      * 查询所有企业所有用户
      * */
     @PostMapping("/selectAllUser")
-    public String selectAllUser(){
-        resultVO.setData(JSON.toJSONString(userService.selectAllUser()));
+    public String selectAllUser(Integer compid){
+        resultVO.setData(JSON.toJSONString(userService.selectAllUser(compid)));
         return  JSON.toJSONString(resultVO);
     };
 
