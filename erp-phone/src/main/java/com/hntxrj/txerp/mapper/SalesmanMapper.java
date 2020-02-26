@@ -8,6 +8,40 @@ import java.util.List;
 @Mapper
 public interface SalesmanMapper {
 
-    List<SalesmanDropDownVO> getSalesmanDropDown(String salesMan, String compid, Integer page, Integer pageSize);
+    /**
+     * 获取销售员下拉
+     *
+     * @param salesName 销售员名称
+     * @param compid    企业id
+     * @param page      分页
+     * @param pageSize  每页数量
+     * @return 销售员下拉对象
+     */
+    List<SalesmanDropDownVO> getSalesmanDropDown(String salesName, String compid, Integer page, Integer pageSize);
 
+    /**
+     * 获取业务员的分组
+     *
+     * @param compid 企业id
+     * @return 业务员对象集合
+     */
+    List<SalesmanDropDownVO> getSaleGroup(String compid);
+
+    /**
+     * 查询所有的业务员编号
+     *
+     * @param compid  企业id
+     * @return 业务员编号集合
+     * */
+    List<String> selectSaleCodes(String compid);
+
+    /**
+     * 添加业务员
+     *
+     * @param compid  企业id
+     * @param saleName  销售员姓名
+     * @param saleManCode  销售员编号
+     * @param department  部门分组
+     * */
+    void addSaleMan(String compid, String saleName, String saleManCode, String department);
 }
