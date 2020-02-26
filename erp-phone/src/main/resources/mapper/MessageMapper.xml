@@ -30,6 +30,8 @@
         where compid=#{compid} and typeId=#{typeId} and RecStatus=1
     </select>
     <select id="getRecipientById" resultType="com.hntxrj.txerp.vo.RecipientVO">
-        select uid,username as userName,compid,typeId,phone from Recipient where uid=#{id}
+        select uid,username as userName,compid,typeId,phone
+        from Recipient
+        where uid=#{uid} and compid=#{compid} and typeId=#{typeId}
     </select>
 </mapper>

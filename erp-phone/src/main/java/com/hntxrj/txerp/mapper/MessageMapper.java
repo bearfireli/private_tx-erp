@@ -44,7 +44,7 @@ public interface MessageMapper {
      *
      * @param uid 推送人id
      */
-    RecipientVO getRecipientById(Integer uid);
+    RecipientVO getRecipientById(Integer uid,String compid,Integer typeId);
 
     /**
      * 根据企业和消息推送模块删除推送人

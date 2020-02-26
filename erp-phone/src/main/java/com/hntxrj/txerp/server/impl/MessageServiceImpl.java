@@ -45,13 +45,13 @@ public class MessageServiceImpl implements MessageService {
         messageMapper.deleteRecipient(compid, typeId);
         for (RecipientVO recipientVO : recipientVOS) {
             if (recipientVO.getUid() != null) {
-                RecipientVO user = messageMapper.getRecipientById(recipientVO.getUid());
+                RecipientVO user = messageMapper.getRecipientById(recipientVO.getUid(),compid,typeId);
                 if (user == null) {
                     messageMapper.saveRecipient(recipientVO.getUid(), recipientVO.getCompid(), recipientVO.getTypeId(),
                             recipientVO.getUserName(), recipientVO.getPhone());
                 } else {
-                    messageMapper.updateRecipient(recipientVO.getUid(), recipientVO.getCompid(), recipientVO.getTypeId(),
-                            recipientVO.getUserName(), recipientVO.getPhone());
+                    messageMapper.updateRecipient(recipientVO.getUid(), recipientVO.getCompid(),
+                            recipientVO.getTypeId(), recipientVO.getUserName(), recipientVO.getPhone());
                 }
             }
 
