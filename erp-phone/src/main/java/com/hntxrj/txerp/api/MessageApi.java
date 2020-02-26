@@ -1,13 +1,11 @@
 package com.hntxrj.txerp.api;
 
 import com.hntxrj.txerp.server.MessageService;
+import com.hntxrj.txerp.vo.RecipientVO;
 import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,7 +31,7 @@ public class MessageApi {
      */
     @PostMapping("/getPushTypeList")
     public ResultVO getPushTypeList(String compid) {
-       return ResultVO.create(messageService.getPushTypeList(compid));
+        return ResultVO.create(messageService.getPushTypeList(compid));
 
     }
 
@@ -52,15 +50,11 @@ public class MessageApi {
     /**
      * 保存消息推送人
      *
-     * @param compid         企业id
-     * @param typeId         消息类型代号
-     * @param recipientNames 推送人姓名集合
+     * @param recipientVOS 推送人对象集合
      */
     @PostMapping("/saveRecipient")
-    public ResultVO saveRecipient(String compid, Integer typeId,
-                                  @RequestParam(value = "recipientNames") List<String> recipientNames) {
-
-       messageService.saveRecipient(compid, typeId, recipientNames);
+    public ResultVO saveRecipient(@RequestBody List<RecipientVO> recipientVOS) {
+        messageService.saveRecipient(recipientVOS);
         return ResultVO.create();
     }
 

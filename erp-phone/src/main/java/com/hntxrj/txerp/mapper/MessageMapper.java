@@ -15,17 +15,39 @@ public interface MessageMapper {
     /**
      * 获取消息签收人列表
      *
-     * @param compid  企业id
-     * @param typeId  消息类型代号
+     * @param compid 企业id
+     * @param typeId 消息类型代号
      */
     List<RecipientVO> getRecipientList(String compid, Integer typeId);
 
     /**
      * 保存消息推送人
      *
-     * @param compid         企业id
-     * @param typeId         消息类型代号
-     * @param recipientName 推送人姓名集合
+     * @param compid   企业id
+     * @param typeId   消息类型代号
+     * @param userName 推送人姓名集合
      */
-    void saveRecipient(String compid, Integer typeId, String recipientName);
+    void saveRecipient(Integer uid, String compid, Integer typeId, String userName, String phone);
+
+
+    /**
+     * 保存消息推送人
+     *
+     * @param compid   企业id
+     * @param typeId   消息类型代号
+     * @param userName 推送人姓名集合
+     */
+    void updateRecipient(Integer uid, String compid, Integer typeId, String userName, String phone);
+
+    /**
+     * 保存消息推送人
+     *
+     * @param uid 推送人id
+     */
+    RecipientVO getRecipientById(Integer uid);
+
+    /**
+     * 根据企业和消息推送模块删除推送人
+     */
+    void deleteRecipient(String compid, Integer typeId);
 }

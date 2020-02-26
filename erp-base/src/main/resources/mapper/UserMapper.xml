@@ -203,12 +203,13 @@
     <select id="selectAllUser" resultType="com.hntxrj.txerp.entity.base.User">
         select u.* from user_auth ua
         LEFT JOIN user u on ua.uid =u.uid
-        where
-        1=1
+        where u.uid is not null
         <if test="eid != null ">
         and ua.eid =#{eid}
         </if>
-        and u.uid is not null
+        <if test="userName != null and userName!='' ">
+            and u.username like '%${userName}%'
+        </if>
     </select>
 
 

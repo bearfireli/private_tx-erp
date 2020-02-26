@@ -33,14 +33,28 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<RecipientVO> getRecipientList(String compid, Integer typeId) {
         return messageMapper.getRecipientList(compid, typeId);
-}
+    }
 
     @Override
-    public void saveRecipient(String compid, Integer typeId, List<String> recipientNames) {
+    public void saveRecipient(List<RecipientVO> recipientVOS) {
 
+        String compid = recipientVOS.get(0).getCompid();
+        Integer typeId = recipientVOS.get(0).getTypeId();
 
-        for (String recipientName : recipientNames) {
-            messageMapper.saveRecipient(compid, typeId, recipientName);
+        //先逻辑删除，再统一添加推送人
+        messageMapper.deleteRecipient(compid, typeId);
+        for (RecipientVO recipientVO : recipientVOS) {
+            if (recipientVO.getUid() != null) {
+                RecipientVO user = messageMapper.getRecipientById(recipientVO.getUid());
+                if (user == null) {
+                    messageMapper.saveRecipient(recipientVO.getUid(), recipientVO.getCompid(), recipientVO.getTypeId(),
+                            recipientVO.getUserName(), recipientVO.getPhone());
+                } else {
+                    messageMapper.updateRecipient(recipientVO.getUid(), recipientVO.getCompid(), recipientVO.getTypeId(),
+                            recipientVO.getUserName(), recipientVO.getPhone());
+                }
+            }
+
         }
 
     }

@@ -60,5 +60,5 @@ public interface UserMapper {
     /**
      * 查询所有企业所有用户
      * */
-    List<User> selectAllUser(@Param("eid") Integer eid);
+    List<User> selectAllUser(@Param("eid") Integer eid,@Param("userName")String userName);
 }
