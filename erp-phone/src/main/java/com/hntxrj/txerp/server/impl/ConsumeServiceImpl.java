@@ -329,12 +329,12 @@ public class ConsumeServiceImpl implements ConsumeService {
      * 查询生产材料详细名称
      *
      * @param compid 企业id
-     * @param stirid  线号
+     * @param stirId  线号
      * @return 查询材料名
      */
     @Override
-    public PageVO<StockVO> getProductDatail(String compid, Integer stirid) {
-        List<StockVO> consumptionTotalVOS = consumeMapper.getProductDatail(compid, stirid);
+    public PageVO<StockVO> getProductDatail(String compid, Integer stirId) {
+        List<StockVO> consumptionTotalVOS = consumeMapper.getProductDatail(compid, stirId);
         PageInfo<StockVO> pageInfo = new PageInfo<>(consumptionTotalVOS);
         PageVO<StockVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

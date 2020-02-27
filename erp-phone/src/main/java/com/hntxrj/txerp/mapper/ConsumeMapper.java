@@ -125,10 +125,10 @@ public interface ConsumeMapper {
      * 查询生产材料详细名称
      *
      * @param compid 企业id
-     * @param stirid  线号
+     * @param stirId  线号
      * @return 查询材料名
      */
-    List<StockVO> getProductDatail(String compid,Integer stirid);
+    List<StockVO> getProductDatail(String compid,Integer stirId);
 
     /**
      * 获取指定时间的超差盘数
