@@ -280,4 +280,9 @@ public interface UserService {
      * 查询所有企业所有用户
      */
     List<User> selectAllUser();
+
+    /**
+     * 根据企业id查询用户
+     * */
+    List<User> userAll(Integer eid);
 }
