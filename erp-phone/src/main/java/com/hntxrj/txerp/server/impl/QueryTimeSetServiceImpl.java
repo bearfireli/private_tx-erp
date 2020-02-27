@@ -107,7 +107,7 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
                String compid =null;
                String queryName = null;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-               String queryTime = sdf.format(new Date());
+               int queryTime =0;
                String queryStartTime ="00:00";
                String queryStopTime ="00:00";
                int recStatus =0;
@@ -119,7 +119,7 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
                 if (queryTimeSetVO.getQueryName()!=null && !"".equals(queryTimeSetVO.getQueryName())){
                     queryName =queryTimeSetVO.getQueryName();
                 }
-                if (queryTimeSetVO.getQuerytime()!=null && !"".equals(queryTimeSetVO.getQuerytime())){
+                if (queryTimeSetVO.getQuerytime()!=0){
                     queryTime =queryTimeSetVO.getQuerytime();
                 }
                 if (queryTimeSetVO.getQueryStartTime()!=null && !"".equals(queryTimeSetVO.getQueryStopTime())){
