@@ -122,11 +122,12 @@ public class ConsumeApi {
     /**
      * 查询材料名
      * @param compid 企业id
-     * @return  查询材料名
+     * @param stirId 线号
+     * @return 查询材料名
      */
     @PostMapping("/getProductDatail")
-    public ResultVO getProductDatail(String compid,Integer stirid){
-        return ResultVO.create(consumeService.getProductDatail(compid,stirid));
+    public ResultVO getProductDatail(String compid,Integer stirId){
+        return ResultVO.create(consumeService.getProductDatail(compid,stirId));
 
     }
 
