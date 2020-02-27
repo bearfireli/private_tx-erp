@@ -5,6 +5,8 @@ import com.hntxrj.txerp.entity.UserEmployee;
 import com.hntxrj.txerp.util.jdbc.sql.Limit;
 import com.hntxrj.txerp.util.jdbc.sql.Page;
 
+import java.util.List;
+
 /**
  * 功能:  用户Dao接口
  *
@@ -95,4 +97,8 @@ public interface UserEmployeeDao {
      */
     JSONArray cancelWechatBind(String token);
 
+    /**
+     *  根据企业ID获取用户列表
+     */
+    List<UserEmployee> getUserListByCom(String comid);
 }

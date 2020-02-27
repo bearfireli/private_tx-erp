@@ -202,6 +202,17 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      */
     @Override
     public UserLogin createUserLogin(Integer userId, String loginIp) throws ErpException {
+        //通过userLogin判断是否存在已经登录的用户，若存在从数据库清除
+        List<UserLogin> loginList=userLoginRepository.findAllByUserId(userId);
+        if(loginList.size()>0){
+            for (UserLogin login:loginList
+                 ) {
+                log.debug("【被挤掉IP】ip={}", login.getLoginIp());
+
+            }
+            userLoginRepository.deleteAllByUserId(userId);
+        }
+        
         UserLogin userLogin = new UserLogin();
         userLogin.setId(EncryptUtil.encryptPassword(UUID.randomUUID().toString()));
         userLogin.setLoginIp(loginIp);
@@ -216,6 +227,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         ));
 
         userLogin = userLoginRepository.save(userLogin);
+
 
 //        User user = findById(userId);
 //        redisUtil.redisSetKey(RedisDataTypeEnums.TOKEN + userLogin.getUserToken(), user);
@@ -429,7 +441,29 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         log.error("【tokenCanUse throw EXPIRE_TOKEN】 token={}", userLogin);
         throw new ErpException(ErrEumn.EXPIRE_TOKEN);
     }
+    @Override
+    public UserVO tokenCheck(String token) throws ErpException {
+        log.debug("【tokenCanUse】token={}", token);
+        UserLogin userLogin = userLoginRepository.findByUserToken(token);
 
+        if (userLogin != null
+                && userLogin.getExpireTime().getTime() > System.currentTimeMillis()) {
+            User user = findById(userLogin.getUserId());
+            // 判断用户状态是否禁止登录
+            if (user.getStatus() != 0) {
+                throw new ErpException(ErrEumn.OTHER_LOGIN);
+            }
+            UserVO userVO = userToUserVO(user, true);
+            userVO.setToken(userLogin.getUserToken());
+            return userVO;
+        }
+        log.error("【tokenCanUse throw EXPIRE_TOKEN】 token={}", userLogin);
+        throw new ErpException(ErrEumn.OTHER_LOGIN);
+//        if (userLogin == null) {
+//            throw new ErpException(ErrEumn.OTHER_LOGIN);
+//        }
+
+    }
     @Override
     public PageVO<UserAuthVO> getUser(User user, String token, Integer enterpriseId, HttpServletRequest request,
                                       int page, int pageSize) throws ErpException {
@@ -532,7 +566,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         UserAccount userAccounts = userMapper.type(userId);
         List<UserVO> userVOS = userToUserVO(users, true);
         UserVO userVO = userVOS.get(0);
-        List<AuthGroupVO> authGroups = userMapper.findbyId(userId);
+        List<AuthGroupVO> authGroups = userMapper.findById(userId);
         StringBuilder epShortNamelist = new StringBuilder();
         StringBuilder agnamelist = new StringBuilder();
         for (AuthGroupVO authGroupVO : authGroups) {
@@ -1054,6 +1088,12 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     @Override
     public List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid) {
         return userMapper.getAuthValueOld(groupId,pid);
+    }
+
+    @Override
+    public List<User> selectAllUser() {
+
+        return userMapper.selectAllUser();
     }
 
 

@@ -42,4 +42,32 @@ public class SalesmanApi {
         return resultVO;
     }
 
+    /**
+     * 获取业务员的分组
+     *
+     * @param compid 企业id
+     * @param page      分页
+     * @param pageSize  每页数量
+     */
+    @PostMapping("/getSaleGroup")
+    public ResultVO getSaleGroup(String compid,
+                                 @RequestParam(defaultValue = "1") Integer page,
+                                 @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(salesmanService.getSaleGroup(compid,page,pageSize));
+    }
+
+    /**
+     * 添加销售员
+     *
+     * @param compid   企业id
+     * @param saleName 销售员姓名
+     * @param department 销售员部门分组
+     * */
+    @PostMapping("/addSaleMan")
+    public ResultVO addSaleMan(String compid,String saleName,String department) {
+        salesmanService.addSaleMan(compid, saleName, department);
+        return ResultVO.create();
+    }
+
+
 }

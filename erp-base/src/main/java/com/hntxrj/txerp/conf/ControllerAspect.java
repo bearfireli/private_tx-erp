@@ -33,6 +33,7 @@ public class ControllerAspect {
     private static final String LOGIN_API = "/user/login";
     private static final String LOGIN_REST_API = "/api/user/login";
     private static final String TOKEN_USE = "/user/tokenUse";
+    private static final String TOKEN_CHECK = "/user/tokenCheck";
     private static final String THIRD_LOGIN = "/user/thirdLogin";
     private static final String USER_ENTERPRISE = "/user/getUserEnterprise";
     private static final String ERROR = "/error";
@@ -47,6 +48,7 @@ public class ControllerAspect {
     private static final String UPLOADPICTURE = "/enterprise/uploadPicture";
     private static final String SAVECOLLECTIONCODE = "/enterprise/saveCollectionCode";
     private static final String USER_EXPIRE_TIME = "/v1/project/getExpireTime";
+    private static final String SELECT_USER_ALL = "/user/selectAllUser";
 
 
     private static final String DOCUMENT_URI = "/swagger";
@@ -66,9 +68,9 @@ public class ControllerAspect {
     private static final String FUNCTIONMENU_LIST = "/functionmenulist";
 
     private static final String[] PUBLIC_API_LIST = new String[]{
-            LOGIN_API, TOKEN_USE, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API, FAVICON, JOURNALISM_LIST
+            LOGIN_API, TOKEN_USE,TOKEN_CHECK, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API, FAVICON, JOURNALISM_LIST
             , JOURNALISM_BYID, JOURNALISM_SELECT_LIST,GETAUTHVALUE,USER_SETUSERFAVORITE,USER_GETUSERFAVORITE,UPLOADPICTURE,SAVECOLLECTIONCODE,
-            USER_EXPIRE_TIME
+            USER_EXPIRE_TIME,SELECT_USER_ALL
     };
 
     private static final String[] PUBLIC_PATH = new String[]{
@@ -143,6 +145,7 @@ public class ControllerAspect {
             }
 
         }
+
         if (enterprise <= 0) {
             ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.ENTERPRISE_ID_NOTEXIST));
         }

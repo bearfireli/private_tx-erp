@@ -66,7 +66,7 @@
                  left join user_account a on u.uid = a.uid
         where u.uid = #{userId}
     </select>
-    <select id="findbyId" resultType="com.hntxrj.txerp.vo.AuthGroupVO">
+    <select id="findById" resultType="com.hntxrj.txerp.vo.AuthGroupVO">
         select e.eid,
                e.ep_short_name,
                a.ag_name
@@ -200,7 +200,9 @@
         from auth_value av
         where av.group_id=#{groupId}  and av.value=1
     </select>
-
+    <select id="selectAllUser" resultType="com.hntxrj.txerp.entity.base.User">
+         SELECT uid FROM USER
+    </select>
 
 
 </mapper>
