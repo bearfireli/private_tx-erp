@@ -333,8 +333,8 @@ public class ConsumeServiceImpl implements ConsumeService {
      * @return 查询材料名
      */
     @Override
-    public PageVO<StockVO> getProductDetail(String compid, Integer stirid) {
-        List<StockVO> consumptionTotalVOS = consumeMapper.getProductDetail(compid, stirid);
+    public PageVO<StockVO> getProductDatail(String compid, Integer stirid) {
+        List<StockVO> consumptionTotalVOS = consumeMapper.getProductDatail(compid, stirid);
         PageInfo<StockVO> pageInfo = new PageInfo<>(consumptionTotalVOS);
         PageVO<StockVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

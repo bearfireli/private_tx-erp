@@ -366,7 +366,7 @@
         </if>
     </select>
 
-    <select id="getProductDetail" resultType="com.hntxrj.txerp.vo.StockVO">
+    <select id="getProductDatail" resultType="com.hntxrj.txerp.vo.StockVO">
         select mp.StkCode, mp.Sto_Name,mm.MatCode,mm.MatName,mm.MatParent
         from MP_Stock mp
          left join  MP_MaterialInfor mm on mp.compid =mm.compid and mp.MatCode =mm.MatCode
