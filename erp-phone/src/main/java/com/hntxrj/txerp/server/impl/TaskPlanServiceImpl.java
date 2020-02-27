@@ -15,8 +15,10 @@ import com.hntxrj.txerp.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +40,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final MsgService msgService;
 
     private final MsgMapper msgMapper;
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @Autowired
     public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository,

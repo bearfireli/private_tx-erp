@@ -183,6 +183,14 @@ public interface DriverService {
      * @param vehicleStatus 车辆状态    1：场内待班
      */
     void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus);
+
+    /**
+     * 司机在线状态请求
+     *
+     * @param compid      企业代号
+     * @param driverCode  司机代号
+     * */
+    void driverOnlineStatus(String compid, String driverCode);
 }
 
 

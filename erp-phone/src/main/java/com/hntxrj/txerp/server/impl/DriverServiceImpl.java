@@ -11,9 +11,11 @@ import com.hntxrj.txerp.server.DriverService;
 import com.hntxrj.txerp.vo.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +31,9 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverDao driverDao;
     private final DriverMapper driverMapper;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @Autowired
     public DriverServiceImpl(DriverDao driverDao, DriverMapper driverMapper) {
@@ -219,6 +224,13 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime) {
         return driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
+    }
+
+    @Override
+    public void driverOnlineStatus(String compid, String driverCode) {
+        String key = compid + driverCode;
+        //以该司机的公司代号和司机代号为key,把请求时间存进缓存中
+        redisTemplate.opsForValue().set(key, new Date());
     }
 
 
