@@ -18,6 +18,10 @@ public class WorkloadStatisticsVo {
      * 工程名称
      */
     private String eppName;
+    /*
+    * 施工单位
+    * */
+    private String builderName;
     /**
      * 初次过磅时间
      */
