@@ -2,8 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.TankMapper">
     <select id="powderTanDeviceList" resultType="com.hntxrj.txerp.entity.PowderTankDevice">
+        SELECT * FROM pt_powder_tank_device
+        WHERE compid=#{compid}
+    </select>
 
+    <select id="weighChangeRecordList" resultType="com.hntxrj.txerp.entity.WeightChangeRecord">
+        SELECT * FROM pt_weight_change_record
+        WHERE compid=#{compid}
+    </select>
 
+    <select id="powderTankSafeStatusInforList" resultType="com.hntxrj.txerp.entity.PowderTankSafeStatusInfor">
+        SELECT * FROM pt_power_tank_safe_status_infor
+        WHERE compid=#{compid}
+    </select>
+
+    <select id="powderTankCalibrationList" resultType="com.hntxrj.txerp.entity.PowderTankCalibration">
+        SELECT * FROM pt_powder_tank_calibration
+        WHERE compid=#{compid}
+    </select>
+
+    <select id="powderTankWarnList" resultType="com.hntxrj.txerp.entity.PowderTankWarn">
+        SELECT * FROM pt_powder_tank_warn
+        WHERE compid=#{compid}
     </select>
 
 </mapper>
