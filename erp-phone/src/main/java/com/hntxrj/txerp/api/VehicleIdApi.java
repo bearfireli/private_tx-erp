@@ -25,10 +25,11 @@ public class VehicleIdApi {
     /**
      * 查询车号
      *
-     * @param compid 　企业ｉｄ
+     * @param compid    　企业id
+     * @param vehicleId 车辆id
      */
     @PostMapping("/getVehicleId")
-    public ResultVO getVehicleId(String compid) {
-        return ResultVO.create(vehicleIdService.getVehicleId(compid));
+    public ResultVO getVehicleId(String compid, String vehicleId) {
+        return ResultVO.create(vehicleIdService.getVehicleId(compid, vehicleId));
     }
 }

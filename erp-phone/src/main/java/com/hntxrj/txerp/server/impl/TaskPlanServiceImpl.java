@@ -694,11 +694,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     /**
      * 查询司机
      *
-     * @param compid 　企业ｉｄ
+     * @param compid 　企业id
+     * @param driverName 司机名称
      */
     @Override
-    public PageVO<PersonalNameVO> getPersonalName(String compid) {
-        List<PersonalNameVO> sendCarList = taskPlanMapper.getPersonalName(compid);
+    public PageVO<PersonalNameVO> getPersonalName(String compid,String driverName) {
+        List<PersonalNameVO> sendCarList = taskPlanMapper.getPersonalName(compid,driverName);
         PageInfo<PersonalNameVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<PersonalNameVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

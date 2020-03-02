@@ -5,7 +5,11 @@
     <select id="getSalesmanDropDown" resultType="com.hntxrj.txerp.vo.SalesmanDropDownVO">
         select SalesmanCode salesCode, ScaleName salesManName
         from SM_BusinessGroup
-        where compid = #{compid} and RecStatus = 1
+        where compid = #{compid} and RecStatus = 1 and DepartMent!='0'
+        <if test=" salesName !=null and salesName!='' ">
+            and ScaleName like '%' + #{salesName} +'%'
+        </if>
+
     </select>
 
     <select id="getSaleGroup" resultType="com.hntxrj.txerp.vo.SalesmanDropDownVO">
@@ -18,7 +22,7 @@
        select SalesmanCode from SM_BusinessGroup where compid=#{compid} and len(SalesmanCode)=10
     </select>
 
-    <select id="addSaleMan" >
+    <select id="addSaleMan">
         insert into SM_BusinessGroup(compid, ScaleName, SalesmanCode, DepartMent,UpDownMark,RecStatus)
         values (#{compid},#{saleName},#{saleManCode},#{department},0,1)
     </select>

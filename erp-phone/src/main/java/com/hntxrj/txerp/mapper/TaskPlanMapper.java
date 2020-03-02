@@ -1,12 +1,10 @@
 package com.hntxrj.txerp.mapper;
 
-import com.hntxrj.txerp.core.exception.ErpException;
-import com.hntxrj.txerp.vo.*;
+
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +35,6 @@ public interface TaskPlanMapper {
      * @param taskId       任务单id
      * @param compid       企业id
      * @param verifyStatus 审核状态
-     * @return 任务单列表对象
      */
     void verifyTaskPlan(String taskId, String compid, Integer verifyStatus, Date verifyTime);
 
@@ -53,7 +50,7 @@ public interface TaskPlanMapper {
     /**
      * 调度派车列表
      *
-     * @param compid     企业代号
+     * @param compid      企业代号
      * @param searchWords 搜索关键字
      * @return 调度派车列表
      */
@@ -106,9 +103,10 @@ public interface TaskPlanMapper {
     /**
      * 查询司机
      *
-     * @param compid 　企业ｉｄ
+     * @param compid     　企业id
+     * @param driverName 司机名称
      */
-    List<PersonalNameVO> getPersonalName(String compid);
+    List<PersonalNameVO> getPersonalName(String compid, String driverName);
 
     /**
      * 添加司机排班信息
@@ -352,7 +350,7 @@ public interface TaskPlanMapper {
      * @param personalCode 司机代号
      * @param workClass    班次
      */
-    Integer checkDriverScheduling(String compid,String personalCode,String workClass);
+    Integer checkDriverScheduling(String compid, String personalCode, String workClass);
 
 
     /**
@@ -378,7 +376,7 @@ public interface TaskPlanMapper {
     /**
      * 任务单号集合
      *
-     * @param compid     企业
+     * @param compid      企业
      * @param searchWords 搜索关键字
      */
     List<String> getTaskIds(String compid, String searchWords);

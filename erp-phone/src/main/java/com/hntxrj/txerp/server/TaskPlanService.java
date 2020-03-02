@@ -212,8 +212,9 @@ public interface TaskPlanService {
      * 查询司机
      *
      * @param compid 　企业id
+     * @param driverName 司机名称
      */
-    PageVO<PersonalNameVO> getPersonalName(String compid);
+    PageVO<PersonalNameVO> getPersonalName(String compid,String driverName);
 
     /**
      * 添加司机排班信息

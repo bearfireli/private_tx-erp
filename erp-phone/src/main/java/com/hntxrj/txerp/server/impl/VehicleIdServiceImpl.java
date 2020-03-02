@@ -10,17 +10,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author qyb
- * @ClassName VehicleIdServiceImpl
- * @Description TODO
- * @Date 19-6-18 下午5:59
- * @Version 1.0
- **/
-@Service
-public class VehicleIdServiceImpl implements VehicleIdService {
+    /**
+     * @author qyb
+     * @ClassName VehicleIdServiceImpl
+     * @Date 19-6-18 &#x4e0b;&#x5348;5:59
+     * @Version 1.0
+     **/
+    @Service
+    public class VehicleIdServiceImpl implements VehicleIdService {
 
-    private final VehicleIdMapper vehicleIdMapper;
+        private final VehicleIdMapper vehicleIdMapper;
 
     @Autowired
     public VehicleIdServiceImpl(VehicleIdMapper vehicleIdMapper) {
@@ -29,10 +28,10 @@ public class VehicleIdServiceImpl implements VehicleIdService {
 
 
     @Override
-    public PageVO<VehicleIdVO> getVehicleId(String compid) {
+    public PageVO<VehicleIdVO> getVehicleId(String compid,String vehicleId) {
         PageVO<VehicleIdVO> pageVO = new PageVO<>();
-        List<VehicleIdVO> vehicleId = vehicleIdMapper.getVehicleId(compid);
-        PageInfo<VehicleIdVO> pageInfo = new PageInfo<>(vehicleId);
+        List<VehicleIdVO> vehicleIds = vehicleIdMapper.getVehicleId(compid,vehicleId);
+        PageInfo<VehicleIdVO> pageInfo = new PageInfo<>(vehicleIds);
         pageVO.format(pageInfo);
         return pageVO;
     }
