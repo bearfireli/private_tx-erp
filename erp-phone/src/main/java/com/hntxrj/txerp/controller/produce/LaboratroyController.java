@@ -181,7 +181,7 @@ public class LaboratroyController {
                 for (RecipientVO r : recipoentList) {
                     SendmsgVO sendmsgVO = new SendmsgVO();
                     sendmsgVO.setSyncOtherMachine(2);
-                    sendmsgVO.setToAccount(r.getName());
+                    sendmsgVO.setToAccount(r.getPhone());
                     sendmsgVO.setMsgLifeTime(7);
                     String  msgContent ="任务单号：["+typeId+"],["+stirid+"]号线配比审核成功.";
                     sendmsgVO.setMsgContent(msgContent);
@@ -401,7 +401,7 @@ public class LaboratroyController {
                 for (RecipientVO r : recipoentList) {
                     SendmsgVO sendmsgVO = new SendmsgVO();
                     sendmsgVO.setSyncOtherMachine(2);
-                    sendmsgVO.setToAccount(r.getName());
+                    sendmsgVO.setToAccount(r.getPhone());
                     sendmsgVO.setMsgLifeTime(7);
                     String  msgContent ="任务单号：["+typeId+"],["+stirid+"]号线配比编辑成功.";
                     sendmsgVO.setMsgContent(msgContent);

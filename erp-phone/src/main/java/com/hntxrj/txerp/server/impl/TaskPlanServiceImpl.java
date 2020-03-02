@@ -198,7 +198,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             for (RecipientVO r : recipoentList) {
                 SendmsgVO sendmsgVO = new SendmsgVO();
                 sendmsgVO.setSyncOtherMachine(2);
-                sendmsgVO.setToAccount(r.getName());
+                sendmsgVO.setToAccount(r.getPhone());
                 sendmsgVO.setMsgLifeTime(7);
                 sendmsgVO.setMsgContent("有新添加的任务单，请审核!");
                 msgService.sendMsg(sendmsgVO);
@@ -220,7 +220,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 for (RecipientVO r : recipoentList) {
                     SendmsgVO sendmsgVO = new SendmsgVO();
                     sendmsgVO.setSyncOtherMachine(2);
-                    sendmsgVO.setToAccount(r.getName());
+                    sendmsgVO.setToAccount(r.getPhone());
                     sendmsgVO.setMsgLifeTime(7);
                     String  msgContent ="任务单：【"+taskId+"】已审核，请开配比。";
                     sendmsgVO.setMsgContent(msgContent);
