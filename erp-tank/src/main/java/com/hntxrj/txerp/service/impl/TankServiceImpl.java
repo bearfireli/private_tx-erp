@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -24,6 +26,7 @@ public class TankServiceImpl implements TankService {
 
     private final TankMapper tankMapper;
     private final PowderTankDeviceRepository powderTankDeviceRepository;
+    private final PowderTankControlRepository powderTankControlRepository;
     private final WeighChangeRecordRepository weighChangeRecordRepository;
     private final PowderTankSafeStatusInforRepository powerTankSafeStatusInforRepository;
     private final PowderTankCalibrationRepository powderTankCalibrationRepository;
@@ -31,12 +34,14 @@ public class TankServiceImpl implements TankService {
 
     @Autowired
     public TankServiceImpl(TankMapper tankMapper, PowderTankDeviceRepository powderTankDeviceRepository,
+                           PowderTankControlRepository powderTankControlRepository,
                            WeighChangeRecordRepository weighChangeRecordRepository,
                            PowderTankSafeStatusInforRepository powerTankSafeStatusInforRepository,
                            PowderTankCalibrationRepository powderTankCalibrationRepository,
                            PowderTankWarnRepository powderTankWarnRepository) {
         this.tankMapper = tankMapper;
         this.powderTankDeviceRepository = powderTankDeviceRepository;
+        this.powderTankControlRepository = powderTankControlRepository;
         this.weighChangeRecordRepository = weighChangeRecordRepository;
         this.powerTankSafeStatusInforRepository = powerTankSafeStatusInforRepository;
         this.powderTankCalibrationRepository = powderTankCalibrationRepository;
@@ -60,13 +65,56 @@ public class TankServiceImpl implements TankService {
     public void savePowderTanDevice(PowderTankDevice powderTankDevice) throws ErpException {
         if (powderTankDevice != null) {
             if (powderTankDevice.getCompid() == null) {
-                throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_BUILDERCODE);
+                throw new ErpException(ErrEumn.TANK_ADD_ERROR);
             }
             if (powderTankDevice.getStirId() == null) {
-                throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_BUILDERCODE);
+                throw new ErpException(ErrEumn.STIRID_NULL_ERROR);
             }
+            powderTankDevice.setCreateTime(getCurrentTime());
             powderTankDeviceRepository.save(powderTankDevice);
         }
+
+    }
+
+    /**
+     * 获取罐控制功能信息显示集合
+     */
+    @Override
+    public List<PowderTankControl> powderTankControlList(String compid) {
+        return tankMapper.powderTankControlList(compid);
+    }
+
+    /**
+     * 保存罐控制功能信息
+     *
+     * @param powderTankControl 罐控制对象
+     */
+    @Override
+    public void savePowderTankControl(PowderTankControl powderTankControl) {
+        powderTankControl.setCreateTime(getCurrentTime());
+        powderTankControlRepository.save(powderTankControl);
+    }
+
+    /**
+     * 修改罐的开关门状态
+     *
+     * @param compid       企业id
+     * @param tankCode     罐代号
+     * @param tankStatus   罐开门状态
+     * @param doorPassword 罐开门密码
+     */
+    @Override
+    public void updateDoorStatus(String compid, String tankCode, Integer tankStatus, String doorPassword) throws ErpException {
+        PowderTankControl powderTankControl = tankMapper.getPowderTankControl(compid, tankCode);
+        if (powderTankControl == null) {
+            //罐号不存在
+            throw new ErpException(ErrEumn.TANK_NULL_ERROR);
+        }
+        if (!doorPassword.equals(powderTankControl.getDoorOpenPassword())) {
+            //密码错误
+            throw new ErpException(ErrEumn.PASSWORD_ERROR);
+        }
+        tankMapper.updatePowderTankControl(compid, tankCode, tankStatus);
 
     }
 
@@ -84,6 +132,7 @@ public class TankServiceImpl implements TankService {
      */
     @Override
     public void saveWeighChangeRecord(WeightChangeRecord weightChangeRecord) {
+        weightChangeRecord.setCreateTime(getCurrentTime());
         weighChangeRecordRepository.save(weightChangeRecord);
     }
 
@@ -101,6 +150,7 @@ public class TankServiceImpl implements TankService {
      */
     @Override
     public void savePowderTankSafeStatusInfor(PowderTankSafeStatusInfor powderTankSafeStatusInfor) {
+        powderTankSafeStatusInfor.setCreateTime(getCurrentTime());
         powerTankSafeStatusInforRepository.save(powderTankSafeStatusInfor);
     }
 
@@ -117,6 +167,7 @@ public class TankServiceImpl implements TankService {
      */
     @Override
     public void savePowderTankCalibration(PowderTankCalibration powderTankCalibration) {
+        powderTankCalibration.setCreateTime(getCurrentTime());
         powderTankCalibrationRepository.save(powderTankCalibration);
     }
 
@@ -133,6 +184,13 @@ public class TankServiceImpl implements TankService {
      */
     @Override
     public void savePowderTankWarn(PowderTankWarn powderTankWarn) {
+        powderTankWarn.setCreateTime(getCurrentTime());
         powderTankWarnRepository.save(powderTankWarn);
+    }
+
+    //获取当前时间并转换格式
+    private String getCurrentTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(new Date());
     }
 }

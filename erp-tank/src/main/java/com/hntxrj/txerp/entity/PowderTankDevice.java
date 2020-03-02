@@ -113,7 +113,7 @@ public class PowderTankDevice implements Serializable {
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-class PowderTankDeviceUPK implements Serializable{
+class PowderTankDeviceUPK implements Serializable {
 
     private Integer tankCode;
     private String compid;

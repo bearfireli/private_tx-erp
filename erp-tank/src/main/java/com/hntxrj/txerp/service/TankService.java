@@ -11,26 +11,48 @@ public interface TankService {
 
     /**
      * 获取每个罐信息显示集合
-     * */
+     */
     List<PowderTankDevice> powderTanDeviceList(String compid);
 
     /**
      * 保存罐的信息数据
      *
      * @param powderTankDevice 罐对象
-     * */
+     */
     void savePowderTanDevice(PowderTankDevice powderTankDevice) throws ErpException;
 
     /**
+     * 获取罐控制功能信息显示集合
+     */
+    List<PowderTankControl> powderTankControlList(String compid);
+
+    /**
+     * 保存罐控制功能信息
+     *
+     * @param powderTankControl 罐控制对象
+     */
+    void savePowderTankControl(PowderTankControl powderTankControl);
+
+    /**
+     * 修改罐的开关门状态
+     *
+     * @param compid       企业id
+     * @param tankCode     罐代号
+     * @param tankStatus   罐开门状态
+     * @param doorPassword 罐开门密码
+     */
+    void updateDoorStatus(String compid, String tankCode, Integer tankStatus, String doorPassword) throws ErpException;
+
+    /**
      * 罐的重量变化信息集合列表
-     * */
+     */
     List<WeightChangeRecord> weighChangeRecordList(String compid);
 
     /**
      * 保存罐的重量变化信息
      *
      * @param weightChangeRecord 罐重量对象
-     * */
+     */
     void saveWeighChangeRecord(WeightChangeRecord weightChangeRecord);
 
     /**
@@ -45,22 +67,24 @@ public interface TankService {
 
     /**
      * 罐校准历史记录集合列表
-     * */
+     */
     List<PowderTankCalibration> powderTankCalibrationList(String compid);
 
 
     /**
      * 保存罐校准历史记录
-     * */
+     */
     void savePowderTankCalibration(PowderTankCalibration powderTankCalibration);
 
     /**
      * 罐报警信息集合列表
-     * */
+     */
     List<PowderTankWarn> powderTankWarnList(String compid);
 
     /**
      * 保存罐报警信息
-     * */
+     */
     void savePowderTankWarn(PowderTankWarn powderTankWarn);
+
+
 }

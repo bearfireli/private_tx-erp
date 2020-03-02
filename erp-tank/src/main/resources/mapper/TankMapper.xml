@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.TankMapper">
+    <update id="updatePowderTankControl">
+        UPDATE pt_powder_tank_control SET state_tank=#{tankStatus}
+        WHERE compid=#{compid} and tank_code=#{tankCode}
+    </update>
     <select id="powderTanDeviceList" resultType="com.hntxrj.txerp.entity.PowderTankDevice">
         SELECT * FROM pt_powder_tank_device
         WHERE compid=#{compid}
@@ -24,6 +28,14 @@
     <select id="powderTankWarnList" resultType="com.hntxrj.txerp.entity.PowderTankWarn">
         SELECT * FROM pt_powder_tank_warn
         WHERE compid=#{compid}
+    </select>
+    <select id="powderTankControlList" resultType="com.hntxrj.txerp.entity.PowderTankControl">
+        SELECT * FROM pt_powder_tank_control
+        WHERE compid=#{compid}
+    </select>
+    <select id="getPowderTankControl" resultType="com.hntxrj.txerp.entity.PowderTankControl">
+        SELECT * FROM pt_powder_tank_control
+        WHERE compid=#{compid} and tank_code=#{tankCode}
     </select>
 
 </mapper>

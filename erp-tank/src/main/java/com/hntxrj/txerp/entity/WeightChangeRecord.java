@@ -44,7 +44,7 @@ public class WeightChangeRecord implements Serializable {
     private int outPutAdChannel;
     @Column(name = "empname")
     private String empName;
-    @Column(name = "create_name")
+    @Column(name = "create_time")
     private String createTime;
     @Column(name = "updown")
     private boolean upDown;
@@ -55,7 +55,7 @@ public class WeightChangeRecord implements Serializable {
 
 }
 
-class WeightChangeRecordUPK {
+class WeightChangeRecordUPK implements Serializable{
     private String compid;
     private String stirId;
     private Integer tankCode;

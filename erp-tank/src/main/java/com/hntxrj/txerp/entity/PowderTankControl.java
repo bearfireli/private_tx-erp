@@ -9,9 +9,9 @@ import java.util.Objects;
 
 @Data
 @Entity
-@IdClass(PowerTankControlUPK.class)
+@IdClass(PowderTankControlUPK.class)
 @Table(name = "pt_powder_tank_control")
-public class PowerTankControl implements Serializable {
+public class PowderTankControl implements Serializable {
 
     @Id
     @Column(name = "compid")
@@ -31,14 +31,14 @@ public class PowerTankControl implements Serializable {
     private String measureType;
     @Column(name = "state_tank")
     private int stateTank;
-    @Column(name = "dooe_open_password")
+    @Column(name = "door_open_password")
     private String doorOpenPassword;
     @Column(name = "command_type")
     private int commandType;
     @Column(name = "whether_to_execute")
     private int whetherToExecute;
-    @Column(name = "reMarks")
-    private String remarks;
+    @Column(name = "remarks")
+    private String reMarks;
     @Column(name = "empname")
     private String empName;
     @Column(name = "create_time")
@@ -50,7 +50,7 @@ public class PowerTankControl implements Serializable {
 
 }
 
-class PowerTankControlUPK implements Serializable{
+class PowderTankControlUPK implements Serializable{
     private String compid;
     private String stirId;
     private Integer tankCode;
@@ -59,7 +59,7 @@ class PowerTankControlUPK implements Serializable{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PowerTankControlUPK that = (PowerTankControlUPK) o;
+        PowderTankControlUPK that = (PowderTankControlUPK) o;
         return Objects.equals(compid, that.compid) &&
                 Objects.equals(stirId, that.stirId) &&
                 Objects.equals(tankCode, that.tankCode);

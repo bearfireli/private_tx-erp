@@ -16,7 +16,7 @@ public class PowderTankSafeStatusInfor implements Serializable {
     private String compid;
 
     @Id
-    @Column(name = "stirId")
+    @Column(name = "stirid")
     private String stirId;
 
     @Id
@@ -39,7 +39,7 @@ public class PowderTankSafeStatusInfor implements Serializable {
     private int loadMouthOpenChannelOut;
     @Column(name = "load_mouth_open_status")
     private int loadMouthOpenStatus;
-    @Column(name = "load_mouth_close_status")
+    @Column(name = "load_mouth_close_channel_out")
     private int loadMouthCloseChannelOut;
     @Column(name = "load_mouth_close_status")
     private int loadMouthCloseStatus;
