@@ -201,7 +201,15 @@
         where av.group_id=#{groupId}  and av.value=1
     </select>
     <select id="selectAllUser" resultType="com.hntxrj.txerp.entity.base.User">
-         SELECT uid FROM USER
+        select u.* from user_auth ua
+        LEFT JOIN user u on ua.uid =u.uid
+        where u.uid is not null
+        <if test="eid != null ">
+        and ua.eid =#{eid}
+        </if>
+        <if test="userName != null and userName!='' ">
+            and u.username like '%${userName}%'
+        </if>
     </select>
 
 

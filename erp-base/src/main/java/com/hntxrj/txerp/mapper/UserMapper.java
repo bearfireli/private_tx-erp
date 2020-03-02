@@ -5,6 +5,7 @@ import com.hntxrj.txerp.vo.AuthGroupVO;
 import com.hntxrj.txerp.vo.AuthValueVO;
 import com.hntxrj.txerp.vo.UserListVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -59,5 +60,5 @@ public interface UserMapper {
     /**
      * 查询所有企业所有用户
      * */
-    List<User> selectAllUser();
+    List<User> selectAllUser(@Param("eid") Integer eid,@Param("userName")String userName);
 }
