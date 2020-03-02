@@ -8,5 +8,11 @@ import com.hntxrj.txerp.vo.VehicleIdVO;
  */
 public interface VehicleIdService {
 
-    PageVO<VehicleIdVO> getVehicleId(String compid);
+    /**
+     * 查询车号
+     *
+     * @param compid    　企业id
+     * @param vehicleId   车辆id
+     */
+    PageVO<VehicleIdVO> getVehicleId(String compid,String vehicleId);
 }

@@ -35,25 +35,27 @@ public class PublicApi {
     /**
      * 获取供应商下拉集合
      *
-     * @param compid 企业id
+     * @param compid  企业id
+     * @param supName 供应商名称
      */
     @PostMapping("/getSupplierList")
-    public ResultVO getSupplierList(String compid,
+    public ResultVO getSupplierList(String compid, String supName,
                                     @RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(dropDownService.getSupplierList(compid, page, pageSize));
+        return ResultVO.create(dropDownService.getSupplierList(compid, supName, page, pageSize));
     }
 
     /**
      * 获取库位下垃集合
      *
-     * @param compid 企业id
+     * @param compid  企业id
+     * @param stoName 库位名称
      */
     @PostMapping("/getStockList")
-    public ResultVO getStockList(String compid,
+    public ResultVO getStockList(String compid, String stoName,
                                  @RequestParam(defaultValue = "1") Integer page,
                                  @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(dropDownService.getStockList(compid, page, pageSize));
+        return ResultVO.create(dropDownService.getStockList(compid, stoName, page, pageSize));
     }
 
 

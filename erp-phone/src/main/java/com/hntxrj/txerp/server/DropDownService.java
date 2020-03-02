@@ -15,19 +15,21 @@ public interface DropDownService {
      * @param classId 查询类型
      * @param compid  企业id
      */
-    List<DropDownVO> getDropDown(Integer classId,String compid);
+    List<DropDownVO> getDropDown(Integer classId, String compid);
 
     /**
      * 获取供应商下拉集合
      *
-     * @param compid 企业id
+     * @param compid  企业id
+     * @param supName 供应商名称
      */
-    PageVO<SupplierVO> getSupplierList(String compid, Integer page, Integer pageSize);
+    PageVO<SupplierVO> getSupplierList(String compid, String supName, Integer page, Integer pageSize);
 
     /**
      * 获取库位下拉集合
      *
-     * @param compid 企业id
+     * @param compid  企业id
+     * @param stoName 库位名称
      */
-    PageVO<StockVO> getStockList(String compid,Integer page,Integer pageSize);
+    PageVO<StockVO> getStockList(String compid, String stoName, Integer page, Integer pageSize);
 }
