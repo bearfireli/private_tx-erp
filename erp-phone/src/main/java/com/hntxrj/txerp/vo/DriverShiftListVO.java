@@ -32,6 +32,7 @@ public class DriverShiftListVO {
     private Timestamp workStarTime;
     //id
     private String id;
-
+    //司机在线状态
+    private String onlineStatus;
 
 }

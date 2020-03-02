@@ -334,4 +334,17 @@ public class DriverApi {
         }
         return ResultVO.create(driverService.getDriverWorkTime(compid, driverCode, queryTime));
     }
+
+
+    /**
+     * 司机不断发送请求，保证在线状态
+     *
+     * @param compid     企业代号
+     * @param driverCode 司机代号
+     */
+    @PostMapping("/driverOnlineStatus")
+    public ResultVO driverOnlineStatus(String compid, String driverCode) {
+        driverService.driverOnlineStatus(compid, driverCode);
+        return ResultVO.create();
+    }
 }
