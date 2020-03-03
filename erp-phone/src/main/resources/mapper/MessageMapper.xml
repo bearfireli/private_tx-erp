@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.MessageMapper">
+    <insert id="saveRecipient">
+        insert into Recipient(uid,username,phone, compid, typeId,RecStatus)
+        values (#{uid},#{userName},#{phone},#{compid},#{typeId},1)
+    </insert>
+    <update id="updateRecipient">
+        update Recipient set username=#{userName},
+        phone=#{phone},
+        compid=#{compid},
+        typeId=#{typeId},
+        RecStatus=1
+        where uid=#{uid}
+    </update>
+
+    <update id="deleteRecipient">
+        update Recipient set RecStatus=0
+        where compid=#{compid} and typeId=#{typeId}
+    </update>
+
+
+    <select id="getPushTypeList" resultType="com.hntxrj.txerp.vo.PushTypeVO">
+        select typeId as typeId,typeName as typeName
+        from push_type where recStatus = 1
+    </select>
+    <select id="getRecipientList" resultType="com.hntxrj.txerp.vo.RecipientVO">
+        SELECT uid,username as userName,compid,typeId,phone
+        FROM Recipient
+        where compid=#{compid} and typeId=#{typeId} and RecStatus=1
+    </select>
+    <select id="getRecipientById" resultType="com.hntxrj.txerp.vo.RecipientVO">
+        select uid,username as userName,compid,typeId,phone
+        from Recipient
+        where uid=#{uid} and compid=#{compid} and typeId=#{typeId}
+    </select>
+</mapper>

@@ -1091,9 +1091,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> selectAllUser() {
+    public List<User> selectAllUser(Integer compid,String userName) {
 
-        return userMapper.selectAllUser();
+        return userMapper.selectAllUser(compid,userName);
     }
 
 

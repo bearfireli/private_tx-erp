@@ -224,6 +224,9 @@ public interface StockMapper {
 
     /**
      * 获取所有库位下拉集合
+     *
+     * @param compid  企业id
+     * @param stoName 库位名称
      */
-    List<StockVO> getStockList(String compid);
+    List<StockVO> getStockList(String compid, String stoName);
 }
