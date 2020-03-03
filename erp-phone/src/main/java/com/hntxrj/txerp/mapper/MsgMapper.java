@@ -8,5 +8,5 @@ import java.util.List;
 @Mapper
 public interface MsgMapper {
 
-    List<RecipientVO> getRecipoentList(String compid, Integer typeId);
+    List<RecipientVO> getRecipientList(String compid, Integer typeId);
 }

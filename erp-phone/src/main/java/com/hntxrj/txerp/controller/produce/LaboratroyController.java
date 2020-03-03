@@ -152,7 +152,7 @@ public class LaboratroyController {
      * @param TaskId       任务单号
      * @param compid       企业
      * @param opid         用户
-     * @param verifystatus 线号审核状态
+     * @param verifystatus 线号审核状态   由于影响老版本,没有修改驼峰命名
      * @param stirid       线号
      * @param formulaCode  配比编号
      * @return jsonArray
@@ -177,7 +177,7 @@ public class LaboratroyController {
                 jsonVoAndPage.setCode(0);
                 jsonVoAndPage.setMsg(result);
                 int typeId = 6;
-                List<RecipientVO> recipoentList = msgMapper.getRecipoentList(compid,typeId);
+                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
                 for (RecipientVO r : recipoentList) {
                     SendmsgVO sendmsgVO = new SendmsgVO();
                     sendmsgVO.setSyncOtherMachine(2);
@@ -194,14 +194,12 @@ public class LaboratroyController {
             }
             //设置返回页面的data
             jsonVoAndPage.setData(jsonArray);
-            return jsonVoAndPage;
         } else {
             //jsonArry 能不为空
             jsonVoAndPage.setCode(1);
             jsonVoAndPage.setMsg("result null");
-            return jsonVoAndPage;
         }
-
+        return jsonVoAndPage;
 
     }
 
@@ -397,7 +395,7 @@ public class LaboratroyController {
                 jsonVo.setMsg(result);
                 jsonVo.setData(jsonArray);
                 int typeId = 5;
-                List<RecipientVO> recipoentList = msgMapper.getRecipoentList(compid,typeId);
+                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
                 for (RecipientVO r : recipoentList) {
                     SendmsgVO sendmsgVO = new SendmsgVO();
                     sendmsgVO.setSyncOtherMachine(2);
@@ -407,13 +405,11 @@ public class LaboratroyController {
                     sendmsgVO.setMsgContent(msgContent);
                     msgService.sendMsg(sendmsgVO);
                 }
-                return jsonVo;
                 //修改失败
             } else {
                 jsonVo.setCode(1);
                 jsonVo.setMsg(result);
                 jsonVo.setData(jsonArray);
-                return jsonVo;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -425,8 +421,9 @@ public class LaboratroyController {
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
-            return jsonVo;
+
         }
+        return jsonVo;
     }
 
 

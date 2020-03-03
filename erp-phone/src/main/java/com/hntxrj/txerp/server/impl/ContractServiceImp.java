@@ -460,7 +460,7 @@ public class ContractServiceImp implements ContractService {
 
         contractMapper.verifyContract(contractUid, compid, opId, sdf.format(new Date()), verifyStatus);
         int typeId = 3;
-        List<RecipientVO> recipoentList = msgMapper.getRecipoentList(compid,typeId);
+        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
         for (RecipientVO r : recipoentList) {
             SendmsgVO sendmsgVO = new SendmsgVO();
             sendmsgVO.setSyncOtherMachine(2);
@@ -574,7 +574,7 @@ public class ContractServiceImp implements ContractService {
         EntityTools.setEntityDefaultValue(contractDetail);
         contractDetailMapper.insert(contractDetail);
         int typeId = 3;
-        List<RecipientVO> recipoentList = msgMapper.getRecipoentList(compid,typeId);
+        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
         for (RecipientVO r : recipoentList) {
             SendmsgVO sendmsgVO = new SendmsgVO();
             sendmsgVO.setSyncOtherMachine(2);

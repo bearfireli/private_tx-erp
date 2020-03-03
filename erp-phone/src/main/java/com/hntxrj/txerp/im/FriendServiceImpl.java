@@ -24,7 +24,6 @@ import java.util.*;
 @Slf4j
 public class FriendServiceImpl implements FriendService {
     private static final MediaType _JSON = MediaType.parse("application/json; charset=utf-8");
-    private TLSSigAPIv2 tlsSigAPIv2;
     private String urlParams = "?sdkappid={{sdkappid}}&identifier=system&usersig={{usersig}}&random={{random}}" +
             "&contenttype=json";
 
@@ -36,7 +35,7 @@ public class FriendServiceImpl implements FriendService {
 
     @Autowired
     public FriendServiceImpl(@Value("${app.timsdk.sdkAppID}") Integer sdkAppId, @Value("${app.timsdk.key}") String key) {
-        tlsSigAPIv2 = new TLSSigAPIv2(sdkAppId, key);
+        TLSSigAPIv2 tlsSigAPIv2 = new TLSSigAPIv2(sdkAppId, key);
         urlParams = urlParams
                 .replace("{{sdkappid}}", String.valueOf(sdkAppId))
                 .replace("{{usersig}}", tlsSigAPIv2.genSig("system", (365 * 24 * 60 * 60)))
@@ -49,14 +48,14 @@ public class FriendServiceImpl implements FriendService {
      *
      * @param userID  当前用户
      * @param friends 添加的好友
-     * @return
+     * @return  返回值
      */
     @Override
     public Boolean friendAdd(String userID, List<FriendsVO> friends) throws ErpException {
-        if ("".equals(userID) && null == userID) {
+        if ("".equals(userID) || null == userID) {
             throw new ErpException(ErrEumn.USER_IS_NULL);
         }
-        if (friends.size() < 0) {
+        if (friends.size() == 0) {
             throw new ErpException(ErrEumn.ADD_FRIENDS_NULL);
         }
         JSONObject jsonObject = new JSONObject();
@@ -66,33 +65,33 @@ public class FriendServiceImpl implements FriendService {
         for (FriendsVO friendsVO : friends) {
             JSONObject jsonObject2 = new JSONObject();
             jsonObject2.put("To_Account", friendsVO.getToAccount());
-            if (friendsVO.getRemark()!=null && !"".equals(friendsVO.getRemark())){
-                jsonObject2.put("Remark",friendsVO.getRemark());
+            if (friendsVO.getRemark() != null && !"".equals(friendsVO.getRemark())) {
+                jsonObject2.put("Remark", friendsVO.getRemark());
             }
-            if (friendsVO.getGroupName()!=null && !"".equals(friendsVO.getGroupName())){
-                jsonObject2.put("GroupName",friendsVO.getGroupName());
+            if (friendsVO.getGroupName() != null && !"".equals(friendsVO.getGroupName())) {
+                jsonObject2.put("GroupName", friendsVO.getGroupName());
             }
-            if (friendsVO.getAddSource()==null || "".equals(friendsVO.getAddSource())){
+            if (friendsVO.getAddSource() == null || "".equals(friendsVO.getAddSource())) {
                 //为测试通过，默认添加
-                jsonObject2.put("AddSource","AddSource_Type_erpPhone");
+                jsonObject2.put("AddSource", "AddSource_Type_erpPhone");
                 throw new ErpException(ErrEumn.ADDSOURCE_IS_NULL);
-            }else{
-                jsonObject2.put("AddSource",friendsVO.getAddSource());
+            } else {
+                jsonObject2.put("AddSource", friendsVO.getAddSource());
             }
-            if (friendsVO.getAddWording()!=null && !"".equals(friendsVO.getAddWording())){
-                jsonObject2.put("AddWording",friendsVO.getAddWording());
+            if (friendsVO.getAddWording() != null && !"".equals(friendsVO.getAddWording())) {
+                jsonObject2.put("AddWording", friendsVO.getAddWording());
             }
-            if (friendsVO.getAddType()!=null && !"".equals(friendsVO.getAddType())){
-              //加好友方式（默认双向加好友方式)
-                jsonObject2.put("AddType","Add_Type_Both");
-            }else {
-                jsonObject2.put("AddType",friendsVO.getAddType());
+            if (friendsVO.getAddType() != null && !"".equals(friendsVO.getAddType())) {
+                //加好友方式（默认双向加好友方式)
+                jsonObject2.put("AddType", "Add_Type_Both");
+            } else {
+                jsonObject2.put("AddType", friendsVO.getAddType());
             }
-            if (friendsVO.getForceAddFlags()==1){
-                jsonObject2.put("ForceAddFlags",1);
+            if (friendsVO.getForceAddFlags() == 1) {
+                jsonObject2.put("ForceAddFlags", 1);
             }
-            if (friendsVO.getForceAddFlags()==0){
-                jsonObject2.put("ForceAddFlags",0);
+            if (friendsVO.getForceAddFlags() == 0) {
+                jsonObject2.put("ForceAddFlags", 0);
             }
             jsonArray.put(jsonObject2);
         }
@@ -150,7 +149,7 @@ public class FriendServiceImpl implements FriendService {
         jsonObject.put("From_Account", userID);
 
         //查询这个企业下所有用户。
-        List<String> objects = getuserAll(eid);
+        List<String> objects = getUserAll(eid);
         JSONArray jsonArray = new JSONArray();
 
         //把查询的用户拼接到参数中，
@@ -204,8 +203,9 @@ public class FriendServiceImpl implements FriendService {
     /**
      * 删除好友
      * 删除好友，支持单向删除好友和双向删除好友。
-     * @param userID 当前用户
-     * @param friends  选择删除的好友ID
+     *
+     * @param userID     当前用户
+     * @param friends    选择删除的好友ID
      * @param deleteType 删除模式 Delete_Type_Single 单向删除/Delete_Type_Both 双向删除
      * @return 接口返回参数
      */
@@ -225,15 +225,15 @@ public class FriendServiceImpl implements FriendService {
                 jsonArray.put(friendsVO.getToAccount());
             }
         }
-        jsonObject.put("To_Account",jsonArray);
+        jsonObject.put("To_Account", jsonArray);
         //判断删除模式
-        if (!"".equals(deleteType) && null!=deleteType){
+        if (!"".equals(deleteType) && null != deleteType) {
             //单向删除
-            if (deleteType.equals("Delete_Type_Single")){
-                jsonObject.put("DeleteType","Delete_Type_Single");
-            }else {
+            if (deleteType.equals("Delete_Type_Single")) {
+                jsonObject.put("DeleteType", "Delete_Type_Single");
+            } else {
                 //双向删除
-                jsonObject.put("DeleteType","Delete_Type_Both");
+                jsonObject.put("DeleteType", "Delete_Type_Both");
             }
         }
 
@@ -279,9 +279,9 @@ public class FriendServiceImpl implements FriendService {
      *
      * @param eid 企业id
      * @return 返回是否通过
-     */
-    private List<String> getuserAll(int eid) {
-        String baseUrl = "";
+     @ */
+    private List<String> getUserAll(Integer eid) {
+        String baseUrl;
         baseUrl = erpurl + "/user/userAll";
         Map<String, Object> map = new HashMap<>();
         map.put("eid", eid);
@@ -307,7 +307,6 @@ public class FriendServiceImpl implements FriendService {
         } catch (HttpProcessException e) {
             e.printStackTrace();
         }
-        baseUrl = "";
         return list;
     }
 
