@@ -490,4 +490,11 @@ public class UserController {
         return  JSON.toJSONString(resultVO);
     };
 
+    /*根据eid 查询企业用户*/
+    @PostMapping("/userAll")
+    public String userAll(Integer eid){
+        resultVO.setData(JSON.toJSONString(userService.userAll(eid)));
+        return  JSON.toJSONString(resultVO);
+    };
+
 }

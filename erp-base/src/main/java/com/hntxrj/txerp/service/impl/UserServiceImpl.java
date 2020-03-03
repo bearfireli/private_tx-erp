@@ -1096,6 +1096,13 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         return userMapper.selectAllUser(compid,userName);
     }
 
+    /*根据eid 查询企业用户*/
+    @Override
+    public List<User> userAll(Integer eid) {
+
+        return userMapper.userAll(eid);
+    }
+
 
 
 
