@@ -70,7 +70,16 @@ public class TankServiceImpl implements TankService {
             if (powderTankDevice.getStirId() == null) {
                 throw new ErpException(ErrEumn.STIRID_NULL_ERROR);
             }
-            powderTankDevice.setCreateTime(getCurrentTime());
+            if (powderTankDevice.getTankCode() == null) {
+                powderTankDevice.setTankCode(1);
+                //说明是添加罐信息
+                Integer tankCode = tankMapper.getMaxTankCode(powderTankDevice.getCompid());
+                if (tankCode != null) {
+                    powderTankDevice.setTankCode(tankCode + 1);
+                }
+                powderTankDevice.setCreateTime(getCurrentTime());
+            }
+
             powderTankDeviceRepository.save(powderTankDevice);
         }
 

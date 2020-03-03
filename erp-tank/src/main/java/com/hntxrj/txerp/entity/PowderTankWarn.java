@@ -14,36 +14,36 @@ public class PowderTankWarn implements Serializable {
 
     @Id
     @Column(name = "compid")
-    private String compid;
+    private String compid;      //企业代号
 
     @Id
     @Column(name = "stirid")
-    private String stirId;
+    private String stirId;      //生产线号
 
     @Id
     @Column(name = "tank_code")
-    private Integer tankCode;
+    private Integer tankCode;       //罐ID代号
 
     @Column(name = "cans_name")
-    private String cansName;
+    private String cansName;        //罐名称
     @Column(name = "measure_type")
-    private String measureType;
+    private String measureType;     //罐类别
     @Column(name = "state_tank")
-    private int stateTank;
+    private int stateTank;          //罐的状态
     @Column(name = "warn_type")
-    private int warnType;
+    private int warnType;           //报警类型
     @Column(name = "remarks")
-    private String reMarks;
+    private String reMarks;         //备注说明
     @Column(name = "isshow")
-    private int isShow;
+    private int isShow;             //是否提醒
     @Column(name = "empname")
-    private String empName;
+    private String empName;         //操作员名
     @Column(name = "create_time")
-    private String createTime;
+    private String createTime;      //创建时间
     @Column(name = "updown")
-    private boolean upDown;
+    private boolean upDown;         //网络上传标识
     @Column(name = "updownmark")
-    private int upDownMark;
+    private int upDownMark;         //网络同步标识
 }
 
 class ptPowderTankWarnUPK implements Serializable{

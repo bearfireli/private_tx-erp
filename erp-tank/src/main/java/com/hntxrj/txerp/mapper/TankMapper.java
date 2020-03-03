@@ -52,4 +52,9 @@ public interface TankMapper {
      * @param tankStatus 罐开门状态
      */
     void updatePowderTankControl(String compid, String tankCode, Integer tankStatus);
+
+    /**
+     * 获取当前企业下最大的罐代号
+     * */
+    Integer getMaxTankCode(String compid);
 }
