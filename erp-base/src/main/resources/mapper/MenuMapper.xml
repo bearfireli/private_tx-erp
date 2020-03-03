@@ -23,6 +23,6 @@
     </select>
 
     <select id="getFunctionMenuList" resultType="com.hntxrj.txerp.entity.base.Menu">
-        select  * from menu where  project =2 and menu_status=0 and menu_fmid in (60,62,63,417)
+        select  * from menu where  project =2 and menu_status=0 and menu_fmid in (60,62,63,86,417)
     </select>
 </mapper>
