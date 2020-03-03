@@ -218,6 +218,8 @@ public enum ErrEumn {
     GROUP_TYPE_NULL_EOORO(100302, "群组类型不能为空"),
     GROUP_ID_NULL_ERROR(100303, "群组账号不能为空"),
 
+    EXPIRE_TIME_OVER(100501, "您的使用权限已到期"),
+
     ;
 
 

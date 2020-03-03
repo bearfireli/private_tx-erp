@@ -1,20 +1,22 @@
 package com.hntxrj.txerp.conf;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.exception.ErrEumn;
 import lombok.extern.slf4j.Slf4j;
 
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -105,6 +107,53 @@ public class ControllerAspect {
     }
 
 
+    /**
+     * 拦截器，判断用户是否超出到期时间，如果超出到期时间，禁止访问
+     */
+    @Around("execution(* com.hntxrj.txerp.*.*.*(..))")
+    private Object getExpireTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        String compid;  //公司代号
+        Map<String, Object> map = new HashMap<>();
+
+        //   获取拦截方法的参数值   例：['01','P1910254685']
+        Object[] args = joinPoint.getArgs();
+
+        // 获取拦截方法的参数名 例：[compid,taskId]
+        String[] argNames = ((MethodSignature) joinPoint.getSignature()).getParameterNames();
+        //得到拦截方法的参数compid
+        if (args != null && args.length > 0) {// 无参数
+            for (int i = 0; i < args.length; i++) {
+                map.put(argNames[i], args[i]);
+            }
+        }
+        if (map.get("compid") == null) {
+            //说明请求的是公用接口，放行
+            return joinPoint.proceed();
+        }
+
+        compid = String.valueOf(map.get("compid"));
+        //向erp-base项目发送请求，获取当前企业的到期时间
+        JSONObject jsonObject = getExpireTime(compid);
+        if (jsonObject == null) {
+            throw new ErpException(ErrEumn.EXPIRE_TIME_OVER);
+        }
+
+        JSONObject data = (JSONObject) jsonObject.get("data");
+        if (data == null) {
+            throw new ErpException(ErrEumn.EXPIRE_TIME_OVER);
+        }
+
+        long expireTime = (long) data.get("expireTime");
+        long nowTime = new Date().getTime();
+
+        if ((expireTime - nowTime) < 0) {
+            throw new ErpException(ErrEumn.EXPIRE_TIME_OVER);
+        }
+        return joinPoint.proceed();
+
+    }
+
+
     //向tx-erp项目发送请求，把methodName，functionName，compid传递过去，存入数据库统计表中。
     private void insertMethodName(String methodName, String functionName, String compid) {
         String baseUrl;
@@ -126,6 +175,37 @@ public class ControllerAspect {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //向erp-base项目发送请求，获取当前企业的到期时间
+    private JSONObject getExpireTime(String enterprise) {
+        String baseUrl;
+        baseUrl = url + "/v1/project/getExpireTime";
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = new FormBody.Builder()
+                .add("pid", "2")
+                .add("token", "getExpireTime")
+                .build();
+        Request request = new Request.Builder()
+                .url(baseUrl)
+                .post(body)
+                .addHeader("enterprise", enterprise)
+                .build();
+
+        JSONObject resultJSON = null;
+        try {
+            Response response = client.newCall(request).execute();
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                resultJSON = JSONObject.parseObject(result);
+            }
+
+            return resultJSON;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
