@@ -2,15 +2,13 @@ package com.hntxrj.txerp.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class RecipientVO {
-    /*id*/
+public class RecipientVO implements Serializable {
     private Integer uid;
-    /*接收人姓名*/
-    private String username;
-    private String phone;
-    /*站别代号*/
+    private String userName;       //消息推送人姓名
     private String compid;
-    /*类型id*/
-    private Integer typeId;
+    private Integer typeId;             //消息推送类型
+    private String phone;
 }

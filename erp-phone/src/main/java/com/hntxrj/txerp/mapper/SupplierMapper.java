@@ -12,6 +12,7 @@ public interface SupplierMapper {
      * 获取供应商下拉集合
      *
      * @param compid 企业id
+     * @param supName  供应商名称
      */
-    List<SupplierVO> getSupplierList(String compid);
+    List<SupplierVO> getSupplierList(String compid,String supName);
 }

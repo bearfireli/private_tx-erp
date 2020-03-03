@@ -2,9 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.SupplierMapper">
     <select id="getSupplierList" resultType="com.hntxrj.txerp.vo.SupplierVO">
-    select Sup_Name as supName,
-            SupCode as supCode
-    from MP_Supplier where compid=#{compid}
+        select Sup_Name as supName,
+        SupCode as supCode
+        from MP_Supplier where compid=#{compid}
+        <if test="supName!=null and supName!=''">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
     </select>
 
 </mapper>

@@ -33,9 +33,9 @@ public class DropDownServiceImpl implements DropDownService {
     }
 
     @Override
-    public PageVO<SupplierVO> getSupplierList(String compid,Integer page,Integer pageSize) {
+    public PageVO<SupplierVO> getSupplierList(String compid,String supName,Integer page,Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<SupplierVO> supplierList = supplierMapper.getSupplierList(compid);
+        List<SupplierVO> supplierList = supplierMapper.getSupplierList(compid,supName);
         PageInfo<SupplierVO> pageInfo = new PageInfo<>(supplierList);
         PageVO<SupplierVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -43,9 +43,9 @@ public class DropDownServiceImpl implements DropDownService {
     }
 
     @Override
-    public PageVO<StockVO> getStockList(String compid,Integer page,Integer pageSize) {
+    public PageVO<StockVO> getStockList(String compid,String stoName,Integer page,Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<StockVO> stockList = stockMapper.getStockList(compid);
+        List<StockVO> stockList = stockMapper.getStockList(compid,stoName);
         PageInfo<StockVO> pageInfo = new PageInfo<>(stockList);
         PageVO<StockVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

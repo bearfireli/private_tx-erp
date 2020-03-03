@@ -67,21 +67,21 @@ public class TaskPlanApi {
      * 添加任务单
      *
      * @param taskPlan 任务单实体类
+     * @param type     下任务单标识  1:工地端 ; 0:手机端
      * @return 成功或者失败
-     * @param type 下任务单标识  1:工地端 ; 0:手机端
      * @throws ErpException 定义的异常
      */
     @PostMapping("/addTaskPlan")
-    public ResultVO addTaskPlan(TaskPlan taskPlan, String cContractCode,String type) throws ErpException {
+    public ResultVO addTaskPlan(TaskPlan taskPlan, String cContractCode, String type) throws ErpException {
         //兼容老版本，老版本子合同号传递的是cContractCode
         if (taskPlan.getContractDetailCode() == null) {
             taskPlan.setContractDetailCode(cContractCode);
         }
-        if( type == null ){
+        if (type == null) {
             //兼容手机端与工地端，手机端没有传递type值，默认赋值。
-            type ="0";
+            type = "0";
         }
-        taskPlanService.addTaskPlan(taskPlan,type);
+        taskPlanService.addTaskPlan(taskPlan, type);
         return ResultVO.create();
     }
 
@@ -424,11 +424,12 @@ public class TaskPlanApi {
     /**
      * 查询司机姓名
      *
-     * @param compid 企业id
+     * @param compid     企业id
+     * @param driverName 司机姓名
      */
     @PostMapping("/getPersonalName")
-    public ResultVO getPersonalName(String compid) {
-        return ResultVO.create(taskPlanService.getPersonalName(compid));
+    public ResultVO getPersonalName(String compid, String driverName) {
+        return ResultVO.create(taskPlanService.getPersonalName(compid, driverName));
     }
 
 
