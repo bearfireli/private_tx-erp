@@ -242,10 +242,10 @@ public interface ContractMapper {
      * @param compid             企业id
      * @param contractUid        合同uid
      * @param contractDetailCode 子合同代号
-     * @param ppCode             特殊材料编号
+     * @param pPCode             特殊材料编号
      * @return 合同特殊材料
      */
-    String getContractPriceMarkup(String compid, String contractUid, String contractDetailCode, String ppCode);
+    String getContractPriceMarkup(String compid, String contractUid, String contractDetailCode, String pPCode);
 
     /**
      * 获取合同审核状态
