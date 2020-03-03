@@ -148,7 +148,7 @@ public class ConsumeApi {
      * 查询生产材料详细名称
      *
      * @param compid 企业id
-     * @param stird 线号
+     * @param stirId 线号
      * @return 查询材料名
      */
     @PostMapping("/getProductDatail")
