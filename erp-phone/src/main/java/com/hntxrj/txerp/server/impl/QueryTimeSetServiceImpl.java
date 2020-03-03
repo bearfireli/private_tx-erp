@@ -127,8 +127,8 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
                     queryStopTime =queryTimeSetVO.getQueryStopTime();
                 }
                 if (compid!=null && queryName!=null){
-                    queryTimeSetMapper.deletequeryTimeSet(compid,queryName);
-                    queryTimeSetMapper.insetqueryTimeSet(compid,queryName,queryTime,queryStartTime,queryStopTime,recStatus,upDownMark,upDown);
+                    queryTimeSetMapper.deleteQueryTimeSet(compid,queryName);
+                    queryTimeSetMapper.insetQueryTimeSet(compid,queryName,queryTime,queryStartTime,queryStopTime,recStatus,upDownMark,upDown);
                 }
             }
         }
