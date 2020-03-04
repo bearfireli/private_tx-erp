@@ -75,11 +75,25 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
         }
     }
 
+    /**
+     * 获取小票签收列表
+     *
+     * @param id          小票id
+     * @param compid      企业
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param eppCode     工程代号
+     * @param builderCode 施工单位代号
+     * @param taskId      任务单id
+     * @param placing     浇筑部位
+     * @param taskStatus  生产状态
+     * @return 小票签收列表
+     */
     @Override
-    public TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String compid, String beginTime, String endTime,
+    public TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(Integer id,String compid, String beginTime, String endTime,
                                                           String eppCode, Byte upStatus, String builderCode,
                                                           String taskId, String placing, String taskStatus) {
-        return taskSaleInvoiceMapper.getTaskSaleInvoiceCount(compid, beginTime, endTime, eppCode, upStatus, builderCode,
+        return taskSaleInvoiceMapper.getTaskSaleInvoiceCount(id == null ? null : String.valueOf(id),compid, beginTime, endTime, eppCode, upStatus, builderCode,
                 taskId, placing, taskStatus);
     }
 }

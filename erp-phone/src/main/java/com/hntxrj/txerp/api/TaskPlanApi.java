@@ -184,6 +184,7 @@ public class TaskPlanApi {
     /**
      * 获取小票发货，签收方量汇总
      *
+     * @param id          小票id
      * @param compid      企业
      * @param beginTime   开始时间
      * @param endTime     结束时间
@@ -196,10 +197,11 @@ public class TaskPlanApi {
      * @return 小票签收列表
      */
     @PostMapping("/getTaskSaleInvoiceCount")
-    public ResultVO getTaskSaleInvoiceCount(String compid, Long beginTime, Long endTime, String eppCode, Byte upStatus,
-                                            String builderCode, String taskId, String placing, String taskStatus) {
+    public ResultVO getTaskSaleInvoiceCount(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
+                                            Byte upStatus, String builderCode, String taskId,
+                                            String placing, String taskStatus) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceCount(compid,
+        return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceCount(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 eppCode, upStatus, builderCode, taskId, placing, taskStatus));
