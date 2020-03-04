@@ -121,7 +121,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     @Override
-    public void addTaskPlan(TaskPlan taskPlan,String type) throws ErpException {
+    public void addTaskPlan(TaskPlan taskPlan, String type) throws ErpException {
         if (StringUtils.isEmpty(taskPlan.getCompid())) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_COMPID);
         }
@@ -143,7 +143,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (type.equals("1")) {
             /* type 下任务单标识  1 工地端 ，0 手机端*/
             taskPlan.setClientType(1);
-        }else {
+        } else {
             taskPlan.setClientType(0);
         }
 
@@ -193,8 +193,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlan.setAdjustmentTime(taskPlan.getPreTime());
         try {
             taskPlanRepository.save(taskPlan);
-            int typeId =1;
-            List<RecipientVO> recipoentList = msgMapper.getRecipientList(taskPlan.getCompid(),typeId);
+            int typeId = 1;
+            List<RecipientVO> recipoentList = msgMapper.getRecipientList(taskPlan.getCompid(), typeId);
             for (RecipientVO r : recipoentList) {
                 SendmsgVO sendmsgVO = new SendmsgVO();
                 sendmsgVO.setSyncOtherMachine(2);
@@ -214,15 +214,15 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public void verifyTaskPlan(String taskId, String compid, Integer verifyStatus) throws ErpException {
         try {
             taskPlanMapper.verifyTaskPlan(taskId, compid, verifyStatus, new Date());
-            if (verifyStatus==1){
+            if (verifyStatus == 1) {
                 int typeId = 2;
-                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
+                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
                 for (RecipientVO r : recipoentList) {
                     SendmsgVO sendmsgVO = new SendmsgVO();
                     sendmsgVO.setSyncOtherMachine(2);
                     sendmsgVO.setToAccount(r.getPhone());
                     sendmsgVO.setMsgLifeTime(7);
-                    String  msgContent ="任务单：【"+taskId+"】已审核，请开配比。";
+                    String msgContent = "任务单：【" + taskId + "】已审核，请开配比。";
                     sendmsgVO.setMsgContent(msgContent);
                     msgService.sendMsg(sendmsgVO);
                 }
@@ -699,8 +699,22 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 shiftListVO.setWorkClass(d.getCode());
                 shiftListVO.setWorkName(d.getName());
                 workClass = d.getCode();
-                shiftListVO.setShiftList(taskPlanMapper.getDriverShiftListNew(compid, vehicleId,
-                        personalCode, personalName, workClass, beginTime, endTime));
+                List<DriverShiftListVO> driverShiftList = taskPlanMapper.getDriverShiftListNew(compid, vehicleId,
+                        personalCode, personalName, workClass, beginTime, endTime);
+                for (DriverShiftListVO driverShiftListVO : driverShiftList) {
+                    //缓存中的key值
+                    String key = compid + driverShiftListVO.getPersonalCode();
+                    //从缓存中取出该司机上一次请求的时间
+                    Date onlineTime = (Date) redisTemplate.opsForValue().get(key);
+                    driverShiftListVO.setOnlineStatus("不在线");
+                    if (onlineTime != null) {
+                        if (Math.abs(new Date().getTime() - onlineTime.getTime()) / 1000 < 90) {
+                            //司机上一次请求距离现在小于90秒，说明司机是在线状态
+                            driverShiftListVO.setOnlineStatus("在线");
+                        }
+                    }
+                }
+                shiftListVO.setShiftList(driverShiftList);
                 list.add(shiftListVO);
             }
         }
@@ -710,12 +724,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     /**
      * 查询司机
      *
-     * @param compid 　企业id
+     * @param compid     　企业id
      * @param driverName 司机名称
      */
     @Override
-    public PageVO<PersonalNameVO> getPersonalName(String compid,String driverName) {
-        List<PersonalNameVO> sendCarList = taskPlanMapper.getPersonalName(compid,driverName);
+    public PageVO<PersonalNameVO> getPersonalName(String compid, String driverName) {
+        List<PersonalNameVO> sendCarList = taskPlanMapper.getPersonalName(compid, driverName);
         PageInfo<PersonalNameVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<PersonalNameVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
