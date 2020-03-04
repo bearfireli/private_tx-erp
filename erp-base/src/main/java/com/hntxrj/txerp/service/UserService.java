@@ -281,5 +281,8 @@ public interface UserService {
      */
     List<User> selectAllUser(Integer compid,String userName);
 
-
+    /**
+     * 根据企业id查询用户
+     * */
+    List<User> userAll(Integer eid);
 }

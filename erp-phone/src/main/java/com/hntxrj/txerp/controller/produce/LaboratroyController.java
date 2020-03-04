@@ -3,13 +3,14 @@ package com.hntxrj.txerp.controller.produce;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.entity.PageBean;
+import com.hntxrj.txerp.im.MsgService;
+import com.hntxrj.txerp.mapper.MsgMapper;
 import com.hntxrj.txerp.server.FormulaService;
 import com.hntxrj.txerp.server.LMTaskServer;
 import com.hntxrj.txerp.util.WriteLog;
-import com.hntxrj.txerp.vo.JsonVo;
-import com.hntxrj.txerp.vo.JsonVoAndPage;
-import com.hntxrj.txerp.vo.ResultVO;
+import com.hntxrj.txerp.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/laboratroy")
@@ -35,11 +37,16 @@ public class LaboratroyController {
 
     private final LMTaskServer lmTaskServer;
 
+    private final MsgService msgService;
+    private final MsgMapper msgMapper;
     @Autowired
-    public LaboratroyController(FormulaService formulaService, WriteLog writeLog, LMTaskServer lmTaskServer) {
+    public LaboratroyController(FormulaService formulaService, WriteLog writeLog, LMTaskServer lmTaskServer,
+                                MsgService msgService, MsgMapper msgMapper) {
         this.formulaService = formulaService;
         this.writeLog = writeLog;
         this.lmTaskServer = lmTaskServer;
+        this.msgService = msgService;
+        this.msgMapper = msgMapper;
     }
 
 
@@ -145,7 +152,7 @@ public class LaboratroyController {
      * @param TaskId       任务单号
      * @param compid       企业
      * @param opid         用户
-     * @param verifystatus 线号审核状态
+     * @param verifystatus 线号审核状态   由于影响老版本,没有修改驼峰命名
      * @param stirid       线号
      * @param formulaCode  配比编号
      * @return jsonArray
@@ -156,7 +163,7 @@ public class LaboratroyController {
                                               @RequestParam String opid,
                                               @RequestParam Integer verifystatus,
                                               @RequestParam Integer stirid,
-                                              String formulaCode) {
+                                              String formulaCode) throws ErpException {
         JsonVoAndPage jsonVoAndPage = new JsonVoAndPage();
         JSONArray jsonArray = formulaService.sp_Verify_LM_TaskTheoryFormula(compid, TaskId, opid,
                 verifystatus, stirid, formulaCode);
@@ -169,6 +176,17 @@ public class LaboratroyController {
             if (result.contains("成功")) {
                 jsonVoAndPage.setCode(0);
                 jsonVoAndPage.setMsg(result);
+                int typeId = 6;
+                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
+                for (RecipientVO r : recipoentList) {
+                    SendmsgVO sendmsgVO = new SendmsgVO();
+                    sendmsgVO.setSyncOtherMachine(2);
+                    sendmsgVO.setToAccount(r.getPhone());
+                    sendmsgVO.setMsgLifeTime(7);
+                    String  msgContent ="任务单号：["+typeId+"],["+stirid+"]号线配比审核成功.";
+                    sendmsgVO.setMsgContent(msgContent);
+                    msgService.sendMsg(sendmsgVO);
+                }
             } else {
                 //失败code  =1
                 jsonVoAndPage.setCode(1);
@@ -176,14 +194,12 @@ public class LaboratroyController {
             }
             //设置返回页面的data
             jsonVoAndPage.setData(jsonArray);
-            return jsonVoAndPage;
         } else {
             //jsonArry 能不为空
             jsonVoAndPage.setCode(1);
             jsonVoAndPage.setMsg("result null");
-            return jsonVoAndPage;
         }
-
+        return jsonVoAndPage;
 
     }
 
@@ -378,13 +394,22 @@ public class LaboratroyController {
                 jsonVo.setCode(0);
                 jsonVo.setMsg(result);
                 jsonVo.setData(jsonArray);
-                return jsonVo;
+                int typeId = 5;
+                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
+                for (RecipientVO r : recipoentList) {
+                    SendmsgVO sendmsgVO = new SendmsgVO();
+                    sendmsgVO.setSyncOtherMachine(2);
+                    sendmsgVO.setToAccount(r.getPhone());
+                    sendmsgVO.setMsgLifeTime(7);
+                    String  msgContent ="任务单号：["+typeId+"],["+stirid+"]号线配比编辑成功.";
+                    sendmsgVO.setMsgContent(msgContent);
+                    msgService.sendMsg(sendmsgVO);
+                }
                 //修改失败
             } else {
                 jsonVo.setCode(1);
                 jsonVo.setMsg(result);
                 jsonVo.setData(jsonArray);
-                return jsonVo;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -396,8 +421,9 @@ public class LaboratroyController {
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
-            return jsonVo;
+
         }
+        return jsonVo;
     }
 
 
