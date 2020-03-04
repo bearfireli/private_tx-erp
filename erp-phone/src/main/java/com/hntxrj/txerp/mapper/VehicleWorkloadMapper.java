@@ -1,7 +1,6 @@
 package com.hntxrj.txerp.mapper;
 
 import com.hntxrj.txerp.vo.*;
-import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -95,12 +94,12 @@ public interface VehicleWorkloadMapper {
      *
      * @param compid     企业
      * @param eppCode    工程代码
-     * @param empNameb   过磅员
+     * @param empName   过磅员
      * @param weightType 过磅类别
      * @param beginTime  开始时间
      * @param endTime    结束时间
      */
-    List<WorkloadStatisticsVo> getWorkloadStatistics(String compid, String eppCode, String empNameb,
+    List<WorkloadStatisticsVo> getWorkloadStatistics(String compid, String eppCode, String empName,
                                                      Integer weightType,
                                                      String beginTime, String endTime);
 

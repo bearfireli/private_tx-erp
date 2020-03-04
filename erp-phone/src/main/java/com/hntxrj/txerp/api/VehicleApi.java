@@ -159,7 +159,7 @@ public class VehicleApi {
      *
      * @param compid     企业
      * @param eppCode    工程代码
-     * @param empNameb   过磅员
+     * @param empName   过磅员
      * @param weightType 过磅类别
      * @param beginTime  开始时间
      * @param endTime    结束时间
@@ -167,14 +167,14 @@ public class VehicleApi {
      * @param pageSize   每页显示条数
      */
     @PostMapping("/getWorkloadStatistics")
-    public ResultVO getWorkloadStatistics(String compid, String eppCode, String empNameb,
+    public ResultVO getWorkloadStatistics(String compid, String eppCode, String empName,
                                           @RequestParam(defaultValue = "0")Integer weightType,
                                           Long beginTime, Long endTime,
                                           @RequestParam(defaultValue = "1") Integer page,
                                           @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getWorkloadStatistics(compid,
-                eppCode, empNameb, weightType,
+                eppCode, empName, weightType,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }

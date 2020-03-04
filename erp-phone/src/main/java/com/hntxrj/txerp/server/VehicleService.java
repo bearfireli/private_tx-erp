@@ -183,14 +183,14 @@ public interface VehicleService {
      *
      * @param compid     企业
      * @param eppCode    工程代码
-     * @param empNameb   过磅员
+     * @param empName   过磅员
      * @param weightType 过磅类别
      * @param beginTime  开始时间
      * @param endTime    结束时间
      * @param page       分页
      * @param pageSize   每页显示条数
      */
-    PageVO<WorkloadStatisticsVo> getWorkloadStatistics(String compid, String eppCode, String empNameb,
+    PageVO<WorkloadStatisticsVo> getWorkloadStatistics(String compid, String eppCode, String empName,
                                                        Integer weightType,
                                                        String beginTime, String endTime,
                                                        Integer page, Integer pageSize);
