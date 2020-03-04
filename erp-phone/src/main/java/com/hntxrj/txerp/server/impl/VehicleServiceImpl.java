@@ -269,7 +269,7 @@ public class VehicleServiceImpl implements VehicleService {
      *
      * @param compid     企业
      * @param eppCode    工程代码
-     * @param empNameb   过磅员
+     * @param empName   过磅员
      * @param weightType 过磅类别
      * @param beginTime  开始时间
      * @param endTime    结束时间
@@ -277,7 +277,7 @@ public class VehicleServiceImpl implements VehicleService {
      * @param pageSize   每页显示条数
      */
     @Override
-    public PageVO<WorkloadStatisticsVo> getWorkloadStatistics(String compid, String eppCode, String empNameb,
+    public PageVO<WorkloadStatisticsVo> getWorkloadStatistics(String compid, String eppCode, String empName,
                                                               Integer weightType,
                                                               String beginTime, String endTime,
                                                               Integer page, Integer pageSize) {
@@ -285,10 +285,10 @@ public class VehicleServiceImpl implements VehicleService {
         PageHelper.startPage(page, pageSize, "SecondTime desc");
 
         log.info("搅拌车过磅查询:compid:{},eppCode:{},empNameb:{},weightType:{},beginTime:{},endTime:{}",
-                compid, eppCode, empNameb, weightType,
+                compid, eppCode, empName, weightType,
                 beginTime, endTime);
         List<WorkloadStatisticsVo> vehicleWorkloadSummaryVOS =
-                vehicleWorkloadMapper.getWorkloadStatistics(compid, eppCode, empNameb, weightType,
+                vehicleWorkloadMapper.getWorkloadStatistics(compid, eppCode, empName, weightType,
                         beginTime, endTime);
         PageInfo<WorkloadStatisticsVo> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);

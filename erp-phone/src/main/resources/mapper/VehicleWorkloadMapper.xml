@@ -264,8 +264,8 @@
         <if test="eppCode != null and eppCode != ''">
             and tp.eppCode = #{eppCode}
         </if>
-        <if test="empNameb != null and empNameb != ''">
-            and us.empname like '%'+#{empNameb}+'%'
+        <if test="empName != null and empName != ''">
+            and us.empname like '%'+#{empName}+'%'
         </if>
         <if test="beginTime != null and beginTime != ''">
             and vm.SecondTime <![CDATA[ >= ]]>  #{beginTime}
