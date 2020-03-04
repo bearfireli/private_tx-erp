@@ -148,6 +148,9 @@
         where tsi.compid=#{compid}
         and tsi.RecStatus=1
         and tsi.InvoiceType!=6
+        <if test="id != null ">
+            and tsi.ID like '%'+#{id}+'%'
+        </if>
         <if test="beginTime != null and beginTime != '' ">
             and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
         </if>

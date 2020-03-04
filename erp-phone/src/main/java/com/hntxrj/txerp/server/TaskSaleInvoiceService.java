@@ -52,6 +52,7 @@ public interface TaskSaleInvoiceService {
     /**
      * 获取小票签收列表
      *
+     * @param id          小票id
      * @param compid      企业
      * @param beginTime   开始时间
      * @param endTime     结束时间
@@ -62,7 +63,7 @@ public interface TaskSaleInvoiceService {
      * @param taskStatus  生产状态
      * @return 小票签收列表
      */
-    TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String compid, String beginTime, String endTime, String eppCode,
+    TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(Integer id,String compid, String beginTime, String endTime, String eppCode,
                                                    Byte upStatus, String builderCode, String taskId,
                                                    String placing, String taskStatus);
 }
