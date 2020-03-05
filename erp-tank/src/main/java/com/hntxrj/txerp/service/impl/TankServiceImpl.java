@@ -2,6 +2,7 @@ package com.hntxrj.txerp.service.impl;
 
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.core.util.EncryptUtil;
 import com.hntxrj.txerp.entity.*;
 import com.hntxrj.txerp.mapper.TankMapper;
 import com.hntxrj.txerp.repository.*;
@@ -70,6 +71,11 @@ public class TankServiceImpl implements TankService {
             if (powderTankDevice.getStirId() == null) {
                 throw new ErpException(ErrEumn.STIRID_NULL_ERROR);
             }
+            if (powderTankDevice.getDoorOpenPassword() != null) {
+                //开门密码加密
+                powderTankDevice.setDoorOpenPassword(
+                        EncryptUtil.encryptPassword(powderTankDevice.getDoorOpenPassword()));
+            }
             if (powderTankDevice.getTankCode() == null) {
                 powderTankDevice.setTankCode(1);
                 //说明是添加罐信息
@@ -101,6 +107,11 @@ public class TankServiceImpl implements TankService {
     @Override
     public void savePowderTankControl(PowderTankControl powderTankControl) {
         powderTankControl.setCreateTime(getCurrentTime());
+        //对开门密码进行加密
+        if (powderTankControl.getDoorOpenPassword() != null) {
+            powderTankControl.setDoorOpenPassword(
+                    EncryptUtil.encryptPassword(powderTankControl.getDoorOpenPassword()));
+        }
         powderTankControlRepository.save(powderTankControl);
     }
 
@@ -119,7 +130,10 @@ public class TankServiceImpl implements TankService {
             //罐号不存在
             throw new ErpException(ErrEumn.TANK_NULL_ERROR);
         }
-        if (!doorPassword.equals(powderTankControl.getDoorOpenPassword())) {
+        if (doorPassword == null) {
+            throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_BUILDERCODE);
+        }
+        if (!EncryptUtil.encryptPassword(doorPassword).equals(powderTankControl.getDoorOpenPassword())) {
             //密码错误
             throw new ErpException(ErrEumn.PASSWORD_ERROR);
         }
@@ -160,6 +174,8 @@ public class TankServiceImpl implements TankService {
     @Override
     public void savePowderTankSafeStatusInfor(PowderTankSafeStatusInfor powderTankSafeStatusInfor) {
         powderTankSafeStatusInfor.setCreateTime(getCurrentTime());
+        powderTankSafeStatusInfor.setDoorOpenPassword(
+                EncryptUtil.encryptPassword(powderTankSafeStatusInfor.getDoorOpenPassword()));
         powerTankSafeStatusInforRepository.save(powderTankSafeStatusInfor);
     }
 
