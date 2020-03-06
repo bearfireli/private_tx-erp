@@ -599,6 +599,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         DriverWaitLEDVO driverWaitLEDVO = systemVarInitMapper.getDriverWaitLED(compid);
         if (driverWaitLEDVO == null) {
             driverWaitLEDVO = new DriverWaitLEDVO();
+            driverWaitLEDVO.setIsShow(false);
         }
         //获取所有等待生产的车辆的集合
         List<ProductDriverLEDVo> waitDriverShiftLED =
