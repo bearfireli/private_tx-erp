@@ -644,6 +644,27 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         return ProductDriverList;
     }
 
+
+    @Override
+    public List<ProductDriverLEDListVO> getProductDriverShiftLEDOld(String compid) {
+        List<ProductDriverLEDListVO> list = new ArrayList<>();
+
+        List<StirIdVO> stirIds = stockMapper.getStirIds(compid);
+        for (StirIdVO stirId : stirIds) {
+            ProductDriverLEDListVO productDriverLEDListVO = new ProductDriverLEDListVO();
+            productDriverLEDListVO.setStirID(stirId.getStirId());
+            productDriverLEDListVO.setStirName(stirId.getStirName());
+            List<ProductDriverLEDVo> productDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid,
+                    stirId.getStirId(), 3);
+            productDriverLEDListVO.setCars(productDriverShiftLED);
+
+            list.add(productDriverLEDListVO);
+        }
+        return list;
+
+
+    }
+
     /**
      * 司机排班列表信息(老版本)
      *

@@ -317,7 +317,11 @@ public class TaskPlanApi {
      * @param compid 企业id
      */
     @PostMapping("/getProductDriverShiftLED")
-    public ResultVO getProductDriverShiftLED(String compid) {
+    public ResultVO getProductDriverShiftLED(String compid, Integer type) {
+        //兼容老版本
+        if (type == null) {
+            return ResultVO.create(taskPlanService.getProductDriverShiftLEDOld(compid));
+        }
         return ResultVO.create(taskPlanService.getProductDriverShiftLED(compid));
     }
 
