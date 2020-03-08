@@ -361,6 +361,9 @@ public class StockInServerImpl implements StockInServer {
 
         List<WeightMatParentNameVO> weightMatParentNameVOList = stockInWeighmatNsMapper.getWeightByMatParent(compid,
                 beginTime, endTime);
+        for (WeightMatParentNameVO weightMatParentNameVO : weightMatParentNameVOList) {
+            weightMatParentNameVO.setTlWeight(weightMatParentNameVO.getTlWeight()/1000);
+        }
         return weightMatParentNameVOList;
     }
 
