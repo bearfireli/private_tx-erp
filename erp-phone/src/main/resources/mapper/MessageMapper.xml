@@ -8,10 +8,8 @@
     <update id="updateRecipient">
         update Recipient set username=#{userName},
         phone=#{phone},
-        compid=#{compid},
-        typeId=#{typeId},
         RecStatus=1
-        where uid=#{uid}
+        where uid=#{uid} and compid=#{compid} and typeId=#{typeId}
     </update>
 
     <update id="deleteRecipient">
