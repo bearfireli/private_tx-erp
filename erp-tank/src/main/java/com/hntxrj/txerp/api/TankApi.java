@@ -8,8 +8,10 @@ import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.log4j.Log4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @RestController
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TankApi {
 
     private final TankService tankService;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public TankApi(TankService tankService) {
         this.tankService = tankService;
@@ -27,8 +30,10 @@ public class TankApi {
      * 获取每个罐信息显示集合
      */
     @PostMapping("/powderTanDeviceList")
-    public ResultVO powderTanDeviceList(String compid) {
-        return ResultVO.create(tankService.powderTanDeviceList(compid));
+    public ResultVO powderTanDeviceList(String compid, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTanDeviceList(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
     }
 
     /**
@@ -46,8 +51,10 @@ public class TankApi {
      * 获取罐控制功能信息显示集合
      */
     @PostMapping("/powderTankControlList")
-    public ResultVO powderTankControlList(String compid) {
-        return ResultVO.create(tankService.powderTankControlList(compid));
+    public ResultVO powderTankControlList(String compid, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTankControlList(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
     }
 
     /**
@@ -62,6 +69,19 @@ public class TankApi {
     }
 
     /**
+     * 验证罐的开门密码
+     *
+     * @param compid 企业id
+     * @param stirId 线号
+     * @param tankCode 罐id
+     * @param passWord 罐的开门密码
+     */
+    @PostMapping("/checkPassword")
+    public ResultVO checkPassword(String compid, String stirId, String tankCode,String passWord) {
+        return ResultVO.create(tankService.checkPassword(compid,stirId,tankCode,passWord));
+    }
+
+    /**
      * 修改罐的开关门状态
      *
      * @param compid       企业id
@@ -71,7 +91,7 @@ public class TankApi {
      */
     @PostMapping("/updateDoorStatus")
     public ResultVO updateDoorStatus(String compid, String tankCode, Integer tankStatus,
-                                     @RequestParam() String doorPassword) throws ErpException {
+                                     String doorPassword) throws ErpException {
         tankService.updateDoorStatus(compid, tankCode, tankStatus, doorPassword);
         return ResultVO.create();
     }
@@ -81,8 +101,10 @@ public class TankApi {
      * 罐的重量变化信息集合列表
      */
     @PostMapping("/weighChangeRecordList")
-    public ResultVO weighChangeRecordList(String compid) {
-        return ResultVO.create(tankService.weighChangeRecordList(compid));
+    public ResultVO weighChangeRecordList(String compid, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.weighChangeRecordList(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
     }
 
     /**
@@ -98,8 +120,10 @@ public class TankApi {
      * 罐的上料信息集合列表
      */
     @PostMapping("/powderTankSafeStatusInforList")
-    public ResultVO powderTankSafeStatusInforList(String compid) {
-        return ResultVO.create(tankService.powderTankSafeStatusInforList(compid));
+    public ResultVO powderTankSafeStatusInforList(String compid, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTankSafeStatusInforList(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
     }
 
     /**
@@ -117,8 +141,10 @@ public class TankApi {
      * 罐的校准历史记录集合列表
      */
     @PostMapping("/powderTankCalibrationList")
-    public ResultVO powderTankCalibrationList(String compid) {
-        return ResultVO.create(tankService.powderTankCalibrationList(compid));
+    public ResultVO powderTankCalibrationList(String compid, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTankCalibrationList(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
     }
 
     /**
@@ -136,8 +162,10 @@ public class TankApi {
      * 罐报警列表查询
      */
     @PostMapping("/powderTankWarnList")
-    public ResultVO powderTankWarnList(String compid) {
-        return ResultVO.create(tankService.powderTankWarnList(compid));
+    public ResultVO powderTankWarnList(String compid, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTankWarnList(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
     }
 
     /**
@@ -150,6 +178,12 @@ public class TankApi {
         tankService.savePowderTankWarn(powderTankWarn);
         return ResultVO.create();
     }
+
+
+    /**
+     * 罐的校准功能
+     * */
+
 
 
 }
