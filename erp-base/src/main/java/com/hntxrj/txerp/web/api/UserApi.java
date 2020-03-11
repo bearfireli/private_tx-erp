@@ -39,8 +39,8 @@ public class UserApi {
 
 
     @PostMapping("/user/login")
-    public ResultVO login(String phone, String password, HttpServletRequest request) throws ErpException {
-        resultVO.setData(userService.login(phone, password, request));
+    public ResultVO login(String phone, String password, HttpServletRequest request,String loginUa) throws ErpException {
+        resultVO.setData(userService.login(phone, password, request,loginUa));
         return resultVO;
     }
 

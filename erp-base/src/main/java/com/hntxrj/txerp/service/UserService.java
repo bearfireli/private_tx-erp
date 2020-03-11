@@ -28,9 +28,9 @@ public interface UserService {
      * @throws ErpException throw ERP EXCEPTION
      */
     UserVO login(String phoneNumber, String password,
-                 HttpServletRequest request) throws ErpException;
+                 HttpServletRequest request,String loginUa) throws ErpException;
 
-    UserVO login(String value, String type, String loginIp) throws ErpException;
+    UserVO login(String value, String type, String loginIp,String loginUa) throws ErpException;
 
     /**
      * login out
@@ -141,7 +141,7 @@ public interface UserService {
 
     List<User> getUsers(Integer[] uids);
 
-    UserLogin createUserLogin(Integer userId, String loginIp) throws ErpException;
+    UserLogin createUserLogin(Integer userId, String loginIp,String loginUa) throws ErpException;
 
 
     /**

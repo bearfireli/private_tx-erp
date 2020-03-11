@@ -138,7 +138,7 @@ public class UserAccountServiceImpl extends BaseServiceImpl implements UserAccou
     }
 
     @Override
-    public UserVO userOpenIdGetUser(String type, String openId, String ip) throws ErpException {
+    public UserVO userOpenIdGetUser(String type, String openId, String ip,String loginUa) throws ErpException {
 
         QUserAccount qUserAccount = QUserAccount.userAccount;
         UserAccount userAccount = queryFactory.selectFrom(qUserAccount)
@@ -151,7 +151,7 @@ public class UserAccountServiceImpl extends BaseServiceImpl implements UserAccou
 
         UserVO userVO = userService.findUserById(userAccount.getUid(), true);
 
-        UserLogin userLogin = userService.createUserLogin(userVO.getUid(), ip);
+        UserLogin userLogin = userService.createUserLogin(userVO.getUid(), ip,loginUa);
         userVO.setToken(userLogin.getUserToken());
 
         return userVO;

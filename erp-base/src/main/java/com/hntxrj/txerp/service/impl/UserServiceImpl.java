@@ -94,7 +94,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public UserVO login(String phoneNumber, String password,
-                        HttpServletRequest request) throws ErpException {
+                        HttpServletRequest request, String loginUa) throws ErpException {
 
         User user = userRepository.findByPhone(phoneNumber);
 
@@ -132,7 +132,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             }
         }
 
-        UserLogin userLogin = createUserLogin(user.getUid(), IpUtil.getIp(request));
+        UserLogin userLogin = createUserLogin(user.getUid(), IpUtil.getIp(request), loginUa);
 
         UserVO userVO = userToUserVO(user, true);
         QUserAuth qUserAuth = QUserAuth.userAuth;
@@ -157,7 +157,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO login(String value, String type, String loginIp) throws ErpException {
+    public UserVO login(String value, String type, String loginIp, String loginUa) throws ErpException {
         log.info("【三方登录】value={}, type={}, ip={}", value, type, loginIp);
         if (value == null || type == null) {
             log.error("【空参数异常】value={}, type={}", value, type);
@@ -176,7 +176,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         if (userAccount == null) {
             throw new ErpException(ErrEumn.NOT_BIND_ACCOUNT);
         }
-        UserLogin userLogin = createUserLogin(userAccount.getUid(), loginIp);
+        UserLogin userLogin = createUserLogin(userAccount.getUid(), loginIp, loginUa);
         UserVO userVO = findUserById(userAccount.getUid(), true);
         // 判断是否被禁止登录
         if (userVO.getStatus() != 0) {
@@ -201,18 +201,18 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      * @author haoran liu
      */
     @Override
-    public UserLogin createUserLogin(Integer userId, String loginIp) throws ErpException {
+    public UserLogin createUserLogin(Integer userId, String loginIp, String loginUa) throws ErpException {
         //通过userLogin判断是否存在已经登录的用户，若存在从数据库清除
-        List<UserLogin> loginList=userLoginRepository.findAllByUserId(userId);
-        if(loginList.size()>0){
-            for (UserLogin login:loginList
-                 ) {
+//        List<UserLogin> loginList=userLoginRepository.findAllByUserId(userId);
+        List<UserLogin> loginList = userLoginRepository.findAllByUserIdAndLoginUa(userId, loginUa);
+        if (loginList.size() > 0) {
+            for (UserLogin login : loginList) {
                 log.debug("【被挤掉IP】ip={}", login.getLoginIp());
-
             }
-            userLoginRepository.deleteAllByUserId(userId);
+//            userLoginRepository.deleteAllByUserId(userId);
+            userLoginRepository.deleteAllByUserIdAndLoginUa(userId, loginUa);
         }
-        
+
         UserLogin userLogin = new UserLogin();
         userLogin.setId(EncryptUtil.encryptPassword(UUID.randomUUID().toString()));
         userLogin.setLoginIp(loginIp);
@@ -221,6 +221,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                         UUID.randomUUID()
                                 .toString()));
         userLogin.setUserId(userId);
+        userLogin.setLoginUa(loginUa);
 
         userLogin.setExpireTime(new Timestamp(
                 TimeUtil.addDay(new Date(), 30).getTime()
@@ -441,6 +442,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         log.error("【tokenCanUse throw EXPIRE_TOKEN】 token={}", userLogin);
         throw new ErpException(ErrEumn.EXPIRE_TOKEN);
     }
+
     @Override
     public UserVO tokenCheck(String token) throws ErpException {
         log.debug("【tokenCanUse】token={}", token);
@@ -459,14 +461,12 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         log.error("【tokenCanUse throw EXPIRE_TOKEN】 token={}", userLogin);
         throw new ErpException(ErrEumn.OTHER_LOGIN);
-//        if (userLogin == null) {
-//            throw new ErpException(ErrEumn.OTHER_LOGIN);
-//        }
 
     }
+
     @Override
     public PageVO<UserAuthVO> getUser(User user, String token, Integer enterpriseId, HttpServletRequest request,
-                                      int page, int pageSize) throws ErpException {
+                                      int page, int pageSize) {
 
         log.info("【user】user={}", user);
 
@@ -513,10 +513,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
                 for (UserAuthVO userAuthVO1 : userAuthVOS) {
                     for (UserListVO userListVO : userList) {
-                        if ( userAuthVO1.getUser().getUid().equals(userListVO.getUid()) ) {
+                        if (userAuthVO1.getUser().getUid().equals(userListVO.getUid())) {
                             //把司机姓名赋值给userAuth
                             if (data.get(userListVO.getDriverCode()) != null) {
-                                userAuthVO1.setDriverName( data.getString(userListVO.getDriverCode()));
+                                userAuthVO1.setDriverName(data.getString(userListVO.getDriverCode()));
                             } else {
                                 userAuthVO1.setDriverName("");
                             }
@@ -591,15 +591,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public User findById(Integer userId) throws ErpException {
-        // 加入缓存机制
-//        User user = findByUserByIdRedis(userId);
-//        if (user == null) {
+
         Optional<User> userOption = userRepository.findById(userId);
-        User user = userOption.orElseThrow(
+        return userOption.orElseThrow(
                 () -> new ErpException(ErrEumn.USER_NO_EXIT));
-//        cacheUser(user);
-//        }
-        return user;
     }
 
     @Override
@@ -703,10 +698,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      * 修改用户，该方法不会修改密码
      *
      * @param user 返回以后
-     * @return
      * @throws ErpException 异常
      */
-    private UserVO updateUserNotEncrypt(User user) throws ErpException {
+    private void updateUserNotEncrypt(User user) throws ErpException {
         if (user == null) {
             throw new ErpException(ErrEumn.ADD_USER_IS_NULL);
         }
@@ -735,7 +729,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         try {
             userRepository.save(oldUser);
 //            cacheUser(oldUser);
-            return userToUserVO(oldUser, true);
+            userToUserVO(oldUser, true);
         } catch (Exception e) {
             // 处理入库失败情况
             throw new ErpException(ErrEumn.UPDATE_USER_ERR);
@@ -865,7 +859,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      * @param user            单个用户
      * @param showPhoneNumber 是否显示手机号：true为显示
      * @return 单个用户的uservo
-     * @throws ErpException
+     * @throw ErpException
      */
     private UserVO userToUserVO(User user, boolean showPhoneNumber) throws ErpException {
         if (user == null) {
@@ -943,9 +937,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public List<User> getUsers(Integer[] uids) {
-        List<User> users = userRepository.findAllById(Arrays.asList(uids));
-//        cacheUsers(users); // 缓存用户
-        return users;
+        return userRepository.findAllById(Arrays.asList(uids));
     }
 
 
@@ -954,7 +946,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      *
      * @param phone  手机号
      * @param userId 排除的用户id
-     * @throws ErpException
+     * @throw ErpException
      */
     public void phoneIsExist(String phone, Integer userId) throws ErpException {
         User user = userRepository.findByPhone(phone);
@@ -963,11 +955,11 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
     }
 
-    /*
+    /**
      * 修改用户的权限状态码eadmin
      * */
     @Override
-    public void updateUserAdminStatus(Integer userId, String eadmin) throws ErpException {
+    public void updateUserAdminStatus(Integer userId, String eadmin) {
         if ("0".equals(eadmin)) {
             //此用户需要添加权限
             userMapper.addUserStatus(userId);
@@ -1028,7 +1020,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
 
-    public void bindDriver(Integer uid, String compid, String driverCode) throws ErpException {
+    public void bindDriver(Integer uid, String compid, String driverCode) {
         UserBindDriver userBindDriver = new UserBindDriver();
         userBindDriver.setCompid(compid);
         userBindDriver.setDriverCode(driverCode);
@@ -1059,17 +1051,17 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         return userAuthVOS;
     }
 
-/*
-* 获取该用户的权限组
-* */
+    /**
+     * 获取该用户的权限组
+     * */
     @Override
     public Integer getAuthGroupByUserAndCompid(Integer uid, Integer enterprise) {
-       return userMapper.getAuthGroupByUserAndCompid(uid, enterprise);
+        return userMapper.getAuthGroupByUserAndCompid(uid, enterprise);
     }
 
     /*
-    * 判断此权限组是否包含此方法
-    * */
+     * 判断此权限组是否包含此方法
+     * */
     @Override
     public Integer judgementAuth(Integer authGroupID, String methodName) {
         return userMapper.judgementAuth(authGroupID, methodName);
@@ -1078,22 +1070,22 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     /**
      * 从auth_value_new表中查询出该权限组的所有信息
-     * */
+     */
     @Override
-    public List<AuthValue> getAuthValue(Integer groupId,Integer pid) {
+    public List<AuthValue> getAuthValue(Integer groupId, Integer pid) {
 
-        return userMapper.getAuthValueByGroupId(groupId,pid);
+        return userMapper.getAuthValueByGroupId(groupId, pid);
     }
 
     @Override
     public List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid) {
-        return userMapper.getAuthValueOld(groupId,pid);
+        return userMapper.getAuthValueOld(groupId, pid);
     }
 
     @Override
-    public List<User> selectAllUser(Integer compid,String userName) {
+    public List<User> selectAllUser(Integer compid, String userName) {
 
-        return userMapper.selectAllUser(compid,userName);
+        return userMapper.selectAllUser(compid, userName);
     }
 
     /*根据eid 查询企业用户*/
