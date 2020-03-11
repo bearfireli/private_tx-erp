@@ -44,7 +44,7 @@ public interface UserMapper {
 
     /**
      * 判断该权限组是否具有某个方法的权限
-     * */
+     */
     Integer judgementAuth(Integer authGroupID, String methodName);
 
     /*分局方法名称获取方法菜单id*/
@@ -52,16 +52,20 @@ public interface UserMapper {
 
 
     /*新版本获取权限组所有方法*/
-    List<AuthValue> getAuthValueByGroupId(Integer groupId,Integer pid);
+    List<AuthValue> getAuthValueByGroupId(Integer groupId, Integer pid);
 
     /*老版本获取权限组所有方法*/
     List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid);
 
     /**
      * 查询所有企业所有用户
-     * */
-    List<User> selectAllUser(@Param("eid") Integer eid,@Param("userName")String userName);
+     */
+    List<User> selectAllUser(@Param("eid") Integer eid, @Param("userName") String userName);
 
     /*根据eid 查询企业用户*/
-    List<User> userAll(Integer eid);
+    List<User> userAll(@Param("eid")Integer eid);
+
+    /*根据权限组id查询企业id*/
+    Integer getEnterpriseByGroupId(Integer groupId);
+
 }

@@ -49,6 +49,8 @@ public class ControllerAspect {
     private static final String SAVECOLLECTIONCODE = "/enterprise/saveCollectionCode";
     private static final String USER_EXPIRE_TIME = "/v1/project/getExpireTime";
     private static final String SELECT_USER_ALL = "/user/selectAllUser";
+    private static final String SELECT_ALL_USER = "/user/userAll";
+    private static final String IM_TEST = "/user/imTest";
 
 
     private static final String DOCUMENT_URI = "/swagger";
@@ -68,28 +70,31 @@ public class ControllerAspect {
     private static final String FUNCTIONMENU_LIST = "/functionmenulist";
 
     private static final String[] PUBLIC_API_LIST = new String[]{
-            LOGIN_API, TOKEN_USE,TOKEN_CHECK, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API, FAVICON, JOURNALISM_LIST
-            , JOURNALISM_BYID, JOURNALISM_SELECT_LIST,GETAUTHVALUE,USER_SETUSERFAVORITE,USER_GETUSERFAVORITE,UPLOADPICTURE,SAVECOLLECTIONCODE,
-            USER_EXPIRE_TIME,SELECT_USER_ALL
+            LOGIN_API, TOKEN_USE, TOKEN_CHECK, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API,
+            FAVICON, JOURNALISM_LIST, JOURNALISM_BYID, JOURNALISM_SELECT_LIST, GETAUTHVALUE, USER_SETUSERFAVORITE,
+            USER_GETUSERFAVORITE, UPLOADPICTURE, SAVECOLLECTIONCODE, USER_EXPIRE_TIME, SELECT_USER_ALL,
+            IM_TEST, SELECT_ALL_USER
     };
 
     private static final String[] PUBLIC_PATH = new String[]{
-            DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES, USER_IMAGES, FEEDBOCK_IMAGES, ENTERPRISE_IMAGES, ENTERPRISE_IMAGE,
-            USER_USERNAME, ENTERPRISE_GETENTERPRISE, USER_SETHEADER, FEEDBOCK_UPLOADPICTURE, FEEDBOCK_ADDFEEDBACK, USER_STATISTIC,
-            FUNCTIONMENU_LIST
+            DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES, USER_IMAGES, FEEDBOCK_IMAGES, ENTERPRISE_IMAGES,
+            ENTERPRISE_IMAGE, USER_USERNAME, ENTERPRISE_GETENTERPRISE, USER_SETHEADER, FEEDBOCK_UPLOADPICTURE,
+            FEEDBOCK_ADDFEEDBACK, USER_STATISTIC, FUNCTIONMENU_LIST
     };
 
 
     @Autowired
-    public ControllerAspect( AuthGroupService authService) {
+    public ControllerAspect(AuthGroupService authService) {
         this.authService = authService;
     }
 
     @Around("execution(* com.hntxrj.txerp.controller.*.*(..))")
     private Object mappingAround(ProceedingJoinPoint joinPoint) throws Throwable {
         //获取每次请求的request和response
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        HttpServletRequest request = ((ServletRequestAttributes)
+                RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletResponse response = ((ServletRequestAttributes)
+                RequestContextHolder.getRequestAttributes()).getResponse();
 
         if ("OPTIONS".equals(request.getMethod())) {
             return joinPoint.proceed();
