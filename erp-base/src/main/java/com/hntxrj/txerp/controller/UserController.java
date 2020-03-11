@@ -45,7 +45,6 @@ public class UserController {
     private RedisTemplate redisTemplate;
 
 
-
     @Autowired
     public UserController(UserService userService,
                           UserAccountService userAccountService, AuthCodeService authCodeService) {
@@ -145,17 +144,17 @@ public class UserController {
     /**
      * 登录接口
      *
-     * @param phone 手机号
+     * @param phone    手机号
      * @param password 密码
-     * @param loginUa  用户登录的来源项目
-     * */
+     */
     @PostMapping("/login")
     public String login(String phone,
                         String password,
-                        HttpServletRequest request,String loginUa)
+                        HttpServletRequest request)
             throws ErpException {
-        log.info("【登录v1】phone={}, password={}", phone, password,loginUa);
-        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request,loginUa),
+        log.info("【登录v1】phone={}, password={}", phone, password);
+        String loginUa = request.getHeader("loginUa");
+        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request, loginUa),
                 SerializerFeature.DisableCircularReferenceDetect));
         return JSON.toJSONString(resultVO);
     }
@@ -170,10 +169,11 @@ public class UserController {
     }
 
     @PostMapping("/thirdLogin")
-    public String thirdLogin(String openId, String type, HttpServletRequest request,String loginUa)
+    public String thirdLogin(String openId, String type, HttpServletRequest request)
             throws ErpException {
+        String loginUa = request.getHeader("loginUa");
         resultVO.setData(JSON.parseObject(JSON.toJSONString(
-                userService.login(openId, type, IpUtil.getIp(request),loginUa),
+                userService.login(openId, type, IpUtil.getIp(request), loginUa),
                 SerializerFeature.DisableCircularReferenceDetect)));
         return JSON.toJSONString(resultVO);
     }
@@ -357,7 +357,8 @@ public class UserController {
     @PostMapping("/updatePassword")
     public String updatePassword(String oldPassword, String newPassword,
                                  String token) throws ErpException {
-        resultVO.setData(JSON.parseObject(JSON.toJSONString(userService.updatePassword(oldPassword, newPassword, token))));
+        resultVO.setData(JSON.parseObject(JSON.toJSONString(userService.updatePassword(oldPassword,
+                newPassword, token))));
         return JSON.toJSONString(resultVO);
     }
 
@@ -384,8 +385,10 @@ public class UserController {
     }
 
     @PostMapping("/useOpenIdGetUser")
-    public String useOpenIdGetUser(String type, String openId, HttpServletRequest request,String loginUa) throws ErpException {
-        resultVO.setData(userAccountService.userOpenIdGetUser(type, openId, IpUtil.getIp(request),loginUa));
+    public String useOpenIdGetUser(String type, String openId, HttpServletRequest request) throws ErpException {
+        String loginUa = request.getHeader("loginUa");
+        System.out.println(loginUa);
+        resultVO.setData(userAccountService.userOpenIdGetUser(type, openId, IpUtil.getIp(request), loginUa));
         return JSON.toJSONString(resultVO);
     }
 
@@ -501,7 +504,6 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
-    ;
 
     /*根据eid 查询企业用户*/
     @PostMapping("/userAll")
@@ -510,6 +512,5 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
-    ;
 
 }

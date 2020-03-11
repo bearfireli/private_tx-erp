@@ -8,7 +8,6 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.entity.base.QUserAccount;
 import com.hntxrj.txerp.repository.UserAccountRepository;
 import com.hntxrj.txerp.vo.UserVO;
-import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.entity.base.AuthCode;
 import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.entity.base.UserAccount;
@@ -125,7 +124,7 @@ public class UserAccountServiceImpl extends BaseServiceImpl implements UserAccou
     }
 
     @Override
-    public void unbind(Integer uid, String acType) throws ErpException {
+    public void unbind(Integer uid, String acType) {
 
         QUserAccount qUserAccount = QUserAccount.userAccount;
         UserAccount userAccount = queryFactory.selectFrom(qUserAccount)
@@ -169,9 +168,7 @@ public class UserAccountServiceImpl extends BaseServiceImpl implements UserAccou
 
 
         List<String> result = new ArrayList<>();
-        userAccounts.forEach(userAccount -> {
-            result.add(userAccount.getAcType());
-        });
+        userAccounts.forEach(userAccount -> result.add(userAccount.getAcType()));
         return result;
     }
 

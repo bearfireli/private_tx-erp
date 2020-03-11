@@ -49,10 +49,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final EnterpriseRepository enterpriseRepository;
-
-    private final AuthGroupRepository authGroupRepository;
-
     private final UserLoginRepository userLoginRepository;
 
     private final UserAccountRepository userAccountRepository;
@@ -74,15 +70,12 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
-                           EnterpriseRepository enterpriseRepository,
-                           AuthGroupRepository authGroupRepository,
                            UserLoginRepository userLoginRepository,
                            EntityManager entityManager, UserAccountRepository userAccountRepository,
-                           UserAuthRepository userAuthRepository, UserBindDriverRepository userBindDriverRepository, UserMapper userMapper) {
+                           UserAuthRepository userAuthRepository, UserBindDriverRepository userBindDriverRepository,
+                           UserMapper userMapper) {
         super(entityManager);
         this.userRepository = userRepository;
-        this.enterpriseRepository = enterpriseRepository;
-        this.authGroupRepository = authGroupRepository;
         this.userLoginRepository = userLoginRepository;
         this.userAccountRepository = userAccountRepository;
         this.userAuthRepository = userAuthRepository;
@@ -136,7 +129,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         UserVO userVO = userToUserVO(user, true);
         QUserAuth qUserAuth = QUserAuth.userAuth;
-        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(userVO.getUid())).fetch();
+        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(
+                userVO.getUid())).fetch();
 
         //用userauthvos代替userauths进行数据传递
         List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
@@ -145,7 +139,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         QAuthValue qAuthValue = QAuthValue.authValue;
         QMenu qMenu = QMenu.menu;
         for (UserAuthVO userAuthVO : userAuthVOS) {
-            List<Menu> menuList = queryFactory.selectFrom(qMenu).rightJoin(qAuthValue).on(qAuthValue.menuId.eq(qMenu.mid)).where(qAuthValue.groupId.eq(userAuthVO.getAuthGroup().getAgid()).and(qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
+            List<Menu> menuList = queryFactory.selectFrom(qMenu).rightJoin(qAuthValue).on(
+                    qAuthValue.menuId.eq(qMenu.mid)).where(qAuthValue.groupId.eq(userAuthVO.getAuthGroup().getAgid()
+            ).and(qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
             userAuthVO.setMenuVOS(menuList);
         }
 
@@ -183,7 +179,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             throw new ErpException(ErrEumn.USER_CANNOT_LOGIN);
         }
         QUserAuth qUserAuth = QUserAuth.userAuth;
-        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(userVO.getUid())).fetch();
+        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(
+                qUserAuth.user.uid.eq(userVO.getUid())).fetch();
         //用userAuthVOS代替userAuths向前台传递数据
         List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
         userVO.setUserAuths(userAuthVOS);
@@ -201,7 +198,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      * @author haoran liu
      */
     @Override
-    public UserLogin createUserLogin(Integer userId, String loginIp, String loginUa) throws ErpException {
+    public UserLogin createUserLogin(Integer userId, String loginIp, String loginUa) {
         //通过userLogin判断是否存在已经登录的用户，若存在从数据库清除
 //        List<UserLogin> loginList=userLoginRepository.findAllByUserId(userId);
         List<UserLogin> loginList = userLoginRepository.findAllByUserIdAndLoginUa(userId, loginUa);
@@ -473,12 +470,14 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         PageHelper.startPage(page, pageSize);
 
 
-        List<UserAuth> userAuths = userMapper.selectUserList(enterpriseId, user.getUsername(), user.getPhone(), user.getEmail());
+        List<UserAuth> userAuths = userMapper.selectUserList(enterpriseId, user.getUsername(), user.getPhone(),
+                user.getEmail());
 
         //用userAuthVOS代替userAuths进行数据传递
         List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
 
-        List<UserListVO> userList = userMapper.getUserList(enterpriseId, user.getUsername(), user.getPhone(), user.getEmail());
+        List<UserListVO> userList = userMapper.getUserList(enterpriseId, user.getUsername(), user.getPhone(),
+                user.getEmail());
         StringBuilder driverCodes = new StringBuilder();
         for (UserListVO userListVO : userList) {
             String driverCode = userListVO.getDriverCode();
@@ -487,7 +486,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             }
         }
 
-        String baseUrl = "";
+        String baseUrl;
         baseUrl = url + "/driver/getDriverNames";
         Map<String, Object> map = new HashMap<>();
         map.put("driverCodes", driverCodes.toString());
@@ -503,8 +502,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                 .map(map)
                 .encoding("utf-8")
                 .inenc("utf-8");
-        //使用方式：
-        String pass = "";
+
         try {
             String result = HttpClientUtil.post(config);
             JSONObject data1 = JSONObject.parseObject(result);
@@ -798,9 +796,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     @Override
     public void deleteUserToken(Integer userId) {
         List<UserLogin> userLogins = userLoginRepository.findAllByUserId(userId);
-//        userLogins.forEach(userLogin -> {
-//            redisUtil.redisRemoveValue(RedisDataTypeEnums.TOKEN + userLogin.getUserToken());
-//        });
         userLoginRepository.deleteAllByUserId(userId);
     }
 
@@ -877,7 +872,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         QMenu qMenu = QMenu.menu;
         //根据用户权限获取用户所拥有的权限菜单集合
         for (UserAuthVO userAuthVO : userAuthVOS) {
-            List<Menu> menuList = queryFactory.selectFrom(qMenu).rightJoin(qAuthValue).on(qAuthValue.menuId.eq(qMenu.mid)).where(qAuthValue.groupId.eq(userAuthVO.getAuthGroup().getAgid()).and(qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
+            List<Menu> menuList = queryFactory.selectFrom(qMenu).rightJoin(qAuthValue).on(qAuthValue.menuId.eq(
+                    qMenu.mid)).where(qAuthValue.groupId.eq(userAuthVO.getAuthGroup().getAgid()).and(
+                            qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
             userAuthVO.setMenuVOS(menuList);
         }
         userVo.setUserAuths(userAuthVOS);
