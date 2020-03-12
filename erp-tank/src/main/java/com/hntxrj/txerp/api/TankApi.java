@@ -26,11 +26,13 @@ public class TankApi {
         this.tankService = tankService;
     }
 
+
     /**
      * 获取每个罐信息显示集合
      */
     @PostMapping("/powderTanDeviceList")
     public ResultVO powderTanDeviceList(String compid, String stirId, Long beginTime, Long endTime) {
+
         return ResultVO.create(tankService.powderTanDeviceList(compid, stirId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
@@ -56,7 +58,7 @@ public class TankApi {
      */
     @PostMapping("/getPowderTanDevice")
     public ResultVO getPowderTanDevice(String compid, String stirId, String tankCode) {
-        return tankService.getPowderTanDevice(compid, stirId, tankCode);
+        return ResultVO.create(tankService.getPowderTanDevice(compid, stirId, tankCode));
     }
 
     /**
@@ -71,12 +73,25 @@ public class TankApi {
     }
 
     /**
+     * 获取单个罐控制功能信息
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐的id
+     */
+    @PostMapping("/getPowderTankControl")
+    public ResultVO getPowderTankControl(String compid, String stirId, String tankCode) {
+       return ResultVO.create(tankService.getPowderTankControl(compid, stirId, tankCode));
+    }
+
+    /**
      * 保存罐控制功能信息
      *
      * @param powderTankControl 罐控制对象
      */
     @PostMapping("/savePowderTankControl")
     public ResultVO savePowderTankControl(PowderTankControl powderTankControl) {
+
         tankService.savePowderTankControl(powderTankControl);
         return ResultVO.create();
     }
@@ -99,13 +114,14 @@ public class TankApi {
      *
      * @param compid       企业id
      * @param tankCode     罐代号
+     * @param stirId       线号
      * @param tankStatus   罐开门状态
      * @param doorPassword 罐开门密码
      */
     @PostMapping("/updateDoorStatus")
-    public ResultVO updateDoorStatus(String compid, String tankCode, Integer tankStatus,
+    public ResultVO updateDoorStatus(String compid, String tankCode, String stirId, Integer tankStatus,
                                      String doorPassword) throws ErpException {
-        tankService.updateDoorStatus(compid, tankCode, tankStatus, doorPassword);
+        tankService.updateDoorStatus(compid, tankCode, stirId, tankStatus, doorPassword);
         return ResultVO.create();
     }
 
@@ -194,8 +210,29 @@ public class TankApi {
 
 
     /**
-     * 罐的校准功能
-     * */
+     * 仓罐校准点击置零所需要的操作
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐id
+     */
+    @PostMapping("/zeroSetting")
+    public ResultVO zeroSetting(String compid, String stirId, String tankCode) {
+        tankService.zeroSetting(compid, stirId, tankCode);
+        return ResultVO.create();
+    }
 
-
+    /**
+     * 仓罐校准
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐id
+     * @param weight   校准重量
+     */
+    @PostMapping("/tankCalibration")
+    public ResultVO tankCalibration(String compid, String stirId, String tankCode, Integer weight) {
+        tankService.tankCalibration(compid, stirId, tankCode, weight);
+        return ResultVO.create();
+    }
 }

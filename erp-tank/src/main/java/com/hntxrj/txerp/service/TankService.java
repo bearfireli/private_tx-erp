@@ -30,6 +30,15 @@ public interface TankService {
     List<PowderTankControl> powderTankControlList(String compid,String beginTime,String endTime);
 
     /**
+     * 获取单个罐控制功能信息
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐的id
+     */
+    PowderTankControl getPowderTankControl(String compid, String stirId, String tankCode);
+
+    /**
      * 保存罐控制功能信息
      *
      * @param powderTankControl 罐控制对象
@@ -44,7 +53,7 @@ public interface TankService {
      * @param tankStatus   罐开门状态
      * @param doorPassword 罐开门密码
      */
-    void updateDoorStatus(String compid, String tankCode, Integer tankStatus, String doorPassword) throws ErpException;
+    void updateDoorStatus(String compid, String tankCode,String stirId, Integer tankStatus, String doorPassword) throws ErpException;
 
     /**
      * 罐的重量变化信息集合列表
@@ -99,6 +108,26 @@ public interface TankService {
      * @param passWord 罐的开门密码
      */
     Boolean checkPassword(String compid, String stirId, String tankCode, String passWord);
+
+
+    /**
+     * 仓库校准的置零操作
+     *
+     * @param compid 企业id
+     * @param stirId 线号
+     * @param tankCode 罐id
+     * */
+    void zeroSetting(String compid, String stirId, String tankCode);
+
+    /**
+     * 仓罐校准
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐id
+     * @param weight   校准重量
+     */
+    void tankCalibration(String compid, String stirId, String tankCode, Integer weight);
 
 
 }

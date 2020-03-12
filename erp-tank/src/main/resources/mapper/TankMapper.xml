@@ -3,13 +3,17 @@
 <mapper namespace="com.hntxrj.txerp.mapper.TankMapper">
     <update id="updatePowderTankControl">
         UPDATE pt_powder_tank_control SET state_tank=#{tankStatus}
-        WHERE compid=#{compid} and tank_code=#{tankCode}
+        WHERE compid=#{compid} and tank_code=#{tankCode} and stirid=#{stirId}
+    </update>
+    <update id="updatePowderTankDevice">
+        UPDATE pt_powder_tank_device SET state_tank=#{tankStatus}
+        WHERE compid=#{compid} and tank_code=#{tankCode} and stirid=#{stirId}
     </update>
     <select id="powderTanDeviceList" resultType="com.hntxrj.txerp.entity.PowderTankDevice">
         SELECT * FROM pt_powder_tank_device
         WHERE compid=#{compid}
         <if test="stirId != null">
-            and stirid = {stirId}
+            and stirid = #{stirId}
         </if>
         <if test="beginTime != null and endTime != null">
             and create_time between #{beginTime} and #{endTime}
@@ -19,7 +23,7 @@
     <select id="weighChangeRecordList" resultType="com.hntxrj.txerp.entity.WeightChangeRecord">
         SELECT * FROM pt_weight_change_record
         WHERE compid=#{compid}
-        <if test="beginTime != null and endTime != null">
+        <if test="beginTime!=null and endTime!=null">
             and create_time between #{beginTime} and #{endTime}
         </if>
     </select>
@@ -57,6 +61,7 @@
     <select id="getPowderTankControl" resultType="com.hntxrj.txerp.entity.PowderTankControl">
         SELECT * FROM pt_powder_tank_control
         WHERE compid=#{compid} and tank_code=#{tankCode}
+        and stirid=#{stirId}
     </select>
     <select id="getMaxTankCode" resultType="java.lang.Integer">
         SELECT MAX(tank_code) FROM pt_powder_tank_device

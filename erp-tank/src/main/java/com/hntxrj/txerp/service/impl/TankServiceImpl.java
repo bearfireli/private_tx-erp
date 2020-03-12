@@ -53,8 +53,8 @@ public class TankServiceImpl implements TankService {
      * 获取每个罐信息显示集合
      */
     @Override
-    public List<PowderTankDevice> powderTanDeviceList(String compid,String stirId,String beginTime,String endTime) {
-        return tankMapper.powderTanDeviceList(compid,stirId,beginTime,endTime);
+    public List<PowderTankDevice> powderTanDeviceList(String compid, String stirId, String beginTime, String endTime) {
+        return tankMapper.powderTanDeviceList(compid, stirId, beginTime, endTime);
     }
 
     /**
@@ -93,7 +93,7 @@ public class TankServiceImpl implements TankService {
 
     /**
      * 获取单个罐的信息
-     * */
+     */
     @Override
     public PowderTankDevice getPowderTanDevice(String compid, String stirId, String tankCode) {
         return tankMapper.getPowderTanDevice(compid, stirId, tankCode);
@@ -103,8 +103,21 @@ public class TankServiceImpl implements TankService {
      * 获取罐控制功能信息显示集合
      */
     @Override
-    public List<PowderTankControl> powderTankControlList(String compid,String beginTime,String endTime) {
-        return tankMapper.powderTankControlList(compid,beginTime,endTime);
+    public List<PowderTankControl> powderTankControlList(String compid, String beginTime, String endTime) {
+        return tankMapper.powderTankControlList(compid, beginTime, endTime);
+    }
+
+
+    /**
+     * 获取单个罐控制功能信息
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐的id
+     */
+    @Override
+    public PowderTankControl getPowderTankControl(String compid, String stirId, String tankCode) {
+        return tankMapper.getPowderTankControl(compid, stirId, tankCode);
     }
 
     /**
@@ -124,12 +137,14 @@ public class TankServiceImpl implements TankService {
      *
      * @param compid       企业id
      * @param tankCode     罐代号
+     * @param stirId       线号
      * @param tankStatus   罐开门状态
      * @param doorPassword 罐开门密码
      */
     @Override
-    public void updateDoorStatus(String compid, String tankCode, Integer tankStatus, String doorPassword) throws ErpException {
-        PowderTankControl powderTankControl = tankMapper.getPowderTankControl(compid, tankCode);
+    public void updateDoorStatus(String compid, String tankCode, String stirId, Integer tankStatus,
+                                 String doorPassword) throws ErpException {
+        PowderTankControl powderTankControl = tankMapper.getPowderTankControl(compid, tankCode, stirId);
         if (powderTankControl == null) {
             //罐号不存在
             throw new ErpException(ErrEumn.TANK_NULL_ERROR);
@@ -141,7 +156,12 @@ public class TankServiceImpl implements TankService {
             //密码错误
             throw new ErpException(ErrEumn.PASSWORD_ERROR);
         }
-        tankMapper.updatePowderTankControl(compid, tankCode, tankStatus);
+
+        //修改罐基本信息中的开门状态
+        tankMapper.updatePowderTankDevice(compid, tankCode,stirId, tankStatus);
+        //修改罐控制表中的开门状态
+        tankMapper.updatePowderTankControl(compid, tankCode,stirId, tankStatus);
+
 
     }
 
@@ -149,9 +169,9 @@ public class TankServiceImpl implements TankService {
      * 罐的重量变化信息集合列表
      */
     @Override
-    public List<WeightChangeRecord> weighChangeRecordList(String compid,String beginTime,String endTime) {
+    public List<WeightChangeRecord> weighChangeRecordList(String compid, String beginTime, String endTime) {
 
-        return tankMapper.weighChangeRecordList(compid,beginTime,endTime);
+        return tankMapper.weighChangeRecordList(compid, beginTime, endTime);
     }
 
     /**
@@ -168,8 +188,8 @@ public class TankServiceImpl implements TankService {
      * 获取罐上料信息集合列表
      */
     @Override
-    public List<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid,String beginTime,String endTime) {
-        return tankMapper.powderTankSafeStatusInforList(compid,beginTime,endTime);
+    public List<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid, String beginTime, String endTime) {
+        return tankMapper.powderTankSafeStatusInforList(compid, beginTime, endTime);
     }
 
     /**
@@ -187,8 +207,8 @@ public class TankServiceImpl implements TankService {
      * 罐校准历史记录集合列表
      */
     @Override
-    public List<PowderTankCalibration> powderTankCalibrationList(String compid,String beginTime,String endTime) {
-        return tankMapper.powderTankCalibrationList(compid,beginTime,endTime);
+    public List<PowderTankCalibration> powderTankCalibrationList(String compid, String beginTime, String endTime) {
+        return tankMapper.powderTankCalibrationList(compid, beginTime, endTime);
     }
 
     /**
@@ -204,8 +224,8 @@ public class TankServiceImpl implements TankService {
      * 罐报警集合列表
      */
     @Override
-    public List<PowderTankWarn> powderTankWarnList(String compid,String beginTime,String endTime) {
-        return tankMapper.powderTankWarnList(compid,beginTime,endTime);
+    public List<PowderTankWarn> powderTankWarnList(String compid, String beginTime, String endTime) {
+        return tankMapper.powderTankWarnList(compid, beginTime, endTime);
     }
 
     /**
@@ -218,13 +238,11 @@ public class TankServiceImpl implements TankService {
     }
 
 
-
-
     /**
      * 验证罐的开门密码是否正确
      *
-     * @param compid 企业id
-     * @param stirId 线号
+     * @param compid   企业id
+     * @param stirId   线号
      * @param tankCode 罐id
      * @param passWord 罐的开门密码
      */
@@ -232,6 +250,31 @@ public class TankServiceImpl implements TankService {
     public Boolean checkPassword(String compid, String stirId, String tankCode, String passWord) {
         PowderTankDevice powderTankDevice = tankMapper.checkPassword(compid, stirId, tankCode, passWord);
         return powderTankDevice != null;
+    }
+
+    /**
+     * 仓库校准的置零操作
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐id
+     */
+    @Override
+    public void zeroSetting(String compid, String stirId, String tankCode) {
+        //此处应该调用仓库置零操作的存储过程。
+    }
+
+    /**
+     * 仓罐校准
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐id
+     * @param weight   校准重量
+     */
+    @Override
+    public void tankCalibration(String compid, String stirId, String tankCode, Integer weight) {
+        //此处调用仓罐校准的存储过程
     }
 
     //获取当前时间并转换格式

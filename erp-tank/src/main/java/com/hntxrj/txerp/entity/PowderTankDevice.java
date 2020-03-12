@@ -36,7 +36,7 @@ public class PowderTankDevice implements Serializable {
     @Column(name = "weigh_scale")
     private BigDecimal weighScale;      //称刻度
     @Column(name = "fractal_said")
-    private BigDecimal fracSaid;        //分称数
+    private BigDecimal fractalSaid;        //分称数
     @Column(name = "max_voltage")
     private BigDecimal maxVoltage;      //最大电压值
     @Column(name = "max_weight_value")
