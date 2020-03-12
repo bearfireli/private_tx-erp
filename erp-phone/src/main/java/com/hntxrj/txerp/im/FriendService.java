@@ -2,8 +2,6 @@ package com.hntxrj.txerp.im;
 
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.FriendsVO;
-
-import java.io.IOException;
 import java.util.List;
 
 public interface FriendService {
@@ -14,7 +12,6 @@ public interface FriendService {
      *
      * @param userID  当前用户
      * @param friends 添加的好友
-     * @return
      */
     Boolean friendAdd(String userID, List<FriendsVO> friends) throws ErpException;
 
@@ -27,7 +24,7 @@ public interface FriendService {
      * @param eid    企业代号
      * @return 接口返回参数
      */
-    Boolean friendImport(String userID, Integer eid) throws IOException;
+    Boolean friendImport(String userID, Integer eid);
 
 
     /**
