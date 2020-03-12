@@ -88,9 +88,20 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
 
+    /**
+     * 用户登录
+     *
+     * @param phoneNumber 手机号
+     * @param password    密码
+     * @param request     HTTP SERVLET Request 对象
+     * @param loginUa     不同项目登陆时的标识；
+     *                    例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
+     * @return 登录用户
+     * @throws ErpException throw ERP EXCEPTION
+     */
     @Override
     public UserVO login(String phoneNumber, String password,
-                        HttpServletRequest request) throws ErpException {
+                        HttpServletRequest request, String loginUa) throws ErpException {
 
         User user = userRepository.findByPhone(phoneNumber);
 
@@ -128,12 +139,13 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             }
         }
 
-        UserLogin userLogin = createUserLogin(user.getUid(), IpUtil.getIp(request));
+        UserLogin userLogin = createUserLogin(user.getUid(), IpUtil.getIp(request), loginUa);
 
         UserVO userVO = userToUserVO(user, true);
         QUserAuth qUserAuth = QUserAuth.userAuth;
-        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(userVO.getUid())
-        ).fetch();
+        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(
+                userVO.getUid())).fetch();
+
         //用userauthvos代替userauths进行数据传递
         List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
 
@@ -142,8 +154,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         QMenu qMenu = QMenu.menu;
         for (UserAuthVO userAuthVO : userAuthVOS) {
             List<Menu> menuList = queryFactory.selectFrom(qMenu).rightJoin(qAuthValue).on(
-                    qAuthValue.menuId.eq(qMenu.mid)).where(qAuthValue.groupId.eq(userAuthVO.getAuthGroup().getAgid(
-            )).and(qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
+                    qAuthValue.menuId.eq(qMenu.mid)).where(qAuthValue.groupId.eq(userAuthVO.getAuthGroup().getAgid()
+            ).and(qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
             userAuthVO.setMenuVOS(menuList);
         }
 
@@ -155,7 +167,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO login(String value, String type, String loginIp) throws ErpException {
+    public UserVO login(String value, String type, String loginIp, String loginUa) throws ErpException {
         log.info("【三方登录】value={}, type={}, ip={}", value, type, loginIp);
         if (value == null || type == null) {
             log.error("【空参数异常】value={}, type={}", value, type);
@@ -174,15 +186,15 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         if (userAccount == null) {
             throw new ErpException(ErrEumn.NOT_BIND_ACCOUNT);
         }
-        UserLogin userLogin = createUserLogin(userAccount.getUid(), loginIp);
+        UserLogin userLogin = createUserLogin(userAccount.getUid(), loginIp, loginUa);
         UserVO userVO = findUserById(userAccount.getUid(), true);
         // 判断是否被禁止登录
         if (userVO.getStatus() != 0) {
             throw new ErpException(ErrEumn.USER_CANNOT_LOGIN);
         }
         QUserAuth qUserAuth = QUserAuth.userAuth;
-        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(userVO.getUid(
-        ))).fetch();
+        List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(
+                qUserAuth.user.uid.eq(userVO.getUid())).fetch();
         //用userAuthVOS代替userAuths向前台传递数据
         List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
         userVO.setUserAuths(userAuthVOS);
@@ -200,16 +212,16 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      * @author haoran liu
      */
     @Override
-    public UserLogin createUserLogin(Integer userId, String loginIp) {
+    public UserLogin createUserLogin(Integer userId, String loginIp, String loginUa) {
         //通过userLogin判断是否存在已经登录的用户，若存在从数据库清除
-        List<UserLogin> loginList = userLoginRepository.findAllByUserId(userId);
+//        List<UserLogin> loginList=userLoginRepository.findAllByUserId(userId);
+        List<UserLogin> loginList = userLoginRepository.findAllByUserIdAndLoginUa(userId, loginUa);
         if (loginList.size() > 0) {
-            for (UserLogin login : loginList
-            ) {
+            for (UserLogin login : loginList) {
                 log.debug("【被挤掉IP】ip={}", login.getLoginIp());
-
             }
-            userLoginRepository.deleteAllByUserId(userId);
+//            userLoginRepository.deleteAllByUserId(userId);
+            userLoginRepository.deleteAllByUserIdAndLoginUa(userId, loginUa);
         }
 
         UserLogin userLogin = new UserLogin();
@@ -220,6 +232,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                         UUID.randomUUID()
                                 .toString()));
         userLogin.setUserId(userId);
+        userLogin.setLoginUa(loginUa);
 
         userLogin.setExpireTime(new Timestamp(
                 TimeUtil.addDay(new Date(), 30).getTime()
@@ -461,9 +474,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         log.error("【tokenCanUse throw EXPIRE_TOKEN】 token={}", userLogin);
         throw new ErpException(ErrEumn.OTHER_LOGIN);
-//        if (userLogin == null) {
-//            throw new ErpException(ErrEumn.OTHER_LOGIN);
-//        }
 
     }
 
@@ -476,14 +486,14 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         PageHelper.startPage(page, pageSize);
 
 
-        List<UserAuth> userAuths = userMapper.selectUserList(enterpriseId, user.getUsername(),
-                user.getPhone(), user.getEmail());
+        List<UserAuth> userAuths = userMapper.selectUserList(enterpriseId, user.getUsername(), user.getPhone(),
+                user.getEmail());
 
         //用userAuthVOS代替userAuths进行数据传递
         List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
 
-        List<UserListVO> userList = userMapper.getUserList(enterpriseId, user.getUsername(),
-                user.getPhone(), user.getEmail());
+        List<UserListVO> userList = userMapper.getUserList(enterpriseId, user.getUsername(), user.getPhone(),
+                user.getEmail());
         StringBuilder driverCodes = new StringBuilder();
         for (UserListVO userListVO : userList) {
             String driverCode = userListVO.getDriverCode();
@@ -508,6 +518,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                 .map(map)
                 .encoding("utf-8")
                 .inenc("utf-8");
+
         try {
             String result = HttpClientUtil.post(config);
             JSONObject data1 = JSONObject.parseObject(result);
@@ -594,6 +605,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public User findById(Integer userId) throws ErpException {
+
         Optional<User> userOption = userRepository.findById(userId);
         return userOption.orElseThrow(
                 () -> new ErpException(ErrEumn.USER_NO_EXIT));
@@ -901,9 +913,12 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             List<User> users,
             List<Integer> enterpriseIds,
             List<Integer> authGroupIds) {
+        // TODO: 用redis缓存使用，单企业查询，放弃该方法
 
         List<Integer> uids = new ArrayList<>();
-        users.forEach(user -> uids.add(user.getUid()));
+        users.forEach(user -> {
+            uids.add(user.getUid());
+        });
 
         QUserAuth qUserAuth = QUserAuth.userAuth;
         List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth)
@@ -952,9 +967,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
     }
 
-    /*
+    /**
      * 修改用户的权限状态码eadmin
-     * */
+     */
     @Override
     public void updateUserAdminStatus(Integer userId, String eadmin) {
         if ("0".equals(eadmin)) {
@@ -1048,9 +1063,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         return userAuthVOS;
     }
 
-    /*
+    /**
      * 获取该用户的权限组
-     * */
+     */
     @Override
     public Integer getAuthGroupByUserAndCompid(Integer uid, Integer enterprise) {
         return userMapper.getAuthGroupByUserAndCompid(uid, enterprise);
@@ -1137,7 +1152,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             e.printStackTrace();
         }
     }
-
 
 
 }

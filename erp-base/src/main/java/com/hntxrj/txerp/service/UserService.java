@@ -24,13 +24,15 @@ public interface UserService {
      * @param phoneNumber 手机号
      * @param password    密码
      * @param request     HTTP SERVLET Request 对象
+     * @param loginUa  不同项目登陆时的标识；
+     *                 例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
      * @return 登录用户
      * @throws ErpException throw ERP EXCEPTION
      */
     UserVO login(String phoneNumber, String password,
-                 HttpServletRequest request) throws ErpException;
+                 HttpServletRequest request,String loginUa) throws ErpException;
 
-    UserVO login(String value, String type, String loginIp) throws ErpException;
+    UserVO login(String value, String type, String loginIp,String loginUa) throws ErpException;
 
     /**
      * login out
@@ -141,7 +143,7 @@ public interface UserService {
 
     List<User> getUsers(Integer[] uids);
 
-    UserLogin createUserLogin(Integer userId, String loginIp) throws ErpException;
+    UserLogin createUserLogin(Integer userId, String loginIp,String loginUa) throws ErpException;
 
 
     /**

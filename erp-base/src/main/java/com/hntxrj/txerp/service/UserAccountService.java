@@ -37,7 +37,7 @@ public interface UserAccountService {
 
     void unbind(Integer uid, String acType) throws ErpException;
 
-    UserVO userOpenIdGetUser(String type, String openId, String ip) throws ErpException;
+    UserVO userOpenIdGetUser(String type, String openId, String ip,String loginUa) throws ErpException;
 
 
     List<String> binds(String token) throws ErpException;

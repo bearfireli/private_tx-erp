@@ -148,7 +148,9 @@ public class UserController {
                         HttpServletRequest request)
             throws ErpException {
         log.info("【登录v1】phone={}, password={}", phone, password);
-        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request),
+        //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
+        String loginUa = request.getHeader("loginUa");
+        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request, loginUa),
                 SerializerFeature.DisableCircularReferenceDetect));
         return JSON.toJSONString(resultVO);
     }
@@ -165,8 +167,10 @@ public class UserController {
     @PostMapping("/thirdLogin")
     public String thirdLogin(String openId, String type, HttpServletRequest request)
             throws ErpException {
+        //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
+        String loginUa = request.getHeader("loginUa");
         resultVO.setData(JSON.parseObject(JSON.toJSONString(
-                userService.login(openId, type, IpUtil.getIp(request)),
+                userService.login(openId, type, IpUtil.getIp(request), loginUa),
                 SerializerFeature.DisableCircularReferenceDetect)));
         return JSON.toJSONString(resultVO);
     }
@@ -182,7 +186,7 @@ public class UserController {
     @PostMapping("/tokenCheck")
     public ResultVO tokenCheck(String token) throws ErpException {
         log.debug("【验证token是否可用】token={}", token);
-        userService.tokenCheck(token);
+        resultVO.setData(userService.tokenCheck(token));
         return resultVO;
     }
 
@@ -379,7 +383,9 @@ public class UserController {
 
     @PostMapping("/useOpenIdGetUser")
     public String useOpenIdGetUser(String type, String openId, HttpServletRequest request) throws ErpException {
-        resultVO.setData(userAccountService.userOpenIdGetUser(type, openId, IpUtil.getIp(request)));
+        //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
+        String loginUa = request.getHeader("loginUa");
+        resultVO.setData(userAccountService.userOpenIdGetUser(type, openId, IpUtil.getIp(request), loginUa));
         return JSON.toJSONString(resultVO);
     }
 
@@ -502,4 +508,6 @@ public class UserController {
         resultVO.setData(JSON.toJSONString(userService.userAll(eid)));
         return JSON.toJSONString(resultVO);
     }
+
+
 }
