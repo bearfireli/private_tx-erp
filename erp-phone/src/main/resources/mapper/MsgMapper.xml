@@ -6,6 +6,7 @@
         select uid, compid, typeId, username, phone, RecStatus from Recipient
         where compid=#{compid}
         and typeId =#{typeId}
+         and RecStatus =1
     </select>
 
 

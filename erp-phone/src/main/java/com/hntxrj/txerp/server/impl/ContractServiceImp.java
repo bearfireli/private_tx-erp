@@ -464,7 +464,7 @@ public class ContractServiceImp implements ContractService {
         for (RecipientVO r : recipoentList) {
             SendmsgVO sendmsgVO = new SendmsgVO();
             sendmsgVO.setSyncOtherMachine(2);
-            sendmsgVO.setToAccount(r.getPhone());
+            sendmsgVO.setToAccount(r.getUid().toString());
             sendmsgVO.setMsgLifeTime(7);
             String  msgContent ="合同号：["+contractUid+"]已审核.";
             sendmsgVO.setMsgContent(msgContent);
@@ -578,7 +578,7 @@ public class ContractServiceImp implements ContractService {
         for (RecipientVO r : recipoentList) {
             SendmsgVO sendmsgVO = new SendmsgVO();
             sendmsgVO.setSyncOtherMachine(2);
-            sendmsgVO.setToAccount(r.getPhone());
+            sendmsgVO.setToAccount(r.getUid().toString());
             sendmsgVO.setMsgLifeTime(7);
             String  msgContent ="有新合同,请审核";
             sendmsgVO.setMsgContent(msgContent);
