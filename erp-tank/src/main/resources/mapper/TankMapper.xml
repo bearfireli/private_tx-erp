@@ -2,11 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.TankMapper">
     <update id="updatePowderTankControl">
-        UPDATE pt_powder_tank_control SET state_tank=#{tankStatus}
+        UPDATE pt_powder_tank_control SET command_type=#{loadMouthStatus},
+        whether_to_execute=0,updownmark=0
         WHERE compid=#{compid} and tank_code=#{tankCode} and stirid=#{stirId}
     </update>
     <update id="updatePowderTankDevice">
-        UPDATE pt_powder_tank_device SET state_tank=#{tankStatus}
+        UPDATE pt_powder_tank_device SET load_mouth_status=#{loadMouthStatus}
         WHERE compid=#{compid} and tank_code=#{tankCode} and stirid=#{stirId}
     </update>
     <select id="powderTanDeviceList" resultType="com.hntxrj.txerp.entity.PowderTankDevice">
@@ -23,6 +24,12 @@
     <select id="weighChangeRecordList" resultType="com.hntxrj.txerp.entity.WeightChangeRecord">
         SELECT * FROM pt_weight_change_record
         WHERE compid=#{compid}
+        <if test="stirId!=null">
+            and stirid =#{stirId}
+        </if>
+        <if test="tankCode!=null">
+            and tank_code =#{tankCode}
+        </if>
         <if test="beginTime!=null and endTime!=null">
             and create_time between #{beginTime} and #{endTime}
         </if>
@@ -31,6 +38,12 @@
     <select id="powderTankSafeStatusInforList" resultType="com.hntxrj.txerp.entity.PowderTankSafeStatusInfor">
         SELECT * FROM pt_power_tank_safe_status_infor
         WHERE compid=#{compid}
+        <if test="stirId!=null">
+            and stirid =#{stirId}
+        </if>
+        <if test="tankCode!=null">
+            and tank_code =#{tankCode}
+        </if>
         <if test="beginTime != null and endTime != null">
             and create_time between #{beginTime} and #{endTime}
         </if>
@@ -39,6 +52,12 @@
     <select id="powderTankCalibrationList" resultType="com.hntxrj.txerp.entity.PowderTankCalibration">
         SELECT * FROM pt_powder_tank_calibration
         WHERE compid=#{compid}
+        <if test="stirId!=null">
+            and stirid =#{stirId}
+        </if>
+        <if test="tankCode!=null">
+            and tank_code =#{tankCode}
+        </if>
         <if test="beginTime != null and endTime != null">
             and create_time between #{beginTime} and #{endTime}
         </if>
@@ -47,6 +66,12 @@
     <select id="powderTankWarnList" resultType="com.hntxrj.txerp.entity.PowderTankWarn">
         SELECT * FROM pt_powder_tank_warn
         WHERE compid=#{compid}
+        <if test="stirId!=null">
+            and stirid =#{stirId}
+        </if>
+        <if test="tankCode!=null">
+            and tank_code =#{tankCode}
+        </if>
         <if test="beginTime != null and endTime != null">
             and create_time between #{beginTime} and #{endTime}
         </if>

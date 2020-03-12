@@ -71,11 +71,6 @@ public class TankServiceImpl implements TankService {
             if (powderTankDevice.getStirId() == null) {
                 throw new ErpException(ErrEumn.STIRID_NULL_ERROR);
             }
-            if (powderTankDevice.getDoorOpenPassword() != null) {
-                //开门密码加密
-                powderTankDevice.setDoorOpenPassword(
-                        EncryptUtil.encryptPassword(powderTankDevice.getDoorOpenPassword()));
-            }
             if (powderTankDevice.getTankCode() == null) {
                 powderTankDevice.setTankCode(1);
                 //说明是添加罐信息
@@ -135,16 +130,17 @@ public class TankServiceImpl implements TankService {
     /**
      * 修改罐的开关门状态
      *
-     * @param compid       企业id
-     * @param tankCode     罐代号
-     * @param stirId       线号
-     * @param tankStatus   罐开门状态
-     * @param doorPassword 罐开门密码
+     * @param compid          企业id
+     * @param tankCode        罐代号
+     * @param stirId          线号
+     * @param loadMouthStatus 罐开门状态
+     * @param doorPassword    罐开门密码
      */
     @Override
-    public void updateDoorStatus(String compid, String tankCode, String stirId, Integer tankStatus,
+    public void updateDoorStatus(String compid, String tankCode, String stirId, Integer loadMouthStatus,
                                  String doorPassword) throws ErpException {
-        PowderTankControl powderTankControl = tankMapper.getPowderTankControl(compid, tankCode, stirId);
+//        PowderTankControl powderTankControl = tankMapper.getPowderTankControl(compid, tankCode, stirId);
+        PowderTankDevice powderTankControl = tankMapper.getPowderTanDevice(compid, tankCode, stirId);
         if (powderTankControl == null) {
             //罐号不存在
             throw new ErpException(ErrEumn.TANK_NULL_ERROR);
@@ -152,15 +148,15 @@ public class TankServiceImpl implements TankService {
         if (doorPassword == null) {
             throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_BUILDERCODE);
         }
-        if (doorPassword.equals(powderTankControl.getDoorOpenPassword())) {
+        if (!doorPassword.equals(powderTankControl.getDoorOpenPassword())) {
             //密码错误
             throw new ErpException(ErrEumn.PASSWORD_ERROR);
         }
 
         //修改罐基本信息中的开门状态
-        tankMapper.updatePowderTankDevice(compid, tankCode,stirId, tankStatus);
+        tankMapper.updatePowderTankDevice(compid, tankCode, stirId, loadMouthStatus);
         //修改罐控制表中的开门状态
-        tankMapper.updatePowderTankControl(compid, tankCode,stirId, tankStatus);
+        tankMapper.updatePowderTankControl(compid, tankCode, stirId, loadMouthStatus);
 
 
     }
@@ -169,9 +165,9 @@ public class TankServiceImpl implements TankService {
      * 罐的重量变化信息集合列表
      */
     @Override
-    public List<WeightChangeRecord> weighChangeRecordList(String compid, String beginTime, String endTime) {
+    public List<WeightChangeRecord> weighChangeRecordList(String compid, String stirId, String tankCode, String beginTime, String endTime) {
 
-        return tankMapper.weighChangeRecordList(compid, beginTime, endTime);
+        return tankMapper.weighChangeRecordList(compid, stirId, tankCode, beginTime, endTime);
     }
 
     /**
@@ -188,8 +184,10 @@ public class TankServiceImpl implements TankService {
      * 获取罐上料信息集合列表
      */
     @Override
-    public List<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid, String beginTime, String endTime) {
-        return tankMapper.powderTankSafeStatusInforList(compid, beginTime, endTime);
+    public List<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid, String stirId,
+                                                                         String tankCode, String beginTime,
+                                                                         String endTime) {
+        return tankMapper.powderTankSafeStatusInforList(compid, stirId, tankCode, beginTime, endTime);
     }
 
     /**
@@ -207,8 +205,9 @@ public class TankServiceImpl implements TankService {
      * 罐校准历史记录集合列表
      */
     @Override
-    public List<PowderTankCalibration> powderTankCalibrationList(String compid, String beginTime, String endTime) {
-        return tankMapper.powderTankCalibrationList(compid, beginTime, endTime);
+    public List<PowderTankCalibration> powderTankCalibrationList(String compid, String stirId,
+                                                                 String tankCode, String beginTime, String endTime) {
+        return tankMapper.powderTankCalibrationList(compid,stirId,tankCode, beginTime, endTime);
     }
 
     /**
@@ -224,8 +223,8 @@ public class TankServiceImpl implements TankService {
      * 罐报警集合列表
      */
     @Override
-    public List<PowderTankWarn> powderTankWarnList(String compid, String beginTime, String endTime) {
-        return tankMapper.powderTankWarnList(compid, beginTime, endTime);
+    public List<PowderTankWarn> powderTankWarnList(String compid,String stirId,String tankCode, String beginTime, String endTime) {
+        return tankMapper.powderTankWarnList(compid,stirId,tankCode, beginTime, endTime);
     }
 
     /**

@@ -29,6 +29,11 @@ public class TankApi {
 
     /**
      * 获取每个罐信息显示集合
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
     @PostMapping("/powderTanDeviceList")
     public ResultVO powderTanDeviceList(String compid, String stirId, Long beginTime, Long endTime) {
@@ -81,7 +86,7 @@ public class TankApi {
      */
     @PostMapping("/getPowderTankControl")
     public ResultVO getPowderTankControl(String compid, String stirId, String tankCode) {
-       return ResultVO.create(tankService.getPowderTankControl(compid, stirId, tankCode));
+        return ResultVO.create(tankService.getPowderTankControl(compid, stirId, tankCode));
     }
 
     /**
@@ -112,26 +117,32 @@ public class TankApi {
     /**
      * 修改罐的开关门状态
      *
-     * @param compid       企业id
-     * @param tankCode     罐代号
-     * @param stirId       线号
-     * @param tankStatus   罐开门状态
-     * @param doorPassword 罐开门密码
+     * @param compid          企业id
+     * @param tankCode        罐代号
+     * @param stirId          线号
+     * @param loadMouthStatus 罐开门状态
+     * @param doorPassword    罐开门密码
      */
     @PostMapping("/updateDoorStatus")
-    public ResultVO updateDoorStatus(String compid, String tankCode, String stirId, Integer tankStatus,
+    public ResultVO updateDoorStatus(String compid, String tankCode, String stirId, Integer loadMouthStatus,
                                      String doorPassword) throws ErpException {
-        tankService.updateDoorStatus(compid, tankCode, stirId, tankStatus, doorPassword);
+        tankService.updateDoorStatus(compid, tankCode, stirId, loadMouthStatus, doorPassword);
         return ResultVO.create();
     }
 
 
     /**
      * 罐的重量变化信息集合列表
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
     @PostMapping("/weighChangeRecordList")
-    public ResultVO weighChangeRecordList(String compid, Long beginTime, Long endTime) {
-        return ResultVO.create(tankService.weighChangeRecordList(compid,
+    public ResultVO weighChangeRecordList(String compid, String stirId, String tankCode, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.weighChangeRecordList(compid, stirId, tankCode,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }
@@ -147,10 +158,16 @@ public class TankApi {
 
     /**
      * 罐的上料信息集合列表
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
     @PostMapping("/powderTankSafeStatusInforList")
-    public ResultVO powderTankSafeStatusInforList(String compid, Long beginTime, Long endTime) {
-        return ResultVO.create(tankService.powderTankSafeStatusInforList(compid,
+    public ResultVO powderTankSafeStatusInforList(String compid, String stirId, String tankCode, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTankSafeStatusInforList(compid, stirId, tankCode,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }
@@ -168,10 +185,17 @@ public class TankApi {
 
     /**
      * 罐的校准历史记录集合列表
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
     @PostMapping("/powderTankCalibrationList")
-    public ResultVO powderTankCalibrationList(String compid, Long beginTime, Long endTime) {
-        return ResultVO.create(tankService.powderTankCalibrationList(compid,
+    public ResultVO powderTankCalibrationList(String compid, String stirId, String tankCode,
+                                              Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTankCalibrationList(compid, stirId, tankCode,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }
@@ -189,10 +213,16 @@ public class TankApi {
 
     /**
      * 罐报警列表查询
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
     @PostMapping("/powderTankWarnList")
-    public ResultVO powderTankWarnList(String compid, Long beginTime, Long endTime) {
-        return ResultVO.create(tankService.powderTankWarnList(compid,
+    public ResultVO powderTankWarnList(String compid, String stirId, String tankCode, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTankWarnList(compid, stirId, tankCode,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }

@@ -3,7 +3,7 @@ package com.hntxrj.txerp.service;
 
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.entity.*;
-import com.hntxrj.txerp.vo.ResultVO;
+
 
 import java.util.List;
 
@@ -12,8 +12,13 @@ public interface TankService {
 
     /**
      * 获取每个罐信息显示集合
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
-    List<PowderTankDevice> powderTanDeviceList(String compid,String stirId,String beginTime,String engTime);
+    List<PowderTankDevice> powderTanDeviceList(String compid, String stirId, String beginTime, String endTime);
 
     /**
      * 保存罐的信息数据
@@ -22,12 +27,19 @@ public interface TankService {
      */
     void savePowderTanDevice(PowderTankDevice powderTankDevice) throws ErpException;
 
+    /**
+     * 获取单个罐的信息
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐的id
+     */
     PowderTankDevice getPowderTanDevice(String compid, String stirId, String tankCode);
 
     /**
      * 获取罐控制功能信息显示集合
      */
-    List<PowderTankControl> powderTankControlList(String compid,String beginTime,String endTime);
+    List<PowderTankControl> powderTankControlList(String compid, String beginTime, String endTime);
 
     /**
      * 获取单个罐控制功能信息
@@ -48,17 +60,23 @@ public interface TankService {
     /**
      * 修改罐的开关门状态
      *
-     * @param compid       企业id
-     * @param tankCode     罐代号
-     * @param tankStatus   罐开门状态
-     * @param doorPassword 罐开门密码
+     * @param compid          企业id
+     * @param tankCode        罐代号
+     * @param loadMouthStatus 罐开门状态
+     * @param doorPassword    罐开门密码
      */
-    void updateDoorStatus(String compid, String tankCode,String stirId, Integer tankStatus, String doorPassword) throws ErpException;
+    void updateDoorStatus(String compid, String tankCode, String stirId, Integer loadMouthStatus, String doorPassword) throws ErpException;
 
     /**
      * 罐的重量变化信息集合列表
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
-    List<WeightChangeRecord> weighChangeRecordList(String compid,String beginTime,String endTime);
+    List<WeightChangeRecord> weighChangeRecordList(String compid, String stirId, String tankCode, String beginTime, String endTime);
 
     /**
      * 保存罐的重量变化信息
@@ -68,9 +86,16 @@ public interface TankService {
     void saveWeighChangeRecord(WeightChangeRecord weightChangeRecord);
 
     /**
-     * 获取罐上料信息集合列表
+     * 罐的上料信息集合列表
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
-    List<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid,String beginTIme,String endTime);
+    List<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid, String stirId,
+                                                                  String tankCode, String beginTime, String endTime);
 
     /**
      * 保存罐上料信息
@@ -78,9 +103,16 @@ public interface TankService {
     void savePowderTankSafeStatusInfor(PowderTankSafeStatusInfor powderTankSafeStatusInfor);
 
     /**
-     * 罐校准历史记录集合列表
+     * 罐的校准历史记录集合列表
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
-    List<PowderTankCalibration> powderTankCalibrationList(String compid,String beginTime,String endTime);
+    List<PowderTankCalibration> powderTankCalibrationList(String compid, String stirId,
+                                                          String tankCode, String beginTime, String endTime);
 
 
     /**
@@ -89,9 +121,15 @@ public interface TankService {
     void savePowderTankCalibration(PowderTankCalibration powderTankCalibration);
 
     /**
-     * 罐报警信息集合列表
+     * 罐报警列表查询
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
      */
-    List<PowderTankWarn> powderTankWarnList(String compid,String beginTime,String endTime);
+    List<PowderTankWarn> powderTankWarnList(String compid, String stirId, String tankCode, String beginTime, String endTime);
 
     /**
      * 保存罐报警信息
@@ -102,8 +140,8 @@ public interface TankService {
     /**
      * 验证罐的开门密码是否正确
      *
-     * @param compid 企业id
-     * @param stirId 线号
+     * @param compid   企业id
+     * @param stirId   线号
      * @param tankCode 罐id
      * @param passWord 罐的开门密码
      */
@@ -113,10 +151,10 @@ public interface TankService {
     /**
      * 仓库校准的置零操作
      *
-     * @param compid 企业id
-     * @param stirId 线号
+     * @param compid   企业id
+     * @param stirId   线号
      * @param tankCode 罐id
-     * */
+     */
     void zeroSetting(String compid, String stirId, String tankCode);
 
     /**
