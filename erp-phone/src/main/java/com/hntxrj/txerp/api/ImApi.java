@@ -39,8 +39,8 @@ public class ImApi {
      * @param userID 用户账号
      * @param eid    用户所属企业
      */
-    @PostMapping("/FriendService")
-    public void FriendService(String userID, Integer eid) {
+    @PostMapping("/friendImport")
+    public void friendImport(String userID, Integer eid) {
         friendService.friendImport(userID, eid);
     }
 }

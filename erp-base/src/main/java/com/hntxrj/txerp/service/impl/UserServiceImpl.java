@@ -353,7 +353,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         User user = tokenGetUser(token);
 
         log.info("【文件上传路径】path={}", headerUploadPath);
-        String[] fileNameSplits = file.getOriginalFilename().split("\\.");
+        String[] fileNameSplits = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
         String reName = UUID.randomUUID().toString() +
                 (fileNameSplits.length != 0 ? "." + fileNameSplits[fileNameSplits.length - 1] : "");
         String filePath = headerUploadPath + reName;
@@ -799,10 +799,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public void deleteUserToken(Integer userId) {
-        List<UserLogin> userLogins = userLoginRepository.findAllByUserId(userId);
-//        userLogins.forEach(userLogin -> {
-//            redisUtil.redisRemoveValue(RedisDataTypeEnums.TOKEN + userLogin.getUserToken());
-//        });
         userLoginRepository.deleteAllByUserId(userId);
     }
 
@@ -905,12 +901,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             List<User> users,
             List<Integer> enterpriseIds,
             List<Integer> authGroupIds) {
-        // TODO: 用redis缓存使用，单企业查询，放弃该方法
 
         List<Integer> uids = new ArrayList<>();
-        users.forEach(user -> {
-            uids.add(user.getUid());
-        });
+        users.forEach(user -> uids.add(user.getUid()));
 
         QUserAuth qUserAuth = QUserAuth.userAuth;
         List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth)
@@ -1126,7 +1119,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         //将此用户和本企业的用户添加好友
         String addFriendUrl;
-        addFriendUrl = url + "/api/im/FriendService";
+        addFriendUrl = url + "/api/im/friendImport";
         //查询此用户的所属企业
         Integer eid = userMapper.getEnterpriseByGroupId(user.getAuthGroup());
         RequestBody addFriendBody = new FormBody.Builder()
@@ -1145,27 +1138,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
     }
 
-
-
-
-
-    /*================================================================================================================*/
-    /*=======================================================redis do=================================================*/
-    /*================================================================================================================*/
-
-
-//    private User findByUserByIdRedis(Integer uid) {
-//        return redisUtil.redisGetValue(RedisDataTypeEnums.USER.getValue() + uid);
-//    }
-//
-//    private void cacheUser(User user) {
-//        redisUtil.redisSetKey(RedisDataTypeEnums.USER.getValue() + user.getUid(), user);
-//    }
-
-
-//    private void cacheUsers(List<User> users) {
-//        users.forEach(this::cacheUser);
-//    }
 
 
 }
