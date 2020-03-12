@@ -205,7 +205,7 @@
         LEFT JOIN user u on ua.uid =u.uid
         where u.uid is not null
         <if test="eid != null ">
-        and ua.eid =#{eid}
+            and ua.eid =#{eid}
         </if>
         <if test="userName != null and userName!='' ">
             and u.username like '%${userName}%'
@@ -214,14 +214,18 @@
     <!--根据eid 查询企业用户-->
     <select id="userAll" resultType="com.hntxrj.txerp.entity.base.User">
         select u.uid,u.username,u.password,u.phone,u.email
-         from user_auth ua
+        from user_auth ua
         LEFT JOIN user u on ua.uid =u.uid
         where
         1=1
         <if test="eid != null and eid!='' ">
-        and ua.eid =#{eid}
+            and ua.eid =#{eid}
         </if>
         and u.uid is not null
+    </select>
+
+    <select id="getEnterpriseByGroupId" resultType="java.lang.Integer">
+        SELECT enterprise FROM auth_group WHERE agid=#{groupId}
     </select>
 
 

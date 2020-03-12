@@ -32,6 +32,7 @@ public class User implements Serializable {
     @Column(insertable = false, updatable = false)
     private Date updateTime;
     private String userFavoriteConfig;
+    private Integer authGroup;
 
 
 

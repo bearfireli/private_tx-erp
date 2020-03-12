@@ -141,20 +141,14 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
-    /**
-     * 登录接口
-     *
-     * @param phone    手机号
-     * @param password 密码
-     */
+    //登录接口
     @PostMapping("/login")
     public String login(String phone,
                         String password,
                         HttpServletRequest request)
             throws ErpException {
         log.info("【登录v1】phone={}, password={}", phone, password);
-        String loginUa = request.getHeader("loginUa");
-        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request, loginUa),
+        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request),
                 SerializerFeature.DisableCircularReferenceDetect));
         return JSON.toJSONString(resultVO);
     }
@@ -171,9 +165,8 @@ public class UserController {
     @PostMapping("/thirdLogin")
     public String thirdLogin(String openId, String type, HttpServletRequest request)
             throws ErpException {
-        String loginUa = request.getHeader("loginUa");
         resultVO.setData(JSON.parseObject(JSON.toJSONString(
-                userService.login(openId, type, IpUtil.getIp(request), loginUa),
+                userService.login(openId, type, IpUtil.getIp(request)),
                 SerializerFeature.DisableCircularReferenceDetect)));
         return JSON.toJSONString(resultVO);
     }

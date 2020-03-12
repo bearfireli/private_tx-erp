@@ -27,6 +27,10 @@ import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.UserVO;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.springframework.beans.BeanUtils;
@@ -54,7 +58,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     private final UserAccountRepository userAccountRepository;
     private final UserAuthRepository userAuthRepository;
     private final UserBindDriverRepository userBindDriverRepository;
-
     private final UserMapper userMapper;
 
     @Value("${app.user.headerPath}")
@@ -1092,27 +1095,52 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         return userMapper.userAll(eid);
     }
 
+    /**
+     * 把用户的uid作为账号导入到腾讯云即时通讯中，并且和本企业其他用户
+     * 添加好友
+     */
+    public void addUserToIM(User user) {
 
+        //把用户id作为账号导入腾讯云即时通讯IM中
+        String addUserUrl;
+        addUserUrl = url + "/api/im/accountImport";
+        OkHttpClient client = new OkHttpClient();
+        RequestBody addUserBody = new FormBody.Builder()
+                .add("identifier", String.valueOf(user.getUid()))
+                .add("Nick", user.getUsername())
+                .build();
+        Request request = new Request.Builder()
+                .url(addUserUrl)
+                .post(addUserBody)
+                .build();
 
+        try {
+            client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        //将此用户和本企业的用户添加好友
+        String addFriendUrl;
+        addFriendUrl = url + "/api/im/friendImport";
+        //查询此用户的所属企业
+        Integer eid = userMapper.getEnterpriseByGroupId(user.getAuthGroup());
+        RequestBody addFriendBody = new FormBody.Builder()
+                .add("userID", String.valueOf(user.getUid()))
+                .add("eid", String.valueOf(eid))
+                .build();
+        Request request1 = new Request.Builder()
+                .url(addFriendUrl)
+                .post(addFriendBody)
+                .build();
 
-    /*================================================================================================================*/
-    /*=======================================================redis do=================================================*/
-    /*================================================================================================================*/
+        try {
+            client.newCall(request1).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-
-//    private User findByUserByIdRedis(Integer uid) {
-//        return redisUtil.redisGetValue(RedisDataTypeEnums.USER.getValue() + uid);
-//    }
-//
-//    private void cacheUser(User user) {
-//        redisUtil.redisSetKey(RedisDataTypeEnums.USER.getValue() + user.getUid(), user);
-//    }
-
-
-//    private void cacheUsers(List<User> users) {
-//        users.forEach(this::cacheUser);
-//    }
 
 
 }
