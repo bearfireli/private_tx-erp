@@ -88,6 +88,17 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
 
+    /**
+     * 用户登录
+     *
+     * @param phoneNumber 手机号
+     * @param password    密码
+     * @param request     HTTP SERVLET Request 对象
+     * @param loginUa     不同项目登陆时的标识；
+     *                    例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
+     * @return 登录用户
+     * @throws ErpException throw ERP EXCEPTION
+     */
     @Override
     public UserVO login(String phoneNumber, String password,
                         HttpServletRequest request, String loginUa) throws ErpException {
@@ -330,6 +341,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_USER_ERR);
         }
+        //此处调用即时通讯IM的接口,把用户导入到IM消息通讯中。
+        addUserToIM(user);
 
         Integer uid = data.getInteger("uid");
         JSONArray userAuthArray = data.getJSONArray("arr");
@@ -353,7 +366,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         User user = tokenGetUser(token);
 
         log.info("【文件上传路径】path={}", headerUploadPath);
-        String[] fileNameSplits = file.getOriginalFilename().split("\\.");
+        String[] fileNameSplits = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
         String reName = UUID.randomUUID().toString() +
                 (fileNameSplits.length != 0 ? "." + fileNameSplits[fileNameSplits.length - 1] : "");
         String filePath = headerUploadPath + reName;
@@ -798,7 +811,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public void deleteUserToken(Integer userId) {
-        List<UserLogin> userLogins = userLoginRepository.findAllByUserId(userId);
         userLoginRepository.deleteAllByUserId(userId);
     }
 
@@ -877,7 +889,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         for (UserAuthVO userAuthVO : userAuthVOS) {
             List<Menu> menuList = queryFactory.selectFrom(qMenu).rightJoin(qAuthValue).on(qAuthValue.menuId.eq(
                     qMenu.mid)).where(qAuthValue.groupId.eq(userAuthVO.getAuthGroup().getAgid()).and(
-                            qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
+                    qMenu.menuLevel.eq(3)).and(qAuthValue.value.eq(1))).fetch();
             userAuthVO.setMenuVOS(menuList);
         }
         userVo.setUserAuths(userAuthVOS);
@@ -957,7 +969,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     /**
      * 修改用户的权限状态码eadmin
-     * */
+     */
     @Override
     public void updateUserAdminStatus(Integer userId, String eadmin) {
         if ("0".equals(eadmin)) {
@@ -1053,7 +1065,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     /**
      * 获取该用户的权限组
-     * */
+     */
     @Override
     public Integer getAuthGroupByUserAndCompid(Integer uid, Integer enterprise) {
         return userMapper.getAuthGroupByUserAndCompid(uid, enterprise);
@@ -1140,7 +1152,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             e.printStackTrace();
         }
     }
-
 
 
 }
