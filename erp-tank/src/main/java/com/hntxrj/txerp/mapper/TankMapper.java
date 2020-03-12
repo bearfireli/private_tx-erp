@@ -12,7 +12,7 @@ public interface TankMapper {
     /**
      * 获取每个罐信息显示集合
      */
-    List<PowderTankDevice> powderTanDeviceList(String compid,String beginTime,String endTime);
+    List<PowderTankDevice> powderTanDeviceList(String compid,String stirId,String beginTime,String endTime);
 
     /**
      * 罐的重量变化信息集合列表
@@ -67,4 +67,6 @@ public interface TankMapper {
      * @param passWord 罐的开门密码
      */
     PowderTankDevice checkPassword(String compid, String stirId, String tankCode, String passWord);
+
+    PowderTankDevice getPowderTanDevice(String compid, String stirId, String tankCode);
 }

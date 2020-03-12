@@ -30,8 +30,8 @@ public class TankApi {
      * 获取每个罐信息显示集合
      */
     @PostMapping("/powderTanDeviceList")
-    public ResultVO powderTanDeviceList(String compid, Long beginTime, Long endTime) {
-        return ResultVO.create(tankService.powderTanDeviceList(compid,
+    public ResultVO powderTanDeviceList(String compid, String stirId, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTanDeviceList(compid, stirId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }
@@ -48,10 +48,23 @@ public class TankApi {
     }
 
     /**
+     * 获取单个罐的信息
+     *
+     * @param compid   企业id
+     * @param stirId   线号
+     * @param tankCode 罐的id
+     */
+    @PostMapping("/getPowderTanDevice")
+    public ResultVO getPowderTanDevice(String compid, String stirId, String tankCode) {
+        return tankService.getPowderTanDevice(compid, stirId, tankCode);
+    }
+
+    /**
      * 获取罐控制功能信息显示集合
      */
     @PostMapping("/powderTankControlList")
     public ResultVO powderTankControlList(String compid, Long beginTime, Long endTime) {
+
         return ResultVO.create(tankService.powderTankControlList(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
@@ -71,14 +84,14 @@ public class TankApi {
     /**
      * 验证罐的开门密码
      *
-     * @param compid 企业id
-     * @param stirId 线号
+     * @param compid   企业id
+     * @param stirId   线号
      * @param tankCode 罐id
      * @param passWord 罐的开门密码
      */
     @PostMapping("/checkPassword")
-    public ResultVO checkPassword(String compid, String stirId, String tankCode,String passWord) {
-        return ResultVO.create(tankService.checkPassword(compid,stirId,tankCode,passWord));
+    public ResultVO checkPassword(String compid, String stirId, String tankCode, String passWord) {
+        return ResultVO.create(tankService.checkPassword(compid, stirId, tankCode, passWord));
     }
 
     /**
@@ -183,7 +196,6 @@ public class TankApi {
     /**
      * 罐的校准功能
      * */
-
 
 
 }

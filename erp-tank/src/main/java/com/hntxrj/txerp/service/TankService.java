@@ -3,6 +3,7 @@ package com.hntxrj.txerp.service;
 
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.entity.*;
+import com.hntxrj.txerp.vo.ResultVO;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface TankService {
     /**
      * 获取每个罐信息显示集合
      */
-    List<PowderTankDevice> powderTanDeviceList(String compid,String beginTime,String engTime);
+    List<PowderTankDevice> powderTanDeviceList(String compid,String stirId,String beginTime,String engTime);
 
     /**
      * 保存罐的信息数据
@@ -20,6 +21,8 @@ public interface TankService {
      * @param powderTankDevice 罐对象
      */
     void savePowderTanDevice(PowderTankDevice powderTankDevice) throws ErpException;
+
+    PowderTankDevice getPowderTanDevice(String compid, String stirId, String tankCode);
 
     /**
      * 获取罐控制功能信息显示集合
@@ -96,4 +99,6 @@ public interface TankService {
      * @param passWord 罐的开门密码
      */
     Boolean checkPassword(String compid, String stirId, String tankCode, String passWord);
+
+
 }

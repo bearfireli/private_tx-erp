@@ -53,8 +53,8 @@ public class TankServiceImpl implements TankService {
      * 获取每个罐信息显示集合
      */
     @Override
-    public List<PowderTankDevice> powderTanDeviceList(String compid,String beginTime,String endTime) {
-        return tankMapper.powderTanDeviceList(compid,beginTime,endTime);
+    public List<PowderTankDevice> powderTanDeviceList(String compid,String stirId,String beginTime,String endTime) {
+        return tankMapper.powderTanDeviceList(compid,stirId,beginTime,endTime);
     }
 
     /**
@@ -89,6 +89,14 @@ public class TankServiceImpl implements TankService {
             powderTankDeviceRepository.save(powderTankDevice);
         }
 
+    }
+
+    /**
+     * 获取单个罐的信息
+     * */
+    @Override
+    public PowderTankDevice getPowderTanDevice(String compid, String stirId, String tankCode) {
+        return tankMapper.getPowderTanDevice(compid, stirId, tankCode);
     }
 
     /**
