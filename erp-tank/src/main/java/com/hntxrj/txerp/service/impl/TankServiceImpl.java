@@ -146,7 +146,7 @@ public class TankServiceImpl implements TankService {
     @Override
     public void updateDoorStatus(String compid, String tankCode, String stirId, Integer loadMouthStatus,
                                  String doorPassword) throws ErpException {
-//        PowderTankControl powderTankControl = tankMapper.getPowderTankControl(compid, tankCode, stirId);
+        
         PowderTankDevice powderTankControl = tankMapper.getPowderTanDevice(compid, tankCode, stirId);
         if (powderTankControl == null) {
             //罐号不存在
