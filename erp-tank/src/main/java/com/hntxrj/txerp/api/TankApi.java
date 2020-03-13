@@ -8,6 +8,7 @@ import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.log4j.Log4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
@@ -141,10 +142,13 @@ public class TankApi {
      * @param endTime   结束时间
      */
     @PostMapping("/weighChangeRecordList")
-    public ResultVO weighChangeRecordList(String compid, String stirId, String tankCode, Long beginTime, Long endTime) {
+    public ResultVO weighChangeRecordList(String compid, String stirId, String tankCode,
+                                          Long beginTime, Long endTime,
+                                          @RequestParam(defaultValue = "1") Integer page,
+                                          @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResultVO.create(tankService.weighChangeRecordList(compid, stirId, tankCode,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime))));
+                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
 
     /**
@@ -166,10 +170,13 @@ public class TankApi {
      * @param endTime   结束时间
      */
     @PostMapping("/powderTankSafeStatusInforList")
-    public ResultVO powderTankSafeStatusInforList(String compid, String stirId, String tankCode, Long beginTime, Long endTime) {
+    public ResultVO powderTankSafeStatusInforList(String compid, String stirId, String tankCode,
+                                                  Long beginTime, Long endTime,
+                                                  @RequestParam(defaultValue = "1") Integer page,
+                                                  @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResultVO.create(tankService.powderTankSafeStatusInforList(compid, stirId, tankCode,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime))));
+                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
 
     /**
@@ -194,10 +201,12 @@ public class TankApi {
      */
     @PostMapping("/powderTankCalibrationList")
     public ResultVO powderTankCalibrationList(String compid, String stirId, String tankCode,
-                                              Long beginTime, Long endTime) {
+                                              Long beginTime, Long endTime,
+                                              @RequestParam(defaultValue = "1") Integer page,
+                                              @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResultVO.create(tankService.powderTankCalibrationList(compid, stirId, tankCode,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime))));
+                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
 
     /**
@@ -221,8 +230,26 @@ public class TankApi {
      * @param endTime   结束时间
      */
     @PostMapping("/powderTankWarnList")
-    public ResultVO powderTankWarnList(String compid, String stirId, String tankCode, Long beginTime, Long endTime) {
+    public ResultVO powderTankWarnList(String compid, String stirId, String tankCode, Long beginTime, Long endTime,
+                                       @RequestParam(defaultValue = "1") Integer page,
+                                       @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResultVO.create(tankService.powderTankWarnList(compid, stirId, tankCode,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
+    }
+
+    /**
+     * 罐报警信息汇总统计
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     */
+    @PostMapping("/powderTankWarnCount")
+    public ResultVO powderTankWarnCount(String compid, String stirId, String tankCode, Long beginTime, Long endTime) {
+        return ResultVO.create(tankService.powderTankWarnCount(compid, stirId, tankCode,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }

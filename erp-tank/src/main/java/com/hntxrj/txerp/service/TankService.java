@@ -3,6 +3,8 @@ package com.hntxrj.txerp.service;
 
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.entity.*;
+import com.hntxrj.txerp.vo.PageVO;
+import com.hntxrj.txerp.vo.PowderTankWarnCountVO;
 
 
 import java.util.List;
@@ -12,11 +14,11 @@ public interface TankService {
 
     /**
      * 获取每个罐信息显示集合
-     *
-     * @param compid    企业id
+     *  @param compid    企业id
      * @param stirId    线号
      * @param beginTime 开始时间
      * @param endTime   结束时间
+     * @return
      */
     List<PowderTankDevice> powderTanDeviceList(String compid, String stirId, String beginTime, String endTime);
 
@@ -65,7 +67,8 @@ public interface TankService {
      * @param loadMouthStatus 罐开门状态
      * @param doorPassword    罐开门密码
      */
-    void updateDoorStatus(String compid, String tankCode, String stirId, Integer loadMouthStatus, String doorPassword) throws ErpException;
+    void updateDoorStatus(String compid, String tankCode, String stirId, Integer loadMouthStatus,
+                          String doorPassword) throws ErpException;
 
     /**
      * 罐的重量变化信息集合列表
@@ -76,7 +79,8 @@ public interface TankService {
      * @param beginTime 开始时间
      * @param endTime   结束时间
      */
-    List<WeightChangeRecord> weighChangeRecordList(String compid, String stirId, String tankCode, String beginTime, String endTime);
+    PageVO<WeightChangeRecord> weighChangeRecordList(String compid, String stirId, String tankCode, String beginTime,
+                                                     String endTime, Integer page, Integer pageSize);
 
     /**
      * 保存罐的重量变化信息
@@ -94,8 +98,9 @@ public interface TankService {
      * @param beginTime 开始时间
      * @param endTime   结束时间
      */
-    List<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid, String stirId,
-                                                                  String tankCode, String beginTime, String endTime);
+    PageVO<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid, String stirId,
+                                                                    String tankCode, String beginTime,
+                                                                    String endTime, Integer page, Integer pageSize);
 
     /**
      * 保存罐上料信息
@@ -111,8 +116,9 @@ public interface TankService {
      * @param beginTime 开始时间
      * @param endTime   结束时间
      */
-    List<PowderTankCalibration> powderTankCalibrationList(String compid, String stirId,
-                                                          String tankCode, String beginTime, String endTime);
+    PageVO<PowderTankCalibration> powderTankCalibrationList(String compid, String stirId, String tankCode,
+                                                            String beginTime, String endTime, Integer page,
+                                                            Integer pageSize);
 
 
     /**
@@ -129,7 +135,8 @@ public interface TankService {
      * @param beginTime 开始时间
      * @param endTime   结束时间
      */
-    List<PowderTankWarn> powderTankWarnList(String compid, String stirId, String tankCode, String beginTime, String endTime);
+    PageVO<PowderTankWarn> powderTankWarnList(String compid, String stirId, String tankCode, String beginTime,
+                                              String endTime, Integer page, Integer pageSize);
 
     /**
      * 保存罐报警信息
@@ -168,4 +175,15 @@ public interface TankService {
     void tankCalibration(String compid, String stirId, String tankCode, Integer weight);
 
 
+    /**
+     * 罐报警信息汇总统计
+     *
+     * @param compid    企业id
+     * @param stirId    线号
+     * @param tankCode  罐id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     */
+    PowderTankWarnCountVO powderTankWarnCount(String compid, String stirId, String tankCode,
+                                              String beginTime, String endTime);
 }

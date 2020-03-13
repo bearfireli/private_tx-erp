@@ -1,5 +1,7 @@
 package com.hntxrj.txerp.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.EncryptUtil;
@@ -8,6 +10,8 @@ import com.hntxrj.txerp.mapper.TankMapper;
 import com.hntxrj.txerp.repository.*;
 import com.hntxrj.txerp.service.TankService;
 
+import com.hntxrj.txerp.vo.PageVO;
+import com.hntxrj.txerp.vo.PowderTankWarnCountVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -54,7 +58,10 @@ public class TankServiceImpl implements TankService {
      */
     @Override
     public List<PowderTankDevice> powderTanDeviceList(String compid, String stirId, String beginTime, String endTime) {
+
+
         return tankMapper.powderTanDeviceList(compid, stirId, beginTime, endTime);
+
     }
 
     /**
@@ -165,9 +172,17 @@ public class TankServiceImpl implements TankService {
      * 罐的重量变化信息集合列表
      */
     @Override
-    public List<WeightChangeRecord> weighChangeRecordList(String compid, String stirId, String tankCode, String beginTime, String endTime) {
+    public PageVO<WeightChangeRecord> weighChangeRecordList(String compid, String stirId, String tankCode,
+                                                            String beginTime, String endTime, Integer page,
+                                                            Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<WeightChangeRecord> weightChangeRecords = tankMapper.weighChangeRecordList(compid, stirId, tankCode,
+                beginTime, endTime);
 
-        return tankMapper.weighChangeRecordList(compid, stirId, tankCode, beginTime, endTime);
+        PageInfo<WeightChangeRecord> pageInfo = new PageInfo<>(weightChangeRecords);
+        PageVO<WeightChangeRecord> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
     }
 
     /**
@@ -184,10 +199,17 @@ public class TankServiceImpl implements TankService {
      * 获取罐上料信息集合列表
      */
     @Override
-    public List<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid, String stirId,
-                                                                         String tankCode, String beginTime,
-                                                                         String endTime) {
-        return tankMapper.powderTankSafeStatusInforList(compid, stirId, tankCode, beginTime, endTime);
+    public PageVO<PowderTankSafeStatusInfor> powderTankSafeStatusInforList(String compid, String stirId,
+                                                                           String tankCode, String beginTime,
+                                                                           String endTime, Integer page,
+                                                                           Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<PowderTankSafeStatusInfor> powderTankSafeStatusInfors = tankMapper.powderTankSafeStatusInforList(compid,
+                stirId, tankCode, beginTime, endTime);
+        PageInfo<PowderTankSafeStatusInfor> pageInfo = new PageInfo<>(powderTankSafeStatusInfors);
+        PageVO<PowderTankSafeStatusInfor> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
     }
 
     /**
@@ -205,9 +227,17 @@ public class TankServiceImpl implements TankService {
      * 罐校准历史记录集合列表
      */
     @Override
-    public List<PowderTankCalibration> powderTankCalibrationList(String compid, String stirId,
-                                                                 String tankCode, String beginTime, String endTime) {
-        return tankMapper.powderTankCalibrationList(compid,stirId,tankCode, beginTime, endTime);
+    public PageVO<PowderTankCalibration> powderTankCalibrationList(String compid, String stirId,
+                                                                   String tankCode, String beginTime, String endTime,
+                                                                   Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<PowderTankCalibration> powderTankCalibrations = tankMapper.powderTankCalibrationList(compid, stirId,
+                tankCode, beginTime, endTime);
+
+        PageInfo<PowderTankCalibration> pageInfo = new PageInfo<>(powderTankCalibrations);
+        PageVO<PowderTankCalibration> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
     }
 
     /**
@@ -223,8 +253,16 @@ public class TankServiceImpl implements TankService {
      * 罐报警集合列表
      */
     @Override
-    public List<PowderTankWarn> powderTankWarnList(String compid,String stirId,String tankCode, String beginTime, String endTime) {
-        return tankMapper.powderTankWarnList(compid,stirId,tankCode, beginTime, endTime);
+    public PageVO<PowderTankWarn> powderTankWarnList(String compid, String stirId, String tankCode, String beginTime,
+                                                     String endTime, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<PowderTankWarn> powderTankWarns = tankMapper.powderTankWarnList(compid, stirId, tankCode, beginTime,
+                endTime);
+
+        PageInfo<PowderTankWarn> pageInfo = new PageInfo<>(powderTankWarns);
+        PageVO<PowderTankWarn> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
     }
 
     /**
@@ -274,6 +312,39 @@ public class TankServiceImpl implements TankService {
     @Override
     public void tankCalibration(String compid, String stirId, String tankCode, Integer weight) {
         //此处调用仓罐校准的存储过程
+    }
+
+    @Override
+    public PowderTankWarnCountVO powderTankWarnCount(String compid, String stirId, String tankCode,
+                                                     String beginTime, String endTime) {
+
+        PowderTankWarnCountVO powderTankWarnCountVO = new PowderTankWarnCountVO();
+        List<PowderTankWarn> powderTankWarns = tankMapper.powderTankWarnList(compid, stirId, tankCode, beginTime,
+                endTime);
+
+        //统计一共有多少种报警类型
+        for (PowderTankWarn powderTankWarn : powderTankWarns) {
+            switch (powderTankWarn.getWarnType()) {
+                case 0:
+                    powderTankWarnCountVO.setNormalNum(powderTankWarnCountVO.getNormalNum() + 1);
+                    break;
+                case 1:
+                    powderTankWarnCountVO.setHighLevelNum(powderTankWarnCountVO.getHighLevelNum() + 1);
+                    break;
+                case 2:
+                    powderTankWarnCountVO.setLowLevelNum(powderTankWarnCountVO.getLowLevelNum() + 1);
+                    break;
+                case 3:
+                    powderTankWarnCountVO.setEmptyNum(powderTankWarnCountVO.getEmptyNum() + 1);
+                    break;
+                case 4:
+                    powderTankWarnCountVO.setMachineErrorNum(powderTankWarnCountVO.getMachineErrorNum() + 1);
+                    break;
+                case 5:
+                    powderTankWarnCountVO.setOtherNum(powderTankWarnCountVO.getOtherNum() + 1);
+            }
+        }
+        return powderTankWarnCountVO;
     }
 
     //获取当前时间并转换格式
