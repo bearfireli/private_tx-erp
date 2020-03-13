@@ -891,8 +891,24 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             int queryType = 2;
             QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
             if (queryTime != null) {
-                endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
-                beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                /*对厦门海投站，进行和个性化修改，因为这个站是查询上个月的时间*/
+                if (compid.equals("68")){
+                    Date time = null;
+                    try {
+                        time = sdf.parse(beginTime);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    endTime =beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                    Calendar cal = Calendar.getInstance();
+                    assert time != null;
+                    cal.setTime(time);
+                    cal.add(Calendar.MONTH, -1);
+                    beginTime =sdf.format(cal.getTime()) + " " + queryTime.getQueryStartTime();
+                }else{
+                    endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
+                    beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                }
             } else {
                 endTime = endTime.substring(0, 8) + "01 00:00:00";
                 beginTime = beginTime.substring(0, 8) + "01 00:00:01";
