@@ -248,10 +248,12 @@
         vm.VehicleID vehicleId,
         vm.WeightFang weightFang,
         dd.PI_TypeName weightTypeName,
-        us.empname empName
+        us.empname empName,
+        sm.BuilderName builderName
         from VM_VehicleWeight vm
         left join User_employee us on vm.compid = us.compid and vm.OPER1 =us.OpId
         left join PT_TaskPlan tp on vm.compid = tp.compid and tp.TaskId = vm.TaskId
+        left join  SM_BuilderInfo  sm on tp.BuilderCode =sm.BuilderCode and tp.compid =sm.compid
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
         left join DD_PublicInfo dd on dd.PI_Class ='53' and vm.WeightType =dd.PI_Values
         and vm.compid =dd.compid
@@ -262,8 +264,8 @@
         <if test="eppCode != null and eppCode != ''">
             and tp.eppCode = #{eppCode}
         </if>
-        <if test="empNameb != null and empNameb != ''">
-            and us.empname like '%'+#{empNameb}+'%'
+        <if test="empName != null and empName != ''">
+            and us.empname like '%'+#{empName}+'%'
         </if>
         <if test="beginTime != null and beginTime != ''">
             and vm.SecondTime <![CDATA[ >= ]]>  #{beginTime}

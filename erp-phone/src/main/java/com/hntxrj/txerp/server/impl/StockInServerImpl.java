@@ -59,7 +59,7 @@ public class StockInServerImpl implements StockInServer {
      * srqq 材料过磅  下拉
      *
      * @param id       1 联系人下拉 MP_Supplier   2  过磅员查询 User_employee 3 运输商查询
-     *                这个表  MP_Forwarder 4 入库库位  MP_Stock 5 材料名称    V_MatCodeToName 6 供货商名称 MP_Supplier
+     *                 这个表  MP_Forwarder 4 入库库位  MP_Stock 5 材料名称    V_MatCodeToName 6 供货商名称 MP_Supplier
      * @param sqlwhere 查询条件
      * @param compid   企业id
      * @param opid     @return json
@@ -172,7 +172,6 @@ public class StockInServerImpl implements StockInServer {
         List<WeightMatNameVO> stockInWeighmatNsVOS = stockInWeighmatNsMapper.getWeightByMat(empName, compid, vehicleId,
                 stoName, supName, beginTime, endTime, page, pageSize);
         for (WeightMatNameVO raw : stockInWeighmatNsVOS) {
-            raw.setTlWeight(raw.getTlWeight() / 1000);
             if (!"G".equals(raw.getMatParentCode()) && !"S".equals(raw.getMatParentCode())) {
                 raw.setProportion(0.0);
             }
@@ -205,10 +204,6 @@ public class StockInServerImpl implements StockInServer {
         PageHelper.startPage(page, pageSize);
         List<WeightVechicIdVO> stockInWeighVehicleIdVOS = stockInWeighmatNsMapper.getWeightByVehicleId(empName,
                 compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
-        for (WeightVechicIdVO raw : stockInWeighVehicleIdVOS) {
-            raw.setTlWeight(raw.getTlWeight() / 1000);
-            raw.setProportion(raw.getProportion() / 1000);
-        }
         PageInfo<WeightVechicIdVO> pageInfo = new PageInfo<>(stockInWeighVehicleIdVOS);
         PageVO<WeightVechicIdVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -246,10 +241,6 @@ public class StockInServerImpl implements StockInServer {
                     stoName, supName, beginTime, endTime, page, pageSize);
         }
 
-        for (WeightSupNameVO raw : stockInWeighSupNameVOS) {
-            raw.setTlWeight(raw.getTlWeight() / 1000);
-            raw.setProportion(raw.getProportion() / 1000);
-        }
         PageInfo<WeightSupNameVO> pageInfo = new PageInfo<>(stockInWeighSupNameVOS);
         PageVO<WeightSupNameVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -277,11 +268,6 @@ public class StockInServerImpl implements StockInServer {
         PageHelper.startPage(page, pageSize);
         List<WeightStorageVO> stockInWeighStorageVOS = stockInWeighmatNsMapper.getWeightBySupName(empName,
                 compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
-        for (WeightStorageVO raw : stockInWeighStorageVOS) {
-            raw.setTlWeight(raw.getTlWeight() / 1000);
-            raw.setProportion(raw.getProportion() / 1000);
-
-        }
         PageInfo<WeightStorageVO> pageInfo = new PageInfo<>(stockInWeighStorageVOS);
         PageVO<WeightStorageVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -309,10 +295,6 @@ public class StockInServerImpl implements StockInServer {
         PageHelper.startPage(page, pageSize);
         List<WeightEmpNameVO> stockInWeighEmpNameVOS = stockInWeighmatNsMapper.getWeightByEmpName(empName,
                 compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
-        for (WeightEmpNameVO raw : stockInWeighEmpNameVOS) {
-            raw.setTlWeight(raw.getTlWeight() / 1000);
-            raw.setProportion(raw.getProportion() / 1000);
-        }
         PageInfo<WeightEmpNameVO> pageInfo = new PageInfo<>(stockInWeighEmpNameVOS);
         PageVO<WeightEmpNameVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -341,11 +323,6 @@ public class StockInServerImpl implements StockInServer {
         PageHelper.startPage(page, pageSize);
         List<WeightSynthesizeVO> stockInWeighmessageVOS = stockInWeighmatNsMapper.getSynthesizeByMat(empName,
                 compid, vehicleId, stoName, supName, beginTime, endTime, page, pageSize);
-        for (WeightSynthesizeVO raw : stockInWeighmessageVOS) {
-            raw.setTlWeight(raw.getTlWeight() / 1000);
-
-
-        }
 
         PageInfo<WeightSynthesizeVO> pageInfo = new PageInfo<>(stockInWeighmessageVOS);
         PageVO<WeightSynthesizeVO> pageVO = new PageVO<>();
@@ -385,9 +362,8 @@ public class StockInServerImpl implements StockInServer {
         List<WeightMatParentNameVO> weightMatParentNameVOList = stockInWeighmatNsMapper.getWeightByMatParent(compid,
                 beginTime, endTime);
         for (WeightMatParentNameVO weightMatParentNameVO : weightMatParentNameVOList) {
-            weightMatParentNameVO.setTlWeight(weightMatParentNameVO.getTlWeight() / 1000);
+            weightMatParentNameVO.setTlWeight(weightMatParentNameVO.getTlWeight()/1000);
         }
-
         return weightMatParentNameVOList;
     }
 

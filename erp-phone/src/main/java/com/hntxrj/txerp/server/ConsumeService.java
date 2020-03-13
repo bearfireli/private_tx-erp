@@ -224,10 +224,10 @@ public interface ConsumeService {
      * 查询生产材料详细名称
      *
      * @param compid 企业id
-     * @param stirid  线号
+     * @param stirId  线号
      * @return 查询材料名
      */
-    PageVO<StockVO> getProductDetail(String compid, Integer stirid);
+    PageVO<StockVO> getProductDatail(String compid, Integer stirId);
 
     /**
      * 获取指定时间的超差盘数

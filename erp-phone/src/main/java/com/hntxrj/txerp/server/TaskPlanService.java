@@ -175,6 +175,14 @@ public interface TaskPlanService {
     List<ProductDriverListvo> getProductDriverShiftLED(String compid);
 
     /**
+     * 司机App中的司机排班LED（老版本）
+     *
+     * @param compid 企业id
+     * @return 司机排班LED
+     */
+    List<ProductDriverLEDListVO> getProductDriverShiftLEDOld(String compid);
+
+    /**
      * 司机排班列表信息（老版本）
      *
      * @param compid       企业ｉｄ

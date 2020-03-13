@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.entity.TaskPlan;
+import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
@@ -36,6 +37,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final SystemVarInitMapper systemVarInitMapper;
     private final ConstructionMapper constructionMapper;
     private StirInfoSetServiceImpl stirInfoSetMapper;
+    private final MsgService msgService;
+
+    private final MsgMapper msgMapper;
     @Resource
     private RedisTemplate redisTemplate;
 
@@ -43,7 +47,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository,
                                StockMapper stockMapper, ConcreteMapper concreteMapper,
                                PublicInfoMapper publicInfoMapper, SystemVarInitMapper systemVarInitMapper,
-                               ConstructionMapper constructionMapper, StirInfoSetServiceImpl stirInfoSetMapper) {
+                               ConstructionMapper constructionMapper, StirInfoSetServiceImpl stirInfoSetMapper,
+                               MsgService msgService, MsgMapper msgMapper) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
@@ -52,6 +57,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         this.systemVarInitMapper = systemVarInitMapper;
         this.constructionMapper = constructionMapper;
         this.stirInfoSetMapper = stirInfoSetMapper;
+        this.msgService = msgService;
+        this.msgMapper = msgMapper;
     }
 
     @Override
@@ -114,7 +121,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     @Override
-    public void addTaskPlan(TaskPlan taskPlan,String type) throws ErpException {
+    public void addTaskPlan(TaskPlan taskPlan, String type) throws ErpException {
         if (StringUtils.isEmpty(taskPlan.getCompid())) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_COMPID);
         }
@@ -136,7 +143,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (type.equals("1")) {
             /* type 下任务单标识  1 工地端 ，0 手机端*/
             taskPlan.setClientType(1);
-        }else {
+        } else {
             taskPlan.setClientType(0);
         }
 
@@ -186,6 +193,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlan.setAdjustmentTime(taskPlan.getPreTime());
         try {
             taskPlanRepository.save(taskPlan);
+            int typeId = 1;
+            List<RecipientVO> recipoentList = msgMapper.getRecipientList(taskPlan.getCompid(), typeId);
+            for (RecipientVO r : recipoentList) {
+                SendmsgVO sendmsgVO = new SendmsgVO();
+                sendmsgVO.setSyncOtherMachine(2);
+                sendmsgVO.setToAccount(r.getUid().toString());
+                sendmsgVO.setMsgLifeTime(7);
+                sendmsgVO.setMsgContent("有新添加的任务单，请审核!");
+                msgService.sendMsg(sendmsgVO);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -197,6 +214,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public void verifyTaskPlan(String taskId, String compid, Integer verifyStatus) throws ErpException {
         try {
             taskPlanMapper.verifyTaskPlan(taskId, compid, verifyStatus, new Date());
+            if (verifyStatus == 1) {
+                int typeId = 2;
+                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
+                for (RecipientVO r : recipoentList) {
+                    SendmsgVO sendmsgVO = new SendmsgVO();
+                    sendmsgVO.setSyncOtherMachine(2);
+                    sendmsgVO.setToAccount(r.getUid().toString());
+                    sendmsgVO.setMsgLifeTime(7);
+                    String msgContent = "任务单：【" + taskId + "】已审核，请开配比。";
+                    sendmsgVO.setMsgContent(msgContent);
+                    msgService.sendMsg(sendmsgVO);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.VERIFY_TASK_ERROR);
@@ -569,6 +599,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         DriverWaitLEDVO driverWaitLEDVO = systemVarInitMapper.getDriverWaitLED(compid);
         if (driverWaitLEDVO == null) {
             driverWaitLEDVO = new DriverWaitLEDVO();
+            driverWaitLEDVO.setIsShow(false);
         }
         //获取所有等待生产的车辆的集合
         List<ProductDriverLEDVo> waitDriverShiftLED =
@@ -612,6 +643,27 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
 
         return ProductDriverList;
+    }
+
+
+    @Override
+    public List<ProductDriverLEDListVO> getProductDriverShiftLEDOld(String compid) {
+        List<ProductDriverLEDListVO> list = new ArrayList<>();
+
+        List<StirIdVO> stirIds = stockMapper.getStirIds(compid);
+        for (StirIdVO stirId : stirIds) {
+            ProductDriverLEDListVO productDriverLEDListVO = new ProductDriverLEDListVO();
+            productDriverLEDListVO.setStirID(stirId.getStirId());
+            productDriverLEDListVO.setStirName(stirId.getStirName());
+            List<ProductDriverLEDVo> productDriverShiftLED = taskPlanMapper.getProductDriverShiftLED(compid,
+                    stirId.getStirId(), 3);
+            productDriverLEDListVO.setCars(productDriverShiftLED);
+
+            list.add(productDriverLEDListVO);
+        }
+        return list;
+
+
     }
 
     /**
@@ -694,12 +746,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     /**
      * 查询司机
      *
-     * @param compid 　企业id
+     * @param compid     　企业id
      * @param driverName 司机名称
      */
     @Override
-    public PageVO<PersonalNameVO> getPersonalName(String compid,String driverName) {
-        List<PersonalNameVO> sendCarList = taskPlanMapper.getPersonalName(compid,driverName);
+    public PageVO<PersonalNameVO> getPersonalName(String compid, String driverName) {
+        List<PersonalNameVO> sendCarList = taskPlanMapper.getPersonalName(compid, driverName);
         PageInfo<PersonalNameVO> pageInfo = new PageInfo<>(sendCarList);
         PageVO<PersonalNameVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -839,8 +891,24 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             int queryType = 2;
             QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
             if (queryTime != null) {
-                endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
-                beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                /*对厦门海投站，进行和个性化修改，因为这个站是查询上个月的时间*/
+                if (compid.equals("68")){
+                    Date time = null;
+                    try {
+                        time = sdf.parse(beginTime);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    endTime =beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                    Calendar cal = Calendar.getInstance();
+                    assert time != null;
+                    cal.setTime(time);
+                    cal.add(Calendar.MONTH, -1);
+                    beginTime = sdf.format(cal.getTime()).substring(0,8)+ queryTime.getQueryStartTime();
+                }else{
+                    endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
+                    beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                }
             } else {
                 endTime = endTime.substring(0, 8) + "01 00:00:00";
                 beginTime = beginTime.substring(0, 8) + "01 00:00:01";

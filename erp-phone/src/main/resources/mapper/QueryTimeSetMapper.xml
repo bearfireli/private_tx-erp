@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.QueryTimeSetMapper">
     <!--添加默认时间表-->
-    <insert id="insetqueryTimeSet"  useGeneratedKeys="true">
+    <insert id="insetQueryTimeSet"  useGeneratedKeys="true">
         insert into systime_querytimeset
         (compid,
         query_name,
@@ -16,7 +16,7 @@
         )
     </insert>
     <!--删除时间表-->
-    <delete id="deletequeryTimeSet">
+    <delete id="deleteQueryTimeSet">
         delete from systime_querytimeset where compid=#{compid} and query_name =#{queryName}
     </delete>
     <!--查询默认时间表-->

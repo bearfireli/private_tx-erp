@@ -328,7 +328,7 @@
          where compid=#{compid}
          and ContractUID=#{contractUid}
          and CContractCode=#{contractDetailCode}
-         and PPCode=#{pPCode}
+         and PPCode=#{ppCode}
     </select>
 
     <!--查询泵车列表-->
