@@ -131,7 +131,7 @@
     </dependencies>
 
     <build>
-        <finalName>erp-base</finalName>
+        <finalName>erp-tank</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
