@@ -172,7 +172,7 @@ public interface TankService {
      * @param tankCode 罐id
      * @param weight   校准重量
      */
-    void tankCalibration(String compid, String stirId, String tankCode, Integer weight);
+    void tankCalibration(String compid, String stirId, String tankCode, Double weight);
 
 
     /**

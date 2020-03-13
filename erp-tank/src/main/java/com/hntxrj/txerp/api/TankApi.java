@@ -288,7 +288,7 @@ public class TankApi {
      * @param weight   校准重量
      */
     @PostMapping("/tankCalibration")
-    public ResultVO tankCalibration(String compid, String stirId, String tankCode, Integer weight) {
+    public ResultVO tankCalibration(String compid, String stirId, String tankCode, Double weight) {
         tankService.tankCalibration(compid, stirId, tankCode, weight);
         return ResultVO.create();
     }

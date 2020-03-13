@@ -310,7 +310,7 @@ public class TankServiceImpl implements TankService {
      * @param weight   校准重量
      */
     @Override
-    public void tankCalibration(String compid, String stirId, String tankCode, Integer weight) {
+    public void tankCalibration(String compid, String stirId, String tankCode, Double weight) {
         //此处调用仓罐校准的存储过程
     }
 

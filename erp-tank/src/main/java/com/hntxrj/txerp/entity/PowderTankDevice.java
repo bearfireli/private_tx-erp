@@ -1,6 +1,5 @@
 package com.hntxrj.txerp.entity;
 
-import com.sun.org.apache.xpath.internal.operations.Equals;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
