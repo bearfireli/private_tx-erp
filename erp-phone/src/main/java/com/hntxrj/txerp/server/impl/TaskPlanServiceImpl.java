@@ -904,7 +904,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     assert time != null;
                     cal.setTime(time);
                     cal.add(Calendar.MONTH, -1);
-                    beginTime =sdf.format(cal.getTime()) + " " + queryTime.getQueryStartTime();
+                    beginTime = sdf.format(cal.getTime()).substring(0,8)+ queryTime.getQueryStartTime();
                 }else{
                     endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
                     beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
