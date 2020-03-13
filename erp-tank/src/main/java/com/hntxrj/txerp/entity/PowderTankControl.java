@@ -50,10 +50,11 @@ public class PowderTankControl implements Serializable {
 
 }
 
-class PowderTankControlUPK implements Serializable{
+class PowderTankControlUPK implements Serializable {
     private String compid;
     private String stirId;
     private Integer tankCode;
+    private String createTime;
 
     @Override
     public boolean equals(Object o) {
@@ -62,11 +63,12 @@ class PowderTankControlUPK implements Serializable{
         PowderTankControlUPK that = (PowderTankControlUPK) o;
         return Objects.equals(compid, that.compid) &&
                 Objects.equals(stirId, that.stirId) &&
-                Objects.equals(tankCode, that.tankCode);
+                Objects.equals(tankCode, that.tankCode) &&
+                Objects.equals(createTime, that.createTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(compid, stirId, tankCode);
+        return Objects.hash(compid, stirId, tankCode, createTime);
     }
 }

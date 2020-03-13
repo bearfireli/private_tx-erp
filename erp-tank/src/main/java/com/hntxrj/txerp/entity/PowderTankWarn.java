@@ -46,10 +46,11 @@ public class PowderTankWarn implements Serializable {
     private int upDownMark;         //网络同步标识
 }
 
-class ptPowderTankWarnUPK implements Serializable{
+class ptPowderTankWarnUPK implements Serializable {
     private String compid;
     private String stirId;
     private Integer tankCode;
+    private String createTime;
 
     @Override
     public boolean equals(Object o) {
@@ -58,11 +59,12 @@ class ptPowderTankWarnUPK implements Serializable{
         ptPowderTankWarnUPK that = (ptPowderTankWarnUPK) o;
         return Objects.equals(compid, that.compid) &&
                 Objects.equals(stirId, that.stirId) &&
-                Objects.equals(tankCode, that.tankCode);
+                Objects.equals(tankCode, that.tankCode) &&
+                Objects.equals(createTime, that.createTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(compid, stirId, tankCode);
+        return Objects.hash(compid, stirId, tankCode, createTime);
     }
 }

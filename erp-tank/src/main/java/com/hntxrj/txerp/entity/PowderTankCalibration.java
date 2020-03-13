@@ -63,6 +63,7 @@ class PowderTankCalibrationUPK implements Serializable {
     private String compid;
     private String stirId;
     private Integer tankCode;
+    private String createTime;
 
     @Override
     public boolean equals(Object o) {
@@ -71,11 +72,12 @@ class PowderTankCalibrationUPK implements Serializable {
         PowderTankCalibrationUPK that = (PowderTankCalibrationUPK) o;
         return Objects.equals(compid, that.compid) &&
                 Objects.equals(stirId, that.stirId) &&
-                Objects.equals(tankCode, that.tankCode);
+                Objects.equals(tankCode, that.tankCode)&&
+                Objects.equals(createTime,that.createTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(compid, stirId, tankCode);
+        return Objects.hash(compid, stirId, tankCode,createTime);
     }
 }
