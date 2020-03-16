@@ -144,13 +144,13 @@ public class UserController {
     //登录接口
     @PostMapping("/login")
     public String login(String phone,
-                        String password,
+                        String password,String version,
                         HttpServletRequest request)
             throws ErpException {
         log.info("【登录v1】phone={}, password={}", phone, password);
         //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
         String loginUa = request.getHeader("loginUa");
-        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request, loginUa),
+        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request, loginUa, version),
                 SerializerFeature.DisableCircularReferenceDetect));
         return JSON.toJSONString(resultVO);
     }
