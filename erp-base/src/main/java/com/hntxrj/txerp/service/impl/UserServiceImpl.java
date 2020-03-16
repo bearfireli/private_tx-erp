@@ -101,7 +101,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      */
     @Override
     public UserVO login(String phoneNumber, String password,
-                        HttpServletRequest request, String loginUa) throws ErpException {
+                        HttpServletRequest request, String loginUa,String version) throws ErpException {
 
         User user = userRepository.findByPhone(phoneNumber);
 
@@ -140,7 +140,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
 
         UserLogin userLogin = createUserLogin(user.getUid(), IpUtil.getIp(request), loginUa);
-
+        if (version!=null){
+            userLogin.setLoginVersion(version);
+            userLogin = userLoginRepository.save(userLogin);
+        }
         UserVO userVO = userToUserVO(user, true);
         QUserAuth qUserAuth = QUserAuth.userAuth;
         List<UserAuth> userAuths = queryFactory.selectFrom(qUserAuth).where(qUserAuth.user.uid.eq(

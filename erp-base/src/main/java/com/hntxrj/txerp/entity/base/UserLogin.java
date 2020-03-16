@@ -28,5 +28,5 @@ public class UserLogin implements Serializable {
     private Date createTime;
     private Date expireTime = new Date(0);
     private String loginUa;
-
+    private String loginVersion;
 }

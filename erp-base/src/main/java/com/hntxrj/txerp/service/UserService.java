@@ -30,7 +30,7 @@ public interface UserService {
      * @throws ErpException throw ERP EXCEPTION
      */
     UserVO login(String phoneNumber, String password,
-                 HttpServletRequest request,String loginUa) throws ErpException;
+                 HttpServletRequest request,String loginUa,String version) throws ErpException;
 
     UserVO login(String value, String type, String loginIp,String loginUa) throws ErpException;
 
