@@ -122,7 +122,7 @@
 
     <!--查询供应商供应的材料-->
     <select id="getMatNameBySupName" resultType="com.hntxrj.txerp.vo.WeightMatParentNameVO">
-        select dp.PI_TypeName as matName,sum(si.ClWeight) AS tlWeight,COUNT(*) AS VCount
+        select dp.PI_TypeName as matName,sum(si.ClWeight) AS tlWeight,COUNT(*) AS vehicleCount
         from MP_StockIn si
         left join MP_MaterialInfor mt on si.compid = mt.compid and si.MatCode = mt.MatCode
         left join DD_PublicInfo dp on mt.MatParent = dp.PI_Values and si.compid = dp.compid and PI_Class = 64
