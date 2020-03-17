@@ -229,4 +229,14 @@ public interface StockMapper {
      * @param stoName 库位名称
      */
     List<StockVO> getStockList(String compid, String stoName);
+
+    /**
+     * 根据供应商查询此供应商供应的材料
+     *
+     * @param compid    企业id
+     * @param supCode   供应商代号
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     */
+    List<WeightMatParentNameVO> getMatNameBySupName(String compid, String supCode, String beginTime, String endTime);
 }
