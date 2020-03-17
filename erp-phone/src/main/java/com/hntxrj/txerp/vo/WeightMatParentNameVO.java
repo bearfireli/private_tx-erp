@@ -11,6 +11,6 @@ public class WeightMatParentNameVO {
     /*入库量*/
     private double tlWeight;
     /*车数*/
-    private int vCount;
+    private int vehicleCount;
 
 }
