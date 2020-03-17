@@ -235,6 +235,13 @@ public class StockInServerImpl implements StockInServer {
             PageHelper.startPage(page, pageSize);
             stockInWeighSupNameVOS = stockInWeighmatNsMapper.getWeightByStoNameNew(empName, compid, vehicleId,
                     stoName, supName, beginTime, endTime, page, pageSize);
+            //根据供应商名称查询此供应商供应的材料名称
+            for (WeightSupNameVO stockInWeighSupNameVO : stockInWeighSupNameVOS) {
+                List<WeightMatParentNameVO> matNameBySupName = stockInWeighmatNsMapper.getMatNameBySupName(compid,
+                        stockInWeighSupNameVO.getSupCode(),
+                        beginTime, endTime);
+                stockInWeighSupNameVO.setMatNameVOList(matNameBySupName);
+            }
         } else {
             PageHelper.startPage(page, pageSize);
             stockInWeighSupNameVOS = stockInWeighmatNsMapper.getWeightByStoName(empName, compid, vehicleId,
@@ -362,7 +369,7 @@ public class StockInServerImpl implements StockInServer {
         List<WeightMatParentNameVO> weightMatParentNameVOList = stockInWeighmatNsMapper.getWeightByMatParent(compid,
                 beginTime, endTime);
         for (WeightMatParentNameVO weightMatParentNameVO : weightMatParentNameVOList) {
-            weightMatParentNameVO.setTlWeight(weightMatParentNameVO.getTlWeight()/1000);
+            weightMatParentNameVO.setTlWeight(weightMatParentNameVO.getTlWeight() / 1000);
         }
         return weightMatParentNameVOList;
     }

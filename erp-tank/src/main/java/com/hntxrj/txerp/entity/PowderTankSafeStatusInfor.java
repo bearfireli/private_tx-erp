@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Data
@@ -61,6 +62,10 @@ public class PowderTankSafeStatusInfor implements Serializable {
     private boolean upDown;                 //网络上传表示
     @Column(name = "updownmark")
     private int upDownMark;                 //网络同步标识
+    @Column(name = "current_weight")
+    private BigDecimal currentWeight;       //当前重量
+    @Column(name = "feed_quantity")
+    private BigDecimal feedQuantity;        //补料数量
 
 
 }
