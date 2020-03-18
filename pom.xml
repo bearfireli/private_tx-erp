@@ -20,6 +20,7 @@
         <module>erp-driver</module>
         <module>erp-core</module>
         <module>erp-phone</module>
+        <module>erp-tank</module>
     </modules>
 
     <properties>

@@ -37,7 +37,7 @@ public interface FormulaMapper {
     /*从LM_TaskTheoryFormula表中获取配比详细信息*/
     Map<String, Object> getFormulaInfo(String compid, String taskId, String stirId);
 
-    /*从LM_TaskProduceFormula表中获取配比详细信息*/
+    /*从LM_TaskUnrealFormula表中获取配比详细信息*/
     Map<String, Object> getProduceFormulaInfo(String compid, String taskId, String stirId);
 
 

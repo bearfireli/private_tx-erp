@@ -49,4 +49,5 @@ public class TaskSaleInvoiceListVO {
     private double saleNum;
     private  String vehicleStatus;
     private  String attribute;
+    private String leaveTime;       //离厂时间
 }

@@ -215,7 +215,7 @@
                WR7,
                WR8,
                VerifyStatus
-        from LM_TaskProduceFormula
+        from LM_TaskUnrealFormula
         where Taskid = #{taskId}
           and compid = #{compid}
           and StirId = #{stirId}
