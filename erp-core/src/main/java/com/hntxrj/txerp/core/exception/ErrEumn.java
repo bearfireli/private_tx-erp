@@ -225,17 +225,13 @@ public enum ErrEumn {
     GROUP_TYPE_NULL_EOORO(100302, "群组类型不能为空"),
     GROUP_ID_NULL_ERROR(100303, "群组账号不能为空"),
 
+
     TANK_ADD_ERROR(100401, "罐信息添加失败"),
     STIRID_NULL_ERROR(100402,"请输入线号"),
     TANK_NULL_ERROR(100403, "没有此罐号"),
     PASSWORD_ERROR(100404, "输入密码错误"),
 
-    EXPIRE_TIME_OVER(100501, "您的使用权限已到期"),
-
-
-
-
-
+   
     ;
 
 
