@@ -54,4 +54,9 @@ public interface AccountService {
      * @return 请求结果
      */
     com.alibaba.fastjson.JSONObject kick(IMUserVO imUserVO) throws ErpException;
+
+    /**
+     * 删除即时通讯中所有IM的用户
+     * */
+    void multiAccountDelete() throws ErpException;
 }

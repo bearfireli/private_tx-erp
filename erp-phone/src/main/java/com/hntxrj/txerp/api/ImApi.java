@@ -4,6 +4,7 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.im.AccountService;
 import com.hntxrj.txerp.im.FriendService;
 import com.hntxrj.txerp.vo.IMUserVO;
+import com.hntxrj.txerp.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,4 +44,15 @@ public class ImApi {
     public void friendImport(String userID, Integer eid) {
         friendService.friendImport(userID, eid);
     }
+
+
+    /**
+     * 删除即时通讯中所有IM的用户
+     * */
+    @PostMapping("multiAccountDelete")
+    public ResultVO multiAccountDelete() throws ErpException {
+        accountService.multiAccountDelete();
+        return ResultVO.create();
+    }
+
 }

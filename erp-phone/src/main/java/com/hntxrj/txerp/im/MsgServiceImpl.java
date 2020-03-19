@@ -7,7 +7,6 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.TLSSigAPIv2;
 import com.hntxrj.txerp.vo.SendmsgVO;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
@@ -26,12 +25,11 @@ public class MsgServiceImpl implements MsgService {
     @Value("${app.cloud.CommunicationUrl}")
     private String url;
     private static final MediaType _JSON = MediaType.parse("application/json; charset=utf-8");
-    private TLSSigAPIv2 tlsSigAPIv2;
     private String urlParams = "?sdkappid={{sdkappid}}&identifier=system&usersig={{usersig}}&random={{random}}&contenttype=json";
 
     @Autowired
     public MsgServiceImpl(@Value("${app.timsdk.sdkAppID}") Integer sdkAppId, @Value("${app.timsdk.key}") String key) {
-        tlsSigAPIv2 = new TLSSigAPIv2(sdkAppId, key);
+        TLSSigAPIv2 tlsSigAPIv2 = new TLSSigAPIv2(sdkAppId, key);
         urlParams = urlParams
                 .replace("{{sdkappid}}", String.valueOf(sdkAppId))
                 .replace("{{usersig}}", tlsSigAPIv2.genSig("system", (365 * 24 * 60 * 60)))
@@ -75,8 +73,7 @@ public class MsgServiceImpl implements MsgService {
         }
         //消息随机数
         jsonObject.put("MsgRandom",ImBaseData.getRandom());
-        Date date =new Date();
-        int time = (int) date.getTime();
+        int time = (int) (new Date().getTime()/1000);
         //消息时间戳
         jsonObject.put("MsgTimeStamp", time);
 
@@ -104,7 +101,6 @@ public class MsgServiceImpl implements MsgService {
             if (responseBody != null) {
                 String result = responseBody.string();
                 System.out.println(result);
-//                resultUserStates = JSONObject.parseObject(result, UserStateResult.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -144,9 +140,7 @@ public class MsgServiceImpl implements MsgService {
         //消息接收方
         String [] toAccountList =sendmsgVO.getToAccount().split(",");
         JSONArray array =new JSONArray();
-        for (int i =0;i<toAccountList.length;i++){
-            array.add(toAccountList[i]);
-        }
+        array.addAll(Arrays.asList(toAccountList));
         jsonObject.put("To_Account",array);
         //消息保存时长 （单位：秒）最长为7天（604800秒）
         //若设置该字段为0，则消息只发在线用户，不保存离线
