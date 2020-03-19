@@ -145,6 +145,12 @@ public class AccountServiceImpl implements AccountService {
                 i = 1;
             }
         }
+
+        //删除最后一批小于100人的用户
+        if (jsonArray.size() != 0) {
+            result.put("DeleteItem", jsonArray);
+            requestIMApi(interfaceUrl, "account_delete", result);
+        }
     }
 
     //请求腾讯云即时通讯IM的api的接口

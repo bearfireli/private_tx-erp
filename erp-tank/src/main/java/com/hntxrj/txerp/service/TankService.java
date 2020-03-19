@@ -14,11 +14,12 @@ public interface TankService {
 
     /**
      * 获取每个罐信息显示集合
-     *  @param compid    企业id
+     *
+     * @param compid    企业id
      * @param stirId    线号
      * @param beginTime 开始时间
      * @param endTime   结束时间
-     * @return
+     * @return 罐对象集合
      */
     List<PowderTankDevice> powderTanDeviceList(String compid, String stirId, String beginTime, String endTime);
 
