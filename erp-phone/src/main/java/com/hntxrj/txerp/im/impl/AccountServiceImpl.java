@@ -124,6 +124,35 @@ public class AccountServiceImpl implements AccountService {
         return requestIMApi(interfaceUrl, "kick", jsonObject);
     }
 
+    @Override
+    public void multiAccountDelete() throws ErpException {
+        JSONObject result = new JSONObject();
+        int i = 1;
+
+        JSONArray jsonArray = new JSONArray();
+        List<String> userList = getUserAll();
+        for (String uid : userList) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("UserID", uid);
+            jsonArray.add(jsonObject);
+            i++;
+            if (i >= 100) {
+                //调用腾讯云即时通讯IM批量导入用户的接口
+                result.put("DeleteItem", jsonArray);
+                JSONObject jsonObject1 = requestIMApi(interfaceUrl, "account_delete", result);
+                System.out.println(jsonObject1);
+                jsonArray = new JSONArray();
+                i = 1;
+            }
+        }
+
+        //删除最后一批小于100人的用户
+        if (jsonArray.size() != 0) {
+            result.put("DeleteItem", jsonArray);
+            requestIMApi(interfaceUrl, "account_delete", result);
+        }
+    }
+
     //请求腾讯云即时通讯IM的api的接口
     public JSONObject requestIMApi(String interfaceUrl, String method, JSONObject jsonObject) throws ErpException {
 

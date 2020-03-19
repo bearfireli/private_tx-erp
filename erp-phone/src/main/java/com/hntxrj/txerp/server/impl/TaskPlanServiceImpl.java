@@ -214,7 +214,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public void verifyTaskPlan(String taskId, String compid, Integer verifyStatus) throws ErpException {
         try {
             taskPlanMapper.verifyTaskPlan(taskId, compid, verifyStatus, new Date());
-            if (verifyStatus == 1) {
+
                 int typeId = 2;
                 List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
                 for (RecipientVO r : recipoentList) {
@@ -222,11 +222,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     sendmsgVO.setSyncOtherMachine(2);
                     sendmsgVO.setToAccount(r.getUid().toString());
                     sendmsgVO.setMsgLifeTime(7);
-                    String msgContent = "任务单：【" + taskId + "】已审核，请开配比。";
+                    String msgContent = "任务单：【" + taskId + "】审核状态修改成功";
+                    if (verifyStatus == 1) {
+                        msgContent = "任务单：【" + taskId + "】已审核，请开配比";
+                    } else if (verifyStatus==0) {
+                        msgContent = "任务单：【" + taskId + "】已取消审核";
+                    }
                     sendmsgVO.setMsgContent(msgContent);
                     msgService.sendMsg(sendmsgVO);
                 }
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.VERIFY_TASK_ERROR);

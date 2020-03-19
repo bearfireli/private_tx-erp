@@ -466,7 +466,12 @@ public class ContractServiceImp implements ContractService {
             sendmsgVO.setSyncOtherMachine(2);
             sendmsgVO.setToAccount(r.getUid().toString());
             sendmsgVO.setMsgLifeTime(7);
-            String  msgContent ="合同号：["+contractUid+"]已审核.";
+            String  msgContent ="合同号：["+contractUid+"]的审核状态修改成功";
+            if (verifyStatus == 1) {
+                 msgContent ="合同号：["+contractUid+"]已审核";
+            } else if (verifyStatus == 0) {
+                msgContent ="合同号：["+contractUid+"]已取消审核";
+            }
             sendmsgVO.setMsgContent(msgContent);
             msgService.sendMsg(sendmsgVO);
         }
