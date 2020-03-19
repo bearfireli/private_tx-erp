@@ -30,8 +30,9 @@ public class ImApi {
      * @param imUserVO 需要导入的用户对象
      */
     @PostMapping("/accountImport")
-    public void accountImport(IMUserVO imUserVO) throws ErpException {
+    public ResultVO accountImport(IMUserVO imUserVO) throws ErpException {
         accountService.accountImport(imUserVO);
+        return ResultVO.create();
     }
 
     /**
@@ -41,8 +42,9 @@ public class ImApi {
      * @param eid    用户所属企业
      */
     @PostMapping("/friendImport")
-    public void friendImport(String userID, Integer eid) {
+    public ResultVO friendImport(String userID, Integer eid) {
         friendService.friendImport(userID, eid);
+        return ResultVO.create();
     }
 
 
