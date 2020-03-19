@@ -142,7 +142,7 @@ public class ControllerAspect {
         String key = "expireTime" + compid;
         String value = redisTemplate.opsForValue().get(key);
         long expireTime;
-        if (value == null) {
+        if (value == null || "0".equals(value)) {
             expireTime = getExpireTime(compid);
             redisTemplate.opsForValue().set(key, String.valueOf(expireTime), 10, TimeUnit.MINUTES);
         } else {
@@ -156,12 +156,13 @@ public class ControllerAspect {
             resultVO.setCode(100501);
             resultVO.setMsg("您的使用权限已到期");
             assert response != null;
-            response.addHeader("Content-type", "text/html;charset=UTF-8");
+            response.addHeader("application/json", "text/html;charset=UTF-8");
             response.setHeader("Access-Control-Allow-Origin", "*");
             PrintWriter out = response.getWriter();
             out.append(JSON.toJSONString(resultVO));
             out.flush();
             out.close();
+            return null;
         }
         return joinPoint.proceed();
 
