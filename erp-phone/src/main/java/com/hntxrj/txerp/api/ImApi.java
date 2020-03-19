@@ -4,6 +4,7 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.im.AccountService;
 import com.hntxrj.txerp.im.FriendService;
 import com.hntxrj.txerp.vo.IMUserVO;
+import com.hntxrj.txerp.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +30,9 @@ public class ImApi {
      * @param imUserVO 需要导入的用户对象
      */
     @PostMapping("/accountImport")
-    public void accountImport(IMUserVO imUserVO) throws ErpException {
+    public ResultVO accountImport(IMUserVO imUserVO) throws ErpException {
         accountService.accountImport(imUserVO);
+        return ResultVO.create();
     }
 
     /**
@@ -40,7 +42,19 @@ public class ImApi {
      * @param eid    用户所属企业
      */
     @PostMapping("/friendImport")
-    public void friendImport(String userID, Integer eid) {
+    public ResultVO friendImport(String userID, Integer eid) {
         friendService.friendImport(userID, eid);
+        return ResultVO.create();
     }
+
+
+    /**
+     * 删除即时通讯中所有IM的用户
+     * */
+    @PostMapping("multiAccountDelete")
+    public ResultVO multiAccountDelete() throws ErpException {
+        accountService.multiAccountDelete();
+        return ResultVO.create();
+    }
+
 }
