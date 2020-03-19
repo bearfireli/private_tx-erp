@@ -24,7 +24,7 @@ public class SalesmanServiceImpl implements SalesmanService {
     @Override
     public PageVO<SalesmanDropDownVO> getSalesmanDropDown(String salesName, String compid,
                                                           Integer page, Integer pageSize) {
-        PageHelper.startPage(page, 100);
+        PageHelper.startPage(page, pageSize);
         List<SalesmanDropDownVO> salesmanDropDownVOS =
                 salesmanMapper.getSalesmanDropDown(salesName, compid, page, pageSize);
         PageInfo<SalesmanDropDownVO> pageInfo = new PageInfo<>(salesmanDropDownVOS);
