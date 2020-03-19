@@ -27,7 +27,6 @@
         tp.EPPCode,
         ei.EPPName,
         tp.BuilderCode,
-        dd.PI_TypeName AS stoneAskName,
         bi.BuilderName,
         Placing,
         ConcreteMark,
@@ -47,7 +46,6 @@
         and tp.compid =DD_PublicInfo_3.compid
         left join SM_EPPInfo ei on tp.EPPCode=ei.EPPCode and tp.compid=ei.compid
         left join SM_BuilderInfo bi on tp.BuilderCode = bi.BuilderCode and bi.compid=tp.compid
-        left join DD_PublicInfo dd on tp.StoneAsk =dd.PI_Values and dd.PI_Class ='31' and tp.compid =dd.compid
         left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
         and tp.compid = ps.compid
         where tp.DeleteMark = 0
@@ -77,7 +75,7 @@
         group by tp.compid, DD_PublicInfo_3.PI_TypeName, tp.TaskId, tp.CreateTime, tp.PreTime, tp.TaskOverTime,
         tp.PreNum,
         tp.ContractUID, tp.CContractCode, tp.TaskStatus, tp.VerifyStatus, tp.EPPCode, ei.EPPName,
-        tp.BuilderCode, dd.PI_TypeName, bi.BuilderName, Placing, ConcreteMark,tp.placeStyle,ps.PI_TypeName,
+        tp.BuilderCode, bi.BuilderName, Placing, ConcreteMark,tp.placeStyle,ps.PI_TypeName,
         tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute,tp.client_type
         order by tp.PreTime desc, tp.TaskId desc
     </select>

@@ -1,23 +1,28 @@
 package com.hntxrj.txerp.conf;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -33,6 +38,9 @@ public class ControllerAspect {
 
     @Value("${app.cloud.host}")
     private String url;
+
+    @Resource
+    private RedisTemplate<String, String> redisTemplate;
 
     private static Map<String, String> functionMap = new HashMap<>();
 
@@ -64,10 +72,9 @@ public class ControllerAspect {
 
     }
 
-    @Around("execution(* com.hntxrj.txerp.api.*.*(..))||execution(* com.hntxrj.txerp.controller.stock.StockController.getRealStock(..))")
+    @Around("execution(* com.hntxrj.txerp.api.*.*(..))||" +
+            "execution(* com.hntxrj.txerp.controller.stock.StockController.getRealStock(..))")
     private Object mappingAround(ProceedingJoinPoint joinPoint) throws Throwable {
-
-
         String functionName;  //拦截到的方法对应的中文名称
 
         String compid;  //公司代号
@@ -99,9 +106,66 @@ public class ControllerAspect {
                 }
             }
         }
-
-
         return joinPoint.proceed();
+    }
+
+
+    /**
+     * 拦截器，判断用户是否超出到期时间，如果超出到期时间，禁止访问
+     */
+    @Around("execution(* com.hntxrj.txerp.api.*.*(..))")
+    private Object getExpireTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        HttpServletResponse response = ((ServletRequestAttributes)
+                Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();
+
+        String compid;  //公司代号
+        Map<String, Object> map = new HashMap<>();
+
+        //   获取拦截方法的参数值   例：['01','P1910254685']
+        Object[] args = joinPoint.getArgs();
+
+        // 获取拦截方法的参数名 例：[compid,taskId]
+        String[] argNames = ((MethodSignature) joinPoint.getSignature()).getParameterNames();
+        //得到拦截方法的参数compid
+        if (args != null && args.length > 0) {// 无参数
+            for (int i = 0; i < args.length; i++) {
+                map.put(argNames[i], args[i]);
+            }
+        }
+        if (map.get("compid") == null) {
+            //说明请求的是公用接口，放行
+            return joinPoint.proceed();
+        }
+
+        compid = String.valueOf(map.get("compid"));
+        //向erp-base项目发送请求，获取当前企业的到期时间
+        String key = "expireTime" + compid;
+        String value = redisTemplate.opsForValue().get(key);
+        long expireTime;
+        if (value == null || "0".equals(value)) {
+            expireTime = getExpireTime(compid);
+            redisTemplate.opsForValue().set(key, String.valueOf(expireTime), 10, TimeUnit.MINUTES);
+        } else {
+            expireTime = Long.parseLong(value);
+        }
+        //获取当前时间
+        long nowTime = new Date().getTime();
+
+        if ((expireTime - nowTime) < 0) {
+            ResultVO resultVO = new ResultVO();
+            resultVO.setCode(100501);
+            resultVO.setMsg("您的使用权限已到期");
+            assert response != null;
+            response.addHeader("Content-type", "application/json; charset=utf-8");
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            PrintWriter out = response.getWriter();
+            out.append(JSON.toJSONString(resultVO));
+            out.flush();
+            out.close();
+            return null;
+        }
+        return joinPoint.proceed();
+
     }
 
 
@@ -126,6 +190,39 @@ public class ControllerAspect {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //向erp-base项目发送请求，获取当前企业的到期时间
+    private long getExpireTime(String enterprise) {
+        String baseUrl;
+        baseUrl = url + "/v1/project/getExpireTime";
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = new FormBody.Builder()
+                .add("pid", "2")
+                .add("token", "getExpireTime")
+                .build();
+        Request request = new Request.Builder()
+                .url(baseUrl)
+                .post(body)
+                .addHeader("enterprise", enterprise)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                JSONObject resultJSON = JSONObject.parseObject(result);
+                JSONObject data = (JSONObject) resultJSON.get("data");
+                if (data == null) {
+                    return 0;
+                }
+                return (long) data.get("expireTime");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
 }

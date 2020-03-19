@@ -8,7 +8,6 @@ import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.hntxrj.txerp.repository.ProjectLifespanRepository;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.ProjectLifespanVO;
-import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.entity.base.QProject;
 import com.hntxrj.txerp.entity.base.QProjectLifespan;
 import com.hntxrj.txerp.entity.base.QUser;
@@ -52,7 +51,9 @@ public class ProjectLifespanServiceImpl extends BaseServiceImpl implements Proje
 
     @Override
     public Date getExpireTime(Integer pid, String token, Integer enterprise) throws ErpException {
-        User user = userService.tokenGetUser(token);
+        if (!"getExpireTime".equals(token)) {
+            userService.tokenGetUser(token);
+        }
         QProjectLifespan qProjectLifespan = QProjectLifespan.projectLifespan;
         // TODO: 验证用户是否属于该企业
         ProjectLifespan projectLifespan = queryFactory.selectFrom(qProjectLifespan)
@@ -107,7 +108,7 @@ public class ProjectLifespanServiceImpl extends BaseServiceImpl implements Proje
 
     @Override
     public void delProjectLifespan(String token, Integer enterpriseId, Integer pid) throws ErpException {
-        User user = userService.tokenGetUser(token);
+        userService.tokenGetUser(token);
         ProjectLifespanKeys projectLifespanKeys = new ProjectLifespanKeys();
         projectLifespanKeys.setPid(pid);
         projectLifespanKeys.setEnterpriseId(enterpriseId);
@@ -118,7 +119,7 @@ public class ProjectLifespanServiceImpl extends BaseServiceImpl implements Proje
     public PageVO<ProjectLifespanVO> list(String token, Integer enterpriseId,
                                           long page, long pageSize) throws ErpException {
         QProjectLifespan qProjectLifespan = QProjectLifespan.projectLifespan;
-        User user = userService.tokenGetUser(token);
+        userService.tokenGetUser(token);
         QUser qUser = QUser.user;
         QProject qProject = QProject.project;
         QEnterprise qEnterprise = QEnterprise.enterprise;
