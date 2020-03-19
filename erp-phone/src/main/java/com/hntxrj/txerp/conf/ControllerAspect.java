@@ -156,7 +156,7 @@ public class ControllerAspect {
             resultVO.setCode(100501);
             resultVO.setMsg("您的使用权限已到期");
             assert response != null;
-            response.addHeader("application/json", "text/html;charset=UTF-8");
+            response.addHeader("Content-type", "application/json; charset=utf-8");
             response.setHeader("Access-Control-Allow-Origin", "*");
             PrintWriter out = response.getWriter();
             out.append(JSON.toJSONString(resultVO));
