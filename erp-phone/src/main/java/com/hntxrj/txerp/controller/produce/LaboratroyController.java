@@ -183,11 +183,11 @@ public class LaboratroyController {
                     sendmsgVO.setSyncOtherMachine(2);
                     sendmsgVO.setToAccount(r.getUid().toString());
                     sendmsgVO.setMsgLifeTime(7);
-                    String msgContent = "任务单号：["+typeId+"],["+stirid+"]号线配比状态修改成功";
+                    String msgContent = "任务单号：["+TaskId+"],["+stirid+"]号线配比状态修改成功";
                     if (verifystatus == 1) {
-                        msgContent ="任务单号：["+typeId+"],["+stirid+"]号线配比审核成功";
+                        msgContent ="任务单号：["+TaskId+"],["+stirid+"]号线配比审核成功";
                     } else if (verifystatus == 0) {
-                        msgContent ="任务单号：["+typeId+"],["+stirid+"]号线配比取消审核成功";
+                        msgContent ="任务单号：["+TaskId+"],["+stirid+"]号线配比取消审核成功";
                     }
 
                     sendmsgVO.setMsgContent(msgContent);
@@ -407,7 +407,7 @@ public class LaboratroyController {
                     sendmsgVO.setSyncOtherMachine(2);
                     sendmsgVO.setToAccount(r.getUid().toString());
                     sendmsgVO.setMsgLifeTime(7);
-                    String  msgContent ="任务单号：["+typeId+"],["+stirid+"]号线配比编辑成功.";
+                    String  msgContent ="任务单号：["+taskid+"],["+stirid+"]号线配比编辑成功.";
                     sendmsgVO.setMsgContent(msgContent);
                     msgService.sendMsg(sendmsgVO);
                 }
