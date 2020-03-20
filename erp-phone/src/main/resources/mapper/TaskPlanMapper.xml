@@ -19,7 +19,7 @@
         tp.PreTime,
         tp.TaskOverTime,
         tp.PreNum,
-        sum(ProduceNum) overNum,
+        tp.TotalNum overNum,
         tp.ContractUID,
         tp.CContractCode as contractDetailCode,
         tp.TaskStatus,
@@ -38,9 +38,7 @@
         tp.Attribute as attribute,
         tp.client_type clientType
         from PT_TaskPlan AS tp
-        left join PT_TaskSaleInvoice pt on tp.compid = pt.compid and tp.TaskId = pt.TaskId
-        and pt.InvoiceType !=6
-        LEFT OUTER JOIN
+        left join
         dbo.DD_PublicInfo AS DD_PublicInfo_3
         ON tp.TaskStatus = DD_PublicInfo_3.PI_Values and DD_PublicInfo_3.PI_Class = 23
         and tp.compid =DD_PublicInfo_3.compid
@@ -72,11 +70,6 @@
             and tp.VerifyStatus = #{verifyStatus}
         </if>
         and tp.compid = #{compid}
-        group by tp.compid, DD_PublicInfo_3.PI_TypeName, tp.TaskId, tp.CreateTime, tp.PreTime, tp.TaskOverTime,
-        tp.PreNum,
-        tp.ContractUID, tp.CContractCode, tp.TaskStatus, tp.VerifyStatus, tp.EPPCode, ei.EPPName,
-        tp.BuilderCode, bi.BuilderName, Placing, ConcreteMark,tp.placeStyle,ps.PI_TypeName,
-        tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute,tp.client_type
         order by tp.PreTime desc, tp.TaskId desc
     </select>
 

@@ -500,7 +500,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         StringBuilder driverCodes = new StringBuilder();
         for (UserListVO userListVO : userList) {
             String driverCode = userListVO.getDriverCode();
-            if (driverCode != null && !driverCode.equals("")) {
+            if (driverCode != null && !"".equals(driverCode)) {
                 driverCodes.append(driverCode).append(",");
             }
         }
