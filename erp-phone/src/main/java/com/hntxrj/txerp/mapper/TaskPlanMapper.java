@@ -392,4 +392,28 @@ public interface TaskPlanMapper {
     List<DispatchVehicle> getCarsByTaskIds(String compid, List<String> taskIds);
 
 
+    /**
+     * 获取任务单预计方量汇总
+     *
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     * @param eppCode      工程代号
+     * @param builderCode  施工单位代号
+     * @param placing      浇筑部位
+     * @param taskId       任务单号
+     * @param taskStatus   任务单状态
+     * @param compid       企业id
+     * @param verifyStatus 审核标识  0：未审核； 1：已审核
+     * @return 任务单预计方量汇总
+     */
+    BigDecimal getPreNumCount(String beginTime, String endTime, String eppCode, String builderCode, String placing,
+                              String taskId, Integer taskStatus, String compid, Integer verifyStatus);
+
+    /**
+     * 获取塌落度下拉
+     *
+     * @param compid    企业id
+     * @param slump     塌落度
+     */
+    List<SlumpDropDownVO> getSlumpDropDown(String compid, String slump);
 }

@@ -19,7 +19,7 @@
         tp.PreTime,
         tp.TaskOverTime,
         tp.PreNum,
-        sum(ProduceNum) overNum,
+        tp.TotalNum overNum,
         tp.ContractUID,
         tp.CContractCode as contractDetailCode,
         tp.TaskStatus,
@@ -38,9 +38,7 @@
         tp.Attribute as attribute,
         tp.client_type clientType
         from PT_TaskPlan AS tp
-        left join PT_TaskSaleInvoice pt on tp.compid = pt.compid and tp.TaskId = pt.TaskId
-        and pt.InvoiceType !=6
-        LEFT OUTER JOIN
+        left join
         dbo.DD_PublicInfo AS DD_PublicInfo_3
         ON tp.TaskStatus = DD_PublicInfo_3.PI_Values and DD_PublicInfo_3.PI_Class = 23
         and tp.compid =DD_PublicInfo_3.compid
@@ -72,11 +70,6 @@
             and tp.VerifyStatus = #{verifyStatus}
         </if>
         and tp.compid = #{compid}
-        group by tp.compid, DD_PublicInfo_3.PI_TypeName, tp.TaskId, tp.CreateTime, tp.PreTime, tp.TaskOverTime,
-        tp.PreNum,
-        tp.ContractUID, tp.CContractCode, tp.TaskStatus, tp.VerifyStatus, tp.EPPCode, ei.EPPName,
-        tp.BuilderCode, bi.BuilderName, Placing, ConcreteMark,tp.placeStyle,ps.PI_TypeName,
-        tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute,tp.client_type
         order by tp.PreTime desc, tp.TaskId desc
     </select>
 
@@ -966,6 +959,40 @@
         select * from Recipient
         where compid=#{compid}
         and typeId =#{typeId}
+    </select>
+    <select id="getPreNumCount" resultType="java.math.BigDecimal">
+        select sum(PreNum) from PT_TaskPlan
+        where compid=#{compid}
+        and DeleteMark = 0
+        and RecStatus = 1
+        <if test="beginTime != null and endTime != null">
+            and (taskStatus = 1 or preTime between #{beginTime} and #{endTime})
+        </if>
+        <if test="eppCode != null">
+            and eppCode = #{eppCode}
+        </if>
+        <if test="builderCode != null">
+            and builderCode = #{builderCode}
+        </if>
+        <if test="placing != null">
+            and placing like '%' + #{placing}+'%'
+        </if>
+        <if test="taskId != null">
+            and taskId like '%' + #{taskId} + '%'
+        </if>
+        <if test="taskStatus != null">
+            and taskStatus = #{taskStatus}
+        </if>
+        <if test="verifyStatus != null">
+            and VerifyStatus = #{verifyStatus}
+        </if>
+    </select>
+    <select id="getSlumpDropDown" resultType="com.hntxrj.txerp.vo.SlumpDropDownVO">
+        select PI_TypeName as slump from DD_PublicInfo
+        where compid=#{compid} and PI_Class=91
+        <if test="slump!=null">
+            and PI_TypeName like '%' +#{slump}+'%'
+        </if>
     </select>
 
 

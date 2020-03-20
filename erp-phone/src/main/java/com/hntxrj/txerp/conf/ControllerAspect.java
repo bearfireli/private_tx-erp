@@ -132,7 +132,7 @@ public class ControllerAspect {
                 map.put(argNames[i], args[i]);
             }
         }
-        if (map.get("compid") == null) {
+        if (map.get("compid") == null||"0".equals(map.get("compid"))) {
             //说明请求的是公用接口，放行
             return joinPoint.proceed();
         }
