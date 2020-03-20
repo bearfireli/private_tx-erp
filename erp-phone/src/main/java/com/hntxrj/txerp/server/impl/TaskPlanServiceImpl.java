@@ -194,8 +194,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         try {
             taskPlanRepository.save(taskPlan);
             int typeId = 1;
-            List<RecipientVO> recipoentList = msgMapper.getRecipientList(taskPlan.getCompid(), typeId);
-            for (RecipientVO r : recipoentList) {
+            List<RecipientVO> recipient = msgMapper.getRecipientList(taskPlan.getCompid(), typeId);
+            for (RecipientVO r : recipient) {
                 SendmsgVO sendmsgVO = new SendmsgVO();
                 sendmsgVO.setSyncOtherMachine(2);
                 sendmsgVO.setToAccount(r.getUid().toString());
@@ -216,8 +216,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             taskPlanMapper.verifyTaskPlan(taskId, compid, verifyStatus, new Date());
 
             int typeId = 2;
-            List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
-            for (RecipientVO r : recipoentList) {
+            List<RecipientVO> recipient = msgMapper.getRecipientList(compid, typeId);
+            for (RecipientVO r : recipient) {
                 SendmsgVO sendmsgVO = new SendmsgVO();
                 sendmsgVO.setSyncOtherMachine(2);
                 sendmsgVO.setToAccount(r.getUid().toString());
