@@ -963,6 +963,8 @@
     <select id="getPreNumCount" resultType="java.math.BigDecimal">
         select sum(PreNum) from PT_TaskPlan
         where compid=#{compid}
+        and DeleteMark = 0
+        and RecStatus = 1
         <if test="beginTime != null and endTime != null">
             and (taskStatus = 1 or preTime between #{beginTime} and #{endTime})
         </if>
