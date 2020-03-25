@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 @Component
@@ -33,19 +34,23 @@ public class ControllerAspect {
     private static final String LOGIN_API = "/user/login";
     private static final String LOGIN_REST_API = "/api/user/login";
     private static final String TOKEN_USE = "/user/tokenUse";
+    private static final String TOKEN_CHECK = "/user/tokenCheck";
     private static final String THIRD_LOGIN = "/user/thirdLogin";
     private static final String USER_ENTERPRISE = "/user/getUserEnterprise";
     private static final String ERROR = "/error";
-    private static final String FILEDOWNLOAD = "/afterSale/file";
+    private static final String FILE_DOWNLOAD = "/afterSale/file";
     private static final String FAVICON = "/favicon.ico";
     private static final String JOURNALISM_LIST = "/journalism/journalismlist";
     private static final String JOURNALISM_SELECT_LIST = "/journalism/selectJournalism";
-    private static final String JOURNALISM_BYID = "/journalism/getJournalism";
-    private static final String GETAUTHVALUE = "/auth/getAuthValue";
-    private static final String USER_SETUSERFAVORITE = "/user/setUserFavorite";
-    private static final String USER_GETUSERFAVORITE = "/user/getUserFavorite";
-    private static final String UPLOADPICTURE = "/enterprise/uploadPicture";
-    private static final String SAVECOLLECTIONCODE = "/enterprise/saveCollectionCode";
+    private static final String JOURNALISM_BY_ID = "/journalism/getJournalism";
+    private static final String GET_AUTH_VALUE = "/auth/getAuthValue";
+    private static final String USER_SET_USER_FAVORITE = "/user/setUserFavorite";
+    private static final String USER_GET_USER_FAVORITE = "/user/getUserFavorite";
+    private static final String UPLOAD_PICTURE = "/enterprise/uploadPicture";
+    private static final String SAVE_COLLECTION_CODE = "/enterprise/saveCollectionCode";
+    private static final String USER_EXPIRE_TIME = "/v1/project/getExpireTime";
+    private static final String SELECT_USER_ALL = "/user/selectAllUser";
+    private static final String SELECT_ALL_USER = "/user/userAll";
 
 
     private static final String DOCUMENT_URI = "/swagger";
@@ -55,37 +60,41 @@ public class ControllerAspect {
     private static final String USER_IMAGES = "/user/header.png";
     private static final String ENTERPRISE_IMAGES = "/enterprise/getFeedboackPicture";
     private static final String ENTERPRISE_IMAGE = "/enterprise/getimage";
-    private static final String FEEDBOCK_IMAGES = "/feedback/getFeedboackPicture";
-    private static final String FEEDBOCK_UPLOADPICTURE = "/feedback/uploadPicture";
-    private static final String FEEDBOCK_ADDFEEDBACK = "/feedback/addFeedback";
+    private static final String FEED_BOCK_IMAGES = "/feedback/getFeedboackPicture";
+    private static final String FEED_BOCK_UPLOAD_PICTURE = "/feedback/uploadPicture";
+    private static final String FEED_BOCK_ADD_FEEDBACK = "/feedback/addFeedback";
     private static final String USER_USERNAME = "/user/getUser";
-    private static final String USER_SETHEADER = "/user/setHeader";
-    private static final String ENTERPRISE_GETENTERPRISE = "/enterprise/getEnterprise";
+    private static final String USER_SET_HEADER = "/user/setHeader";
+    private static final String ENTERPRISE_GET_ENTERPRISE = "/enterprise/getEnterprise";
     private static final String USER_STATISTIC = "/statistic";
-    private static final String FUNCTIONMENU_LIST = "/functionmenulist";
+    private static final String FUNCTION_MENU_LIST = "/functionmenulist";
 
     private static final String[] PUBLIC_API_LIST = new String[]{
-            LOGIN_API, TOKEN_USE, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILEDOWNLOAD, LOGIN_REST_API, FAVICON, JOURNALISM_LIST
-            , JOURNALISM_BYID, JOURNALISM_SELECT_LIST,GETAUTHVALUE,USER_SETUSERFAVORITE,USER_GETUSERFAVORITE,UPLOADPICTURE,SAVECOLLECTIONCODE
+            LOGIN_API, TOKEN_USE, TOKEN_CHECK, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILE_DOWNLOAD, LOGIN_REST_API,
+            FAVICON, JOURNALISM_LIST, JOURNALISM_BY_ID, JOURNALISM_SELECT_LIST, GET_AUTH_VALUE, USER_SET_USER_FAVORITE,
+            USER_GET_USER_FAVORITE, UPLOAD_PICTURE, SAVE_COLLECTION_CODE, USER_EXPIRE_TIME, SELECT_USER_ALL,
+            SELECT_ALL_USER
     };
 
     private static final String[] PUBLIC_PATH = new String[]{
-            DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES, USER_IMAGES, FEEDBOCK_IMAGES, ENTERPRISE_IMAGES, ENTERPRISE_IMAGE,
-            USER_USERNAME, ENTERPRISE_GETENTERPRISE, USER_SETHEADER, FEEDBOCK_UPLOADPICTURE, FEEDBOCK_ADDFEEDBACK, USER_STATISTIC,
-            FUNCTIONMENU_LIST
+            DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES, USER_IMAGES, FEED_BOCK_IMAGES, ENTERPRISE_IMAGES,
+            ENTERPRISE_IMAGE, USER_USERNAME, ENTERPRISE_GET_ENTERPRISE, USER_SET_HEADER, FEED_BOCK_UPLOAD_PICTURE,
+            FEED_BOCK_ADD_FEEDBACK, USER_STATISTIC, FUNCTION_MENU_LIST
     };
 
 
     @Autowired
-    public ControllerAspect( AuthGroupService authService) {
+    public ControllerAspect(AuthGroupService authService) {
         this.authService = authService;
     }
 
     @Around("execution(* com.hntxrj.txerp.controller.*.*(..))")
     private Object mappingAround(ProceedingJoinPoint joinPoint) throws Throwable {
         //获取每次请求的request和response
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        HttpServletRequest request = ((ServletRequestAttributes)
+                Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        HttpServletResponse response = ((ServletRequestAttributes)
+                RequestContextHolder.getRequestAttributes()).getResponse();
 
         if ("OPTIONS".equals(request.getMethod())) {
             return joinPoint.proceed();
@@ -141,6 +150,7 @@ public class ControllerAspect {
             }
 
         }
+
         if (enterprise <= 0) {
             ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.ENTERPRISE_ID_NOTEXIST));
         }

@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,15 +36,17 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
 
     private final QueryTimeSetMapper queryTimeSetMapper;
 
+
     public QueryTimeSetServiceImpl(QueryTimeSetMapper queryTimeSetMapper) {
         this.queryTimeSetMapper = queryTimeSetMapper;
     }
 
     /**
      * 查询时间设置列表
-     * @param compid  站别代号
+     *
+     * @param compid   站别代号
      * @param page     当前页
-     * @param pageSize  每页显示多少条
+     * @param pageSize 每页显示多少条
      * @return 返回json
      */
     @Override
@@ -50,6 +54,14 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
         PageHelper.startPage(page, pageSize);
         //根据compid查询，设置的时间表
         List<QueryTimeSetVO> queryTimeSetVO = queryTimeSetMapper.getQueryTimeSetList(compid);
+        for (QueryTimeSetVO queryTimeSet : queryTimeSetVO) {
+            if (queryTimeSet.getQueryStartTime() != null) {
+                queryTimeSet.setQueryStartTime(queryTimeSet.getQueryStartTime().substring(0, 5));
+            }
+            if (queryTimeSet.getQueryStopTime() != null) {
+                queryTimeSet.setQueryStopTime(queryTimeSet.getQueryStopTime().substring(0, 5));
+            }
+        }
         //查询menu表中的功能名称
         List<String> menuList = checkTokenIsNormal();
         //当没设置时间表时，把功能名称添加到集合中
@@ -70,7 +82,7 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
                         break;
                     }
                 }
-                if (!s){
+                if (!s) {
                     //判断有新增功能，添加到queryTimeSet表中
                     QueryTimeSetVO queryTimeSet = new QueryTimeSetVO();
                     queryTimeSet.setQueryName(menu);
@@ -84,6 +96,44 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
         return pageVO;
     }
 
+    /**
+     * 编辑默认时间
+     * @param list 传递的json参数
+     */
+    @Override
+    public void upDateQueryTime( List<QueryTimeSetVO> list){
+        if (list.size() > 0) {
+            for (QueryTimeSetVO queryTimeSetVO : list) {
+               String compid =null;
+               String queryName = null;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+               int queryTime =0;
+               String queryStartTime ="00:00";
+               String queryStopTime ="00:00";
+               int recStatus =0;
+               int upDownMark =0;
+               int upDown =0;
+                if (queryTimeSetVO.getCompid()!=null && !"".equals(queryTimeSetVO.getCompid())){
+                    compid =queryTimeSetVO.getCompid();
+                }
+                if (queryTimeSetVO.getQueryName()!=null && !"".equals(queryTimeSetVO.getQueryName())){
+                    queryName =queryTimeSetVO.getQueryName();
+                }
+                if (queryTimeSetVO.getQuerytime()!=0){
+                    queryTime =queryTimeSetVO.getQuerytime();
+                }
+                if (queryTimeSetVO.getQueryStartTime()!=null && !"".equals(queryTimeSetVO.getQueryStopTime())){
+                    queryStartTime =queryTimeSetVO.getQueryStartTime();
+                    queryStopTime =queryTimeSetVO.getQueryStopTime();
+                }
+                if (compid!=null && queryName!=null){
+                    queryTimeSetMapper.deleteQueryTimeSet(compid,queryName);
+                    queryTimeSetMapper.insetQueryTimeSet(compid,queryName,queryTime,queryStartTime,queryStopTime,recStatus,upDownMark,upDown);
+                }
+            }
+        }
+    }
+
 
     /**
      * 查询功能菜单
@@ -91,7 +141,7 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
      * @return 返回是否通过
      */
     private List<String> checkTokenIsNormal() {
-        String baseUrl ="";
+        String baseUrl = "";
         baseUrl = url + "/v1/menu/functionmenulist";
         Header[] headers = HttpHeader.custom()
                 .other("version", "1")

@@ -39,4 +39,13 @@
         order by StirId
     </select>
 
+    <select id="getStockList" resultType="com.hntxrj.txerp.vo.StockVO">
+        select Sto_Name as stoName
+        from MP_Stock where compid=#{compid}
+        <if test="stoName!=null and stoName!=''">
+           and Sto_Name like '%'+#{stoName}+'%'
+        </if>
+        group by Sto_Name
+    </select>
+
 </mapper>

@@ -66,7 +66,7 @@
                  left join user_account a on u.uid = a.uid
         where u.uid = #{userId}
     </select>
-    <select id="findbyId" resultType="com.hntxrj.txerp.vo.AuthGroupVO">
+    <select id="findById" resultType="com.hntxrj.txerp.vo.AuthGroupVO">
         select e.eid,
                e.ep_short_name,
                a.ag_name
@@ -122,6 +122,9 @@
         where 1=1
         <if test="enterpriseId != null and enterpriseId!=''">
             and ua.eid = #{enterpriseId}
+        </if>
+        <if test="compid != null  and compid !='' ">
+            and ud.compid = #{compid}
         </if>
         <if test="userName != null">
             and u.username like #{_userName}
@@ -200,7 +203,33 @@
         from auth_value av
         where av.group_id=#{groupId}  and av.value=1
     </select>
+    <select id="selectAllUser" resultType="com.hntxrj.txerp.entity.base.User">
+        select u.* from user_auth ua
+        LEFT JOIN user u on ua.uid =u.uid
+        where u.uid is not null
+        <if test="eid != null ">
+            and ua.eid =#{eid}
+        </if>
+        <if test="userName != null and userName!='' ">
+            and u.username like '%${userName}%'
+        </if>
+    </select>
+    <!--根据eid 查询企业用户-->
+    <select id="userAll" resultType="com.hntxrj.txerp.entity.base.User">
+        select u.uid,u.username,u.password,u.phone,u.email
+        from user_auth ua
+        LEFT JOIN user u on ua.uid =u.uid
+        where
+        1=1
+        <if test="eid != null and eid!='' ">
+            and ua.eid =#{eid}
+        </if>
+        and u.uid is not null
+    </select>
 
+    <select id="getEnterpriseByGroupId" resultType="java.lang.Integer">
+        SELECT enterprise FROM auth_group WHERE agid=#{groupId}
+    </select>
 
 
 </mapper>

@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: erp-tank
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+  datasource:
+    url: jdbc:mysql://192.168.31.2/tx-tank?characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2b8
+    username: root
+    password: TongXin2019
+    hikari:
+      pool-name: base_pool1_1_2
+  jpa:
+    show-sql: false
+    properties:
+      hibernate.format_sql: false
+logging:
+  # 日志文件名称
+  path:
+    root: ${app.workspace}/logs/
+    file: erp-%d{yyyy-MM-dd}.log
+
+mybatis:
+  type-aliases-package: com.hntxrj.txerp.mapper
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    use-generated-keys: true
+    map-underscore-to-camel-case: true
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: countSql
+
+server:
+  port: 9503

@@ -5,10 +5,13 @@
     <select id="getVehicleId" resultType="com.hntxrj.txerp.vo.VehicleIdVO">
         SELECT d.PI_TypeName typeName, carid vehicleId
         from VM_VehicelManagement vm
-                 left join DD_PublicInfo d on vm.VehicleClass = d.PI_Values and d.PI_Class = '20'
-            and vm.compid = d.compid
+        left join DD_PublicInfo d on vm.VehicleClass = d.PI_Values and d.PI_Class = '20'
+        and vm.compid = d.compid
         where vm.compid = #{compid}
-          and vm.RecStatus = 1
+        <if test="vehicleId !=null and vehicleId!=''">
+            and CarID like '%'+#{vehicleId}+'%'
+        </if>
+        and vm.RecStatus = 1
         ORDER BY VehicleClass
     </select>
 </mapper>

@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.entity.Adjunct;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.*;
-import com.hntxrj.txerp.vo.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +26,7 @@ public interface ContractService {
      * @param LinkMan_4    联系人
      * @param LinkTel_5    联系电话
      * @param Remarks_6    简介
-     * @param RecStatus_7  状态 默认为1    where RecStatus = 1
+     * @param RecStatus_7  标志   0:禁用； 1：启用
      * @param shortName_8  施工单位简称
      * @return 返回jsonArray
      */
@@ -204,7 +203,6 @@ public interface ContractService {
 
     /**
      * 价格执行方式下拉列表
-     *
      */
     JSONArray spQueryPriceDDPublicInfo();
 
@@ -235,8 +233,6 @@ public interface ContractService {
                                                  Double selfDiscPrice, Double towerCranePrice, Double otherPrice,
                                                  byte isDefault);
 
-//    JSONArray sp_insertUpDel_SM_PumpPriceSet(Integer mark, String compid, String ccontractCode, String contractUID,
-//    Integer pumpType, Double pumpPrice, Double tableExpense, String opid);
 
     /**
      * 合同运距添加
@@ -270,8 +266,8 @@ public interface ContractService {
      * @param currPage     当前页
      * @param PageSize     页长度
      * @param mark         1  砼价格  2  特殊材料  3泵车车价格
-     * @param stgid         线号
-     * @param ppname        加价项目名称
+     * @param stgid        线号
+     * @param ppname       加价项目名称
      * @param pumptypename @return jsonArray
      */
     JSONArray spQuerySMStgidInfoPrice(String compid, Integer currPage, Integer PageSize, Integer mark,
@@ -321,15 +317,15 @@ public interface ContractService {
      * @param contractCode 合同编号
      * @param eppCode      工程代号
      * @param buildCode    施工单位代号
-     * @param salesMan     销售员代号
+     * @param salesManCode 销售员代号
      * @param compId       企业代号
      * @param page         页码
      * @param pageSize     每页数量
      * @return 合同列表
      */
     PageVO<ContractListVO> getContractList(Long startTime, Long endTime, String contractCode,
-                                           String eppCode, String buildCode, String salesMan,
-                                           String compId, String verifyStatus,Integer page, Integer pageSize);
+                                           String eppCode, String buildCode, String salesManCode,
+                                           String compId, String verifyStatus, Integer page, Integer pageSize);
 
     /**
      * 获取合同详情
@@ -348,7 +344,7 @@ public interface ContractService {
      * @param opId         操作员代号
      * @param verifyStatus 审核状态
      */
-    void verifyContract(String contractUid, String compid, String opId, Integer verifyStatus);
+    void verifyContract(String contractUid, String compid, String opId, Integer verifyStatus) throws ErpException;
 
     /**
      * 获取合同砼价格列表
@@ -360,10 +356,34 @@ public interface ContractService {
     List<ContractGradePriceVO> getContractGradePrice(String contractUid, String contractDetailCode, String compid);
 
 
+    /**
+     * 获取合同特殊材料列表
+     *
+     * @param contractUid        合同uid
+     * @param contractDetailCode 子合同代号
+     * @param compid             企业id
+     * @return 合同特殊材料列表
+     */
     List<ContractPriceMarkupVO> getContractPriceMarkup(String contractUid, String contractDetailCode, String compid);
 
+
+    /**
+     * 获取合同泵送价格列表
+     *
+     * @param contractUid        合同uid
+     * @param contractDetailCode 合同子合同号
+     * @param compid             企业id
+     * @return 合同泵送价格列表
+     */
     List<ContractPumpPriceVO> getContractPumpPrice(String contractUid, String contractDetailCode, String compid);
 
+    /**
+     * 获取合同运距
+     *
+     * @param contractUid        合同uid
+     * @param contractDetailCode 合同子合同号
+     * @param compid             企业id
+     */
     List<ContractDistanceSetVO> getContractDistanceSet(String contractUid, String contractDetailCode, String compid);
 
     /**
@@ -376,41 +396,71 @@ public interface ContractService {
     /**
      * 合同价格执行方式
      *
+     * @param compid 企业id
      * @return 合同价格执行方式下拉
      */
     List<DropDownVO> getPriceTypeDropDown(String compid);
 
-    void addContract(String contractId, String salesman, Date signDate, Date expiresDate,Date effectDate,
+    /**
+     * 添加合同
+     *
+     * @param contractId   主合同号
+     * @param salesman     业务员代号
+     * @param signDate     签订日期
+     * @param expiresDate  新版本到期时间
+     * @param effectDate   老版本到期时间
+     * @param contractType 合同类别
+     * @param priceStyle   价格执行方式
+     * @param eppCode      工程代号
+     * @param builderCode  施工单位代号
+     * @param contractNum  合同方量
+     * @param preNum       预付方量
+     * @param preMoney     预付金额
+     * @param remarks      备注
+     * @param compid       公司代号
+     * @param address      交货地址
+     * @param linkMan      联系人
+     * @param linkTel      联系电话
+     * @param opid         操作员代号
+     */
+    void addContract(String contractId, String salesman, Date signDate, Date expiresDate, Date effectDate,
                      Integer contractType, Integer priceStyle, String eppCode,
                      String builderCode, BigDecimal contractNum, BigDecimal preNum,
-                     BigDecimal preMoney, String remarks, String compid,String address) throws ErpException;
+                     BigDecimal preMoney, String remarks, String compid, String address,
+                     String linkMan, String linkTel, String opid) throws ErpException;
 
     /**
      * 上传合同附件
      *
-     * @param contractUid   合同uid
-     * @param ccontractCode 子合同代号
-     * @param num           第几个文件
-     * @param file          文件对象
-     * @param compid        企业id
+     * @param contractUid        合同uid
+     * @param contractDetailCode 子合同代号
+     * @param num                第几个文件
+     * @param file               文件对象
+     * @param compid             企业id
      * @return 保存后的该合同附件内容
      * @throws ErpException 上传失败
      */
-    List<Adjunct> uploadAdjunct(String contractUid, String ccontractCode,
+    List<Adjunct> uploadAdjunct(String contractUid, String contractDetailCode,
                                 Integer num, MultipartFile file, String compid) throws ErpException;
 
 
+    /**
+     * 删除某附件
+     *
+     * @param fileUid 上传后在服务器的文件名称（一个uid）
+     * @return 删除后该合同的附件列表
+     */
     List<Adjunct> delAdjunct(String fileUid);
 
     /**
      * 获取附件列表
      *
-     * @param contractUid   合同uid
-     * @param ccontractCode 子合同代号
-     * @param compid        企业id
+     * @param contractUid        合同uid
+     * @param contractDetailCode 子合同代号
+     * @param compid             企业id
      * @return 保存后的该合同附件内容
      */
-    List<Adjunct> getAdjunct(String contractUid, String ccontractCode, String compid);
+    List<Adjunct> getAdjunct(String contractUid, String contractDetailCode, String compid);
 
 
     /**
@@ -421,15 +471,50 @@ public interface ContractService {
      */
     void getAdjunctItem(String fileUid, HttpServletResponse response) throws ErpException;
 
+    /**
+     * 禁用合同（此接口还未启用）
+     *
+     * @param contractUid        主合同
+     * @param contractDetailCode 子合同
+     * @param compid             企业
+     */
     void disableContract(String contractUid, String contractDetailCode, String compid);
 
+    /**
+     * 获取标号下拉
+     *
+     * @param compid 企业id
+     * @return 标号下拉
+     */
     List<StgIdDropDown> getContractStgIdDropDown(String compid);
 
+    /**
+     * 保存合同标号价格
+     *
+     * @param compid             企业id
+     * @param contractUid        主合同号
+     * @param contractDetailCode 子合同号
+     * @param gradePriceVO       砼标号价格对象
+     */
     void saveContractGradePrice(String compid, String contractUid,
-                                String contractDetailCode, String gradePrice) throws ErpException;
+                                String contractDetailCode, String gradePriceVO) throws ErpException;
 
+    /**
+     * 获取特殊材料下拉
+     *
+     * @param compid 企业id
+     * @return 标号下拉
+     */
     List<PriceMarkupDropDown> getPriceMarkupDropDown(String compid);
 
+    /**
+     * 保存合同加价项目
+     *
+     * @param compid             企业id
+     * @param contractUid        主合同号
+     * @param contractDetailCode 子合同号
+     * @param priceMarkup        加价项目
+     */
     void saveContractPriceMarkup(String compid, String contractUid, String contractDetailCode,
                                  String priceMarkup) throws ErpException;
 
@@ -443,59 +528,71 @@ public interface ContractService {
     String makeAutoContractId(String compid) throws ErpException;
 
     /**
-     *
-     * @param compid 企业id
-     * @param cContractCode  子合同号
-     * @param contractUID 合同法UID
+     * @param compid             企业id
+     * @param contractDetailCode 子合同号
+     * @param contractUID        合同法UID
      * @return ContractPumperVO
      */
-    List<ContractPumperVO> getContractPumperPrice(String compid, String cContractCode, String contractUID) throws ErpException;
-
+    List<ContractPumperVO> getContractPumperPrice(String compid, String contractDetailCode,
+                                                  String contractUID) throws ErpException;
 
 
     /**
      * 合同运距
-     * @param compid   企业ID
-     * @param contractUID  合同UID
-     * @param cContractCode 子合同号
+     *
+     * @param compid             企业ID
+     * @param contractUID        合同UID
+     * @param contractDetailCode 子合同号
      * @return 站名 运输距离
      */
-    ContractDistanceVO getContractDistance(String compid, String contractUID, String cContractCode) throws ErpException;
+    ContractDistanceVO getContractDistance(String compid, String contractUID,
+                                           String contractDetailCode) throws ErpException;
 
 
     /**
      * 添加合同运距
      *
-     * @param contractUID   合同UID号
-     * @param cContractCode 子合同号
-     * @param compid        站别代号
-     * @param distance      运输距离
-     * @param recStatus     标志
-     * @param remarks       备注
-     * @param upDown        网络标识
-     * @param upDownMark   上传标识
+     * @param contractUID        合同UID号
+     * @param contractDetailCode 子合同号
+     * @param compid             站别代号
+     * @param distance           运输距离
+     * @param recStatus          标志   0:禁用； 1：启用
+     * @param remarks            备注
+     * @param upDown             网络标识
+     * @param upDownMark         上传标识
      * @return int
      */
-    ResultVO saveContractDistance(String contractUID, String cContractCode, String compid, Double distance,
+    ResultVO saveContractDistance(String contractUID, String contractDetailCode, String compid, Double distance,
                                   String remarks,
                                   Integer recStatus, Double upDown,
                                   Integer upDownMark) throws ErpException;
 
     /**
-     * @param compid        企业代码
-     * @param opid         操作员代号
-     * @param contractUID  合同uid号
-     * @param contractCode 子合同号
-     * @param pumptype     泵车类别
-     * @param pumPrice     泵送单价
-     * @param tableExpense 台班费
+     * 泵车类价格插入数据
+     *
+     * @param compid             企业代码
+     * @param opid               操作员代号
+     * @param contractUID        合同uid号
+     * @param contractDetailCode 子合同号
+     * @param pumptype           泵车类别
+     * @param pumPrice           泵送单价
+     * @param tableExpense       台班费
      * @return Integer
      */
-    ResultVO insertPumpTruck(String compid, String opid, String contractUID, String contractCode,
+    ResultVO insertPumpTruck(String compid, String opid, String contractUID, String contractDetailCode,
                              Integer pumptype, Double pumPrice, Double tableExpense
     ) throws ErpException;
 
-    PageVO<PumpTruckListVO> selectPumpTruckList(String compid,Integer page,Integer pageSize,String builderName);
+    /**
+     * 泵车列表查询
+     *
+     * @param compid      企业代号
+     * @param builderName 工程名称
+     * @param page        页码
+     * @param pageSize    每页数量
+     * @return 列表查询
+     */
+    PageVO<PumpTruckListVO> selectPumpTruckList(String compid, Integer page, Integer pageSize, String builderName);
 
     /**
      * 添加任务单时根据工程名称或者施工单位查询合同列表
@@ -507,4 +604,17 @@ public interface ContractService {
      * @return 合同列表
      */
     PageVO<ContractListVO> getContractListByEppOrBuild(String compid, String searchName, Integer page, Integer pageSize);
+
+
+    /**
+     * 工地端添加任务单时根据施工方查询关联的合同列表
+     *
+     * @param buildId    施工方id
+     * @param searchName 搜索添加，可能是施工名称或者是施工单位
+     * @param page       页码
+     * @param pageSize   每页数量
+     * @return 合同列表
+     */
+    PageVO<ContractListVO> getBuildContractListByEppOrBuild(Integer buildId, String searchName, Integer page,
+                                                            Integer pageSize);
 }

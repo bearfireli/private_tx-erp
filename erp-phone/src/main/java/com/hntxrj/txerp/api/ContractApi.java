@@ -76,17 +76,16 @@ public class ContractApi {
      * @return 结果
      */
     @PostMapping("/verifyContract")
-    public ResultVO verifyContract(String contractUid, String compid, String opId, Integer verifyStatus) {
+    public ResultVO verifyContract(String contractUid, String compid, String opId, Integer verifyStatus) throws ErpException {
         contractService.verifyContract(contractUid, compid, opId, verifyStatus);
         return ResultVO.create();
     }
 
     /**
      * 获取合同砼价格列表
-     * <p>
-     * //     * @param contractUid        合同uid
-     * //     * @param contractDetailCode 子合同代号
      *
+     * @param contractUid        合同uid
+     * @param contractDetailCode 子合同代号
      * @param compid 企业id
      * @return 砼价格列表
      */
@@ -111,11 +110,27 @@ public class ContractApi {
         return ResultVO.create(contractService.getContractPriceMarkup(contractUid, contractDetailCode, compid));
     }
 
+
+    /**
+     * 获取合同泵送价格列表
+     *
+     * @param contractUid        合同uid
+     * @param contractDetailCode 合同子合同号
+     * @param compid             企业id
+     * @return   合同泵送价格列表
+     */
     @PostMapping("/getContractPumpPrice")
     public ResultVO getContractPumpPrice(String contractUid, String contractDetailCode, String compid) {
         return ResultVO.create(contractService.getContractPumpPrice(contractUid, contractDetailCode, compid));
     }
 
+    /**
+     * 获取合同运距
+     *
+     * @param contractUid        合同uid
+     * @param contractDetailCode 合同子合同号
+     * @param compid             企业id
+     */
     @PostMapping("/getContractDistanceSet")
     public ResultVO getContractDistanceSet(String contractUid, String contractDetailCode, String compid) {
         return ResultVO.create(contractService.getContractDistanceSet(contractUid, contractDetailCode, compid));
@@ -123,7 +138,7 @@ public class ContractApi {
 
     /**
      * 获取合同类别
-     *
+     * @param compid             企业id
      * @return 合同类别下拉
      */
     @PostMapping("/getContractTypeDropDown")
@@ -133,7 +148,7 @@ public class ContractApi {
 
     /**
      * 合同价格执行方式
-     *
+     * @param compid             企业id
      * @return 合同价格执行方式下拉
      */
     @PostMapping("/getPriceTypeDropDown")
@@ -200,22 +215,26 @@ public class ContractApi {
 
     /**
      * 添加合同
-     * @param contractId    主合同号
-     * @param salesman      业务员代号
-     * @param signDate      签订日期
-     * @param expiresDate   新版本到期时间
-     * @param effectDate    老版本到期时间
-     * @param contractType  合同类别
-     * @param priceStyle     价格执行方式
-     * @param eppCode        工程代号
-     * @param builderCode    施工单位代号
-     * @param contractNum    合同方量
-     * @param preNum         预付方量
-     * @param preMoney       预付金额
-     * @param remarks        备注
-     * @param compid         公司代号
-     * @param address        交货地址
-     * */
+     *
+     * @param contractId   主合同号
+     * @param salesman     业务员代号
+     * @param signDate     签订日期
+     * @param expiresDate  新版本到期时间
+     * @param effectDate   老版本到期时间
+     * @param contractType 合同类别
+     * @param priceStyle   价格执行方式
+     * @param eppCode      工程代号
+     * @param builderCode  施工单位代号
+     * @param contractNum  合同方量
+     * @param preNum       预付方量
+     * @param preMoney     预付金额
+     * @param remarks      备注
+     * @param compid       公司代号
+     * @param address      交货地址
+     * @param linkMan      合同联系人
+     * @param linkTel      合同联系电话
+     * @param opid      操作员id
+     */
     @PostMapping("/addContract")
     public ResultVO addContract(String contractId,
                                 String salesman,
@@ -231,25 +250,25 @@ public class ContractApi {
                                 BigDecimal preMoney,
                                 String remarks,
                                 String compid,
-                                String address) throws ErpException {
+                                String address,
+                                String linkMan,
+                                String linkTel,
+                                String opid) throws ErpException {
         contractService.addContract(contractId,
-                salesman,
-                new Date(signDate),
-                expiresDate == null ? null : new Date(expiresDate),
-                effectDate == null ? null : new Date(effectDate),
-                contractType,
-                priceStyle,
-                eppCode,
-                builderCode,
-                contractNum,
-                preNum,
-                preMoney,
-                remarks,
-                compid,
-                address);
+                salesman, new Date(signDate), expiresDate == null ? null : new Date(expiresDate),
+                effectDate == null ? null : new Date(effectDate), contractType, priceStyle, eppCode, builderCode,
+                contractNum, preNum, preMoney, remarks, compid, address,linkMan,linkTel,opid);
         return ResultVO.create();
     }
 
+
+    /**
+     * 禁用合同（此接口还未启用）
+     *
+     * @param contractUid        主合同
+     * @param contractDetailCode 子合同
+     * @param compid             企业
+     */
     @PostMapping("/disableContract")
     public ResultVO disableContract(String contractUid, String contractDetailCode, String compid) {
         contractService.disableContract(contractUid, contractDetailCode, compid);
@@ -280,6 +299,14 @@ public class ContractApi {
 
     }
 
+    /**
+     * 保存合同标号价格
+     *
+     * @param compid             企业id
+     * @param contractUid        主合同号
+     * @param contractDetailCode 子合同号
+     * @param gradePrice         砼价格对象
+     */
     @PostMapping("/saveContractGradePrice")
     public ResultVO saveContractGradePrice(String compid, String contractUid,
                                            String contractDetailCode, String gradePrice) throws ErpException {
@@ -287,6 +314,15 @@ public class ContractApi {
         return ResultVO.create();
     }
 
+
+    /**
+     * 保存合同加价项目
+     *
+     * @param compid             企业id
+     * @param contractUid        主合同号
+     * @param contractDetailCode 子合同号
+     * @param priceMarkup        加价项目
+     */
     @PostMapping("/saveContractPriceMarkup")
     public ResultVO saveContractPriceMarkup(String compid, String contractUid,
                                             String contractDetailCode, String priceMarkup) throws ErpException {
@@ -361,7 +397,7 @@ public class ContractApi {
      * @param compid        站别代号
      * @param distance      运输距离
      * @param remarks       备注
-     * @param recStatus     标志
+     * @param recStatus     标志   0:禁用； 1：启用
      * @param upDown        网络标识
      * @param upDownMark    网络下发标识
      * @return int
@@ -380,7 +416,10 @@ public class ContractApi {
     /**
      * 泵车列表查询
      *
-     * @param compid 企业代号
+     * @param compid      企业代号
+     * @param builderName 工程名称
+     * @param page        页码
+     * @param pageSize    每页数量
      * @return 列表查询
      */
     @PostMapping("/selectPumpTruckList")
@@ -403,6 +442,22 @@ public class ContractApi {
                                                 @RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResultVO.create(contractService.getContractListByEppOrBuild(compid, searchName, page, pageSize));
+    }
+
+    /**
+     * 工地端添加任务单时根据施工方查询关联的合同列表
+     *
+     * @param buildId    施工方id
+     * @param searchName 搜索添加，可能是施工名称或者是施工单位
+     * @param page       页码
+     * @param pageSize   每页数量
+     * @return 合同列表
+     */
+    @PostMapping("/getBuildContractListByEppOrBuild")
+    public ResultVO getBuildContractListByEppOrBuild(Integer buildId, String searchName,
+                                                     @RequestParam(defaultValue = "1") Integer page,
+                                                     @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(contractService.getBuildContractListByEppOrBuild(buildId, searchName, page, pageSize));
     }
 
 

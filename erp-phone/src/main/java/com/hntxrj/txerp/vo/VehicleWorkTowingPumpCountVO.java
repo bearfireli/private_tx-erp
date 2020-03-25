@@ -22,4 +22,5 @@ public class VehicleWorkTowingPumpCountVO {
      */
     private Integer carNumList;
     private String personalName;
+    private Double distance;
 }

@@ -3,14 +3,35 @@
 <mapper namespace="com.hntxrj.txerp.mapper.DriverMapper">
     <update id="taskSaleInvoiceReceipt">
         update PT_TaskSaleInvoice
-        set VehicleID_Jump=#{jumpVehicle},
-            NumberOfSignings = #{receiptNum},
+        set VehicleID_Jump=#{pumpVehicle},
+            NumberOfSignings = #{numberOfSignings},
             SigningTime = #{signingTime},
             ReceiptMan = #{receiptPeople},
             SaleFileImage = #{sign},
             updownmark=0,
             upStatus=1
         where ID = #{invoiceId}
+    </update>
+
+    <update id="saveSaleFileImage">
+        update PT_TaskSaleInvoice
+        set NumberOfSignings=#{numberOfSignings},
+        SigningTime = #{signingTime},
+            SaleFileImage = #{saleFileImage},
+            updownmark=0,
+            upStatus=1
+        where ID = #{invoiceId}
+        and compid=#{compid}
+    </update>
+
+    <update id="saveNumberOfSignings">
+        update PT_TaskSaleInvoice
+        set SigningTime = #{signingTime},
+            NumberOfSignings = #{numberOfSignings},
+            updownmark=0,
+            upStatus=1
+        where ID = #{invoiceId}
+        and compid=#{compid}
     </update>
 
     <select id="getDriverList" resultType="com.hntxrj.txerp.vo.DriverVO">
@@ -45,7 +66,7 @@
     </select>
     <select id="driverGetTaskSaleInvoiceList" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO">
         select tsi.ID,
-        vv.VehicleStatus,
+        tsi.VehicleStatus,
         tsi.VehicleID,
         tsi.PersonalCode,
         vm.PersonalName,
@@ -86,14 +107,18 @@
         left join VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
         where tsi.compid=#{compid}
         and tsi.PersonalCode=#{driverCode}
-        and tsi.InvoiceType not in('1','2','6')
+        and tsi.InvoiceType not in('1','2','6','4')
         and tsi.recStatus = 1
-        and (tsi.InvoiceType !=4 and vv.VehicleStatus !=3)
+        and vv.VehicleStatus !=3
+        <if test="invoiceId != null ">
+            and tsi.ID like '%'+#{invoiceId}+'%'
+        </if>
         <if test="eppCode != null and eppCode != ''">
             and tp.EPPCode = #{eppCode}
         </if>
         <if test="upStatus != null">
-            and tsi.upStatus = #{upStatus}
+            <if test="upStatus==0">and (tsi.upStatus=0 or tsi.upStatus is null)</if>
+            <if test="upStatus==1">and tsi.upStatus = #{upStatus}</if>
         </if>
         <if test="builderCode != null and builderCode != '' ">
             and tp.builderCode = #{builderCode}
@@ -110,9 +135,26 @@
 
     </select>
 
+    <!--修改小票表中的车辆状态-->
+    <update id="updateInvoiceVehicleStatus">
+        update PT_TaskSaleInvoice set VehicleStatus=#{vehicleStatus},
+        UpDownMark=0
+        <if test="vehicleStatus == 1 ">
+            ,Arrive_STTime=#{dateTime}
+        </if>
+        <if test="vehicleStatus == 13 ">
+            ,UnloadStarTime=#{dateTime}
+        </if>
+        <if test="vehicleStatus == 14 ">
+            ,UnlodeOverTime=#{dateTime}
+        </if>
+        where compid=#{compid} and id =#{invoiceId}
+    </update>
+
     <!--司机App小票汇总-->
     <select id="getTaskSaleInvoiceSum" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceSumVO">
-        select count(*) as totalCarNum, sum(SaleNum) as produceNum, sum(tsi.Distance) as distance
+        select count(*) as totalCarNum, sum(SaleNum) as totalSaleNum,sum(tsi.NumberOfSignings) as totalSignNum,
+        sum(tsi.Distance) as distance
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
         left join VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
@@ -121,11 +163,15 @@
         and tsi.InvoiceType not in('1','2','6')
         and tsi.recStatus = 1
         and (tsi.InvoiceType !=4 and vv.VehicleStatus !=3)
+        <if test="invoiceId != null ">
+            and tsi.ID like '%'+#{invoiceId}+'%'
+        </if>
         <if test="eppCode != null and eppCode != ''">
             and tp.EPPCode = #{eppCode}
         </if>
         <if test="upStatus != null">
-            and tsi.upStatus = #{upStatus}
+            <if test="upStatus==0">and (tsi.upStatus=0 or tsi.upStatus is null)</if>
+            <if test="upStatus==1">and tsi.upStatus = #{upStatus}</if>
         </if>
         <if test="builderCode != null and builderCode != '' ">
             and tp.builderCode = #{builderCode}
@@ -143,60 +189,66 @@
     </select>
 
 
-    <select id="driverGetTaskSaleInvoiceListById" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO">
-        select tsi.ID,
-               tsi.VehicleID,
-               tsi.PersonalCode,
-               vm.PersonalName,
-               tsi.VehiceNumber,
-               tp.Placing,
-               tp.TaskId,
-               tp.eppCode,
-               tp.builderCode,
-               tp.slump,
-               tsi.ThreeProduceNum,
-               tsi.TaWeight,
-               tsi.GrWeight,
-               tsi.NetWeight,
-               tsi.SendTime,
-               tsi.totalNum,
-               tsi.NumberOfSignings,
-               tsi.SaleNum,
-               e.EPPName,
-               b.BuilderName,
-               tp.StgId,
-               ps.PI_TypeName     placeStyleName,
-               tsi.upStatus,
-               tsi.InvoiceType,
-               vs.PI_TypeName     VehicleStatusName,
-               it.PI_TypeName     invoiceTypeName,
-               tsi.VehicleID_Jump JumpVehicleID,
-               tsi.ReceiptMan  receiptMan,
-               tsi.SaleFileImage saleFileImage,
-                tp.Attribute as attribute
+    <select id="driverGetTaskSaleInvoiceDetail" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO">
+       select tsi.ID,
+           uc.longname as companyName,
+           ps4.PI_TypeName                        InvoiceTypeName,
+           tsi.VehicleID,
+           tsi.NumberOfSignings as numberOfSignings,
+           e.EPPName,
+           e.EppCode,
+           b.BuilderName,
+           Placing,
+           e.shortname,
+           tsi.PersonalCode,
+           vm.PersonalName,
+           tsi.Distance,
+           us.empname,
+           SendTime,
+           ds.StirName as stirId,
+           ps.PI_TypeName                         placeTypeName,
+           VehicleID_Jump                         jumpVehicleID,
+           (tsi.SaleNum - ReturnNum - RemnantNum -tsi.ScrapNum) SaleNum,
+           ThreeProduceNum,
+           tp.StgId,
+           StoneDia,
+           Slump,
+           ps3.PI_TypeName                        StoneAsk,
+           ps2.PI_TypeName                        CementVName,
+           Leave_STTime                           leaveTime,
+           Arrive_STTime                          arriveTime,
+           tsi.TaWeight,
+           tsi.GrWeight,
+           tsi.NetWeight,
+           tsi.VehiceNumber,
+           tp.TaskId,
+           tsi.Distance,
+           upStatus,
+           ProduceNum,
+           SaleFileImage
         from PT_TaskSaleInvoice tsi
-                 left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
-                 left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
-            and tsi.compid = ps.compid
-                 left join SM_EPPInfo e on tp.EPPCode = e.EPPCode and e.compid = tsi.compid
-                 left join SM_BuilderInfo b on tp.BuilderCode = b.BuilderCode and b.compid = tsi.compid
-                 left join DD_PublicInfo vs on vs.PI_Class = 22 and tsi.VehicleStatus = vs.PI_Values
-            and tsi.compid = vs.compid
-                 left join DD_PublicInfo it on it.PI_Class = 51 and tsi.InvoiceType = it.PI_Values
-            and tsi.compid = it.compid
-                 left join VM_PersonalInfo vm on tsi.PersonalCode = vm.PersonalCode and tsi.compid = vm.compid
-                 left join VM_VehicleWeight vw on tsi.compid = vw.compid and tsi.taskid = vw.taskid
-                 left join DD_PublicInfo it2 on it2.PI_Class = 53 and vw.WeightType = it2.PI_Values
-            and tsi.compid = it2.compid
-        where tsi.id = #{id}
-          and tsi.PersonalCode = #{driverCode}
-          and tsi.InvoiceType != 6
-          and tsi.InvoiceType not in('1','2')
-          and tsi.recStatus = 1
+            left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
+            left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
+                 and tsi.compid = ps.compid
+            left join SM_EPPInfo e on tp.EPPCode = e.EPPCode and e.compid = tsi.compid
+            left join SM_BuilderInfo b on tp.BuilderCode = b.BuilderCode and b.compid = tsi.compid
+            left join User_employee us on tsi.compid = us.compid and tsi.OpId = us.OpId
+            left join VM_PersonalInfo vm on tsi.PersonalCode = vm.PersonalCode and tsi.compid = vm.compid
+            left join DD_PublicInfo ps2 on tp.CementVariety = ps2.PI_Values and ps2.PI_Class = '32'
+                 and tsi.compid = ps2.compid
+            left join DD_PublicInfo ps3 on tp.StoneAsk = ps3.PI_Values and ps3.PI_Class = '31'
+                 and tsi.compid = ps3.compid
+            left join DD_PublicInfo ps4 on tsi.compid = ps4.compid and tsi.InvoiceType = ps4.PI_Values
+            and ps4.PI_Class = '51'
+            left join DD_StirInfoSet ds on tsi.compid=ds.compid and tsi.StirId=ds.StirId
+            left join User_comp uc on tsi.compid=uc.compid
+        where tsi.compid = #{compid} and tsi.id =#{invoiceId}
     </select>
 
     <select id="getDriverWorkTime" resultType="com.hntxrj.txerp.vo.DriverWorkTimeVO">
-       select top 1 * from DM_DriverWorkTime where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
+       select id,begin_time as beginTime,end_time as endTime
+       from DM_DriverWorkTime
+       where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
     </select>
 
     <update id="updateDriverWorkTime">
@@ -213,13 +265,20 @@
 
     <insert id="saveDriverWorkTime">
         <if test="timeType==1 ">
-            insert  into DM_DriverWorkTime(compid, driver_code, end_time, date_time)
+            insert into DM_DriverWorkTime(compid, driver_code, end_time, date_time)
             values (#{compid},#{driverCode},#{workTime},#{dateTime})
         </if>
         <if test="timeType==0 ">
-            insert  into DM_DriverWorkTime(compid, driver_code,  begin_time, date_time)
+            insert into DM_DriverWorkTime(compid, driver_code, begin_time, date_time)
             values (#{compid},#{driverCode},#{workTime},#{dateTime})
         </if>
 
     </insert>
+
+
+    <!--修改车辆表中的车辆状态-->
+    <update id="updateVehicleStatus">
+        update  VM_VehicelManagement set VehicleStatus=#{vehicleStatus} ,UpDownMark=0
+        where compid=#{compid} and CarID=#{vehicleId}
+    </update>
 </mapper>

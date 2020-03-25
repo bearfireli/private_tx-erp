@@ -10,4 +10,5 @@ public class ProductDriverListvo implements Serializable {
     private int vehicleStatus;  //车辆状态
     private String vehicleStatusName;  //车辆状态名称
     private List cars;  //每个线号的车辆集合
+    private int carNum;  //每种状态的车数
 }

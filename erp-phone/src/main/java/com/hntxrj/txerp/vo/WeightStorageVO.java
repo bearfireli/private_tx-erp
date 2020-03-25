@@ -2,8 +2,6 @@ package com.hntxrj.txerp.vo;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 @Data
 /*入库库位*/
 public class WeightStorageVO {
@@ -15,4 +13,6 @@ public class WeightStorageVO {
     private double proportion;
     /*车数*/
     private int vCount;
+    /*材料名称*/
+    private String materialName;
 }

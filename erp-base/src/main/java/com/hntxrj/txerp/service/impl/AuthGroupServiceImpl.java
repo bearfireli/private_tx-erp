@@ -277,7 +277,10 @@ public class AuthGroupServiceImpl extends BaseServiceImpl implements AuthGroupSe
         //遍历funName得到相应的menuID数组
         for (String funcName : funNames) {
             Menu TempMenu = menuService.getMenuByfuncNameAndPid(funcName, pid);
-            midLIst.add(TempMenu.getMid());
+            if (TempMenu != null) {
+                midLIst.add(TempMenu.getMid());
+            }
+
         }
 
         // 遍历修改之前的已有的权限

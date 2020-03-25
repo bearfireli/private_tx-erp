@@ -44,7 +44,7 @@ public class TaskPlan implements Serializable {
     private String contractUid;
     /* 子合同号 */
     @Column(name = "ccontractcode")
-    private String cContractCode;
+    private String contractDetailCode;
     /* 任务状态 */
     @Column(name = "taskstatus")
     private Integer taskStatus;
@@ -143,7 +143,7 @@ public class TaskPlan implements Serializable {
     private String defaultJump;
     /* 含税否 */
     @Column(name = "istax")
-    private String isTax;
+    private Boolean isTax;
     /* 接管状态 */
     @Column(name = "linkpipestatus")
     private Integer linkPipeStatus;
@@ -185,7 +185,7 @@ public class TaskPlan implements Serializable {
     private String concreteMark;
     /* null */
     @Column(name = "isexcess")
-    private String isExcess;
+    private Boolean isExcess;
     /* null */
     @Column(name = "jumpmark")
     private Integer jumpMark;
@@ -234,5 +234,7 @@ public class TaskPlan implements Serializable {
     /* 结算审核完成标志 */
     @Column(name = "accountverifystatus")
     private Integer accountVerifyStatus;
-
+    /* 下任务单单位标识 */
+    @Column(name = "client_type")
+    private Integer clientType;
 }

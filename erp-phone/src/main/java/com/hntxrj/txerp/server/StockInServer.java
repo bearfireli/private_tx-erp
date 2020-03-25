@@ -125,7 +125,7 @@ public interface StockInServer {
      * @param stoName  入库库位
      * @return 原材料统计汇总
      */
-    PageVO<WeightVechicIdVO> getWeightByVechicId(String empName, String compid, String vehicleId,
+    PageVO<WeightVechicIdVO> getWeightByVehicleId(String empName, String compid, String vehicleId,
                                                  String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize);
 
     /**

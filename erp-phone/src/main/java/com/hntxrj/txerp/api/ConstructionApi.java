@@ -29,15 +29,15 @@ public class ConstructionApi {
     }
 
     /**
-     * 生成邀请码
+     * 生成施工方邀请码
      * @param compid   企业
      * @param opid     操作人
+     * @param contractDetailCodes     子合同号集合
      * @return   生成邀请码
      */
     @PostMapping("/getInvitationCode")
-    public ResultVO getInvitationCode(String compid, Integer  opid, String buildCode) throws ErpException {
-
-        return ResultVO.create(constructionService.getInvitationCode(compid,opid,buildCode));
+    public ResultVO getInvitationCode(String compid, Integer  opid, String contractDetailCodes) throws ErpException {
+        return ResultVO.create(constructionService.getInvitationCode(compid,opid,contractDetailCodes));
     }
 
     /**
@@ -64,18 +64,19 @@ public class ConstructionApi {
     }
 
     /**
-     * 作废邀请码
-     * @param compid  企业
+     * 作废施工方邀请码
+     * @param contractUID  主合同
+     * @param contractDetailCode  子合同
      * @param buildInvitationCode  邀请码
      */
-    @PostMapping("/updateUseStatus")
-    public ResultVO updateUseStatus(String compid, String buildInvitationCode) throws ErpException {
-        constructionService.updateUseStatus(compid, buildInvitationCode);
+    @PostMapping("/invalidInvitationCode")
+    public ResultVO invalidInvitationCode(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
+        constructionService.invalidInvitationCode(contractUID,contractDetailCode, buildInvitationCode);
         return ResultVO.create();
     }
 
     /**
-     * 绑定邀请码
+     * 绑定施工方邀请码
      * @param buildId  用户id
      * @param buildInvitationCode 邀请码
      * @throws ErpException 异常处理
@@ -88,17 +89,13 @@ public class ConstructionApi {
 
 
     /**
-     * 查询绑定企业
+     * 查询绑定合同
      * @param buildId  用户id
-     * @param page              页码
-     * @param pageSize          每页数量
-     * @return        查询绑定企业
+     * @return        查询绑定合同
      */
-    @PostMapping("/selectBind")
-    public ResultVO selectBind(String buildId,
-                                      @RequestParam(defaultValue = "1") Integer page,
-                                      @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(constructionService.selectBind(buildId, page, pageSize));
+    @PostMapping("/checkBind")
+    public ResultVO checkBind(String buildId) {
+        return ResultVO.create(constructionService.checkBind(buildId));
     }
 
 

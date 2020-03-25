@@ -10,5 +10,7 @@ public class WeightMatParentNameVO {
     private String matName;
     /*入库量*/
     private double tlWeight;
+    /*车数*/
+    private int vehicleCount;
 
 }

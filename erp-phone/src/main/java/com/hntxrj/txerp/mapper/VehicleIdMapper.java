@@ -9,5 +9,11 @@ import java.util.List;
 @Mapper
 public interface VehicleIdMapper {
 
-    List<VehicleIdVO> getVehicleId(String compid);
+    /**
+     * 查询车号集合
+     *
+     * @param compid    　企业id
+     * @param vehicleId   车辆id
+     */
+    List<VehicleIdVO> getVehicleId(String compid,String vehicleId);
 }

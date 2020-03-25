@@ -9,18 +9,17 @@ import java.sql.Timestamp;
 public class ContractListVO {
 
     private String contractId;
-
     private String contractUid;
 
     private String contractDetailCode;
-    private Integer compId;
+    private String compid;
 
     private String eppName;
 
     private String builderName;
     private String builderCode;
     private String eppCode;
-    private  String address;
+    private String address;
     /**
      * 合同方量
      */

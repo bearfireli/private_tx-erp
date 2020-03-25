@@ -24,13 +24,15 @@ public interface UserService {
      * @param phoneNumber 手机号
      * @param password    密码
      * @param request     HTTP SERVLET Request 对象
+     * @param loginUa  不同项目登陆时的标识；
+     *                 例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
      * @return 登录用户
      * @throws ErpException throw ERP EXCEPTION
      */
     UserVO login(String phoneNumber, String password,
-                 HttpServletRequest request) throws ErpException;
+                 HttpServletRequest request,String loginUa,String version) throws ErpException;
 
-    UserVO login(String value, String type, String loginIp) throws ErpException;
+    UserVO login(String value, String type, String loginIp,String loginUa) throws ErpException;
 
     /**
      * login out
@@ -47,6 +49,8 @@ public interface UserService {
      * @throws ErpException throw ERP EXCEPTION
      */
     UserVO tokenCanUse(String token) throws ErpException;
+
+    UserVO tokenCheck(String token) throws ErpException;
 
 
     /**
@@ -100,6 +104,8 @@ public interface UserService {
      */
     UserVO updateUser(User user) throws ErpException;
 
+
+    /*修改用户密码*/
     UserVO updatePassword(String oldPassword, String newPassword,
                           String token) throws ErpException;
 
@@ -137,7 +143,7 @@ public interface UserService {
 
     List<User> getUsers(Integer[] uids);
 
-    UserLogin createUserLogin(Integer userId, String loginIp) throws ErpException;
+    UserLogin createUserLogin(Integer userId, String loginIp,String loginUa) throws ErpException;
 
 
     /**
@@ -153,7 +159,6 @@ public interface UserService {
      *
      * @param token 登录令牌
      * @return 企业集合
-     * @throws ErpException
      */
     List<Enterprise> getEnterprisesByToken(String token) throws ErpException;
 
@@ -162,7 +167,6 @@ public interface UserService {
      *
      * @param token 用户令牌
      * @return 企业id集合
-     * @throws ErpException
      */
     List<Integer> getEnterpriseIdsByToken(String token) throws ErpException;
 
@@ -172,64 +176,115 @@ public interface UserService {
      * @param enterprise 企业id
      * @param token      用户token
      * @return 权限组id
-     * @throws ErpException
      */
     Integer getUserAuthGroupByEnterprise(Integer enterprise, String token) throws ErpException;
 
+    /**
+     * 根据用户id判断用户是否是超级管理员
+     */
     boolean userIsSupperAdmin(Integer uid);
 
+    /**
+     * 根据token判断用户是否是超级管理员
+     */
     boolean userIsSupperAdmin(String token) throws ErpException;
 
     /**
      * 老用户更改权限
+     *
+     * @param params 权限组json对象
      */
     void updateUserAuth(String params, String token) throws ErpException;
 
     /**
      * 新用户添加权限
+     *
+     * @param params 权限组json对象
+     * @param user   用户对象
      */
-    void addUserAuth(String params, String token,User user) throws ErpException;
+    void addUserAuth(String params, String token, User user) throws ErpException;
 
 
+    /**
+     * 判断密码是否正确
+     */
     void checkPassword(String token, String password) throws ErpException;
 
 
+    /**
+     * 上传头像
+     */
     User setHeader(MultipartFile file, String token) throws ErpException;
 
+    /**
+     * 获取头像
+     */
     void getHeader(String token, HttpServletResponse response) throws ErpException;
 
 
+    /**
+     * 获取手机erp用户常用模块
+     */
     String getUserFavoriteConfig(String token) throws ErpException;
 
+    /**
+     * 设置手机erp用户常用模块
+     */
     void setUserFavoriteConfig(String token, String config) throws ErpException;
 
     /**
      * 用于更改用户的超级管理员权限
-     * @param userId
-     * @param eadmin
-     * @throws ErpException
+     *
+     * @param userId 用户id
+     * @param eadmin 是否是超级管理员（1：是；   0：不是）
      */
     void updateUserAdminStatus(Integer userId, String eadmin) throws ErpException;
 
-    UserBindDriver getBindDriver(String paramString1, String paramString2) throws ErpException;
+    /**
+     * 获取用户绑定司机
+     */
+    UserBindDriver getBindDriver(String token, String compid) throws ErpException;
 
-    void bindDriver(Integer paramInteger, String paramString1, String paramString2) throws ErpException;
-/**
- * 通过用户和公司名称得到权限组
- * */
+    /**
+     * 给用户绑定司机
+     *
+     * @param uid        用户id
+     * @param compid     企业id
+     * @param driverCode 司机编号
+     */
+    void bindDriver(Integer uid, String compid, String driverCode) throws ErpException;
+
+    /**
+     * 通过用户和公司名称得到权限组
+     */
     Integer getAuthGroupByUserAndCompid(Integer uid, Integer enterprise);
-/**
-* 判定权限组是否具有该方法
-* */
+
+    /**
+     * 判定权限组是否具有该方法
+     */
     Integer judgementAuth(Integer authGroupID, String methodName);
 
 
     /**
      * 从auth_value_new表中查询出该权限组的所有信息
-     * */
-    List<AuthValue> getAuthValue(Integer groupId,Integer pid);
+     */
+    List<AuthValue> getAuthValue(Integer groupId, Integer pid);
+
     /**
      * 从auth_value表中查询出该权限组的所有信息
-     * */
+     *
+     * @param groupId 权限组id
+     * @param pid  项目代号
+     */
     List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid);
+
+    /**
+     * 查询所有企业所有用户
+     */
+    List<User> selectAllUser(Integer compid,String userName);
+
+    /**
+     * 根据企业id查询用户
+     * */
+    List<User> userAll(Integer eid);
 }

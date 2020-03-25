@@ -45,7 +45,6 @@ public class UserController {
     private RedisTemplate redisTemplate;
 
 
-
     @Autowired
     public UserController(UserService userService,
                           UserAccountService userAccountService, AuthCodeService authCodeService) {
@@ -142,18 +141,22 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
+    //登录接口
     @PostMapping("/login")
     public String login(String phone,
-                        String password,
+                        String password,String version,
                         HttpServletRequest request)
             throws ErpException {
         log.info("【登录v1】phone={}, password={}", phone, password);
-        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request),
+        //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
+        String loginUa = request.getHeader("loginUa");
+        resultVO.setData(JSON.toJSONString(userService.login(phone, password, request, loginUa, version),
                 SerializerFeature.DisableCircularReferenceDetect));
         return JSON.toJSONString(resultVO);
     }
 
 
+    //推出接口
     @PostMapping("/loginOut")
     public String loginOut(String token) {
         log.info("【退出登录v1】token={}", token);
@@ -164,12 +167,15 @@ public class UserController {
     @PostMapping("/thirdLogin")
     public String thirdLogin(String openId, String type, HttpServletRequest request)
             throws ErpException {
+        //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
+        String loginUa = request.getHeader("loginUa");
         resultVO.setData(JSON.parseObject(JSON.toJSONString(
-                userService.login(openId, type, IpUtil.getIp(request)),
+                userService.login(openId, type, IpUtil.getIp(request), loginUa),
                 SerializerFeature.DisableCircularReferenceDetect)));
         return JSON.toJSONString(resultVO);
     }
 
+    //查询token是否可用
     @PostMapping("/tokenUse")
     public ResultVO tokenUse(String token) throws ErpException {
         log.debug("【验证token是否可用】token={}", token);
@@ -177,7 +183,25 @@ public class UserController {
         return resultVO;
     }
 
+    @PostMapping("/tokenCheck")
+    public ResultVO tokenCheck(String token) throws ErpException {
+        log.debug("【验证token是否可用】token={}", token);
+        resultVO.setData(userService.tokenCheck(token));
+        return resultVO;
+    }
 
+
+    /**
+     * 用户列表
+     *
+     * @param username     用户名
+     * @param phoneNum     手机号
+     * @param email        邮箱
+     * @param enterpriseId 公司
+     * @param token        用户认证标识
+     * @param page         页码
+     * @param pageSize     每页条数
+     */
     @PostMapping("/userList")
     public String userList(
             @RequestParam(required = false) String username,
@@ -193,6 +217,15 @@ public class UserController {
     }
 
 
+    /**
+     * 查询用户信息（内部调用）
+     *
+     * @param username     用户名
+     * @param phoneNum     手机号
+     * @param email        邮箱
+     * @param enterpriseId 公司
+     * @param token        用户认证标识
+     */
     private static String getUser(String username, String phoneNum,
                                   String email, Integer enterpriseId,
                                   Integer page, Integer pageSize,
@@ -209,6 +242,9 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
+    /**
+     * 查询用户
+     */
     @PostMapping("/getUser")
     public String getUser(Integer uid,
                           @RequestParam(defaultValue = "0") int showPhone)
@@ -222,6 +258,9 @@ public class UserController {
     }
 
 
+    /**
+     * 用户详情
+     */
     @PostMapping("/details")
     public String details(Integer uid)
             throws ErpException {
@@ -245,6 +284,13 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
+
+    /**
+     * 添加用户
+     *
+     * @param user       用户对象
+     * @param enterprise 企业id
+     */
     @PostMapping("/addUser")
     public String addUser(User user, String enterprise) throws ErpException {
         log.info("【添加用户】user={}", user);
@@ -255,7 +301,7 @@ public class UserController {
         int hashCode = user.hashCode();
 
         //以此用户的hashcode值作为key把用户存进缓存中
-        redisTemplate.opsForValue().set(String.valueOf(hashCode),user);
+        redisTemplate.opsForValue().set(String.valueOf(hashCode), user);
         UserSaveVO userSaveVO = new UserSaveVO();
         userSaveVO.setUid(0);
         userSaveVO.setIdentification(hashCode);
@@ -265,6 +311,13 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
+
+    /**
+     * 设置用户权限
+     *
+     * @param param 用户权限json对象
+     * @param token 用户认证标识
+     */
     @PostMapping("/setUserAuth")
     public String setUserAuth(@RequestBody String param, @RequestHeader String token) throws ErpException {
 
@@ -273,7 +326,7 @@ public class UserController {
         Integer uid = data.getInteger("uid");
         Integer identification = data.getInteger("identification");
 
-        if (uid == 0 || uid == null) {
+        if (uid == 0) {
             //新用户添加权限，调用新用户添加权限的借口
             User user = (User) redisTemplate.opsForValue().get(identification.toString());
             userService.addUserAuth(param, token, user);
@@ -285,6 +338,9 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
+    /**
+     * 编辑用户
+     */
     @PostMapping("/editUser")
     public String editUser(User user) throws ErpException {
         log.info("【修改用户】user={}", user);
@@ -292,19 +348,33 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
+    /**
+     * 修改用户密码
+     */
     @PostMapping("/updatePassword")
     public String updatePassword(String oldPassword, String newPassword,
                                  String token) throws ErpException {
-        resultVO.setData(JSON.parseObject(JSON.toJSONString(userService.updatePassword(oldPassword, newPassword, token))));
+        resultVO.setData(JSON.parseObject(JSON.toJSONString(userService.updatePassword(oldPassword,
+                newPassword, token))));
         return JSON.toJSONString(resultVO);
     }
 
+    /**
+     * 重置用户密码
+     *
+     * @param token    用户认证标识
+     * @param uid      用户id
+     * @param password 重置后的密码
+     */
     @PostMapping("/initUser")
     public String initUser(String token, Integer uid, String password) throws ErpException {
         userService.initPassword(token, uid, password);
         return JSON.toJSONString(resultVO);
     }
 
+    /**
+     * 检验手机号是否存在
+     */
     @PostMapping("/phoneIsExist")
     public String phoneIsExist(String phone) throws ErpException {
         userService.phoneIsExist(phone);
@@ -313,22 +383,36 @@ public class UserController {
 
     @PostMapping("/useOpenIdGetUser")
     public String useOpenIdGetUser(String type, String openId, HttpServletRequest request) throws ErpException {
-        resultVO.setData(userAccountService.userOpenIdGetUser(type, openId, IpUtil.getIp(request)));
+        //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
+        String loginUa = request.getHeader("loginUa");
+        resultVO.setData(userAccountService.userOpenIdGetUser(type, openId, IpUtil.getIp(request), loginUa));
         return JSON.toJSONString(resultVO);
     }
 
+    /**
+     * 根据token获取用户信息
+     */
     @PostMapping("/tokenGetUser")
     public String tokenGetUser(String token) throws ErpException {
         resultVO.setData(JSON.parseObject(JSON.toJSONString(userService.tokenGetUser(token))));
         return JSON.toJSONString(resultVO);
     }
 
+    /**
+     * 通过用户id获取企业集合
+     *
+     * @param uid 用户id
+     * @return 返回企业集合
+     */
     @PostMapping("/getUserEnterprise")
     public String getUserEnterprise(Integer uid) throws ErpException {
         resultVO.setData(JSON.parseArray(JSON.toJSONString(userService.gerEnterprisesById(uid))));
         return JSON.toJSONString(resultVO);
     }
 
+    /**
+     * 检验密码是否正确
+     */
     @PostMapping("/checkPassword")
     public String checkPassword(String token, String password) throws ErpException {
         userService.checkPassword(token, password);
@@ -351,6 +435,9 @@ public class UserController {
     }
 
 
+    /**
+     * 获取手机erp用户常用功能模块
+     */
     @PostMapping("/getUserFavorite")
     public ResultVO getUserFavoriteConfig(@RequestHeader String token) throws ErpException {
         resultVO.setData(userService.getUserFavoriteConfig(token));
@@ -358,6 +445,9 @@ public class UserController {
     }
 
 
+    /**
+     * 设置手机erp用户常用功能模块
+     */
     @PostMapping("/setUserFavorite")
     public ResultVO setUserFavoriteConfig(@RequestHeader String token, String config) throws ErpException {
         userService.setUserFavoriteConfig(token, config);
@@ -366,12 +456,22 @@ public class UserController {
     }
 
 
+    /**
+     * 获取用户绑定司机
+     */
     @PostMapping({"/getBindDriver"})
     public ResultVO getBindDriver(@RequestHeader String token, String compid) throws ErpException {
         return ResultVO.create(this.userService.getBindDriver(token, compid));
     }
 
 
+    /**
+     * 给用户绑定司机
+     *
+     * @param uid        用户id
+     * @param compid     企业id
+     * @param driverCode 司机编号
+     */
     @PostMapping({"/bindDriver"})
     public ResultVO getBindDriver(Integer uid, String compid, String driverCode) throws ErpException {
         this.userService.bindDriver(uid, compid, driverCode);
@@ -379,10 +479,35 @@ public class UserController {
     }
 
 
+    /**
+     * 用于更改用户的超级管理员权限
+     *
+     * @param uid    用户id
+     * @param eadmin 1:超级管理员；  0：取消超级管理员
+     */
     @RequestMapping("/updateUserStatus")
     public ResultVO updateUserAdminStatus(int uid, String eadmin) throws ErpException {
         userService.updateUserAdminStatus(uid, eadmin);
-        return resultVO.create();
+        return ResultVO.create();
     }
+
+
+    /**
+     * 查询所有企业所有用户
+     */
+    @PostMapping("/selectAllUser")
+    public String selectAllUser(Integer compid, String userName) {
+        resultVO.setData(JSON.toJSONString(userService.selectAllUser(compid, userName)));
+        return JSON.toJSONString(resultVO);
+    }
+
+
+    /*根据eid 查询企业用户*/
+    @PostMapping("/userAll")
+    public String userAll(Integer eid) {
+        resultVO.setData(JSON.toJSONString(userService.userAll(eid)));
+        return JSON.toJSONString(resultVO);
+    }
+
 
 }

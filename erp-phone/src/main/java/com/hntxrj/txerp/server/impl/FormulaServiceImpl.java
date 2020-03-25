@@ -37,7 +37,8 @@ public class FormulaServiceImpl implements FormulaService {
     private final TaskPlanMapper taskPlanMapper;
 
     @Autowired
-    public FormulaServiceImpl(LaboratroyDao laboratroyDao, FormulaMapper formulaMapper, StockMapper stockMapper, TaskPlanMapper taskPlanMapper) {
+    public FormulaServiceImpl(LaboratroyDao laboratroyDao, FormulaMapper formulaMapper, StockMapper stockMapper,
+                              TaskPlanMapper taskPlanMapper) {
         this.laboratroyDao = laboratroyDao;
         this.formulaMapper = formulaMapper;
         this.stockMapper = stockMapper;
@@ -97,6 +98,7 @@ public class FormulaServiceImpl implements FormulaService {
     @Override
     public JSONObject getFormulaInfo(String compid, String taskId, String stirId) {
         Map<String, Object> resultMap = formulaMapper.getFormulaInfo(compid, taskId, stirId);
+        Map<String, Object> produceMap = formulaMapper.getProduceFormulaInfo(compid, taskId, stirId);
         List<Map<String, Object>> formulas = new ArrayList<>();
 
         List<Map<String, Object>> stocks = stockMapper.getStockAll(compid);
@@ -108,11 +110,14 @@ public class FormulaServiceImpl implements FormulaService {
             formula.put("mat", mat);
             formula.put("matValue", resultMap.get("MatV" + (i + 1)));
             formula.put("wr", resultMap.get("WR" + (i + 1)));
+            formula.put("produceValue", "0");
+            if (produceMap != null) {
+                formula.put("produceValue", produceMap.get("MatV" + (i + 1)));
+            }
+
             resultMap.remove("Mat" + (i + 1));
             resultMap.remove("MatV" + (i + 1));
             resultMap.remove("WR" + (i + 1));
-            // 处理类型
-            // 取出库存id
 
             String pattern = "\\((.*?)\\)";
             Pattern p = Pattern.compile(pattern);
@@ -163,7 +168,7 @@ public class FormulaServiceImpl implements FormulaService {
             for (Map<String, Object> map : formulaList) {
                 StringBuilder ppName = new StringBuilder();
                 //根据compid和taskId查询出每个任务单对应的加价项目编号集合。
-                List<String> ppCodes = taskPlanMapper.getPPCodeBytaskId(compid, String.valueOf(map.get("TaskId")));
+                List<String> ppCodes = taskPlanMapper.getPPCodeByTaskId(compid, String.valueOf(map.get("TaskId")));
                 for (String ppCode : ppCodes) {
                     PriceMarkupVO priceMarkupVO = taskPlanMapper.getPriceMarkupByPPCode(compid, ppCode);
                     ppName.append(priceMarkupVO.getPPName());
@@ -178,6 +183,7 @@ public class FormulaServiceImpl implements FormulaService {
         }
 
 
+        assert formulaList != null;
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(formulaList);
         PageInfoUtil<Map<String, Object>> pageInfoListVO = new PageInfoUtil<>();
         PageVO<Map<String, Object>> resultObj = pageInfoListVO.init(pageInfo);

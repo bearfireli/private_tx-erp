@@ -9,10 +9,11 @@ import java.util.List;
 @Data
 public class TaskPlanVO {
 
+    private String compid;
     private String taskId;
     private String contractId;
     private String contractUID;
-    private String cContractCode;
+    private String contractDetailCode;  //子合同号
     private String eppCode;
     private String eppName;
     private String builderCode;
@@ -45,6 +46,9 @@ public class TaskPlanVO {
     private String placeStyleName;
     private String preRemark;
     private boolean receiptStatus;
+    private Integer clientType;
+    private boolean excess;
+    private boolean tax;
 
     private List<String> ppCodes;
 }
