@@ -48,4 +48,58 @@
         group by Sto_Name
     </select>
 
+
+    <!--更新检查结果
+    * @param compid 公司id
+     * @param stICode 过磅单号
+     * @param isPassOrNot 是否合格
+     * @param picturePath 图片路径
+     * @param matCode 材料编码
+     * @param stkCode 库位编码
+     *
+    -->
+    <update id="updateCheckStatus">
+        update MP_StockIn set
+         isPassOrNot=#{isPassOrNot},
+         PicturePath=#{picturePath},
+         MatCode=#{matCode},
+         StkCode=#{stkCode},
+         NotReason=#{notReason},
+         UpDownMark=0
+        where  compid = #{compid} and StICode=#{stICode}
+    </update>
+
+    <select id="getMatByComId" resultType="com.hntxrj.txerp.vo.MaterialVO">
+        select
+        MatCode,MatName,MatParent
+        from MP_MaterialInfor
+        where compid=#{compid}
+        order by MatName
+
+    </select>
+    <select id="getStockByComId" resultType="com.hntxrj.txerp.vo.StockVO">
+        select
+        StkCode,Sto_Name
+        from MP_Stock
+        where compid=#{compid}
+        order by Sto_Name
+    </select>
+    <select id="getStockCheck" resultType="com.hntxrj.txerp.vo.StockInCheckVO">
+        select
+    t1.stICode,
+    t1.isPassOrNot,
+    t1.PicturePath,
+    t1.MatCode,
+    t3.matName,
+    t1.StkCode,
+    t1.NotReason,
+    t1.StkCode,
+    t2.Sto_Name
+       from  MP_StockIn t1
+left join  MP_Stock t2 on t1.StkCode=t2.StkCode and t2.compid=#{compid}
+left join  MP_MaterialInfor t3 on t1.MatCode=t3.MatCode and t3.compid=#{compid}
+where t1.compid=#{compid} and t1.stICode=#{stICode}
+
+    </select>
+
 </mapper>

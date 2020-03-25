@@ -1,16 +1,16 @@
 package com.hntxrj.txerp.api;
 
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.server.StockInSelectService;
 import com.hntxrj.txerp.server.StockInServer;
 import com.hntxrj.txerp.server.StockInCollectService;
 import com.hntxrj.txerp.vo.ResultVO;
 import com.hntxrj.txerp.vo.WeightMatParentNameVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -518,6 +518,72 @@ public class StockInApi {
         return ResultVO.create(stockInServer.getHistogramByStoName(compid, empName, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
+    }
+    /**
+     *  通过 compid  stICode 查询材料过磅
+     * @param compid 公司id
+     * @param stICode 过磅单号
+
+     */
+    @PostMapping("/getStockCheck")
+    public ResultVO getStockCheck( String compid,   String stICode) {
+
+        return ResultVO.create(stockInServer.getStockCheck(compid, stICode));
+    }
+    /**
+     *  更新检验状态
+     * @param compid 公司id
+     * @param stICode 过磅单号
+     * @param isPassOrNot 是否合格
+     * @param picturePath 图片路径
+     * @param matCode 材料编码
+     * @param stkCode 库位编码
+     */
+    @PostMapping("/updateCheckStatus")
+    public ResultVO updateCheckStatus( String compid,   String stICode,@RequestParam(defaultValue="1") int isPassOrNot,
+                                       String picturePath,String matCode,String stkCode,String notReason) {
+        stockInServer.updateCheckStatus(compid, stICode, isPassOrNot, picturePath,matCode,stkCode,notReason);
+        return ResultVO.create();
+    }
+
+    /**
+     * 上传照片
+     */
+    @PostMapping("/uploadPicture")
+    public com.hntxrj.txerp.core.web.ResultVO uploadPicture(MultipartFile image) throws ErpException {
+        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.uploadCheckingImg(image));
+    }
+
+    /**
+     *
+     * @param fileName 文件名称
+     * @throws ErpException 异常处理
+     */
+    @GetMapping("/downloadPicture")
+    public void downloadPicture(String fileName, HttpServletResponse response) throws ErpException {
+        stockInServer.downloadPicture(fileName, response);
+    }
+
+    /**
+     * 根据公司ID获取材料信息
+     * @param compid 公司ID
+     * @return 结果集
+     */
+    @GetMapping("/getMatByComId")
+    public ResultVO getMatByComId(String compid) {
+        return ResultVO.create(stockInServer.getMatByComId(compid));
+
+    }
+
+    /**
+     *  根据公司ID获取库存
+     * @param compid 公司ID
+     * * @return 结果集
+     */
+    @GetMapping("/getStockByComId")
+    public ResultVO getStockByComId(String compid) {
+        return ResultVO.create(stockInServer.getStockByComId(compid));
+
     }
 
 

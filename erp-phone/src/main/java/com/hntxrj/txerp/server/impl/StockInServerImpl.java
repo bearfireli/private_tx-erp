@@ -3,15 +3,25 @@ package com.hntxrj.txerp.server.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.dao.StockInDao;
 import com.hntxrj.txerp.mapper.StockMapper;
 import com.hntxrj.txerp.server.StockInServer;
 import com.hntxrj.txerp.vo.*;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Scope("prototype")
@@ -19,6 +29,8 @@ public class StockInServerImpl implements StockInServer {
     private final StockInDao stockInDao;
     private final StockMapper stockInWeighmatNsMapper;
 
+    @Value("${app.checking.imgFilePath}")
+    private String checkingImageFilePath;
     @Autowired
     public StockInServerImpl(StockInDao stockInDao, StockMapper stockInWeighmatNsMapper) {
         this.stockInDao = stockInDao;
@@ -402,6 +414,87 @@ public class StockInServerImpl implements StockInServer {
                                                      String supName, String beginTime, String endTime) {
         return stockInWeighmatNsMapper.getHistogramByStoName(compid, empName, vehicleId, stoName, supName,
                 beginTime, endTime);
+    }
+
+    /**
+     * 上传检验照片
+     * @return 路径
+     */
+    @Override
+    public String uploadCheckingImg(MultipartFile image) throws ErpException {
+        String fileName = UUID.randomUUID().toString();
+        File dir = new File(checkingImageFilePath);
+        dir.mkdirs();
+        File file = new File(checkingImageFilePath + fileName);
+        try {
+            file.createNewFile();
+            IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
+        }
+        return fileName;
+    }
+
+    /**
+     * 下载图片
+     * @param fileName 文件名称
+     */
+    @Override
+    public void downloadPicture(String fileName, HttpServletResponse response) throws ErpException {
+        File file = new File(checkingImageFilePath + fileName);
+        if (!file.exists()) {
+            throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
+        }
+        try {
+            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
+        }
+    }
+
+    /**
+     * 更新检验状态
+     * @param compid 公司id
+     * @param stICode 过磅单号
+     * @param isPassOrNot 是否合格
+     * @param picturePath 图片路径
+     * @param matCode 材料编码
+     * @param stkCode 库位编码
+     */
+    @Override
+    public void updateCheckStatus(String compid, String stICode, int isPassOrNot, String picturePath, String matCode,
+                                  String stkCode,String notReason) {
+         stockInWeighmatNsMapper.updateCheckStatus(compid, stICode, isPassOrNot, picturePath,matCode,stkCode,notReason);
+    }
+    /**
+     * 根据公司ID获取库存
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    @Override
+    public List<StockVO> getStockByComId(String compid) {
+        return stockInWeighmatNsMapper.getStockByComId(compid);
+    }
+    /**
+     * 根据公司ID获取库存
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    @Override
+    public List<MaterialVO> getMatByComId(String compid) {
+        return stockInWeighmatNsMapper.getMatByComId(compid);
+    }
+    /**
+     *  通过 compid  stICode 查询材料过磅
+     * @param compid 公司id
+     * @param stICode 过磅单号
+
+     */
+    @Override
+    public StockInCheckVO getStockCheck(String compid, String stICode) {
+        return stockInWeighmatNsMapper.getStockCheck(compid,stICode);
     }
 
 }
