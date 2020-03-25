@@ -494,9 +494,16 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         //用userAuthVOS代替userAuths进行数据传递
         List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
+        String compid="";
+        if (enterpriseId != null) {
+            if (String.valueOf(enterpriseId).length() <= 1) {
+                compid = "0" + enterpriseId;
+            }
+
+        }
 
         List<UserListVO> userList = userMapper.getUserList(enterpriseId, user.getUsername(), user.getPhone(),
-                user.getEmail());
+                user.getEmail(),compid);
         StringBuilder driverCodes = new StringBuilder();
         for (UserListVO userListVO : userList) {
             String driverCode = userListVO.getDriverCode();
