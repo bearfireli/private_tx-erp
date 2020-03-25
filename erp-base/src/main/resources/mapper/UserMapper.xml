@@ -123,6 +123,9 @@
         <if test="enterpriseId != null and enterpriseId!=''">
             and ua.eid = #{enterpriseId}
         </if>
+        <if test="compid != null  and compid !='' ">
+            and ud.compid = #{compid}
+        </if>
         <if test="userName != null">
             and u.username like #{_userName}
         </if>

@@ -30,7 +30,7 @@ public interface UserMapper {
     void deleteUserStatus(Integer userId);
 
     /*获取用户列表*/
-    List<UserListVO> getUserList(Integer enterpriseId, String userName, String phone, String email);
+    List<UserListVO> getUserList(Integer enterpriseId, String userName, String phone, String email,String compid);
 
     /*根据权限组id获取所有权限方法的集合*/
     List<String> getOpenAuth(Integer groupId);
