@@ -68,6 +68,7 @@ public class ControllerAspect {
     private static final String ENTERPRISE_GET_ENTERPRISE = "/enterprise/getEnterprise";
     private static final String USER_STATISTIC = "/statistic";
     private static final String FUNCTION_MENU_LIST = "/functionmenulist";
+    private static final String USER_UPDATE_PASSWORD = "/user/updatePassword";
 
     private static final String[] PUBLIC_API_LIST = new String[]{
             LOGIN_API, TOKEN_USE, TOKEN_CHECK, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILE_DOWNLOAD, LOGIN_REST_API,
@@ -79,7 +80,7 @@ public class ControllerAspect {
     private static final String[] PUBLIC_PATH = new String[]{
             DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES, USER_IMAGES, FEED_BOCK_IMAGES, ENTERPRISE_IMAGES,
             ENTERPRISE_IMAGE, USER_USERNAME, ENTERPRISE_GET_ENTERPRISE, USER_SET_HEADER, FEED_BOCK_UPLOAD_PICTURE,
-            FEED_BOCK_ADD_FEEDBACK, USER_STATISTIC, FUNCTION_MENU_LIST
+            FEED_BOCK_ADD_FEEDBACK, USER_STATISTIC, FUNCTION_MENU_LIST,USER_UPDATE_PASSWORD
     };
 
 

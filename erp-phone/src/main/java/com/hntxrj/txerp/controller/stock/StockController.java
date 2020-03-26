@@ -2,6 +2,8 @@ package com.hntxrj.txerp.controller.stock;
 
 import com.hntxrj.txerp.server.StockService;
 import com.hntxrj.txerp.vo.JsonVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/produce")
 @Scope("prototype")
 @EnableAsync
+@Api("库存")
 public class StockController {
 
     private final StockService stockService;
@@ -33,6 +36,7 @@ public class StockController {
      * @param stirId 搅拌楼号
      * @return
      */
+    @ApiOperation("实时库存")
     @RequestMapping("/getRealStock")
     public JsonVo getRealStock(String stirId, String compid, String opid) {
         JsonVo vo = new JsonVo();
