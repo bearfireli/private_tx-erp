@@ -8,6 +8,8 @@ import com.hntxrj.txerp.server.TaskSaleInvoiceService;
 import com.hntxrj.txerp.vo.PriceMarkupVO;
 import com.hntxrj.txerp.vo.ResultVO;
 import com.hntxrj.txerp.vo.SquareQuantityVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+
+@Api(tags = "任务单接口", description = "提供任务相关的 api")
 @RestController
 @RequestMapping("/api/taskPlan")
 public class TaskPlanApi {
@@ -49,6 +53,7 @@ public class TaskPlanApi {
      * @param verifyStatus 审核标识  0：未审核； 1：已审核
      * @return 任务单列表对象
      */
+    @ApiOperation("任务单列表")
     @PostMapping("/taskPlanList")
     public ResultVO getTaskPlanList(Long beginTime, Long endTime, String eppCode,
                                     String builderCode, String placing, String taskId,
