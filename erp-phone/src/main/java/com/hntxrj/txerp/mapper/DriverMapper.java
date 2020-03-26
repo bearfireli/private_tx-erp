@@ -173,4 +173,6 @@ public interface DriverMapper {
      * @param dateTime      修改车辆状态时间
      */
     void updateVehicleStatus(String compid, String vehicleId, Integer vehicleStatus, Date dateTime);
+
+    TaskSaleInvoiceDriverListVO selectTaskSaleInvoice(String compid, Integer id);
 }

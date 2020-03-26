@@ -250,6 +250,9 @@
        from DM_DriverWorkTime
        where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
     </select>
+    <select id="selectTaskSaleInvoice" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO">
+        select id from PT_TaskSaleInvoice where compid =#{compid} and id=#{id}  and VehicleStatus !=1
+    </select>
 
     <update id="updateDriverWorkTime">
         <if test="timeType==1 ">
