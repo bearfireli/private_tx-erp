@@ -437,7 +437,7 @@ public class StockInServerImpl implements StockInServer {
 
          StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(comid,stICode);
             String  picturePath=stockInCheckVO.getPicturePath();
-        if(picturePath.isEmpty()){
+        if(picturePath==null|| picturePath.equals("")){
             stockInCheckVO.setPicturePath(fileName);
         }else{
             stockInCheckVO.setPicturePath(stockInCheckVO.getPicturePath()+"#"+fileName);
@@ -523,9 +523,10 @@ public class StockInServerImpl implements StockInServer {
     }
 
     @Override
-    public StockInCheckVO deleteCheckingImg(String comid, String stICode, String image) {
+    public StockInCheckVO deleteCheckingImg(String compid, String stICode, String image) {
 
-        StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(comid,stICode);
+        StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(compid,stICode);
+        stockInCheckVO.setCompid(compid);
         String[] paths=stockInCheckVO.getPicturePath().split("#");
         StringBuilder newPath= new StringBuilder();
         if (paths.length>0) {
@@ -536,7 +537,7 @@ public class StockInServerImpl implements StockInServer {
                 }
             }
         }
-        stockInWeighmatNsMapper.updateCheckStatus(comid, stICode, stockInCheckVO.getIsPassOrNot(),
+        stockInWeighmatNsMapper.updateCheckStatus(compid, stICode, stockInCheckVO.getIsPassOrNot(),
                 newPath.toString(),stockInCheckVO.getMatCode(),stockInCheckVO.getStkCode(),
                 stockInCheckVO.getNotReason());
 
