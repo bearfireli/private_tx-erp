@@ -257,13 +257,13 @@ public interface StockMapper {
      * @param compid 公司ID
      * @return 结果集列表
      */
-    List<MaterialVO> getMatByComId(String compid);
+    List<MaterialVO> getMatByComId(String compid,String searchWords);
     /**
      * 根据公司ID获取库存
      * @param compid 公司ID
      * @return 结果集列表
      */
-    List<StockVO> getStockByComId(String compid);
+    List<StockVO> getStockByComId(String compid,String searchWords);
     /**
      *  通过 compid  stICode 查询材料过磅
      * @param compid 公司id

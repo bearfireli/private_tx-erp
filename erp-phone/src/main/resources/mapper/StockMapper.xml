@@ -74,6 +74,9 @@
         MatCode,MatName,MatParent
         from MP_MaterialInfor
         where compid=#{compid}
+        <if test="searchWords!=null and searchWords!=''">
+            and Sto_Name like '%'+#{searchWords}+'%'
+        </if>
         order by MatName
 
     </select>
@@ -82,6 +85,9 @@
         StkCode,Sto_Name
         from MP_Stock
         where compid=#{compid}
+        <if test="searchWords!=null and searchWords!=''">
+            and Sto_Name like '%'+#{searchWords}+'%'
+        </if>
         order by Sto_Name
     </select>
     <select id="getStockCheck" resultType="com.hntxrj.txerp.vo.StockInCheckVO">

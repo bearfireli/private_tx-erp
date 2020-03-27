@@ -31,6 +31,8 @@ public class StockInCheckVO {
     private String notReason;
     /*图片信息*/
     private String picturePath;
+    /*是否通过*/
+    private int isPassOrNot;
 
 
 

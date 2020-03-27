@@ -6,6 +6,7 @@ import com.alipay.api.domain.Material;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -251,7 +252,7 @@ public interface StockInServer {
     /**
      * 上传检验的照片
      */
-    String uploadCheckingImg(MultipartFile image) throws ErpException;
+    String uploadCheckingImg(String comid,String stICode, MultipartFile image) throws ErpException;
 
     /**
      * 下载图片
@@ -276,14 +277,14 @@ public interface StockInServer {
      * @param compid 公司ID
      * @return 结果集列表
      */
-    List<StockVO> getStockByComId(String compid);
+    PageVO<StockVO> getStockByComId(String compid,String searchWords,Integer page,Integer pageSize);
 
     /**
      * 根据公司ID获取材料
      * @param compid 公司ID
      * @return 结果集列表
      */
-    List<MaterialVO> getMatByComId(String compid);
+    PageVO<MaterialVO> getMatByComId(String compid,String searchWords,Integer page,Integer pageSize);
     /**
      *  通过 compid  stICode 查询材料过磅
      * @param compid 公司id
@@ -291,4 +292,6 @@ public interface StockInServer {
 
      */
     StockInCheckVO getStockCheck(String compid, String stICode);
+
+    StockInCheckVO deleteCheckingImg(String comid, String stICode, String image);
 }

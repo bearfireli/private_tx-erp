@@ -6,6 +6,8 @@ import com.hntxrj.txerp.server.StockInServer;
 import com.hntxrj.txerp.server.StockInCollectService;
 import com.hntxrj.txerp.vo.ResultVO;
 import com.hntxrj.txerp.vo.WeightMatParentNameVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+@Api(tags = "库存接口", description = "提供库存相关的 api")
 @RestController
 @RequestMapping("/api/stockIn")
 public class StockInApi {
@@ -525,6 +528,7 @@ public class StockInApi {
      * @param stICode 过磅单号
 
      */
+    @ApiOperation(value = "通过 compid  stICode 查询材料过磅",httpMethod="get" ,notes="comid 公司ID|stICode 过磅单号")
     @PostMapping("/getStockCheck")
     public ResultVO getStockCheck( String compid,   String stICode) {
 
@@ -534,11 +538,13 @@ public class StockInApi {
      *  更新检验状态
      * @param compid 公司id
      * @param stICode 过磅单号
-     * @param isPassOrNot 是否合格
+     * @param isPassOrNot 是否合格 1合格 0不合格
      * @param picturePath 图片路径
      * @param matCode 材料编码
      * @param stkCode 库位编码
      */
+    @ApiOperation(value = "更新检验状态",httpMethod="get" ,notes="comid 公司ID|stICode 过磅单号|" +
+            "isPassOrNot 是否合格 1合格 0不合格|picturePath 图片路径|matCode 材料编码|stkCode 库位编码")
     @PostMapping("/updateCheckStatus")
     public ResultVO updateCheckStatus( String compid,   String stICode,@RequestParam(defaultValue="1") int isPassOrNot,
                                        String picturePath,String matCode,String stkCode,String notReason) {
@@ -548,17 +554,40 @@ public class StockInApi {
 
     /**
      * 上传照片
+
+     * @param comid 公司ID
+     * @param stICode 过磅单号
+     * @param image 图片
+     * @return 图片路径
+     * @throws ErpException 异常
      */
+    @ApiOperation(value = "上传照片",httpMethod="get" ,notes="" +
+            "comid 公司ID|stICode 过磅单号|image 图片")
     @PostMapping("/uploadPicture")
-    public com.hntxrj.txerp.core.web.ResultVO uploadPicture(MultipartFile image) throws ErpException {
-        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.uploadCheckingImg(image));
+    public com.hntxrj.txerp.core.web.ResultVO uploadPicture(String comid,String stICode, MultipartFile image) throws ErpException {
+        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.uploadCheckingImg(comid,stICode,image));
+    }
+    /**
+     * 删除照片
+     * @param comid 公司ID
+     * @param stICode 过磅单号
+     * @param image 图片路径
+     * @return 结果
+     */
+    @ApiOperation(value = "删除照片",httpMethod="get" ,notes="" +
+            "comid 公司ID|stICode 过磅单号|image 图片路径")
+    @PostMapping("/deletePicture")
+    public com.hntxrj.txerp.core.web.ResultVO deletePicture(String comid,String stICode, String image)  {
+        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.deleteCheckingImg(comid,stICode,image));
     }
 
     /**
-     *
+     *下图片
      * @param fileName 文件名称
      * @throws ErpException 异常处理
      */
+    @ApiOperation(value = "下图片",httpMethod="get" ,notes="" +
+            "fileName 文件名称")
     @GetMapping("/downloadPicture")
     public void downloadPicture(String fileName, HttpServletResponse response) throws ErpException {
         stockInServer.downloadPicture(fileName, response);
@@ -567,22 +596,37 @@ public class StockInApi {
     /**
      * 根据公司ID获取材料信息
      * @param compid 公司ID
-     * @return 结果集
+     * @param searchWords 搜索关键字
+     * @param page 当前页
+     * @param pageSize 分页大小
+     * @return 数据结果
      */
-    @GetMapping("/getMatByComId")
-    public ResultVO getMatByComId(String compid) {
-        return ResultVO.create(stockInServer.getMatByComId(compid));
+    @ApiOperation(value ="根据公司ID获取材料信息",httpMethod="post" ,notes="" +
+            "searchWords 搜索关键字|compid 公司ID")
+    @PostMapping("/getMatByComId")
+    public ResultVO getMatByComId(String compid,String searchWords,
+                                  @RequestParam(defaultValue = "1") Integer page,
+                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(stockInServer.getMatByComId(compid,searchWords,page,pageSize));
 
     }
 
     /**
      *  根据公司ID获取库存
      * @param compid 公司ID
+     * @param searchWords 搜索关键字
+     * @param page 当前页
+     * @param pageSize 分页大小
      * * @return 结果集
      */
-    @GetMapping("/getStockByComId")
-    public ResultVO getStockByComId(String compid) {
-        return ResultVO.create(stockInServer.getStockByComId(compid));
+
+    @ApiOperation(value="根据公司ID获取库存",httpMethod="post" ,notes="" +
+            "searchWords 搜索关键字|compid 公司ID")
+    @PostMapping("/getStockByComId")
+    public ResultVO getStockByComId(String compid,String searchWords,
+                                    @RequestParam(defaultValue = "1") Integer page,
+                                    @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(stockInServer.getStockByComId(compid,searchWords,page,pageSize));
 
     }
 

@@ -421,18 +421,35 @@ public class StockInServerImpl implements StockInServer {
      * @return 路径
      */
     @Override
-    public String uploadCheckingImg(MultipartFile image) throws ErpException {
+    public String uploadCheckingImg(String comid,String stICode,MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString();
         File dir = new File(checkingImageFilePath);
         dir.mkdirs();
         File file = new File(checkingImageFilePath + fileName);
         try {
-            file.createNewFile();
+            Boolean b=file.createNewFile();
+            System.out.println(b);
             IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
         }
+
+         StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(comid,stICode);
+
+        if(stockInCheckVO.getPicturePath().isEmpty()){
+            stockInCheckVO.setPicturePath(fileName);
+        }else{
+            stockInCheckVO.setPicturePath(stockInCheckVO.getPicturePath()+"#"+fileName);
+        }
+        stockInWeighmatNsMapper.updateCheckStatus(comid, stICode, stockInCheckVO.getIsPassOrNot(),
+                stockInCheckVO.getPicturePath(),stockInCheckVO.getMatCode(),stockInCheckVO.getStkCode(),
+                stockInCheckVO.getNotReason());
+
+
+
+
+
         return fileName;
     }
 
@@ -474,8 +491,11 @@ public class StockInServerImpl implements StockInServer {
      * @return 结果集列表
      */
     @Override
-    public List<StockVO> getStockByComId(String compid) {
-        return stockInWeighmatNsMapper.getStockByComId(compid);
+    public PageVO<StockVO> getStockByComId(String compid,String searchWords,Integer page,Integer pageSize) {
+        PageVO<StockVO> pageVO = new PageVO<>();
+        PageInfo<StockVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getStockByComId(compid,searchWords));
+        pageVO.format(pageInfo);
+        return pageVO;
     }
     /**
      * 根据公司ID获取库存
@@ -483,8 +503,11 @@ public class StockInServerImpl implements StockInServer {
      * @return 结果集列表
      */
     @Override
-    public List<MaterialVO> getMatByComId(String compid) {
-        return stockInWeighmatNsMapper.getMatByComId(compid);
+    public PageVO<MaterialVO> getMatByComId(String compid,String searchWords,Integer page,Integer pageSize) {
+        PageVO<MaterialVO> pageVO = new PageVO<>();
+        PageInfo<MaterialVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getMatByComId(compid,searchWords));
+        pageVO.format(pageInfo);
+        return pageVO;
     }
     /**
      *  通过 compid  stICode 查询材料过磅
@@ -494,7 +517,26 @@ public class StockInServerImpl implements StockInServer {
      */
     @Override
     public StockInCheckVO getStockCheck(String compid, String stICode) {
+
+
         return stockInWeighmatNsMapper.getStockCheck(compid,stICode);
+    }
+
+    @Override
+    public StockInCheckVO deleteCheckingImg(String comid, String stICode, String image) {
+
+        StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(comid,stICode);
+
+        if(stockInCheckVO.getPicturePath().equals(image)){
+            stockInCheckVO.setPicturePath("");
+        }else{
+            stockInCheckVO.setPicturePath(stockInCheckVO.getPicturePath().replace(image+"#",""));
+        }
+        stockInWeighmatNsMapper.updateCheckStatus(comid, stICode, stockInCheckVO.getIsPassOrNot(),
+                stockInCheckVO.getPicturePath(),stockInCheckVO.getMatCode(),stockInCheckVO.getStkCode(),
+                stockInCheckVO.getNotReason());
+
+        return stockInCheckVO;
     }
 
 }
