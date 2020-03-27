@@ -51,8 +51,10 @@ app:
     headerPath: ${app.workspace}\upload\user\header\
   pay:
     imgFilePath: ${app.workspace}\upload\payImgPath\
+  checking:
+    imgFilePath: ${app.workspace}\upload\checkImgPath\
   feedback:
     imgFilePath: ${app.workspace}\pic
-  host: http://192.168.31.88:8088
+  host: http://192.168.31.86:8088
 server:
   port: 9501

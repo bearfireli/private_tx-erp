@@ -89,6 +89,7 @@
         , mk.Sto_Name
         , mt.MatName
         , si.SaleType
+        , si.isPassOrNot
         , vp.PI_TypeName as ptTypeName
         from MP_StockIn si
         left join dbo.MP_Supplier ms on si.SupCode = ms.SupCode and si.compid = ms.compid
