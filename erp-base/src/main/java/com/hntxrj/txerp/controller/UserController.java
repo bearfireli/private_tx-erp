@@ -149,7 +149,7 @@ public class UserController {
             throws ErpException {
         log.info("【登录v1】phone={}, password={}", phone, password);
         //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
-        String loginUa = request.getHeader("loginUa");
+        String loginUa = request.getHeader("user-agent");
         resultVO.setData(JSON.toJSONString(userService.login(phone, password, request, loginUa, version),
                 SerializerFeature.DisableCircularReferenceDetect));
         return JSON.toJSONString(resultVO);
@@ -168,7 +168,7 @@ public class UserController {
     public String thirdLogin(String openId, String type, HttpServletRequest request)
             throws ErpException {
         //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
-        String loginUa = request.getHeader("loginUa");
+        String loginUa = request.getHeader("user-agent");
         resultVO.setData(JSON.parseObject(JSON.toJSONString(
                 userService.login(openId, type, IpUtil.getIp(request), loginUa),
                 SerializerFeature.DisableCircularReferenceDetect)));
@@ -384,7 +384,7 @@ public class UserController {
     @PostMapping("/useOpenIdGetUser")
     public String useOpenIdGetUser(String type, String openId, HttpServletRequest request) throws ErpException {
         //loginUa是不同项目登陆时的标识；例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
-        String loginUa = request.getHeader("loginUa");
+        String loginUa = request.getHeader("user-agent");
         resultVO.setData(userAccountService.userOpenIdGetUser(type, openId, IpUtil.getIp(request), loginUa));
         return JSON.toJSONString(resultVO);
     }
