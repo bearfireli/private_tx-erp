@@ -528,7 +528,7 @@ public class StockInApi {
      * @param stICode 过磅单号
 
      */
-    @ApiOperation(value = "通过 compid  stICode 查询材料过磅",httpMethod="get" ,notes="comid 公司ID|stICode 过磅单号")
+    @ApiOperation(value = "通过 compid  stICode 查询材料过磅",httpMethod="get" ,notes="compid 公司ID|stICode 过磅单号")
     @PostMapping("/getStockCheck")
     public ResultVO getStockCheck( String compid,   String stICode) {
 
@@ -543,7 +543,7 @@ public class StockInApi {
      * @param matCode 材料编码
      * @param stkCode 库位编码
      */
-    @ApiOperation(value = "更新检验状态",httpMethod="get" ,notes="comid 公司ID|stICode 过磅单号|" +
+    @ApiOperation(value = "更新检验状态",httpMethod="get" ,notes="compid 公司ID|stICode 过磅单号|" +
             "isPassOrNot 是否合格 1合格 0不合格|picturePath 图片路径|matCode 材料编码|stkCode 库位编码")
     @PostMapping("/updateCheckStatus")
     public ResultVO updateCheckStatus( String compid,   String stICode,@RequestParam(defaultValue="1") int isPassOrNot,
@@ -555,38 +555,38 @@ public class StockInApi {
     /**
      * 上传照片
 
-     * @param comid 公司ID
+     * @param compid 公司ID
      * @param stICode 过磅单号
      * @param image 图片
      * @return 图片路径
      * @throws ErpException 异常
      */
     @ApiOperation(value = "上传照片",httpMethod="get" ,notes="" +
-            "comid 公司ID|stICode 过磅单号|image 图片")
+            "compid 公司ID|stICode 过磅单号|image 图片")
     @PostMapping("/uploadPicture")
-    public com.hntxrj.txerp.core.web.ResultVO uploadPicture(String comid,String stICode, MultipartFile image) throws ErpException {
-        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.uploadCheckingImg(comid,stICode,image));
+    public com.hntxrj.txerp.core.web.ResultVO uploadPicture(String compid,String stICode, MultipartFile image) throws ErpException {
+        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.uploadCheckingImg(compid,stICode,image));
     }
     /**
      * 删除照片
-     * @param comid 公司ID
+     * @param compid 公司ID
      * @param stICode 过磅单号
      * @param image 图片路径
      * @return 结果
      */
     @ApiOperation(value = "删除照片",httpMethod="get" ,notes="" +
-            "comid 公司ID|stICode 过磅单号|image 图片路径")
+            "compid 公司ID|stICode 过磅单号|image 图片路径")
     @PostMapping("/deletePicture")
-    public com.hntxrj.txerp.core.web.ResultVO deletePicture(String comid,String stICode, String image)  {
-        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.deleteCheckingImg(comid,stICode,image));
+    public com.hntxrj.txerp.core.web.ResultVO deletePicture(String compid,String stICode, String image)  {
+        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.deleteCheckingImg(compid,stICode,image));
     }
 
     /**
-     *下图片
+     *图片展示
      * @param fileName 文件名称
      * @throws ErpException 异常处理
      */
-    @ApiOperation(value = "下图片",httpMethod="get" ,notes="" +
+    @ApiOperation(value = "图片展示",httpMethod="get" ,notes="" +
             "fileName 文件名称")
     @GetMapping("/downloadPicture")
     public void downloadPicture(String fileName, HttpServletResponse response) throws ErpException {
