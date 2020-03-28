@@ -1,20 +1,23 @@
 package com.hntxrj.txerp.api;
 
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.server.StockInSelectService;
 import com.hntxrj.txerp.server.StockInServer;
 import com.hntxrj.txerp.server.StockInCollectService;
 import com.hntxrj.txerp.vo.ResultVO;
 import com.hntxrj.txerp.vo.WeightMatParentNameVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+@Api(tags = "库存接口", description = "提供库存相关的 api")
 @RestController
 @RequestMapping("/api/stockIn")
 public class StockInApi {
@@ -518,6 +521,113 @@ public class StockInApi {
         return ResultVO.create(stockInServer.getHistogramByStoName(compid, empName, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
+    }
+    /**
+     *  通过 compid  stICode 查询材料过磅
+     * @param compid 公司id
+     * @param stICode 过磅单号
+
+     */
+    @ApiOperation(value = "通过 compid  stICode 查询材料过磅",httpMethod="get" ,notes="compid 公司ID|stICode 过磅单号")
+    @PostMapping("/getStockCheck")
+    public ResultVO getStockCheck( String compid,   String stICode) {
+
+        return ResultVO.create(stockInServer.getStockCheck(compid, stICode));
+    }
+    /**
+     *  更新检验状态
+     * @param compid 公司id
+     * @param stICode 过磅单号
+     * @param isPassOrNot 是否合格 1合格 0不合格
+     * @param picturePath 图片路径
+     * @param matCode 材料编码
+     * @param stkCode 库位编码
+     */
+    @ApiOperation(value = "更新检验状态",httpMethod="get" ,notes="compid 公司ID|stICode 过磅单号|" +
+            "isPassOrNot 是否合格 1合格 0不合格|picturePath 图片路径|matCode 材料编码|stkCode 库位编码")
+    @PostMapping("/updateCheckStatus")
+    public ResultVO updateCheckStatus( String compid,   String stICode,@RequestParam(defaultValue="1") int isPassOrNot,
+                                       String picturePath,String matCode,String stkCode,String notReason) {
+        stockInServer.updateCheckStatus(compid, stICode, isPassOrNot, picturePath,matCode,stkCode,notReason);
+        return ResultVO.create();
+    }
+
+    /**
+     * 上传照片
+
+     * @param compid 公司ID
+     * @param stICode 过磅单号
+     * @param image 图片
+     * @return 图片路径
+     * @throws ErpException 异常
+     */
+    @ApiOperation(value = "上传照片",httpMethod="get" ,notes="" +
+            "compid 公司ID|stICode 过磅单号|image 图片")
+    @PostMapping("/uploadPicture")
+    public com.hntxrj.txerp.core.web.ResultVO uploadPicture(String compid,String stICode, MultipartFile image) throws ErpException {
+        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.uploadCheckingImg(compid,stICode,image));
+    }
+    /**
+     * 删除照片
+     * @param compid 公司ID
+     * @param stICode 过磅单号
+     * @param image 图片路径
+     * @return 结果
+     */
+    @ApiOperation(value = "删除照片",httpMethod="get" ,notes="" +
+            "compid 公司ID|stICode 过磅单号|image 图片路径")
+    @PostMapping("/deletePicture")
+    public com.hntxrj.txerp.core.web.ResultVO deletePicture(String compid,String stICode, String image)  {
+        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.deleteCheckingImg(compid,stICode,image));
+    }
+
+    /**
+     *图片展示
+     * @param fileName 文件名称
+     * @throws ErpException 异常处理
+     */
+    @ApiOperation(value = "图片展示",httpMethod="get" ,notes="" +
+            "fileName 文件名称")
+    @GetMapping("/downloadPicture")
+    public void downloadPicture(String fileName, HttpServletResponse response) throws ErpException {
+        stockInServer.downloadPicture(fileName, response);
+    }
+
+    /**
+     * 根据公司ID获取材料信息
+     * @param compid 公司ID
+     * @param searchWords 搜索关键字
+     * @param page 当前页
+     * @param pageSize 分页大小
+     * @return 数据结果
+     */
+    @ApiOperation(value ="根据公司ID获取材料信息",httpMethod="post" ,notes="" +
+            "searchWords 搜索关键字|compid 公司ID")
+    @PostMapping("/getMatByComId")
+    public ResultVO getMatByComId(String compid,String searchWords,
+                                  @RequestParam(defaultValue = "1") Integer page,
+                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(stockInServer.getMatByComId(compid,searchWords,page,pageSize));
+
+    }
+
+    /**
+     *  根据公司ID获取库存
+     * @param compid 公司ID
+     * @param searchWords 搜索关键字
+     * @param page 当前页
+     * @param pageSize 分页大小
+     * * @return 结果集
+     */
+
+    @ApiOperation(value="根据公司ID获取库存",httpMethod="post" ,notes="" +
+            "searchWords 搜索关键字|compid 公司ID")
+    @PostMapping("/getStockByComId")
+    public ResultVO getStockByComId(String compid,String searchWords,
+                                    @RequestParam(defaultValue = "1") Integer page,
+                                    @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(stockInServer.getStockByComId(compid,searchWords,page,pageSize));
+
     }
 
 

@@ -89,6 +89,7 @@
         , mk.Sto_Name
         , mt.MatName
         , si.SaleType
+        , si.isPassOrNot
         , vp.PI_TypeName as ptTypeName
         from MP_StockIn si
         left join dbo.MP_Supplier ms on si.SupCode = ms.SupCode and si.compid = ms.compid
@@ -117,7 +118,7 @@
         group by si.StI_Status, si.StICode, si.VehicleID, si.GrWeight, si.TaWeight, si.NetWeight, si.Deduct, u1.empname,
         u2.empname, si.DeductNum, si.Remarks, si.StI_Times, si.SecondTime, si.Sup_NetWeight, si.ClWeight,
         si.Sup_OilNum, si.FirstTime, si.Sup_ExFactory, ms.Sup_Name, mk.Sto_Name, mt.MatName, si.SaleType,
-        vp.PI_TypeName
+        vp.PI_TypeName,si.isPassOrNot
         order by si.StICode desc
     </select>
     <!--原材料过磅查询结算-->

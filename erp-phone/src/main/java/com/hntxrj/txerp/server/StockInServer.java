@@ -2,9 +2,14 @@ package com.hntxrj.txerp.server;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.alipay.api.domain.Material;
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface StockInServer {
@@ -244,4 +249,49 @@ public interface StockInServer {
                                                  String stoName, String supName,String beginTime,String endTime);
 
 
+    /**
+     * 上传检验的照片
+     */
+    String uploadCheckingImg(String comid,String stICode, MultipartFile image) throws ErpException;
+
+    /**
+     * 下载图片
+     * @param fileName 文件名称
+     */
+    void downloadPicture(String fileName, HttpServletResponse response) throws ErpException;
+
+    /**
+     * 更新检验状态
+     * @param compid 公司id
+     * @param stICode 过磅单号
+     * @param isPassOrNot 是否合格
+     * @param picturePath 图片路径
+     * @param matCode 材料编码
+     * @param stkCode 库位编码
+     */
+    void updateCheckStatus(String compid, String stICode, int isPassOrNot, String picturePath, String matCode,
+                                String stkCode,String notReason);
+
+    /**
+     * 根据公司ID获取库存
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    PageVO<StockVO> getStockByComId(String compid,String searchWords,Integer page,Integer pageSize);
+
+    /**
+     * 根据公司ID获取材料
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    PageVO<MaterialVO> getMatByComId(String compid,String searchWords,Integer page,Integer pageSize);
+    /**
+     *  通过 compid  stICode 查询材料过磅
+     * @param compid 公司id
+     * @param stICode 过磅单号
+
+     */
+    StockInCheckVO getStockCheck(String compid, String stICode);
+
+    StockInCheckVO deleteCheckingImg(String comid, String stICode, String image);
 }

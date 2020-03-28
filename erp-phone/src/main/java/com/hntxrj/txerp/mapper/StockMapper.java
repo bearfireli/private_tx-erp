@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.mapper;
 
+import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -239,4 +240,35 @@ public interface StockMapper {
      * @param endTime   结束时间
      */
     List<WeightMatParentNameVO> getMatNameBySupName(String compid, String supCode, String beginTime, String endTime);
+
+    /**
+     * 更新检验状态
+     * @param compid 公司id
+     * @param stICode 过磅单号
+     * @param isPassOrNot 是否合格
+     * @param picturePath 图片路径
+     * @param matCode 材料编码
+     * @param stkCode 库位编码
+     */
+    void updateCheckStatus(String compid, String stICode, int isPassOrNot, String picturePath, String matCode,
+                           String stkCode,String notReason);
+    /**
+     * 根据公司ID获取库存
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    List<MaterialVO> getMatByComId(String compid,String searchWords);
+    /**
+     * 根据公司ID获取库存
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    List<StockVO> getStockByComId(String compid,String searchWords);
+    /**
+     *  通过 compid  stICode 查询材料过磅
+     * @param compid 公司id
+     * @param stICode 过磅单号
+
+     */
+    StockInCheckVO getStockCheck(String compid, String stICode);
 }

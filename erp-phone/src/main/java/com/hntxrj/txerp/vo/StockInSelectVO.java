@@ -54,5 +54,7 @@ public class StockInSelectVO {
     private String ptTypeName;
     /*状态*/
     private boolean stiStatus;
+    /*状态*/
+    private Integer isPassOrNot;
 
 }
