@@ -104,7 +104,7 @@
         select PI_TypeName requestStatusName, PI_Values requestStatusCode
         from DD_PublicInfo
         where PI_Class = '75'
-          and RecStatus = 'true'
+          and RecStatus = 1
             and compid =#{compid}
         order by PI_Values
     </select>
