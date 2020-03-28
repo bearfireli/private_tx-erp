@@ -421,7 +421,7 @@ public class StockInServerImpl implements StockInServer {
      * @return 路径
      */
     @Override
-    public String uploadCheckingImg(String comid,String stICode,MultipartFile image) throws ErpException {
+    public String uploadCheckingImg(String compid,String stICode,MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString();
         File dir = new File(checkingImageFilePath);
         dir.mkdirs();
@@ -435,14 +435,15 @@ public class StockInServerImpl implements StockInServer {
             throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
         }
 
-         StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(comid,stICode);
+         StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(compid,stICode);
+            stockInCheckVO.setCompid(compid);
             String  picturePath=stockInCheckVO.getPicturePath();
         if(picturePath==null|| picturePath.equals("")){
             stockInCheckVO.setPicturePath(fileName);
         }else{
             stockInCheckVO.setPicturePath(stockInCheckVO.getPicturePath()+"#"+fileName);
         }
-        stockInWeighmatNsMapper.updateCheckStatus(comid, stICode, stockInCheckVO.getIsPassOrNot(),
+        stockInWeighmatNsMapper.updateCheckStatus(compid, stICode, stockInCheckVO.getIsPassOrNot(),
                 stockInCheckVO.getPicturePath(),stockInCheckVO.getMatCode(),stockInCheckVO.getStkCode(),
                 stockInCheckVO.getNotReason());
 
