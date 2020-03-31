@@ -97,4 +97,6 @@ public interface StockInSelectService {
 
     PageVO<ConsultSupplierVO> getVehicleNumber(String supName, String compid, Integer page,
                                                   Integer pageSize);
+
+    StockInSelectVO stockInListDetail(String stiCode, String compid);
 }

@@ -72,33 +72,18 @@
         si.VehicleID,
         si.GrWeight,
         si.TaWeight,
-        si.NetWeight,
-        si.Deduct
-        ,u1.empname as oper1Name,
-        u2.empname as oper2Name
-        , si.DeductNum
-        , si.Remarks
-        , si.StI_Times as stlTimes
-        , si.SecondTime
-        , si.Sup_NetWeight
+        si.NetWeight
         , si.ClWeight
-        , si.Sup_OilNum
-        , si.FirstTime
+        ,si.SecondTime
         , si.Sup_ExFactory
         , ms.Sup_Name
         , mk.Sto_Name
         , mt.MatName
-        , si.SaleType
         , si.isPassOrNot
-        , vp.PI_TypeName as ptTypeName
         from MP_StockIn si
         left join dbo.MP_Supplier ms on si.SupCode = ms.SupCode and si.compid = ms.compid
         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
         left join MP_MaterialInfor mt on si.MatCode = mt.MatCode and si.compid = mt.compid
-        left join (SELECT PI_TypeName, PI_Values,compid FROM DD_PublicInfo where PI_Class = '30' and RecStatus = 1) vp
-        on vp.PI_Values = si.SaleType and si.compid =vp.compid
-        left join User_employee u1 on u1.opid = si.OPER1 and si.compid = u1.compid
-        left join User_employee u2 on u2.opid = si.OPER2 and si.compid = u2.compid
         where si.compid = #{compid} and si.RecStatus=1
         <if test="vehicleId != null">
             and vehicleId like '%'+#{vehicleId}+'%'
@@ -115,10 +100,8 @@
         <if test="saleType != null ">
             and si.saleType=#{saleType}
         </if>
-        group by si.StI_Status, si.StICode, si.VehicleID, si.GrWeight, si.TaWeight, si.NetWeight, si.Deduct, u1.empname,
-        u2.empname, si.DeductNum, si.Remarks, si.StI_Times, si.SecondTime, si.Sup_NetWeight, si.ClWeight,
-        si.Sup_OilNum, si.FirstTime, si.Sup_ExFactory, ms.Sup_Name, mk.Sto_Name, mt.MatName, si.SaleType,
-        vp.PI_TypeName,si.isPassOrNot
+        group by si.StI_Status, si.StICode, si.VehicleID, si.GrWeight, si.TaWeight, si.NetWeight, si.ClWeight, si.Sup_ExFactory,
+        ms.Sup_Name, mk.Sto_Name, mt.MatName, si.isPassOrNot,si.SecondTime
         order by si.StICode desc
     </select>
     <!--原材料过磅查询结算-->
@@ -267,5 +250,33 @@
             vehicleId
             like '%'+#{supName}+'%'
         </if>
+    </select>
+
+    <select id="stockInListDetail" resultType="com.hntxrj.txerp.vo.StockInSelectVO">
+     select si.StICode,
+       si.VehicleID,
+       si.GrWeight,
+       si.TaWeight,
+       si.NetWeight,
+       mk.Sto_Name,
+       mt.MatName,
+       vp.PI_TypeName as ptTypeName,
+       si.ClWeight,
+       si.Sup_OilNum,
+       u1.empname     as oper1Name,
+       u2.empname     as oper2Name,
+       si.FirstTime,
+       si.SecondTime,
+       si.Deduct,
+       si.DeductNum
+        from MP_StockIn si
+         left join dbo.MP_Supplier ms on si.SupCode = ms.SupCode and si.compid = ms.compid
+         left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+         left join MP_MaterialInfor mt on si.MatCode = mt.MatCode and si.compid = mt.compid
+         left join DD_PublicInfo vp on vp.PI_Values = si.SaleType and si.compid = vp.compid and PI_Class = '30'
+         left join User_employee u1 on u1.opid = si.OPER1 and si.compid = u1.compid
+         left join User_employee u2 on u2.opid = si.OPER2 and si.compid = u2.compid
+        where si.compid = #{compid} and si.RecStatus=1
+       and  si.stiCode =#{stiCode}
     </select>
 </mapper>

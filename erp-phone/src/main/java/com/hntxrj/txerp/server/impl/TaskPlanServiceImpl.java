@@ -942,7 +942,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 endTime = sdf1.format(new Date());
             }
             if (type == 2) {
-                int queryType = 1;
+                int queryType = 6;
                 QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
                 endTime = endTime.substring(0, 10);
                 beginTime = beginTime.substring(0, 10);

@@ -6,10 +6,7 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.mapper.StockInSelectMapper;
 import com.hntxrj.txerp.server.StockInSelectService;
-import com.hntxrj.txerp.vo.ConsultSupplierVO;
-import com.hntxrj.txerp.vo.PageVO;
-import com.hntxrj.txerp.vo.StockInSelectCloseVO;
-import com.hntxrj.txerp.vo.StockInSelectVO;
+import com.hntxrj.txerp.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -200,6 +197,11 @@ public class StockInSelectServiceImpl implements StockInSelectService {
     public PageVO<ConsultSupplierVO> getVehicleNumber(String supName, String compid, Integer page, Integer pageSize) {
         List<ConsultSupplierVO> list=stockInMapper.getVehicleNumber(supName, compid, page, pageSize);
         return getEncapsulation(list);
+    }
+
+    @Override
+    public StockInSelectVO stockInListDetail(String stiCode, String compid) {
+        return stockInMapper.stockInListDetail(stiCode, compid);
     }
 
 
