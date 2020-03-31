@@ -60,6 +60,19 @@ public class StockInApi {
     }
 
     /**
+     * 材料过磅详情查询
+     * @param stiCode  过磅单号
+     * @param compid   企业id
+     * @return  返回值
+     */
+    @PostMapping("/stockInListDetail")
+    public ResultVO stockInListDetail(String stiCode,String compid ) {
+        return ResultVO.create(stockInService.stockInListDetail(stiCode, compid));
+    }
+
+
+
+    /**
      * /*原材料过磅查询结算重量
      *
      * @param compid    企业id

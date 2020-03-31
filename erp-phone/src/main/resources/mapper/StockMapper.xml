@@ -102,8 +102,8 @@
     t1.StkCode,
     t2.Sto_Name
        from  MP_StockIn t1
-left join  MP_Stock t2 on t1.StkCode=t2.StkCode and t2.compid=#{compid}
-left join  MP_MaterialInfor t3 on t1.MatCode=t3.MatCode and t3.compid=#{compid}
+left join  MP_Stock t2 on t1.StkCode=t2.StkCode and t2.compid=t1.compid
+left join  MP_MaterialInfor t3 on t1.MatCode=t3.MatCode and t3.compid=t1.compid
 where t1.compid=#{compid} and t1.stICode=#{stICode}
 
     </select>
