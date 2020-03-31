@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -896,23 +897,32 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             int queryType = 2;
             QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
             if (queryTime != null) {
-                /*对厦门海投站，进行和个性化修改，因为这个站是查询上个月的时间*/
-                if (compid.equals("68")) {
-                    Date time = null;
-                    try {
-                        time = sdf.parse(beginTime);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    endTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
-                    Calendar cal = Calendar.getInstance();
-                    assert time != null;
-                    cal.setTime(time);
-                    cal.add(Calendar.MONTH, -1);
-                    beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
-                } else {
                     endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
                     beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                    String dateTime =sdf.format(new Date());
+                DateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+                try {
+                    //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
+                    Date begin =fmt.parse(beginTime.substring(0,10).replaceAll("-",""));
+                    Date date =fmt.parse(dateTime.replaceAll("-",""));
+                    //判断开始时间是否在当前时间之前,返回布尔值
+                    if (!begin.before(date)){
+                        //说明开始时间大于当前时间，需要把开始时间和结束加一个月。
+                        Date time = null;
+                        try {
+                            time = sdf.parse(beginTime);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        endTime =beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                        Calendar cal = Calendar.getInstance();
+                        assert time != null;
+                        cal.setTime(time);
+                        cal.add(Calendar.MONTH, -1);
+                        beginTime = sdf.format(cal.getTime()).substring(0,8)+ queryTime.getQueryStartTime();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
             } else {
                 endTime = endTime.substring(0, 8) + "01 00:00:00";
