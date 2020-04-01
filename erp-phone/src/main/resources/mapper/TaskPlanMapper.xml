@@ -955,6 +955,41 @@
         tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute
         order by tp.PreTime desc, tp.TaskId desc
     </select>
+
+    <!--工地段获取任务单列表预计方量汇总-->
+    <select id="getBuildTaskPreCount" resultType="java.math.BigDecimal">
+        select PreNum
+        from PT_TaskPlan
+        where DeleteMark = 0
+        and RecStatus = 1
+        and CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="beginTime != null and endTime != null">
+            and (taskStatus = 1 or preTime between #{beginTime} and #{endTime})
+        </if>
+        <if test="eppCode != null">
+            and eppCode = #{eppCode}
+        </if>
+        <if test="placing != null">
+            and placing like '%' + #{placing}+'%'
+        </if>
+        <if test="taskId != null">
+            and taskId like '%' + #{taskId} + '%'
+        </if>
+        <if test="taskStatus != null">
+            and taskStatus = #{taskStatus}
+        </if>
+        <if test="verifyStatus != null">
+            and VerifyStatus = #{verifyStatus}
+        </if>
+    </select>
+
     <select id="getRecipoentList" resultType="com.hntxrj.txerp.vo.RecipientVO">
         select * from Recipient
         where compid=#{compid}
@@ -994,6 +1029,7 @@
             and PI_TypeName like '%' +#{slump}+'%'
         </if>
     </select>
+
 
 
 </mapper>

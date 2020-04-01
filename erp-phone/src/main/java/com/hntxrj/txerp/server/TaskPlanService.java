@@ -407,6 +407,24 @@ public interface TaskPlanService {
                                              String taskId, Integer taskStatus, String compid, Integer verifyStatus,
                                              Integer buildId, Integer page, Integer pageSize) throws ErpException;
 
+
+    /**
+     * 获取工地端任务单预计方量汇总
+     *
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     * @param eppCode      工程代号
+     * @param placing      浇筑部位
+     * @param taskId       任务单号
+     * @param taskStatus   任务单状态
+     * @param verifyStatus 审核标识  0：未审核； 1：已审核
+     * @param buildId      施工方id
+     * @return 任务单列表预计方量汇总
+     */
+    Map<String, BigDecimal> getBuildTaskPreCount(String beginTime, String endTime, String eppCode, String placing,
+                                             String taskId, Integer taskStatus,  Integer verifyStatus,
+                                             Integer buildId) throws ErpException;
+
     /**
      * 获取任务单预计方量汇总
      *

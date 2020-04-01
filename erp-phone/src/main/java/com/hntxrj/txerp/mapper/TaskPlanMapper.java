@@ -371,7 +371,27 @@ public interface TaskPlanMapper {
      * @param taskStatus          生产状态
      * @param verifyStatus        审核状态
      */
-    List<TaskPlanListVO> buildTaskPlanList(List<String> contractDetailCodes, List<String> contractUIDList, String beginTime, String endTime, String eppCode, String placing, String taskId, Integer taskStatus, Integer verifyStatus);
+    List<TaskPlanListVO> buildTaskPlanList(List<String> contractDetailCodes, List<String> contractUIDList,
+                                           String beginTime, String endTime, String eppCode, String placing,
+                                           String taskId, Integer taskStatus, Integer verifyStatus);
+
+    /**
+     * 获取工地端任务单预计方量汇总
+     *
+     * @param contractDetailCodes 子合同集合
+     * @param contractUIDList     主合同集合
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     * @param eppCode      工程代号
+     * @param placing      浇筑部位
+     * @param taskId       任务单号
+     * @param taskStatus   任务单状态
+     * @param verifyStatus 审核标识  0：未审核； 1：已审核
+     * @return 任务单列表预计方量汇总
+     */
+    BigDecimal getBuildTaskPreCount(List<String> contractDetailCodes, List<String> contractUIDList,String beginTime,
+                                    String endTime, String eppCode, String placing,
+                                    String taskId, Integer taskStatus, Integer verifyStatus);
 
     /**
      * 任务单号集合
