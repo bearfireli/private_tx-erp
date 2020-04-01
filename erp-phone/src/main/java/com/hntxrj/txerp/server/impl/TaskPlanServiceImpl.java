@@ -1212,6 +1212,28 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         return pageVO;
     }
 
+    @Override
+    public Map<String, BigDecimal> getBuildTaskPreCount(String beginTime, String endTime, String eppCode,
+                                                        String placing, String taskId, Integer taskStatus,
+                                                        Integer verifyStatus, Integer buildId) throws ErpException {
+        Map<String, BigDecimal> map = new HashMap<>();
+        //查询当前施工方关联的所有子合同
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+        if (contractDetailCodes.size() == 0) {
+            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
+        }
+        if (contractUIDList.size() == 0) {
+            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
+        }
+
+        BigDecimal preNum = taskPlanMapper.getBuildTaskPreCount(contractDetailCodes,contractUIDList,
+                beginTime, endTime, eppCode, placing, taskId,
+                taskStatus, verifyStatus);
+        map.put("preNum", preNum);
+        return map;
+    }
+
     /**
      * 获取任务单预计方量汇总
      *
