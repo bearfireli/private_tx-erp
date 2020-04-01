@@ -80,6 +80,7 @@
         tsi.GrWeight,
         tsi.NetWeight,
         tsi.SendTime,
+        tsi.Leave_STTime leaveSTTime,
         tsi.totalNum,
         tsi.NumberOfSignings,
         tsi.SaleNum,
@@ -109,7 +110,6 @@
         and tsi.PersonalCode=#{driverCode}
         and tsi.InvoiceType not in('1','2','6','4')
         and tsi.recStatus = 1
-        and vv.VehicleStatus !=3
         <if test="invoiceId != null ">
             and tsi.ID like '%'+#{invoiceId}+'%'
         </if>
@@ -127,10 +127,10 @@
             and tp.placing like '%'+#{placing}+'%'
         </if>
         <if test="beginTime != null and beginTime != '' ">
-            and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+            and tsi.Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
         </if>
         <if test="endTime != null and endTime != '' ">
-            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+            and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
         </if>
 
     </select>
@@ -162,7 +162,7 @@
         and tsi.PersonalCode=#{driverCode}
         and tsi.InvoiceType not in('1','2','6')
         and tsi.recStatus = 1
-        and (tsi.InvoiceType !=4 and vv.VehicleStatus !=3)
+        and tsi.InvoiceType !=4
         <if test="invoiceId != null ">
             and tsi.ID like '%'+#{invoiceId}+'%'
         </if>
@@ -180,10 +180,10 @@
             and tp.placing like '%'+#{placing}+'%'
         </if>
         <if test="beginTime != null and beginTime != '' ">
-            and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+            and tsi.Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
         </if>
         <if test="endTime != null and endTime != '' ">
-            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+            and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
         </if>
 
     </select>

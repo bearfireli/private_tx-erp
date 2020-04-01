@@ -21,7 +21,10 @@ public class TaskSaleInvoiceDriverListVO {
     private Integer vehiceNumber;
     private String placing;
     private String taskId;
+    //派车时间
     private Date sendTime;
+    //出厂时间
+    private Date leaveSTTime;
     private String eppName;
     private String builderName;
     private String eppCode;
