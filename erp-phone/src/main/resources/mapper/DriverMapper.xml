@@ -110,7 +110,6 @@
         and tsi.PersonalCode=#{driverCode}
         and tsi.InvoiceType not in('1','2','6','4')
         and tsi.recStatus = 1
---         and vv.VehicleStatus !=3
         <if test="invoiceId != null ">
             and tsi.ID like '%'+#{invoiceId}+'%'
         </if>
