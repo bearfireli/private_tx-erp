@@ -261,21 +261,26 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (taskIds.size() > 0) {
             cars = taskPlanMapper.getCarsByTaskIds(compid, taskIds);
         }
+        String carID ="";
         //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
         for (SendCarListVO sendCarListVO : sendCarList) {
             List<DispatchVehicle> dispatchVehicleList = new ArrayList<>();
             for (DispatchVehicle car : cars) {
-                //判断厦门华信特殊情况（先打票，再生产）
-                if (compid.equals("24")) {
-                    if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
-                        car.setVehicleStatus("3");
-                        car.setStatusName("生产");
+                //判断重复的车号
+                if (!carID.equals(car.getCarID())){
+                    //判断厦门华信特殊情况（先打票，再生产）
+                    if (compid.equals("24")) {
+                        if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
+                            car.setVehicleStatus("3");
+                            car.setStatusName("生产");
+                        }
+                    }
+                    //根据任务单号关联调度派车列表和其对应的车辆
+                    if (sendCarListVO.getTaskId().equals(car.getTaskId())) {
+                        dispatchVehicleList.add(car);
                     }
                 }
-                //根据任务单号关联调度派车列表和其对应的车辆
-                if (sendCarListVO.getTaskId().equals(car.getTaskId())) {
-                    dispatchVehicleList.add(car);
-                }
+                    carID =car.getCarID();
             }
             sendCarListVO.setCars(dispatchVehicleList);
         }
