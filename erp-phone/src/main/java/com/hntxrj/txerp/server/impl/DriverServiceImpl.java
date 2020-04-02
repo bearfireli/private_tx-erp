@@ -208,19 +208,21 @@ public class DriverServiceImpl implements DriverService {
      * @param driverCode 司机代号
      * @param workTime   打卡时间
      * @param timeType   打卡类型  0:上班打卡    1：下班打卡
+     *  @param cardNumber   打卡次数
      */
     @Override
-    public void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType) {
+    public void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType,Integer cardNumber) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateTime = dateFormat.format(new Date());
 
-        //先查询当前日期此司机有没有打卡记录。
-        DriverWorkTimeVO driverWorkTimeVO = driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
-        if (driverWorkTimeVO == null) {
+        if (timeType == 0) {
             //说明当天没有打卡记录
-            driverMapper.saveDriverWorkTime(timeType, compid, driverCode, workTime, dateTime);
+            if (cardNumber!=0){
+                cardNumber ++;
+            }
+            driverMapper.saveDriverWorkTime(timeType, compid, driverCode, workTime, dateTime,cardNumber);
         } else {
-            driverMapper.updateDriverWorkTime(timeType, compid, driverCode, workTime, dateTime);
+            driverMapper.updateDriverWorkTime(timeType, compid, driverCode, workTime, dateTime,cardNumber);
         }
     }
 

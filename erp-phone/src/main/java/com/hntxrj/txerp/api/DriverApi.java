@@ -310,11 +310,12 @@ public class DriverApi {
      * @param driverCode 司机代号
      * @param time       打卡时间
      * @param timeType   打卡类型  0:上班打卡    1：下班打卡
+     * @param cardNumber   打卡次数
      */
     @PostMapping("/saveDriverWorkTime")
-    public ResultVO saveDriverWorkTime(String compid, String driverCode, Long time, Integer timeType) {
+    public ResultVO saveDriverWorkTime(String compid, String driverCode, Long time, Integer timeType,Integer cardNumber) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        driverService.saveDriverWorkTime(compid, driverCode, sdf.format(new Date(time)), timeType);
+        driverService.saveDriverWorkTime(compid, driverCode, sdf.format(new Date(time)), timeType,cardNumber);
         return ResultVO.create();
     }
 
