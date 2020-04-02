@@ -25,7 +25,7 @@ public class StockInSelectServiceImpl implements StockInSelectService {
     }
 
     /**
-     *原材料过磅查询
+     *原材料过磅查询 （老版本  4.2.1+1.apk 之前版本）
      * @param compid    企业id
      * @param beginTime 开始时间
      * @param endTime   结束时间
@@ -36,9 +36,35 @@ public class StockInSelectServiceImpl implements StockInSelectService {
      * @return 原材料统计汇总
      */
     @Override
-    public PageVO<StockInSelectVO> getStockInDetails(String matName , String vehicleId, String supName, String compid, String beginTime, String endTime, Integer page, Integer pageSize, String saleType) {
+    public PageVO<StockInSelectVO> getStockInDetails(String matName , String vehicleId, String supName, String compid,
+                                                     String beginTime, String endTime, Integer page, Integer pageSize,
+                                                     String saleType) {
         PageHelper.startPage(page, pageSize);
-        List<StockInSelectVO> stockInDetailsVOS = stockInMapper.getStockInDetails(matName,vehicleId,supName,compid,beginTime,endTime,page,pageSize,saleType);
+        List<StockInSelectVO> stockInDetailsVOS = stockInMapper.getStockInDetails(matName,vehicleId,supName,
+                compid,beginTime,endTime,page,pageSize,saleType);
+        PageInfo<StockInSelectVO> pageInfo = new PageInfo<>(stockInDetailsVOS);
+        PageVO<StockInSelectVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+    /**
+     *原材料过磅查询 （新版本  4.2.1+1.apk 之后版本）
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param vehicleId 车号
+     * @param supName    供货商
+     * @param page      页数
+     * @param pageSize  每页数量
+     * @return 原材料统计汇总
+     */
+    @Override
+    public PageVO<StockInSelectVO> getStockInList(String matName , String vehicleId, String supName, String compid,
+                                                     String beginTime, String endTime, Integer page, Integer pageSize,
+                                                     String saleType) {
+        PageHelper.startPage(page, pageSize);
+        List<StockInSelectVO> stockInDetailsVOS = stockInMapper.getStockInList(matName,vehicleId,supName,
+                compid,beginTime,endTime,page,pageSize,saleType);
         PageInfo<StockInSelectVO> pageInfo = new PageInfo<>(stockInDetailsVOS);
         PageVO<StockInSelectVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
