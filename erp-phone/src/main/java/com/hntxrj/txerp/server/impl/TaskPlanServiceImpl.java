@@ -914,8 +914,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     //返回1:begin大于end;
                     //返回0:begin等于end;
                     //返回-1:begin小于end
-                    if (begin.compareTo(date) < 0){
-                        //说明开始时间小于当前时间，需要把开始时间和结束时间减一个月。
+                    if (begin.compareTo(date) > 0){
+                        //说明开始时间大于当前时间，需要把开始时间和结束时间减一个月。
                         Date time = null;
                         try {
                             time = sdf.parse(beginTime);
