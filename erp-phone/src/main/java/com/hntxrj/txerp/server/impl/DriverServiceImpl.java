@@ -183,13 +183,10 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus) {
         Date date = new Date();
-        TaskSaleInvoiceDriverListVO invoiceDriverListVO = driverMapper.selectTaskSaleInvoice(compid,id);
-       if (invoiceDriverListVO!=null){
            //修改小票表中的车辆状态为回厂待班。
            driverMapper.updateInvoiceVehicleStatus(compid, id, vehicleStatus, date);
            //修改车辆表中的车辆状态为回厂待班。
            driverMapper.updateVehicleStatus(compid, vehicleId, vehicleStatus, date);
-       }
     }
 
     @Override
