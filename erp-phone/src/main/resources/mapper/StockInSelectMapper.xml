@@ -65,8 +65,65 @@
         where compid=#{compid}
         and stICode=#{stICode}
     </update>
-    <!--原材料过磅查询-->
+    <!--原材料过磅查询 （老版本  4.2.1+1.apk 之前版本）  -->
     <select id="getStockInDetails" resultType="com.hntxrj.txerp.vo.StockInSelectVO">
+        select si.StI_Status,
+        si.StICode,
+        si.VehicleID,
+        si.GrWeight,
+        si.TaWeight,
+        si.NetWeight,
+        si.Deduct
+        ,u1.empname as oper1Name,
+        u2.empname as oper2Name
+        , si.DeductNum
+        , si.Remarks
+        , si.StI_Times as stlTimes
+        , si.SecondTime
+        , si.Sup_NetWeight
+        , si.ClWeight
+        , si.Sup_OilNum
+        , si.FirstTime
+        , si.Sup_ExFactory
+        , ms.Sup_Name
+        , mk.Sto_Name
+        , mt.MatName
+        , si.SaleType
+        , si.isPassOrNot
+        , vp.PI_TypeName as ptTypeName
+        from MP_StockIn si
+        left join dbo.MP_Supplier ms on si.SupCode = ms.SupCode and si.compid = ms.compid
+        left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid
+        left join MP_MaterialInfor mt on si.MatCode = mt.MatCode and si.compid = mt.compid
+        left join (SELECT PI_TypeName, PI_Values,compid FROM DD_PublicInfo where PI_Class = '30' and RecStatus = 1) vp
+        on vp.PI_Values = si.SaleType and si.compid =vp.compid
+        left join User_employee u1 on u1.opid = si.OPER1 and si.compid = u1.compid
+        left join User_employee u2 on u2.opid = si.OPER2 and si.compid = u2.compid
+        where si.compid = #{compid} and si.RecStatus=1
+        <if test="vehicleId != null">
+            and vehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="supName != null">
+            and Sup_Name like '%'+#{supName}+'%'
+        </if>
+        <if test="matName != null">
+            and matName like '%'+#{matName}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and si.SecondTime between #{beginTime} and #{endTime}
+        </if>
+        <if test="saleType != null ">
+            and si.saleType=#{saleType}
+        </if>
+        group by si.StI_Status, si.StICode, si.VehicleID, si.GrWeight, si.TaWeight, si.NetWeight, si.Deduct, u1.empname,
+        u2.empname, si.DeductNum, si.Remarks, si.StI_Times, si.SecondTime, si.Sup_NetWeight, si.ClWeight,
+        si.Sup_OilNum, si.FirstTime, si.Sup_ExFactory, ms.Sup_Name, mk.Sto_Name, mt.MatName, si.SaleType,
+        vp.PI_TypeName,si.isPassOrNot
+        order by si.StICode desc
+    </select>
+
+    <!--原材料过磅查询 （新版本  4.2.1+1.apk 之后版本）  -->
+    <select id="getStockInList" resultType="com.hntxrj.txerp.vo.StockInSelectVO">
         select si.StI_Status,
         si.StICode,
         si.VehicleID,
