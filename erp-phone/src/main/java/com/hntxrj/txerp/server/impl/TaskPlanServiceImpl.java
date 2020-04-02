@@ -910,9 +910,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
                     Date begin =fmt.parse(beginTime.substring(0,10).replaceAll("-",""));
                     Date date =fmt.parse(dateTime.replaceAll("-",""));
-                    //判断开始时间是否在当前时间之前,返回布尔值
-                    if (!begin.before(date)){
-                        //说明开始时间大于当前时间，需要把开始时间和结束加一个月。
+                    //判断开始时间和结束时间是否相同,
+                    //返回1:begin大于end;
+                    //返回0:begin等于end;
+                    //返回-1:begin小于end
+                    if (begin.compareTo(date) < 0){
+                        //说明开始时间小于当前时间，需要把开始时间和结束时间减一个月。
                         Date time = null;
                         try {
                             time = sdf.parse(beginTime);
