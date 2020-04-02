@@ -125,8 +125,9 @@ public interface DriverService {
      * @param driverCode 司机代号
      * @param workTime   司机打卡时间
      * @param timeType   司机打卡类型  0:上班打卡    1：下班打卡
+     * @param cardNumber   打卡次数
      */
-    void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType);
+    void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType,Integer cardNumber);
 
     /**
      * 查询司机当天打卡时间
@@ -135,7 +136,7 @@ public interface DriverService {
      * @param driverCode 司机代号
      * @param queryTime  查询日期
      */
-    DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String queryTime);
+    List<DriverWorkTimeVO> getDriverWorkTime(String compid, String driverCode, String queryTime);
 
     /**
      * 获取小票详情

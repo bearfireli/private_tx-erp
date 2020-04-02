@@ -183,13 +183,10 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus) {
         Date date = new Date();
-        TaskSaleInvoiceDriverListVO invoiceDriverListVO = driverMapper.selectTaskSaleInvoice(compid,id);
-       if (invoiceDriverListVO!=null){
            //修改小票表中的车辆状态为回厂待班。
            driverMapper.updateInvoiceVehicleStatus(compid, id, vehicleStatus, date);
            //修改车辆表中的车辆状态为回厂待班。
            driverMapper.updateVehicleStatus(compid, vehicleId, vehicleStatus, date);
-       }
     }
 
     @Override
@@ -208,24 +205,26 @@ public class DriverServiceImpl implements DriverService {
      * @param driverCode 司机代号
      * @param workTime   打卡时间
      * @param timeType   打卡类型  0:上班打卡    1：下班打卡
+     *  @param cardNumber   打卡次数
      */
     @Override
-    public void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType) {
+    public void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType,Integer cardNumber) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateTime = dateFormat.format(new Date());
 
-        //先查询当前日期此司机有没有打卡记录。
-        DriverWorkTimeVO driverWorkTimeVO = driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
-        if (driverWorkTimeVO == null) {
+        if (timeType == 0) {
             //说明当天没有打卡记录
-            driverMapper.saveDriverWorkTime(timeType, compid, driverCode, workTime, dateTime);
+            if (cardNumber!=0){
+                cardNumber ++;
+            }
+            driverMapper.saveDriverWorkTime(timeType, compid, driverCode, workTime, dateTime,cardNumber);
         } else {
-            driverMapper.updateDriverWorkTime(timeType, compid, driverCode, workTime, dateTime);
+            driverMapper.updateDriverWorkTime(timeType, compid, driverCode, workTime, dateTime,cardNumber);
         }
     }
 
     @Override
-    public DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime) {
+    public  List<DriverWorkTimeVO> getDriverWorkTime(String compid, String driverCode, String dateTime) {
         return driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
     }
 
