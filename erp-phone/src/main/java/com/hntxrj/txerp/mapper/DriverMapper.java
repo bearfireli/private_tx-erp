@@ -123,7 +123,7 @@ public interface DriverMapper {
      * @param driverCode 司机代号
      * @param dateTime   查询日期
      */
-    DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime);
+    List<DriverWorkTimeVO> getDriverWorkTime(String compid, String driverCode, String dateTime);
 
     /**
      * 修改司机打卡时间

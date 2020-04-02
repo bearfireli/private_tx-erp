@@ -246,7 +246,7 @@
     </select>
 
     <select id="getDriverWorkTime" resultType="com.hntxrj.txerp.vo.DriverWorkTimeVO">
-       select top 1 id,begin_time as beginTime,end_time as endTime,cardNumber
+       select id,begin_time as beginTime,end_time as endTime,cardNumber
        from DM_DriverWorkTime
        where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
        order by  cardNumber Desc

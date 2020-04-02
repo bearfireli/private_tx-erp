@@ -224,7 +224,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime) {
+    public  List<DriverWorkTimeVO> getDriverWorkTime(String compid, String driverCode, String dateTime) {
         return driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
     }
 

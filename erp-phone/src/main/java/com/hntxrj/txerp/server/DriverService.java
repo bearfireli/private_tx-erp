@@ -136,7 +136,7 @@ public interface DriverService {
      * @param driverCode 司机代号
      * @param queryTime  查询日期
      */
-    DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String queryTime);
+    List<DriverWorkTimeVO> getDriverWorkTime(String compid, String driverCode, String queryTime);
 
     /**
      * 获取小票详情
