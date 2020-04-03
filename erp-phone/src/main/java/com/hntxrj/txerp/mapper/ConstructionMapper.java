@@ -96,4 +96,12 @@ public interface ConstructionMapper {
      * @return 主合同号集合
      */
     List<String> getContractUID(Integer buildId);
+
+    /**
+     *  删除合同
+     * @param buildId   用户id
+     * @param ccontractCode   子合同号
+     * @param compid 企业代号
+     */
+    void deleteBuildId(String buildId, String ccontractCode,String compid);
 }

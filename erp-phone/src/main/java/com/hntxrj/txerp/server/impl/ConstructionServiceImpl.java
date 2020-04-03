@@ -149,6 +149,17 @@ public class ConstructionServiceImpl implements ConstructionService {
         return map;
     }
 
+    /**
+     *  删除合同
+     * @param buildId   用户id
+     * @param ccontractCode   子合同号
+     * @param compid 企业代号
+     */
+    @Override
+    public void deleteBuildId(String buildId, String ccontractCode,String compid) {
+        constructionMapper.deleteBuildId(buildId,ccontractCode,compid);
+    }
+
 
     /**
      * 根据用户id查询用户名称
