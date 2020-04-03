@@ -153,23 +153,19 @@ public class ConstructionServiceImpl implements ConstructionService {
     /**
      *  删除合同
      * @param buildId   用户id
-     * @param ccontractCode   子合同号
-     * @param compid 企业代号
+     * @param contractUid   主合同号
      */
     @Override
-    public void deleteBuildId(String buildId, String ccontractCode,String compid) throws ErpException {
+    public void deleteBuildId(String buildId, String contractUid) throws ErpException {
         if (buildId==null){
             throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_BUILDERCODE);
         }
-        if (ccontractCode==null){
+        if (contractUid==null){
             throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_CONTRACTID);
         }
-        if (compid ==null){
-            throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_COMPID);
-        }
-        String [] ccontractCodeList =ccontractCode.split(",");
+        String [] ccontractCodeList =contractUid.split(",");
         for (String contractCode: ccontractCodeList) {
-            constructionMapper.deleteBuildId(buildId,contractCode,compid);
+            constructionMapper.deleteBuildId(buildId,contractCode);
         }
     }
 

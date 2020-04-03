@@ -952,11 +952,14 @@ public class ContractServiceImp implements ContractService {
 
         //首先根据buildId查询出此施工方用户下的所有合同uid和所有子合同号
         List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
-        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+        List<ContractListVO> contractListVOList =new ArrayList<>();
+        if (contractDetailCodes.size()>0){
+            List<String> contractUIDList = constructionMapper.getContractUID(buildId);
 
-        PageHelper.startPage(page, pageSize, "SignDate desc");
-        List<ContractListVO> contractListVOList = contractMapper.getBuildContractListByEppOrBuild(contractDetailCodes,
-                contractUIDList, searchName);
+            PageHelper.startPage(page, pageSize, "SignDate desc");
+           contractListVOList = contractMapper.getBuildContractListByEppOrBuild(contractDetailCodes,
+                    contractUIDList, searchName);
+        }
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
         PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

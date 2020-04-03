@@ -59,8 +59,7 @@ public interface ConstructionService {
     /**
      *  删除合同
      * @param buildId   用户id
-     * @param ccontractCode   子合同号
-     * @param compid 企业代号
+     * @param contractUid   主合同号
      */
-    void deleteBuildId(String buildId, String ccontractCode,String compid) throws ErpException;
+    void deleteBuildId(String buildId, String contractUid) throws ErpException;
 }
