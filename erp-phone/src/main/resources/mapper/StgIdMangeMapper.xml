@@ -28,6 +28,8 @@
             and grade like '%'+#{grade}+'%'
         </if>
     </select>
+
+    <!--获取砼价格列表-->
     <select id="getStgidList" resultType="com.hntxrj.txerp.vo.StgidManageVO">
           select StgId,grade,pumpPrice,notPumpPrice,towerCranePrice,PriceDifference
         from SM_GradePriceInfo
