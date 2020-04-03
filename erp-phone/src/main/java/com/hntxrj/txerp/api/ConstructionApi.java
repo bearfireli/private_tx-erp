@@ -105,7 +105,7 @@ public class ConstructionApi {
      * @param compid 企业代号
      */
     @PostMapping("deleteBuildId")
-    public ResultVO deleteBuildId(String buildId,String ccontractCode,String compid){
+    public ResultVO deleteBuildId(String buildId,String ccontractCode,String compid) throws ErpException {
         constructionService.deleteBuildId(buildId,ccontractCode,compid);
         return  ResultVO.create();
     }
