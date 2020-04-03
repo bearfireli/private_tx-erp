@@ -3,6 +3,8 @@ package com.hntxrj.txerp.server;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.StgidManageVO;
 
+import java.util.List;
+
 public interface StgIdMangeService {
     /**
      * 砼标号管理
@@ -61,4 +63,11 @@ public interface StgIdMangeService {
      * @param stgId           砼标号
      */
     void deleteStgManage(String compid, String stgId);
+
+    /**
+     * 获取砼价格列表
+     * @param compid 企业id
+     * @return 砼价格列表
+     */
+    List<StgidManageVO> getStgidList(String compid);
 }

@@ -114,6 +114,16 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
         stgIdMangeMapper.deleteStgIdManage(compid, stgId);
     }
 
+    /**
+     * 获取砼价格列表
+     * @param compid 企业id
+     * @return 砼价格列表
+     */
+    @Override
+    public List<StgidManageVO> getStgidList(String compid) {
+        return stgIdMangeMapper.getStgidList(compid);
+    }
+
 
     private StgidManageVO savePoint(StgidManageVO stgidManageVO) {
         // 保留小数点后两位数

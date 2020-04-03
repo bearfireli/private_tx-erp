@@ -29,6 +29,14 @@
         </if>
     </select>
 
+    <!--获取砼价格列表-->
+    <select id="getStgidList" resultType="com.hntxrj.txerp.vo.StgidManageVO">
+          select StgId,grade,pumpPrice,notPumpPrice,towerCranePrice,PriceDifference
+        from SM_GradePriceInfo
+        where compid =#{compid}
+        and RecStatus =1
+    </select>
+
 
     <!--编辑砼标号-->
     <update id="updateStgIdManage">
