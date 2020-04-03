@@ -41,7 +41,7 @@
     </update>
     <!--删除合同-->
     <delete id="deleteBuildId">
-        delete from bd_bind where build_id =#{buildId} and ccontract_code =#{ccontractCode} and compid =#{compid}
+        delete from bd_bind where build_id =#{buildId} and ccontract_code =#{contractCode} and compid =#{compid}
     </delete>
     <!--施工方邀请码列表-->
     <select id="getInvitationList" resultType="com.hntxrj.txerp.vo.InvitationVO">
