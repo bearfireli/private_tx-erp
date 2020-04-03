@@ -100,8 +100,7 @@ public interface ConstructionMapper {
     /**
      *  删除合同
      * @param buildId   用户id
-     * @param contractCode   子合同号
-     * @param compid 企业代号
+     * @param contractCode   主合同号
      */
-    void deleteBuildId(String buildId, String contractCode,String compid);
+    void deleteBuildId(String buildId, String contractCode);
 }

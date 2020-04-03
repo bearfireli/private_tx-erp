@@ -101,12 +101,11 @@ public class ConstructionApi {
     /**
      *  删除合同
      * @param buildId   用户id
-     * @param ccontractCode   子合同号
-     * @param compid 企业代号
+     * @param contractUid   主合同号
      */
     @PostMapping("deleteBuildId")
-    public ResultVO deleteBuildId(String buildId,String ccontractCode,String compid) throws ErpException {
-        constructionService.deleteBuildId(buildId,ccontractCode,compid);
+    public ResultVO deleteBuildId(String buildId,String contractUid) throws ErpException {
+        constructionService.deleteBuildId(buildId,contractUid);
         return  ResultVO.create();
     }
 
