@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.server.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arronlong.httpclientutil.HttpClientUtil;
 import com.arronlong.httpclientutil.common.HttpConfig;
@@ -147,6 +148,29 @@ public class ConstructionServiceImpl implements ConstructionService {
             map.put("isBind", false);
         }
         return map;
+    }
+
+    /**
+     *  删除合同
+     * @param buildId   用户id
+     * @param ccontractCode   子合同号
+     * @param compid 企业代号
+     */
+    @Override
+    public void deleteBuildId(String buildId, String ccontractCode,String compid) throws ErpException {
+        if (buildId==null){
+            throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_BUILDERCODE);
+        }
+        if (ccontractCode==null){
+            throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_CONTRACTID);
+        }
+        if (compid ==null){
+            throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_COMPID);
+        }
+        String [] ccontractCodeList =ccontractCode.split(",");
+        for (String contractCode: ccontractCodeList) {
+            constructionMapper.deleteBuildId(buildId,contractCode,compid);
+        }
     }
 
 
