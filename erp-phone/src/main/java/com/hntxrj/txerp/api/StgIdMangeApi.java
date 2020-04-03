@@ -2,6 +2,7 @@ package com.hntxrj.txerp.api;
 
 import com.hntxrj.txerp.server.StgIdMangeService;
 import com.hntxrj.txerp.vo.ResultVO;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,17 @@ public class StgIdMangeApi {
         return ResultVO.create(stgIdMangeService.getStgidManage(compid,stgId,grade,page,pageSize));
     }
 
+
+    /**
+     * 获取砼价格列表
+     * @param compid 企业id
+     * @return 砼价格列表
+     */
+    @PostMapping("/getStgidList")
+    public ResultVO getStgidList(String compid) {
+
+        return ResultVO.create(stgIdMangeService.getStgidList(compid));
+    }
 
 
 

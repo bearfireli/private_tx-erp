@@ -42,4 +42,6 @@ public interface StgIdMangeMapper {
      *删除砼标号
      */
     void deleteStgIdManage(String compid, String stgId);
+
+    List<StgidManageVO>  getStgidList(String compid);
 }
