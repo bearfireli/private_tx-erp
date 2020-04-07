@@ -61,10 +61,10 @@ public class StockInSelectServiceImpl implements StockInSelectService {
     @Override
     public PageVO<StockInSelectVO> getStockInList(String matName , String vehicleId, String supName, String compid,
                                                      String beginTime, String endTime, Integer page, Integer pageSize,
-                                                     String saleType) {
+                                                     String saleType,Integer isPassOrNot) {
         PageHelper.startPage(page, pageSize);
         List<StockInSelectVO> stockInDetailsVOS = stockInMapper.getStockInList(matName,vehicleId,supName,
-                compid,beginTime,endTime,page,pageSize,saleType);
+                compid,beginTime,endTime,page,pageSize,saleType,isPassOrNot);
         PageInfo<StockInSelectVO> pageInfo = new PageInfo<>(stockInDetailsVOS);
         PageVO<StockInSelectVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

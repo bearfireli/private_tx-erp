@@ -70,6 +70,7 @@ public class StockInApi {
      * @param supName   供货商
      * @param matName   材料名称
      * @param saleType  业务类别    0：进货，  1：出货，  2：其他，  3：退货
+     * @param isPassOrNot 材料检测  是否合格 1 合格 0 不合格 2 未检测
      * @param page      页数
      * @param pageSize  每页数量
      * @return 原材料统计汇总
@@ -77,13 +78,14 @@ public class StockInApi {
     @PostMapping("/getStockInList")
     public ResultVO getStockInList(String matName, String vehicleId, String supName, String compid, Long beginTime,
                                       Long endTime, @RequestParam(defaultValue = "1")Integer page,
-                                   @RequestParam(defaultValue = "10")Integer pageSize, String saleType) {
+                                   @RequestParam(defaultValue = "10")Integer pageSize, String saleType,Integer isPassOrNot) {
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInService.getStockInList(matName, vehicleId, supName, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, "".equals(saleType) ? null : saleType));
+                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, "".equals(saleType) ? null : saleType,
+                isPassOrNot));
     }
 
     /**

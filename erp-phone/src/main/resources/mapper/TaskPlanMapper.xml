@@ -243,7 +243,8 @@
         (SaleNum - ReturnNum - RemnantNum - ScrapNum) saleNumTotal,
         ps.StirId,
         ds.StirName as stirName,
-        ps.VehicleID as vehicleID
+        ps.VehicleID as vehicleID,
+        ps.ThreeProduceNum
         from PT_TaskPlan pt
         left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
         left join PT_TaskSaleInvoice ps on ps.compid=pt.compid and ps.TaskId=pt.TaskId
