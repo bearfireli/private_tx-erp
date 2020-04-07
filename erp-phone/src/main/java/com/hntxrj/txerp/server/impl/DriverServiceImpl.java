@@ -182,6 +182,10 @@ public class DriverServiceImpl implements DriverService {
     @Override
     @Transactional
     public Map<String, Object> updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus) {
+        //兼容老版本，老版本vehicleStatus传的是1
+        if (vehicleStatus == 1) {
+            vehicleStatus = 16;
+        }
 
         Map<String, Object> map = new HashMap<>();
 //          先判断这个小票的出场时间，满足以下两个条件时才修改车辆状态为自动回厂
