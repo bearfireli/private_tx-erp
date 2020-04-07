@@ -193,14 +193,16 @@ public class DriverServiceImpl implements DriverService {
 //        2，当前车辆的状态时运输状态,或者是正在卸料,或者完成卸料的状态
 
         DriverTaskSaleDetailVO taskSaleInvoiceDetail = driverMapper.getTaskSaleInvoiceDetail(driverCode, compid);
-        if (taskSaleInvoiceDetail == null) {
+        if (taskSaleInvoiceDetail == null||taskSaleInvoiceDetail.getVehicleStatus()==null) {
             map.put("code", 1);
             map.put("message", "司机没有打票，自动回厂失败");
             return map;
         }
         Date nowDate = new Date();
+        //获取当前时间与离厂时间的分钟数插值
+        long minute = (nowDate.getTime() - taskSaleInvoiceDetail.getLeaveTime().getTime()) / 1000 / 60;
         //如果当前时间距离出场时间大于30分钟,并且车辆状态为运输，等待卸料，完成卸料，则修改车辆状态为自动回厂
-        if (((nowDate.getTime() - taskSaleInvoiceDetail.getLeaveTime().getTime()) / 1000 / 60) > 30) {
+        if (minute > 30) {
             if (taskSaleInvoiceDetail.getVehicleStatus() == 2 || taskSaleInvoiceDetail.getVehicleStatus() == 12 ||
                     taskSaleInvoiceDetail.getVehicleStatus() == 13 || taskSaleInvoiceDetail.getVehicleStatus() == 14) {
                 //修改小票表中的车辆状态为回厂待班。
