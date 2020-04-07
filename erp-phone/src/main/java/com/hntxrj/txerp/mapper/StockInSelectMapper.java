@@ -38,7 +38,7 @@ public interface StockInSelectMapper {
 
     List<StockInSelectVO> getStockInList(String matName , String vehicleId, String supName, String compid,
                                             String beginTime, String endTime, Integer page, Integer pageSize,
-                                            String saleType);
+                                            String saleType,Integer isPassOrNot);
     /**
      /*原材料过磅查询结算重量
      * @param compid    企业id

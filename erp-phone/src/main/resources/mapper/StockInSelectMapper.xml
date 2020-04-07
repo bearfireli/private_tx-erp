@@ -151,6 +151,9 @@
         <if test="matName != null">
             and matName like '%'+#{matName}+'%'
         </if>
+        <if test="isPassOrNot != null">
+            and si.isPassOrNot  = #{isPassOrNot}
+        </if>
         <if test="beginTime != null and endTime != null">
             and si.SecondTime between #{beginTime} and #{endTime}
         </if>
