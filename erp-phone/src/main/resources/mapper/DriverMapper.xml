@@ -251,6 +251,11 @@
        where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
        order by  cardNumber Desc
     </select>
+    <select id="getTaskSaleInvoiceDetail" resultType="com.hntxrj.txerp.vo.DriverTaskSaleDetailVO">
+        select ID as id,compid as compid,Leave_STTime as leaveTime,VehicleStatus as vehicleStatus
+        from PT_TaskSaleInvoice
+        where compid=#{compid} and ID=#{id}
+    </select>
 
     <update id="updateDriverWorkTime">
         <if test="timeType==1 ">

@@ -3,6 +3,7 @@ package com.hntxrj.txerp.server;
 import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.*;
+
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
@@ -125,9 +126,9 @@ public interface DriverService {
      * @param driverCode 司机代号
      * @param workTime   司机打卡时间
      * @param timeType   司机打卡类型  0:上班打卡    1：下班打卡
-     * @param cardNumber   打卡次数
+     * @param cardNumber 打卡次数
      */
-    void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType,Integer cardNumber);
+    void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType, Integer cardNumber);
 
     /**
      * 查询司机当天打卡时间
@@ -183,14 +184,14 @@ public interface DriverService {
      * @param id            小票id
      * @param vehicleStatus 车辆状态    1：场内待班
      */
-    void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus);
+    Map<String, Object> updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus);
 
     /**
      * 司机在线状态请求
      *
-     * @param compid      企业代号
-     * @param driverCode  司机代号
-     * */
+     * @param compid     企业代号
+     * @param driverCode 司机代号
+     */
     void driverOnlineStatus(String compid, String driverCode);
 }
 
