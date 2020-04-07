@@ -87,14 +87,13 @@ public class DriverApi {
      * 自动回厂修改车辆状态
      *
      * @param compid        企业
-     * @param vehicleId     车号
-     * @param id            小票id
+     * @param driverCode    司机编号
      * @param vehicleStatus 车辆状态    16：自动回厂
      * @return 小票签收列表
      */
     @PostMapping("/updateVehicleStatus")
-    public ResultVO updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus) {
-        return ResultVO.create(driverService.updateVehicleStatus(compid, vehicleId, id, vehicleStatus));
+    public ResultVO updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus) {
+        return ResultVO.create(driverService.updateVehicleStatus(compid, driverCode, vehicleStatus));
     }
 
 

@@ -178,5 +178,5 @@ public interface DriverMapper {
     void updateVehicleStatus(String compid, String vehicleId, Integer vehicleStatus, Date dateTime);
 
     //获取小票的车辆状态
-    DriverTaskSaleDetailVO getTaskSaleInvoiceDetail(Integer id, String compid);
+    DriverTaskSaleDetailVO getTaskSaleInvoiceDetail(String driverCode, String compid);
 }

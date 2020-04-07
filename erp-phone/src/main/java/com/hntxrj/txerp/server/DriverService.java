@@ -180,11 +180,10 @@ public interface DriverService {
      * 修改车辆表中的车辆状态
      *
      * @param compid        企业
-     * @param vehicleId     车号
-     * @param id            小票id
+     * @param driverCode    车号
      * @param vehicleStatus 车辆状态    1：场内待班
      */
-    Map<String, Object> updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus);
+    Map<String, Object> updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus);
 
     /**
      * 司机在线状态请求

@@ -11,5 +11,6 @@ public class DriverTaskSaleDetailVO implements Serializable {
     private String compid;
     private Date leaveTime;     //离厂时间
     private Integer vehicleStatus;      //车辆状态
+    private String vehicleID;      //车辆代号
 
 }

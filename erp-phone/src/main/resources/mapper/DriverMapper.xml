@@ -252,9 +252,10 @@
        order by  cardNumber Desc
     </select>
     <select id="getTaskSaleInvoiceDetail" resultType="com.hntxrj.txerp.vo.DriverTaskSaleDetailVO">
-        select ID as id,compid as compid,Leave_STTime as leaveTime,VehicleStatus as vehicleStatus
+        select top 1 ID as id,compid as compid,Leave_STTime as leaveTime,VehicleStatus as vehicleStatus,VehicleID as vehicleID
         from PT_TaskSaleInvoice
-        where compid=#{compid} and ID=#{id}
+        where compid=#{compid} and PersonalCode=#{driverCode}
+        order by Leave_STTime desc
     </select>
 
     <update id="updateDriverWorkTime">

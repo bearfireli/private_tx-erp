@@ -181,23 +181,28 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional
-    public Map<String, Object> updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus) {
+    public Map<String, Object> updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus) {
 
         Map<String, Object> map = new HashMap<>();
 //          先判断这个小票的出场时间，满足以下两个条件时才修改车辆状态为自动回厂
 //        1,当前时间比出场时间大于30分钟
 //        2，当前车辆的状态时运输状态,或者是正在卸料,或者完成卸料的状态
 
-        DriverTaskSaleDetailVO taskSaleInvoiceDetail = driverMapper.getTaskSaleInvoiceDetail(id, compid);
+        DriverTaskSaleDetailVO taskSaleInvoiceDetail = driverMapper.getTaskSaleInvoiceDetail(driverCode, compid);
+        if (taskSaleInvoiceDetail == null) {
+            map.put("code", 1);
+            map.put("message", "司机没有打票，自动回厂失败");
+            return map;
+        }
         Date nowDate = new Date();
         //如果当前时间距离出场时间大于30分钟,并且车辆状态为运输，等待卸料，完成卸料，则修改车辆状态为自动回厂
         if (((nowDate.getTime() - taskSaleInvoiceDetail.getLeaveTime().getTime()) / 1000 / 60) > 30) {
             if (taskSaleInvoiceDetail.getVehicleStatus() == 2 || taskSaleInvoiceDetail.getVehicleStatus() == 12 ||
                     taskSaleInvoiceDetail.getVehicleStatus() == 13 || taskSaleInvoiceDetail.getVehicleStatus() == 14) {
                 //修改小票表中的车辆状态为回厂待班。
-                driverMapper.updateInvoiceVehicleStatus(compid, id, vehicleStatus, nowDate);
+                driverMapper.updateInvoiceVehicleStatus(compid, taskSaleInvoiceDetail.getId(), vehicleStatus, nowDate);
                 //修改车辆表中的车辆状态为回厂待班。
-                driverMapper.updateVehicleStatus(compid, vehicleId, vehicleStatus, nowDate);
+                driverMapper.updateVehicleStatus(compid, taskSaleInvoiceDetail.getVehicleID(), vehicleStatus, nowDate);
                 map.put("code", 0);
                 map.put("message", "自动回厂成功");
             } else {
@@ -210,8 +215,6 @@ public class DriverServiceImpl implements DriverService {
         }
 
         return map;
-
-
     }
 
     @Override
