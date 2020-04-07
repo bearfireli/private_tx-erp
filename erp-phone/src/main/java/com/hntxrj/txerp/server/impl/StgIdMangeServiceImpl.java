@@ -97,8 +97,8 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
                                   String towerCranePrice) {
         //用户如果输入的价格包含空格和/r/t，将其替换掉，防止程序报错。
         pumpPrice = pumpPrice.replaceAll("\\s*", "");
-        notPumpPrice = pumpPrice.replaceAll("\\s*", "");
-        towerCranePrice = pumpPrice.replaceAll("\\s*", "");
+        notPumpPrice = notPumpPrice.replaceAll("\\s*", "");
+        towerCranePrice = towerCranePrice.replaceAll("\\s*", "");
         stgIdMangeMapper.insertStgIdManage(compid, stgId, grade, pumpPrice, notPumpPrice, towerCranePrice);
     }
 
