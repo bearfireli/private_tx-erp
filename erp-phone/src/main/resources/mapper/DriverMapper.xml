@@ -108,7 +108,7 @@
         left join VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
         where tsi.compid=#{compid}
         and tsi.PersonalCode=#{driverCode}
-        and tsi.InvoiceType not in('1','2','6','4')
+        and tsi.InvoiceType not in('1','2','6')
         and tsi.recStatus = 1
         <if test="invoiceId != null ">
             and tsi.ID like '%'+#{invoiceId}+'%'
