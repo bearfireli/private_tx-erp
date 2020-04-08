@@ -574,7 +574,7 @@ public class StockInApi {
      * @param image 图片路径
      * @return 结果
      */
-    @ApiOperation(value = "删除照片",httpMethod="get" ,notes="" +
+    @ApiOperation(value = "删除照片",httpMethod="post" ,notes="" +
             "compid 公司ID|stICode 过磅单号|image 图片路径")
     @PostMapping("/deletePicture")
     public com.hntxrj.txerp.core.web.ResultVO deletePicture(String compid,String stICode, String image)  {
