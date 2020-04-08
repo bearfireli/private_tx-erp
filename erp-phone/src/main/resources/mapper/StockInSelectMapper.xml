@@ -152,15 +152,16 @@
             and matName like '%'+#{matName}+'%'
         </if>
         <if test="isPassOrNot != null">
-            and si.isPassOrNot  = #{isPassOrNot}
+            and si.isPassOrNot = #{isPassOrNot}
         </if>
         <if test="beginTime != null and endTime != null">
-            and si.SecondTime between #{beginTime} and #{endTime}
+            and si.FirstTime between #{beginTime} and #{endTime}
         </if>
         <if test="saleType != null ">
             and si.saleType=#{saleType}
         </if>
-        group by si.StI_Status, si.StICode, si.VehicleID, si.GrWeight, si.TaWeight, si.NetWeight, si.ClWeight, si.Sup_ExFactory,
+        group by si.StI_Status, si.StICode, si.VehicleID, si.GrWeight, si.TaWeight, si.NetWeight, si.ClWeight,
+        si.Sup_ExFactory,
         ms.Sup_Name, mk.Sto_Name, mt.MatName, si.isPassOrNot,si.SecondTime
         order by si.StICode desc
     </select>
