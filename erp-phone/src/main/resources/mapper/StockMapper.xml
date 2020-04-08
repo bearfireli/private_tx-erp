@@ -43,7 +43,7 @@
         select Sto_Name as stoName
         from MP_Stock where compid=#{compid}
         <if test="stoName!=null and stoName!=''">
-           and Sto_Name like '%'+#{stoName}+'%'
+            and Sto_Name like '%'+#{stoName}+'%'
         </if>
         group by Sto_Name
     </select>
@@ -60,13 +60,26 @@
     -->
     <update id="updateCheckStatus">
         update MP_StockIn set
-         isPassOrNot=#{isPassOrNot},
-         PicturePath=#{picturePath},
-         MatCode=#{matCode},
-         StkCode=#{stkCode},
-         NotReason=#{notReason},
-         UpDownMark=0
-        where  compid = #{compid} and StICode=#{stICode}
+        <if test="isPassOrNot != null">
+            isPassOrNot=#{isPassOrNot},
+        </if>
+        <if test="picturePath != null">
+            PicturePath=#{picturePath},
+        </if>
+        <if test="matCode != null">
+            MatCode=#{matCode},
+        </if>
+        <if test="notReason!= null">
+            NotReason=#{notReason},
+        </if>
+        <if test="stkCode!=null">
+            StkCode=#{stkCode},
+        </if>
+        <if test="deductNum!=null">
+            DeductNum=#{deductNum},
+        </if>
+        UpDownMark=0
+        where compid = #{compid} and StICode=#{stICode}
     </update>
 
     <select id="getMatByComId" resultType="com.hntxrj.txerp.vo.MaterialVO">
@@ -92,19 +105,20 @@
     </select>
     <select id="getStockCheck" resultType="com.hntxrj.txerp.vo.StockInCheckVO">
         select
-    t1.stICode,
-    t1.isPassOrNot,
-    t1.PicturePath,
-    t1.MatCode,
-    t3.matName,
-    t1.StkCode,
-    t1.NotReason,
-    t1.StkCode,
-    t2.Sto_Name
-       from  MP_StockIn t1
-left join  MP_Stock t2 on t1.StkCode=t2.StkCode and t2.compid=t1.compid
-left join  MP_MaterialInfor t3 on t1.MatCode=t3.MatCode and t3.compid=t1.compid
-where t1.compid=#{compid} and t1.stICode=#{stICode}
+        t1.stICode,
+        t1.isPassOrNot,
+        t1.PicturePath,
+        t1.MatCode,
+        t3.matName,
+        t1.StkCode,
+        t1.NotReason,
+        t1.StkCode,
+        t2.Sto_Name,
+        t1.DeductNum as deductNum
+        from  MP_StockIn t1
+        left join  MP_Stock t2 on t1.StkCode=t2.StkCode and t2.compid=t1.compid
+        left join  MP_MaterialInfor t3 on t1.MatCode=t3.MatCode and t3.compid=t1.compid
+        where t1.compid=#{compid} and t1.stICode=#{stICode}
 
     </select>
 

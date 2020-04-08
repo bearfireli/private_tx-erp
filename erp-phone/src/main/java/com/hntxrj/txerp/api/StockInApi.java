@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -50,55 +51,58 @@ public class StockInApi {
      */
     @PostMapping("/getStockInDetails")
     public ResultVO getStockInDetails(String matName, String vehicleId, String supName, String compid, Long beginTime,
-                                      Long endTime, @RequestParam(defaultValue = "1")Integer page,
-                                      @RequestParam(defaultValue = "10")Integer pageSize, String saleType) {
+                                      Long endTime, @RequestParam(defaultValue = "1") Integer page,
+                                      @RequestParam(defaultValue = "10") Integer pageSize, String saleType) {
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInService.getStockInDetails(matName, vehicleId, supName, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, "".equals(saleType) ? null : saleType));
+                endTime == null ? null : sdf.format(new Date(endTime)), page,
+                pageSize, "".equals(saleType) ? null : saleType));
     }
 
     /**
      * /*原材料过磅查询(新版本  4.2.1+1.apk 之后版本)
      *
-     * @param compid    企业id
-     * @param beginTime 开始时间
-     * @param endTime   结束时间
-     * @param vehicleId 车号
-     * @param supName   供货商
-     * @param matName   材料名称
-     * @param saleType  业务类别    0：进货，  1：出货，  2：其他，  3：退货
+     * @param compid      企业id
+     * @param beginTime   开始时间
+     * @param endTime     结束时间
+     * @param vehicleId   车号
+     * @param supName     供货商
+     * @param matName     材料名称
+     * @param saleType    业务类别    0：进货，  1：出货，  2：其他，  3：退货
      * @param isPassOrNot 材料检测  是否合格 1 合格 0 不合格 2 未检测
-     * @param page      页数
-     * @param pageSize  每页数量
+     * @param page        页数
+     * @param pageSize    每页数量
      * @return 原材料统计汇总
      */
     @PostMapping("/getStockInList")
     public ResultVO getStockInList(String matName, String vehicleId, String supName, String compid, Long beginTime,
-                                      Long endTime, @RequestParam(defaultValue = "1")Integer page,
-                                   @RequestParam(defaultValue = "10")Integer pageSize, String saleType,Integer isPassOrNot) {
+                                   Long endTime, @RequestParam(defaultValue = "1") Integer page,
+                                   @RequestParam(defaultValue = "10") Integer pageSize, String saleType,
+                                   Integer isPassOrNot) {
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInService.getStockInList(matName, vehicleId, supName, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, "".equals(saleType) ? null : saleType,
+                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize,
+                "".equals(saleType) ? null : saleType,
                 isPassOrNot));
     }
 
     /**
      * 材料过磅详情查询
-     * @param stiCode  过磅单号
-     * @param compid   企业id
-     * @return  返回值
+     *
+     * @param stiCode 过磅单号
+     * @param compid  企业id
+     * @return 返回值
      */
     @PostMapping("/stockInListDetail")
-    public ResultVO stockInListDetail(String stiCode,String compid ) {
+    public ResultVO stockInListDetail(String stiCode, String compid) {
         return ResultVO.create(stockInService.stockInListDetail(stiCode, compid));
     }
-
 
 
     /**
@@ -120,7 +124,8 @@ public class StockInApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInService.getStockInSelectClose(matName, vehicleId, supName, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, "".equals(saleType) ? null : saleType));
+                endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize,
+                "".equals(saleType) ? null : saleType));
     }
 
     /**
@@ -225,7 +230,8 @@ public class StockInApi {
      */
     @PostMapping("/getMatDetailsList")
     public ResultVO getMatDetailsList(String vehicleId, String supName, String matSpecs, String compid, Long beginTime,
-                                      Long endTime, @RequestParam(defaultValue = "1")Integer page, @RequestParam(defaultValue = "10")Integer pageSize, String matName) {
+                                      Long endTime, @RequestParam(defaultValue = "1") Integer page,
+                                      @RequestParam(defaultValue = "10") Integer pageSize, String matName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stoclInCollectService.getMatDetailsList(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -246,7 +252,8 @@ public class StockInApi {
      * @return 原材料统计汇总
      */
     @PostMapping("/getStockInCollectClose")
-    public ResultVO getStockInCollectClose(String vehicleId, String supName, String matSpecs, String compid, Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
+    public ResultVO getStockInCollectClose(String vehicleId, String supName, String matSpecs, String compid,
+                                           Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stoclInCollectService.getStockInCollectClose(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -267,7 +274,8 @@ public class StockInApi {
      * @return 原材料统计汇总
      */
     @PostMapping("/getMatStatistics")
-    public ResultVO getMatStatistics(String vehicleId, String supName, String matSpecs, String compid, Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
+    public ResultVO getMatStatistics(String vehicleId, String supName, String matSpecs, String compid,
+                                     Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stoclInCollectService.getMatStatistics(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -288,7 +296,8 @@ public class StockInApi {
      * @return 原材料统计汇总
      */
     @PostMapping("/getMatStatisticsClose")
-    public ResultVO getMatStatisticsClose(String vehicleId, String supName, String matSpecs, String compid, Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
+    public ResultVO getMatStatisticsClose(String vehicleId, String supName, String matSpecs, String compid,
+                                          Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stoclInCollectService.getMatStatisticsClose(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -309,7 +318,8 @@ public class StockInApi {
      * @return 材料入库汇总
      */
     @PostMapping("/getMaterialCount")
-    public ResultVO getMaterialCount(String vehicleId, String supName, String matSpecs, String compid, Long beginTime, Long endTime,
+    public ResultVO getMaterialCount(String vehicleId, String supName, String matSpecs, String compid,
+                                     Long beginTime, Long endTime,
                                      @RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "10") Integer pageSize, String MatName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -334,7 +344,8 @@ public class StockInApi {
      */
     @PostMapping("/getWeightByMat")
     public ResultVO getWeighByMat(String empName, String compid, String vehicleId,
-                                  String stoName, String supName, Long beginTime, Long endTime, Integer page, Integer pageSize) {
+                                  String stoName, String supName, Long beginTime, Long endTime, Integer page,
+                                  Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightByMat(
                 empName, compid, vehicleId, stoName, supName,
@@ -360,7 +371,8 @@ public class StockInApi {
      */
     @PostMapping("/getWeightByVechicId")
     public ResultVO getWeighByVechicId(String empName, String compid, String vehicleId,
-                                       String stoName, String supName, Long beginTime, Long endTime, Integer page, Integer pageSize) {
+                                       String stoName, String supName, Long beginTime, Long endTime, Integer page,
+                                       Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightByVehicleId(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -370,26 +382,27 @@ public class StockInApi {
     /**
      * /*原材料过磅统计。供应商名
      *
-     * @param compid    企业id
-     * @param beginTime 开始时间
-     * @param endTime   结束时间
-     * @param vehicleId 车号
-     * @param supName   供货商
-     * @param empName   过磅员
-     * @param page      页数
-     * @param pageSize  每页数量
-     * @param stoName   入库库位
-     * @param isNewVersion   是否是新版本。 0：不是新版本， 1：是新版本
+     * @param compid       企业id
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     * @param vehicleId    车号
+     * @param supName      供货商
+     * @param empName      过磅员
+     * @param page         页数
+     * @param pageSize     每页数量
+     * @param stoName      入库库位
+     * @param isNewVersion 是否是新版本。 0：不是新版本， 1：是新版本
      * @return 原材料统计汇总
      */
     @PostMapping("/getWeightByStoName")
     public ResultVO getWeighByStoName(String empName, String compid, String vehicleId,
                                       String stoName, String supName, Long beginTime, Long endTime,
-                                      @RequestParam(defaultValue = "0") String isNewVersion,@RequestParam(defaultValue = "1") Integer page,
-                                      @RequestParam(defaultValue = "10")Integer pageSize) {
+                                      @RequestParam(defaultValue = "0") String isNewVersion,
+                                      @RequestParam(defaultValue = "1") Integer page,
+                                      @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(stockInServer.getWeightByStoName(empName, compid, vehicleId, stoName, supName,isNewVersion,
-                beginTime == null ? null : sdf.format(new Date(beginTime)),
+        return ResultVO.create(stockInServer.getWeightByStoName(empName, compid, vehicleId, stoName, supName,
+                isNewVersion, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
 
@@ -409,7 +422,8 @@ public class StockInApi {
      */
     @PostMapping("/getWeightBySupName")
     public ResultVO getWeighBySupName(String empName, String compid, String vehicleId,
-                                      String stoName, String supName, Long beginTime, Long endTime, Integer page, Integer pageSize) {
+                                      String stoName, String supName, Long beginTime, Long endTime, Integer page,
+                                      Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightBySupName(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -432,7 +446,8 @@ public class StockInApi {
      */
     @PostMapping("/getWeightByEmpName")
     public ResultVO getWeighByEmpName(String empName, String compid, String vehicleId,
-                                      String stoName, String supName, Long beginTime, Long endTime, Integer page, Integer pageSize) {
+                                      String stoName, String supName, Long beginTime, Long endTime, Integer page,
+                                      Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightByEmpName(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -455,7 +470,8 @@ public class StockInApi {
      */
     @PostMapping("/getSynthesizeByMat")
     public ResultVO getSynthesizeByMat(String empName, String compid, String vehicleId,
-                                       String stoName, String supName, Long beginTime, Long endTime, Integer page, Integer pageSize) {
+                                       String stoName, String supName, Long beginTime, Long endTime, Integer page,
+                                       Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getSynthesizeByMat(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -478,7 +494,8 @@ public class StockInApi {
      */
     @PostMapping("/getWeightClose")
     public ResultVO getWeightClose(String empName, String compid, String vehicleId,
-                                   String stoName, String supName, Long beginTime, Long endTime, Integer page, Integer pageSize) {
+                                   String stoName, String supName, Long beginTime, Long endTime, Integer page,
+                                   Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightClose(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -516,7 +533,7 @@ public class StockInApi {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getHistogramByMat(compid, empName, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime)),matType));
+                endTime == null ? null : sdf.format(new Date(endTime)), matType));
     }
 
 
@@ -564,71 +581,83 @@ public class StockInApi {
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }
-    /**
-     *  通过 compid  stICode 查询材料过磅
-     * @param compid 公司id
-     * @param stICode 过磅单号
 
+    /**
+     * 通过 compid  stICode 查询材料过磅
+     *
+     * @param compid  公司id
+     * @param stICode 过磅单号
      */
-    @ApiOperation(value = "通过 compid  stICode 查询材料过磅",httpMethod="get" ,notes="compid 公司ID|stICode 过磅单号")
+    @ApiOperation(value = "通过 compid  stICode 查询材料过磅", httpMethod = "get", notes = "compid 公司ID|stICode 过磅单号")
     @PostMapping("/getStockCheck")
-    public ResultVO getStockCheck( String compid,   String stICode) {
+    public ResultVO getStockCheck(String compid, String stICode) {
 
         return ResultVO.create(stockInServer.getStockCheck(compid, stICode));
     }
+
     /**
-     *  更新检验状态
-     * @param compid 公司id
-     * @param stICode 过磅单号
+     * 更新检验状态
+     *
+     * @param compid      公司id
+     * @param deductNum   另扣量
+     * @param stICode     过磅单号
      * @param isPassOrNot 是否合格 1合格 0不合格
      * @param picturePath 图片路径
-     * @param matCode 材料编码
-     * @param stkCode 库位编码
+     * @param matCode     材料编码
+     * @param stkCode     库位编码
      */
-    @ApiOperation(value = "更新检验状态",httpMethod="get" ,notes="compid 公司ID|stICode 过磅单号|" +
+    @ApiOperation(value = "更新检验状态", httpMethod = "get", notes = "compid 公司ID|stICode 过磅单号|" +
             "isPassOrNot 是否合格 1合格 0不合格|picturePath 图片路径|matCode 材料编码|stkCode 库位编码")
     @PostMapping("/updateCheckStatus")
-    public ResultVO updateCheckStatus( String compid,   String stICode,@RequestParam(defaultValue="1") int isPassOrNot,
-                                       String picturePath,String matCode,String stkCode,String notReason) {
-        stockInServer.updateCheckStatus(compid, stICode, isPassOrNot, picturePath,matCode,stkCode,notReason);
+    public ResultVO updateCheckStatus(String compid, BigDecimal deductNum, String stICode,
+                                      @RequestParam(defaultValue = "1") int isPassOrNot,
+                                      String picturePath, String matCode, String stkCode, String notReason) {
+        stockInServer.updateCheckStatus(compid, deductNum, stICode, isPassOrNot, picturePath, matCode, stkCode, notReason);
         return ResultVO.create();
     }
 
     /**
      * 上传照片
-
-     * @param compid 公司ID
+     *
+     * @param compid  公司ID
      * @param stICode 过磅单号
-     * @param image 图片
+     * @param image   图片
      * @return 图片路径
      * @throws ErpException 异常
      */
-    @ApiOperation(value = "上传照片",httpMethod="get" ,notes="" +
+    @ApiOperation(value = "上传照片", httpMethod = "get", notes = "" +
             "compid 公司ID|stICode 过磅单号|image 图片")
     @PostMapping("/uploadPicture")
-    public com.hntxrj.txerp.core.web.ResultVO uploadPicture(String compid,String stICode, MultipartFile image) throws ErpException {
-        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.uploadCheckingImg(compid,stICode,image));
-    }
-    /**
-     * 删除照片
-     * @param compid 公司ID
-     * @param stICode 过磅单号
-     * @param image 图片路径
-     * @return 结果
-     */
-    @ApiOperation(value = "删除照片",httpMethod="get" ,notes="" +
-            "compid 公司ID|stICode 过磅单号|image 图片路径")
-    @PostMapping("/deletePicture")
-    public com.hntxrj.txerp.core.web.ResultVO deletePicture(String compid,String stICode, String image)  {
-        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.deleteCheckingImg(compid,stICode,image));
+    public com.hntxrj.txerp.core.web.ResultVO uploadPicture(String compid, String stICode,
+                                                            MultipartFile image) throws ErpException {
+        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.uploadCheckingImg(compid,
+                stICode, image));
     }
 
     /**
-     *图片展示
+     * 删除照片
+     *
+     * @param compid  公司ID
+     * @param stICode 过磅单号
+     * @param image   图片路径
+     * @return 结果
+     */
+    @ApiOperation(value = "删除照片", httpMethod = "get", notes = "" +
+            "compid 公司ID|stICode 过磅单号|image 图片路径")
+    @PostMapping("/deletePicture")
+    public com.hntxrj.txerp.core.web.ResultVO deletePicture(String compid, String stICode,
+                                                            String image) {
+        return com.hntxrj.txerp.core.web.ResultVO.create(stockInServer.deleteCheckingImg(compid, stICode,
+                image));
+    }
+
+    /**
+     * 图片展示
+     *
      * @param fileName 文件名称
      * @throws ErpException 异常处理
      */
-    @ApiOperation(value = "图片展示",httpMethod="get" ,notes="" +
+    @ApiOperation(value = "图片展示", httpMethod = "get", notes = "" +
             "fileName 文件名称")
     @GetMapping("/downloadPicture")
     public void downloadPicture(String fileName, HttpServletResponse response) throws ErpException {
@@ -637,38 +666,40 @@ public class StockInApi {
 
     /**
      * 根据公司ID获取材料信息
-     * @param compid 公司ID
+     *
+     * @param compid      公司ID
      * @param searchWords 搜索关键字
-     * @param page 当前页
-     * @param pageSize 分页大小
+     * @param page        当前页
+     * @param pageSize    分页大小
      * @return 数据结果
      */
-    @ApiOperation(value ="根据公司ID获取材料信息",httpMethod="post" ,notes="" +
+    @ApiOperation(value = "根据公司ID获取材料信息", httpMethod = "post", notes = "" +
             "searchWords 搜索关键字|compid 公司ID")
     @PostMapping("/getMatByComId")
-    public ResultVO getMatByComId(String compid,String searchWords,
+    public ResultVO getMatByComId(String compid, String searchWords,
                                   @RequestParam(defaultValue = "1") Integer page,
                                   @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(stockInServer.getMatByComId(compid,searchWords,page,pageSize));
+        return ResultVO.create(stockInServer.getMatByComId(compid, searchWords, page, pageSize));
 
     }
 
     /**
-     *  根据公司ID获取库存
-     * @param compid 公司ID
+     * 根据公司ID获取库存
+     *
+     * @param compid      公司ID
      * @param searchWords 搜索关键字
-     * @param page 当前页
-     * @param pageSize 分页大小
-     * * @return 结果集
+     * @param page        当前页
+     * @param pageSize    分页大小
+     *                    * @return 结果集
      */
 
-    @ApiOperation(value="根据公司ID获取库存",httpMethod="post" ,notes="" +
+    @ApiOperation(value = "根据公司ID获取库存", httpMethod = "post", notes = "" +
             "searchWords 搜索关键字|compid 公司ID")
     @PostMapping("/getStockByComId")
-    public ResultVO getStockByComId(String compid,String searchWords,
+    public ResultVO getStockByComId(String compid, String searchWords,
                                     @RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(stockInServer.getStockByComId(compid,searchWords,page,pageSize));
+        return ResultVO.create(stockInServer.getStockByComId(compid, searchWords, page, pageSize));
 
     }
 
