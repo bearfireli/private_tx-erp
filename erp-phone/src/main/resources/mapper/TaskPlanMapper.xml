@@ -195,7 +195,7 @@
 
     <!--查询所有正在生产的任务单的车辆情况-->
     <select id="getCarsByTaskIds" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
-        select tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
+        select tsi.SendTime,tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
         dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId,dd2.StirName
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
@@ -208,7 +208,9 @@
         </foreach>
         and InvoiceType in ('1', '2', '3', '4')
         and vm.VehicleStatus in ('2','3')
-        order by dd.PI_TypeName, tsi.SendTime desc
+        group by tsi.TaskId, pt.TaskStatus, tsi.InvoiceType, tsi.VehicleID, dd.PI_TypeName, vm.VehicleStatus,
+         vm.StirId, dd2.StirName,tsi.SendTime
+        order by dd.PI_TypeName,tsi.SendTime desc
     </select>
 
 
@@ -241,7 +243,8 @@
         (SaleNum - ReturnNum - RemnantNum - ScrapNum) saleNumTotal,
         ps.StirId,
         ds.StirName as stirName,
-        ps.VehicleID as vehicleID
+        ps.VehicleID as vehicleID,
+        ps.ThreeProduceNum
         from PT_TaskPlan pt
         left join SM_EPPInfo sm on pt.compid = sm.compid and pt.EPPCode = sm.EPPCode
         left join PT_TaskSaleInvoice ps on ps.compid=pt.compid and ps.TaskId=pt.TaskId
@@ -955,6 +958,41 @@
         tp.OpenTime,tp.StgId,tp.Slump,tp.Attribute
         order by tp.PreTime desc, tp.TaskId desc
     </select>
+
+    <!--工地段获取任务单列表预计方量汇总-->
+    <select id="getBuildTaskPreCount" resultType="java.math.BigDecimal">
+        select sum(PreNum)
+        from PT_TaskPlan
+        where DeleteMark = 0
+        and RecStatus = 1
+        and CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="beginTime != null and endTime != null">
+            and (taskStatus = 1 or preTime between #{beginTime} and #{endTime})
+        </if>
+        <if test="eppCode != null">
+            and eppCode = #{eppCode}
+        </if>
+        <if test="placing != null">
+            and placing like '%' + #{placing}+'%'
+        </if>
+        <if test="taskId != null">
+            and taskId like '%' + #{taskId} + '%'
+        </if>
+        <if test="taskStatus != null">
+            and taskStatus = #{taskStatus}
+        </if>
+        <if test="verifyStatus != null">
+            and VerifyStatus = #{verifyStatus}
+        </if>
+    </select>
+
     <select id="getRecipoentList" resultType="com.hntxrj.txerp.vo.RecipientVO">
         select * from Recipient
         where compid=#{compid}
@@ -994,6 +1032,7 @@
             and PI_TypeName like '%' +#{slump}+'%'
         </if>
     </select>
+
 
 
 </mapper>

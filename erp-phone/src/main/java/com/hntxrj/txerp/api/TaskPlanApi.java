@@ -90,7 +90,7 @@ public class TaskPlanApi {
         return ResultVO.create(taskPlanService.getPreNumCount(
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
-                    eppCode, builderCode, placing, taskId, taskStatus, compid, verifyStatus));
+                eppCode, builderCode, placing, taskId, taskStatus, compid, verifyStatus));
     }
 
 
@@ -705,16 +705,41 @@ public class TaskPlanApi {
                 eppCode, placing, taskId, taskStatus, compid, verifyStatus, buildId, page, pageSize));
     }
 
+
+    /**
+     * 获取工地端任务单预计方量汇总
+     *
+     * @param beginTime    开始时间
+     * @param endTime      结束时间
+     * @param eppCode      工程代号
+     * @param placing      浇筑部位
+     * @param taskId       任务单号
+     * @param taskStatus   任务单状态
+     * @param verifyStatus 审核标识  0：未审核； 1：已审核
+     * @param buildId      施工方id
+     * @return 任务单列表预计方量汇总
+     */
+    @PostMapping("/getBuildTaskPreCount")
+    public ResultVO getBuildTaskPreCount(Long beginTime, Long endTime, String eppCode, String placing,
+                                         String taskId, Integer taskStatus, Integer verifyStatus,
+                                         Integer buildId) throws ErpException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(taskPlanService.getBuildTaskPreCount(
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)),
+                eppCode, placing, taskId, taskStatus, verifyStatus, buildId));
+    }
+
     /**
      * 获取塌落度下拉
      *
-     * @param compid    企业id
-     * @param slump     塌落度
-     * @param page      页码
-     * @param pageSize  每页条数
+     * @param compid   企业id
+     * @param slump    塌落度
+     * @param page     页码
+     * @param pageSize 每页条数
      */
     @PostMapping("getSlumpDropDown")
-    public ResultVO getSlumpDropDown(String compid,String slump,
+    public ResultVO getSlumpDropDown(String compid, String slump,
                                      @RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResultVO.create(taskPlanService.getSlumpDropDown(compid, slump, page, pageSize));

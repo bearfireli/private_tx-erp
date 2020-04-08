@@ -97,8 +97,8 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
                                   String towerCranePrice) {
         //用户如果输入的价格包含空格和/r/t，将其替换掉，防止程序报错。
         pumpPrice = pumpPrice.replaceAll("\\s*", "");
-        notPumpPrice = pumpPrice.replaceAll("\\s*", "");
-        towerCranePrice = pumpPrice.replaceAll("\\s*", "");
+        notPumpPrice = notPumpPrice.replaceAll("\\s*", "");
+        towerCranePrice = towerCranePrice.replaceAll("\\s*", "");
         stgIdMangeMapper.insertStgIdManage(compid, stgId, grade, pumpPrice, notPumpPrice, towerCranePrice);
     }
 
@@ -112,6 +112,16 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
     @Override
     public void deleteStgManage(String compid, String stgId) {
         stgIdMangeMapper.deleteStgIdManage(compid, stgId);
+    }
+
+    /**
+     * 获取砼价格列表
+     * @param compid 企业id
+     * @return 砼价格列表
+     */
+    @Override
+    public List<StgidManageVO> getStgidList(String compid) {
+        return stgIdMangeMapper.getStgidList(compid);
     }
 
 

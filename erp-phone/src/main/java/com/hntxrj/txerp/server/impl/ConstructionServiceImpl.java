@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.server.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arronlong.httpclientutil.HttpClientUtil;
 import com.arronlong.httpclientutil.common.HttpConfig;
@@ -58,7 +59,8 @@ public class ConstructionServiceImpl implements ConstructionService {
                 //先根据子合同号和compid从合同表中查询出每一个主合同号
                 String contractUID = contractMapper.getContractUID(compid, code);
                 //把邀请码，compid，子合同号，主合同号插入
-                constructionMapper.getInvitationCode(buildInvitationCode, compid, code, useStatus, opid, new Date(),contractUID);
+                constructionMapper.getInvitationCode(buildInvitationCode, compid, code, useStatus, opid,
+                        new Date(),contractUID);
             }
             InvitationVO invitationVO = new InvitationVO();
             invitationVO.setBuildinvitationcode(buildInvitationCode);
@@ -89,7 +91,8 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     @Override
-    public void invalidInvitationCode(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
+    public void invalidInvitationCode(String contractUID,String contractDetailCode, String buildInvitationCode)
+            throws ErpException {
         try {
             constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, 2);
         } catch (Exception e) {
@@ -106,7 +109,8 @@ public class ConstructionServiceImpl implements ConstructionService {
         if (invitationVOS != null && invitationVOS.size() > 0) {
             for (InvitationVO invitationVO : invitationVOS) {
                 //查询此施工单位是否绑定过此合同
-                BdBindVO bdBindVO = constructionMapper.checkBindContract(invitationVO.getContractDetailCode(),invitationVO.getContractUID(), buildId);
+                BdBindVO bdBindVO = constructionMapper.checkBindContract(invitationVO.getContractDetailCode(),
+                        invitationVO.getContractUID(), buildId);
                 if (bdBindVO == null) {
                     //说明此用户没有绑定过此合同
                     if (Integer.parseInt(invitationVO.getUsestatus()) == 0) {
@@ -115,7 +119,8 @@ public class ConstructionServiceImpl implements ConstructionService {
                         String contractDetailCode = invitationVO.getContractDetailCode();
                         String contractUID = invitationVO.getContractUID();
                         //修改邀请码的使用状态为已使用
-                        constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, useStatus);
+                        constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode,
+                                useStatus);
                         //给此用户绑定合同
                         constructionMapper.saveInvitation(buildId, compid, contractDetailCode,contractUID);
                     } else if (Integer.parseInt(invitationVO.getUsestatus()) == 1) {
@@ -123,6 +128,8 @@ public class ConstructionServiceImpl implements ConstructionService {
                     } else {
                         throw new ErpException(ErrEumn.INVITATION_USESTATUS_VOID);
                     }
+                }else {
+                    throw new ErpException(ErrEumn.INVITATION_USESTATUS_EXIST);
                 }
             }
         } else {
@@ -141,6 +148,25 @@ public class ConstructionServiceImpl implements ConstructionService {
             map.put("isBind", false);
         }
         return map;
+    }
+
+    /**
+     *  删除合同
+     * @param buildId   用户id
+     * @param contractUid   主合同号
+     */
+    @Override
+    public void deleteBuildId(String buildId, String contractUid) throws ErpException {
+        if (buildId==null){
+            throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_BUILDERCODE);
+        }
+        if (contractUid==null){
+            throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_CONTRACTID);
+        }
+        String [] ccontractCodeList =contractUid.split(",");
+        for (String contractCode: ccontractCodeList) {
+            constructionMapper.deleteBuildId(buildId,contractCode);
+        }
     }
 
 

@@ -14,7 +14,7 @@
             count(tsi.VehiceNumber)carNum,
             pt.stgId,
             sum(tsi.produceNum) produceNum,
-            sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
+            sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum
             from PT_TaskSaleInvoice tsi
             left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
             left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
@@ -56,7 +56,7 @@
             count(tsi.VehiceNumber )carNum,
             pt.stgId,
             sum(tsi.produceNum) produceNum,
-            sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum
+            sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum
             from PT_TaskSaleInvoice tsi
             left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
             left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
@@ -93,7 +93,7 @@
 
     <select id="getConcreteSum" resultType="com.hntxrj.txerp.vo.ConcreteVO">
         select
-        sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNumList
+        sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNumList
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
         left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
@@ -172,11 +172,11 @@
 
     <!--产销统计中的饼状图-->
     <select id="getConcreteStgIdNum" resultType="com.hntxrj.txerp.vo.ConcretePieChart">
-        select pp.StgId stgId, sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum - tsi.ScrapNum) saleNum from
+        select pp.StgId stgId, sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum from
         PT_TaskSaleInvoice tsi
         left join PT_TaskPlan pp on tsi.compid=pp.compid and pp.TaskId =tsi.TaskId
         where tsi.compid=#{compid}
-        /*and (VehiceNumber > '0')*/
+        and (VehiceNumber > '0')
         and (VehicleStatus = '3')
         and tsi.InvoiceType != 6
         <if test="eppCode != null and eppCode != ''">

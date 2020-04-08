@@ -7,5 +7,7 @@
         from DD_PublicInfo
         where PI_Class = #{classId}
         and compid =#{compid}
+        and RecStatus =1
+        and PI_Status =1
     </select>
 </mapper>

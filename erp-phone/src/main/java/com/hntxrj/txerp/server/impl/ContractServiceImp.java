@@ -459,18 +459,24 @@ public class ContractServiceImp implements ContractService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         contractMapper.verifyContract(contractUid, compid, opId, sdf.format(new Date()), verifyStatus);
+        ContractVO contractVO =contractMapper.getContractDetail(null
+                , contractUid, compid);
         int typeId = 3;
         List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
+        String contractCode = "";
+        if (contractVO!=null){
+            contractCode =contractVO.getContractCode();
+        }
         for (RecipientVO r : recipoentList) {
             SendmsgVO sendmsgVO = new SendmsgVO();
             sendmsgVO.setSyncOtherMachine(2);
             sendmsgVO.setToAccount(r.getUid().toString());
             sendmsgVO.setMsgLifeTime(7);
-            String  msgContent ="合同号：["+contractUid+"]的审核状态修改成功";
+            String  msgContent ="合同号：["+contractCode+"]的审核状态修改成功";
             if (verifyStatus == 1) {
-                 msgContent ="合同号：["+contractUid+"]已审核";
+                 msgContent ="合同号：["+contractCode+"]已审核";
             } else if (verifyStatus == 0) {
-                msgContent ="合同号：["+contractUid+"]已取消审核";
+                msgContent ="合同号：["+contractCode+"]已取消审核";
             }
             sendmsgVO.setMsgContent(msgContent);
             msgService.sendMsg(sendmsgVO);
@@ -946,11 +952,14 @@ public class ContractServiceImp implements ContractService {
 
         //首先根据buildId查询出此施工方用户下的所有合同uid和所有子合同号
         List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
-        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+        List<ContractListVO> contractListVOList =new ArrayList<>();
+        if (contractDetailCodes.size()>0){
+            List<String> contractUIDList = constructionMapper.getContractUID(buildId);
 
-        PageHelper.startPage(page, pageSize, "SignDate desc");
-        List<ContractListVO> contractListVOList = contractMapper.getBuildContractListByEppOrBuild(contractDetailCodes,
-                contractUIDList, searchName);
+            PageHelper.startPage(page, pageSize, "SignDate desc");
+           contractListVOList = contractMapper.getBuildContractListByEppOrBuild(contractDetailCodes,
+                    contractUIDList, searchName);
+        }
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);
         PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

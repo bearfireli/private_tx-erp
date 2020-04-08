@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface StockInSelectMapper {
     /**
-     /*原材料过磅查询
+     /*原材料过磅查询 （老版本  4.2.1+1.apk 之前版本）
      * @param vehicleId 车号
      * @param supName    供货商
      * @param compid    企业id
@@ -21,8 +21,24 @@ public interface StockInSelectMapper {
      * @return 原材料统计汇总
      */
 
-    List<StockInSelectVO> getStockInDetails(String matName , String vehicleId, String supName, String compid, String beginTime, String endTime, Integer page, Integer pageSize, String saleType);
+    List<StockInSelectVO> getStockInDetails(String matName , String vehicleId, String supName, String compid,
+                                            String beginTime, String endTime, Integer page, Integer pageSize,
+                                            String saleType);
+    /**
+     /*原材料过磅查询 （新版本  4.2.1+1.apk 之后版本）
+     * @param vehicleId 车号
+     * @param supName    供货商
+     * @param compid    企业id
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param page      页数
+     * @param pageSize  每页数量
+     * @return 原材料统计汇总
+     */
 
+    List<StockInSelectVO> getStockInList(String matName , String vehicleId, String supName, String compid,
+                                            String beginTime, String endTime, Integer page, Integer pageSize,
+                                            String saleType,Integer isPassOrNot);
     /**
      /*原材料过磅查询结算重量
      * @param compid    企业id
@@ -34,7 +50,9 @@ public interface StockInSelectMapper {
      * @param pageSize  每页数量
      * @return 原材料统计汇总
      */
-    List<StockInSelectCloseVO> getStockInSelectClose(String matName , String vehicleId, String supName, String compid, String beginTime, String endTime, Integer page, Integer pageSize, String saleType);
+    List<StockInSelectCloseVO> getStockInSelectClose(String matName , String vehicleId, String supName, String compid,
+                                                     String beginTime, String endTime, Integer page, Integer pageSize,
+                                                     String saleType);
 
     /**
      *原材料过磅修改语句
@@ -110,4 +128,5 @@ public interface StockInSelectMapper {
     List<ConsultSupplierVO> getVehicleNumber(String supName, String compid,
                                              Integer page, Integer pageSize);
 
+    StockInSelectVO stockInListDetail(String stiCode, String compid);
 }

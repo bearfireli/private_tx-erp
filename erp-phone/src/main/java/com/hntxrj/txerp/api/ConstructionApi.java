@@ -98,5 +98,15 @@ public class ConstructionApi {
         return ResultVO.create(constructionService.checkBind(buildId));
     }
 
+    /**
+     *  删除合同
+     * @param buildId   用户id
+     * @param contractUid   主合同号
+     */
+    @PostMapping("deleteBuildId")
+    public ResultVO deleteBuildId(String buildId,String contractUid) throws ErpException {
+        constructionService.deleteBuildId(buildId,contractUid);
+        return  ResultVO.create();
+    }
 
 }

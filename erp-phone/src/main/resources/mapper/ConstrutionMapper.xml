@@ -39,6 +39,10 @@
         and ccontract_code =#{contractDetailCode}
        and contractUID=#{contractUID}
     </update>
+    <!--删除合同-->
+    <delete id="deleteBuildId">
+        delete from bd_bind where build_id =#{buildId} and contractUID =#{contractCode}
+    </delete>
     <!--施工方邀请码列表-->
     <select id="getInvitationList" resultType="com.hntxrj.txerp.vo.InvitationVO">
         select bd.build_invitation_code buildinvitationcode,

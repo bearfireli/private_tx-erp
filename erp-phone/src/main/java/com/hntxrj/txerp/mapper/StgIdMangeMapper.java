@@ -42,4 +42,11 @@ public interface StgIdMangeMapper {
      *删除砼标号
      */
     void deleteStgIdManage(String compid, String stgId);
+
+    /**
+     * 获取砼价格列表
+     * @param compid 企业id
+     * @return 砼价格列表
+     */
+    List<StgidManageVO>  getStgidList(String compid);
 }

@@ -33,7 +33,7 @@ public class DriverServiceImpl implements DriverService {
     private final DriverMapper driverMapper;
 
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Date> redisTemplate;
 
     @Autowired
     public DriverServiceImpl(DriverDao driverDao, DriverMapper driverMapper) {
@@ -181,12 +181,46 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional
-    public void updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus) {
-        Date date = new Date();
-        //修改小票表中的车辆状态为回厂待班。
-        driverMapper.updateInvoiceVehicleStatus(compid, id, vehicleStatus, date);
-        //修改车辆表中的车辆状态为回厂待班。
-        driverMapper.updateVehicleStatus(compid, vehicleId, vehicleStatus, date);
+    public Map<String, Object> updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus) {
+        //兼容老版本，老版本vehicleStatus传的是1
+        if (vehicleStatus == 1) {
+            vehicleStatus = 16;
+        }
+
+        Map<String, Object> map = new HashMap<>();
+//          先判断这个小票的出场时间，满足以下两个条件时才修改车辆状态为自动回厂
+//        1,当前时间比出场时间大于30分钟
+//        2，当前车辆的状态时运输状态,或者是正在卸料,或者完成卸料的状态
+
+        DriverTaskSaleDetailVO taskSaleInvoiceDetail = driverMapper.getTaskSaleInvoiceDetail(driverCode, compid);
+        if (taskSaleInvoiceDetail == null||taskSaleInvoiceDetail.getVehicleStatus()==null) {
+            map.put("code", 1);
+            map.put("message", "司机没有打票，自动回厂失败");
+            return map;
+        }
+        Date nowDate = new Date();
+        //获取当前时间与离厂时间的分钟数插值
+        long minute = (nowDate.getTime() - taskSaleInvoiceDetail.getLeaveTime().getTime()) / 1000 / 60;
+        //如果当前时间距离出场时间大于30分钟,并且车辆状态为运输，等待卸料，完成卸料，则修改车辆状态为自动回厂
+        if (minute > 30) {
+            if (taskSaleInvoiceDetail.getVehicleStatus() == 2 || taskSaleInvoiceDetail.getVehicleStatus() == 12 ||
+                    taskSaleInvoiceDetail.getVehicleStatus() == 13 || taskSaleInvoiceDetail.getVehicleStatus() == 14) {
+                //修改小票表中的车辆状态为回厂待班。
+                driverMapper.updateInvoiceVehicleStatus(compid, taskSaleInvoiceDetail.getId(), vehicleStatus, nowDate);
+                //修改车辆表中的车辆状态为回厂待班。
+                driverMapper.updateVehicleStatus(compid, taskSaleInvoiceDetail.getVehicleID(), vehicleStatus, nowDate);
+                map.put("code", 0);
+                map.put("message", "自动回厂成功");
+            } else {
+                map.put("code", 1);
+                map.put("message", "车辆不是运输状态，自动回厂失败");
+            }
+        } else {
+            map.put("code", 1);
+            map.put("message", "出厂时间小于30分钟，自动回厂失败");
+        }
+
+        return map;
     }
 
     @Override
@@ -205,24 +239,26 @@ public class DriverServiceImpl implements DriverService {
      * @param driverCode 司机代号
      * @param workTime   打卡时间
      * @param timeType   打卡类型  0:上班打卡    1：下班打卡
+     * @param cardNumber 打卡次数
      */
     @Override
-    public void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType) {
+    public void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType, Integer cardNumber) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateTime = dateFormat.format(new Date());
 
-        //先查询当前日期此司机有没有打卡记录。
-        DriverWorkTimeVO driverWorkTimeVO = driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
-        if (driverWorkTimeVO == null) {
+        if (timeType == 0) {
             //说明当天没有打卡记录
-            driverMapper.saveDriverWorkTime(timeType, compid, driverCode, workTime, dateTime);
+            if (cardNumber != 0) {
+                cardNumber++;
+            }
+            driverMapper.saveDriverWorkTime(timeType, compid, driverCode, workTime, dateTime, cardNumber);
         } else {
-            driverMapper.updateDriverWorkTime(timeType, compid, driverCode, workTime, dateTime);
+            driverMapper.updateDriverWorkTime(timeType, compid, driverCode, workTime, dateTime, cardNumber);
         }
     }
 
     @Override
-    public DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime) {
+    public List<DriverWorkTimeVO> getDriverWorkTime(String compid, String driverCode, String dateTime) {
         return driverMapper.getDriverWorkTime(compid, driverCode, dateTime);
     }
 

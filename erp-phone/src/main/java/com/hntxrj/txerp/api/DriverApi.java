@@ -84,18 +84,16 @@ public class DriverApi {
 
 
     /**
-     * 修改车辆表中的车辆状态
+     * 自动回厂修改车辆状态
      *
      * @param compid        企业
-     * @param vehicleId     车号
-     * @param id            小票id
-     * @param vehicleStatus 车辆状态    1：场内待班
+     * @param driverCode    司机编号
+     * @param vehicleStatus 车辆状态    16：自动回厂
      * @return 小票签收列表
      */
     @PostMapping("/updateVehicleStatus")
-    public ResultVO updateVehicleStatus(String compid, String vehicleId, Integer id, Integer vehicleStatus) {
-        driverService.updateVehicleStatus(compid, vehicleId, id, vehicleStatus);
-        return ResultVO.create();
+    public ResultVO updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus) {
+        return ResultVO.create(driverService.updateVehicleStatus(compid, driverCode, vehicleStatus));
     }
 
 
@@ -310,11 +308,12 @@ public class DriverApi {
      * @param driverCode 司机代号
      * @param time       打卡时间
      * @param timeType   打卡类型  0:上班打卡    1：下班打卡
+     * @param cardNumber 打卡次数
      */
     @PostMapping("/saveDriverWorkTime")
-    public ResultVO saveDriverWorkTime(String compid, String driverCode, Long time, Integer timeType) {
+    public ResultVO saveDriverWorkTime(String compid, String driverCode, Long time, Integer timeType, Integer cardNumber) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        driverService.saveDriverWorkTime(compid, driverCode, sdf.format(new Date(time)), timeType);
+        driverService.saveDriverWorkTime(compid, driverCode, sdf.format(new Date(time)), timeType, cardNumber);
         return ResultVO.create();
     }
 

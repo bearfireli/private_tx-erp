@@ -55,4 +55,11 @@ public interface ConstructionService {
      * @return        查询绑定合同
      */
     Map<String,Boolean> checkBind(String buildId);
+
+    /**
+     *  删除合同
+     * @param buildId   用户id
+     * @param contractUid   主合同号
+     */
+    void deleteBuildId(String buildId, String contractUid) throws ErpException;
 }

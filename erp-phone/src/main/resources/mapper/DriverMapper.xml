@@ -80,6 +80,7 @@
         tsi.GrWeight,
         tsi.NetWeight,
         tsi.SendTime,
+        tsi.Leave_STTime leaveSTTime,
         tsi.totalNum,
         tsi.NumberOfSignings,
         tsi.SaleNum,
@@ -107,9 +108,8 @@
         left join VM_VehicelManagement vv on tsi.compid =vv.compid and tsi.VehicleID =vv.CarID
         where tsi.compid=#{compid}
         and tsi.PersonalCode=#{driverCode}
-        and tsi.InvoiceType not in('1','2','6','4')
+        and tsi.InvoiceType not in('1','2','6')
         and tsi.recStatus = 1
-        and vv.VehicleStatus !=3
         <if test="invoiceId != null ">
             and tsi.ID like '%'+#{invoiceId}+'%'
         </if>
@@ -127,10 +127,10 @@
             and tp.placing like '%'+#{placing}+'%'
         </if>
         <if test="beginTime != null and beginTime != '' ">
-            and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+            and tsi.Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
         </if>
         <if test="endTime != null and endTime != '' ">
-            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+            and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
         </if>
 
     </select>
@@ -162,7 +162,7 @@
         and tsi.PersonalCode=#{driverCode}
         and tsi.InvoiceType not in('1','2','6')
         and tsi.recStatus = 1
-        and (tsi.InvoiceType !=4 and vv.VehicleStatus !=3)
+        and tsi.InvoiceType !=4
         <if test="invoiceId != null ">
             and tsi.ID like '%'+#{invoiceId}+'%'
         </if>
@@ -180,10 +180,10 @@
             and tp.placing like '%'+#{placing}+'%'
         </if>
         <if test="beginTime != null and beginTime != '' ">
-            and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+            and tsi.Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
         </if>
         <if test="endTime != null and endTime != '' ">
-            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+            and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
         </if>
 
     </select>
@@ -246,31 +246,39 @@
     </select>
 
     <select id="getDriverWorkTime" resultType="com.hntxrj.txerp.vo.DriverWorkTimeVO">
-       select id,begin_time as beginTime,end_time as endTime
+       select id,begin_time as beginTime,end_time as endTime,cardNumber
        from DM_DriverWorkTime
        where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
+       order by  cardNumber Desc
+    </select>
+    <select id="getTaskSaleInvoiceDetail" resultType="com.hntxrj.txerp.vo.DriverTaskSaleDetailVO">
+        select top 1 tsi.ID as id,tsi.compid as compid,Leave_STTime as leaveTime,vm.VehicleStatus as vehicleStatus,VehicleID as vehicleID
+        from PT_TaskSaleInvoice tsi
+         left join   VM_VehicelManagement vm on tsi.compid =vm.compid and tsi.VehicleID =vm.CarID
+        where tsi.compid=#{compid} and tsi.PersonalCode=#{driverCode}
+        order by Leave_STTime desc
     </select>
 
     <update id="updateDriverWorkTime">
         <if test="timeType==1 ">
             update DM_DriverWorkTime set end_time=#{workTime}
-            where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
+            where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime} and cardNumber =#{cardNumber}
         </if>
         <if test="timeType==0 ">
             update DM_DriverWorkTime set begin_time=#{workTime}
-            where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}
+            where compid=#{compid} and driver_code=#{driverCode} and date_time=#{dateTime}and cardNumber =#{cardNumber}
         </if>
 
     </update>
 
     <insert id="saveDriverWorkTime">
         <if test="timeType==1 ">
-            insert into DM_DriverWorkTime(compid, driver_code, end_time, date_time)
-            values (#{compid},#{driverCode},#{workTime},#{dateTime})
+            insert into DM_DriverWorkTime(compid, driver_code, end_time, date_time,cardNumber)
+            values (#{compid},#{driverCode},#{workTime},#{dateTime},#{cardNumber})
         </if>
         <if test="timeType==0 ">
-            insert into DM_DriverWorkTime(compid, driver_code, begin_time, date_time)
-            values (#{compid},#{driverCode},#{workTime},#{dateTime})
+            insert into DM_DriverWorkTime(compid, driver_code, begin_time, date_time,cardNumber)
+            values (#{compid},#{driverCode},#{workTime},#{dateTime},#{cardNumber})
         </if>
 
     </insert>

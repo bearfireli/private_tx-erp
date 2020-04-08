@@ -111,8 +111,10 @@ public interface DriverMapper {
      * @param workTime   司机打卡时间
      * @param timeType   司机打卡类型  0:上班打卡    1：下班打卡
      * @param dateTime   打卡日期
+     * @param cardNumber 打卡次数
      */
-    void saveDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime);
+    void saveDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime,
+                            Integer cardNumber);
 
     /**
      * 查询司机当天打卡时间
@@ -121,7 +123,7 @@ public interface DriverMapper {
      * @param driverCode 司机代号
      * @param dateTime   查询日期
      */
-    DriverWorkTimeVO getDriverWorkTime(String compid, String driverCode, String dateTime);
+    List<DriverWorkTimeVO> getDriverWorkTime(String compid, String driverCode, String dateTime);
 
     /**
      * 修改司机打卡时间
@@ -132,7 +134,8 @@ public interface DriverMapper {
      * @param timeType   司机打卡类型  0:上班打卡    1：下班打卡
      * @param dateTime   打卡日期
      */
-    void updateDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime);
+    void updateDriverWorkTime(Integer timeType, String compid, String driverCode, String workTime, String dateTime,
+                              Integer cardNumber);
 
     /**
      * 保存签收人手写图片
@@ -173,4 +176,7 @@ public interface DriverMapper {
      * @param dateTime      修改车辆状态时间
      */
     void updateVehicleStatus(String compid, String vehicleId, Integer vehicleStatus, Date dateTime);
+
+    //获取小票的车辆状态
+    DriverTaskSaleDetailVO getTaskSaleInvoiceDetail(String driverCode, String compid);
 }

@@ -30,4 +30,6 @@ public class SendCarDetailVO implements Serializable {
     private String vehicleID;
 
     private String stirName;
+    /*生产方量*/
+    private  String threeProduceNum;
 }
