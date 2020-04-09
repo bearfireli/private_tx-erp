@@ -2,7 +2,8 @@ package com.hntxrj.txerp.vo;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.math.BigDecimal;
+
 
 @Data
 
@@ -33,11 +34,7 @@ public class StockInCheckVO {
     private String picturePath;
     /*是否通过*/
     private int isPassOrNot;
-
-
-
-
-
+    private BigDecimal deductNum;
 
 
 }

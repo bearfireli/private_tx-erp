@@ -1,9 +1,10 @@
 package com.hntxrj.txerp.mapper;
 
-import com.alibaba.fastjson.JSONArray;
+
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -243,32 +244,39 @@ public interface StockMapper {
 
     /**
      * 更新检验状态
-     * @param compid 公司id
-     * @param stICode 过磅单号
+     *
+     * @param compid      公司id
+     * @param deductNum   另扣量
+     * @param stICode     过磅单号
      * @param isPassOrNot 是否合格
      * @param picturePath 图片路径
-     * @param matCode 材料编码
-     * @param stkCode 库位编码
+     * @param matCode     材料编码
+     * @param stkCode     库位编码
      */
-    void updateCheckStatus(String compid, String stICode, int isPassOrNot, String picturePath, String matCode,
-                           String stkCode,String notReason);
-    /**
-     * 根据公司ID获取库存
-     * @param compid 公司ID
-     * @return 结果集列表
-     */
-    List<MaterialVO> getMatByComId(String compid,String searchWords);
-    /**
-     * 根据公司ID获取库存
-     * @param compid 公司ID
-     * @return 结果集列表
-     */
-    List<StockVO> getStockByComId(String compid,String searchWords);
-    /**
-     *  通过 compid  stICode 查询材料过磅
-     * @param compid 公司id
-     * @param stICode 过磅单号
+    void updateCheckStatus(String compid, BigDecimal deductNum, String stICode, int isPassOrNot, String picturePath,
+                           String matCode, String stkCode, String notReason);
 
+    /**
+     * 根据公司ID获取库存
+     *
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    List<MaterialVO> getMatByComId(String compid, String searchWords);
+
+    /**
+     * 根据公司ID获取库存
+     *
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    List<StockVO> getStockByComId(String compid, String searchWords);
+
+    /**
+     * 通过 compid  stICode 查询材料过磅
+     *
+     * @param compid  公司id
+     * @param stICode 过磅单号
      */
     StockInCheckVO getStockCheck(String compid, String stICode);
 }
