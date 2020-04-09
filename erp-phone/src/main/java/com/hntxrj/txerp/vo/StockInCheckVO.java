@@ -38,7 +38,7 @@ public class StockInCheckVO {
     /*检测人*/
     private String inspector;
     /*检测时间*/
-    private String inspectTime;
+    private String inspectionTime;
 
 
 

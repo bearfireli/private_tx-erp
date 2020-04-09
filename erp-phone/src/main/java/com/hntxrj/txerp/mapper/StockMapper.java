@@ -254,10 +254,10 @@ public interface StockMapper {
      * @param matCode     材料编码
      * @param stkCode     库位编码
      * @param inspector   检测人
-     * @param inspectTime 检测时间
+     * @param inspectionTime 检测时间
      */
     void updateCheckStatus(String compid, BigDecimal deductNum, String stICode, int isPassOrNot, String picturePath,
-                           String matCode, String stkCode, String notReason, String inspector, Date inspectTime);
+                           String matCode, String stkCode, String notReason, String inspector, Date inspectionTime);
 
     /**
      * 根据公司ID获取库存

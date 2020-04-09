@@ -496,7 +496,7 @@ public class StockInServerImpl implements StockInServer {
                                   String notReason) throws ErpException {
 
         String inspector = "";
-        Date inspectTime = new Date();
+        Date inspectionTime = new Date();
 
         // 调用okhttp请求，根据token获取用户信息
         JSONObject jsonObject = tokenGetUser(token);
@@ -508,7 +508,7 @@ public class StockInServerImpl implements StockInServer {
             inspector = (String) data.get("username");
         }
         stockInWeighmatNsMapper.updateCheckStatus(compid, deductNum, stICode, isPassOrNot, picturePath,
-                matCode, stkCode, notReason, inspector, inspectTime);
+                matCode, stkCode, notReason, inspector, inspectionTime);
     }
 
     /**
