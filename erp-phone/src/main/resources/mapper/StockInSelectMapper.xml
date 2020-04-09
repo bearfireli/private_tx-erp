@@ -329,7 +329,9 @@
        si.FirstTime,
        si.SecondTime,
        si.Deduct,
-       si.DeductNum
+       si.DeductNum,
+       si.Inspector as inspector,
+       si.InspectionTime as inspectionTime
         from MP_StockIn si
          left join dbo.MP_Supplier ms on si.SupCode = ms.SupCode and si.compid = ms.compid
          left join MP_Stock mk on mk.StkCode = si.StkCode and mk.compid = si.compid

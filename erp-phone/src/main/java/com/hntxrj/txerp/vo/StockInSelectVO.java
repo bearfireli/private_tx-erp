@@ -34,7 +34,7 @@ public class StockInSelectVO {
     private Integer stlTimes;
     /*二次过磅时间*/
     private Timestamp secondTime;
-   /*初次过磅时间*/
+    /*初次过磅时间*/
     private Timestamp firstTime;
     /*出厂净重*/
     private BigDecimal supNetWeight;
@@ -47,7 +47,7 @@ public class StockInSelectVO {
     /*供货商*/
     private String supName;
     /*材料*/
-    private  String matName;
+    private String matName;
     /*库位*/
     private String stoName;
     /*业务类别*/
@@ -56,5 +56,9 @@ public class StockInSelectVO {
     private boolean stiStatus;
     /*状态*/
     private Integer isPassOrNot;
+    /*检测人*/
+    private String inspector;
+    /*检测时间*/
+    private String inspectionTime;
 
 }

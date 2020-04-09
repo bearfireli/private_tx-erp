@@ -35,6 +35,11 @@ public class StockInCheckVO {
     /*是否通过*/
     private int isPassOrNot;
     private BigDecimal deductNum;
+    /*检测人*/
+    private String inspector;
+    /*检测时间*/
+    private String inspectionTime;
+
 
 
 }
