@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.server.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
@@ -9,6 +10,7 @@ import com.hntxrj.txerp.dao.StockInDao;
 import com.hntxrj.txerp.mapper.StockMapper;
 import com.hntxrj.txerp.server.StockInServer;
 import com.hntxrj.txerp.vo.*;
+import okhttp3.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +36,8 @@ public class StockInServerImpl implements StockInServer {
 
     @Value("${app.checking.imgFilePath}")
     private String checkingImageFilePath;
+    @Value("${app.cloud.host}")
+    private String url;
 
     @Autowired
     public StockInServerImpl(StockInDao stockInDao, StockMapper stockInWeighmatNsMapper) {
@@ -448,7 +454,7 @@ public class StockInServerImpl implements StockInServer {
         }
         stockInWeighmatNsMapper.updateCheckStatus(compid, null, stICode, stockInCheckVO.getIsPassOrNot(),
                 stockInCheckVO.getPicturePath(), stockInCheckVO.getMatCode(), stockInCheckVO.getStkCode(),
-                stockInCheckVO.getNotReason());
+                stockInCheckVO.getNotReason(), null, null);
 
 
         return fileName;
@@ -485,9 +491,24 @@ public class StockInServerImpl implements StockInServer {
      * @param stkCode     库位编码
      */
     @Override
-    public void updateCheckStatus(String compid, BigDecimal deductNum, String stICode, int isPassOrNot, String picturePath, String matCode,
-                                  String stkCode, String notReason) {
-        stockInWeighmatNsMapper.updateCheckStatus(compid, deductNum, stICode, isPassOrNot, picturePath, matCode, stkCode, notReason);
+    public void updateCheckStatus(String token, String compid, BigDecimal deductNum, String stICode, int isPassOrNot,
+                                  String picturePath, String matCode, String stkCode,
+                                  String notReason) throws ErpException {
+
+        String inspector = "";
+        Date inspectTime = new Date();
+
+        // 调用okhttp请求，根据token获取用户信息
+        JSONObject jsonObject = tokenGetUser(token);
+        if (jsonObject == null) {
+            throw new ErpException(ErrEumn.MATERIAL_CHECK_ERROR);
+        }
+        JSONObject data = (JSONObject) jsonObject.get("data");
+        if (data != null) {
+            inspector = (String) data.get("username");
+        }
+        stockInWeighmatNsMapper.updateCheckStatus(compid, deductNum, stICode, isPassOrNot, picturePath,
+                matCode, stkCode, notReason, inspector, inspectTime);
     }
 
     /**
@@ -548,9 +569,40 @@ public class StockInServerImpl implements StockInServer {
         }
         stockInWeighmatNsMapper.updateCheckStatus(compid, null, stICode, stockInCheckVO.getIsPassOrNot(),
                 newPath.toString(), stockInCheckVO.getMatCode(), stockInCheckVO.getStkCode(),
-                stockInCheckVO.getNotReason());
+                stockInCheckVO.getNotReason(), null, null);
 
         return stockInCheckVO;
+    }
+
+
+    private JSONObject tokenGetUser(String token) throws ErpException {
+
+        JSONObject resultJSON = null;
+        OkHttpClient client = new OkHttpClient();
+
+
+        RequestBody body = new FormBody.Builder()
+                .add("token", token)
+                .build();
+        Request request = new Request.Builder()
+                .url(url + "/user/tokenGetUser")
+                .post(body)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                resultJSON = JSONObject.parseObject(result);
+            }
+
+            return resultJSON;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.MATERIAL_CHECK_ERROR);
+        }
+
     }
 
 }

@@ -5,6 +5,7 @@ import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -252,9 +253,11 @@ public interface StockMapper {
      * @param picturePath 图片路径
      * @param matCode     材料编码
      * @param stkCode     库位编码
+     * @param inspector   检测人
+     * @param inspectTime 检测时间
      */
     void updateCheckStatus(String compid, BigDecimal deductNum, String stICode, int isPassOrNot, String picturePath,
-                           String matCode, String stkCode, String notReason);
+                           String matCode, String stkCode, String notReason, String inspector, Date inspectTime);
 
     /**
      * 根据公司ID获取库存

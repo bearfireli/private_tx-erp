@@ -78,6 +78,12 @@
         <if test="deductNum!=null">
             DeductNum=#{deductNum},
         </if>
+        <if test="inspector!=null">
+            Inspector=#{inspector},
+        </if>
+        <if test="inspectTime!=null">
+            InspectTime=#{inspectTime},
+        </if>
         UpDownMark=0
         where compid = #{compid} and StICode=#{stICode}
     </update>
@@ -114,12 +120,13 @@
         t1.NotReason,
         t1.StkCode,
         t2.Sto_Name,
-        t1.DeductNum as deductNum
+        t1.DeductNum as deductNum,
+        t1.Inspector as inspector,
+        t1.InspectTime as inspectTime
         from  MP_StockIn t1
         left join  MP_Stock t2 on t1.StkCode=t2.StkCode and t2.compid=t1.compid
         left join  MP_MaterialInfor t3 on t1.MatCode=t3.MatCode and t3.compid=t1.compid
         where t1.compid=#{compid} and t1.stICode=#{stICode}
-
     </select>
 
 </mapper>
