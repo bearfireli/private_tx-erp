@@ -427,6 +427,20 @@ public class StockInServerImpl implements StockInServer {
     public String uploadCheckingImg(String compid, String stICode, MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString();
         String temPath=checkingImageFilePath+compid+"\\";
+        //旧接口使用
+        File dirOld = new File(checkingImageFilePath);
+        dirOld.mkdirs();
+        File fileOld = new File(checkingImageFilePath+ fileName);
+        try {
+            Boolean b = fileOld.createNewFile();
+            System.out.println(b);
+            IOUtils.copy(image.getInputStream(), new FileOutputStream(fileOld));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
+        }
+
+        // 新接口使用
         File dir = new File(temPath);
         dir.mkdirs();
         File file = new File(temPath+ fileName);
@@ -475,7 +489,7 @@ public class StockInServerImpl implements StockInServer {
     }
     /**
      * 新图片展示
-     *
+     * compid 企业id
      * @param fileName 文件名称
      */
     @Override
