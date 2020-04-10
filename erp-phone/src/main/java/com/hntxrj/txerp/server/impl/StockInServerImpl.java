@@ -426,9 +426,10 @@ public class StockInServerImpl implements StockInServer {
     @Override
     public String uploadCheckingImg(String compid, String stICode, MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString();
-        File dir = new File(checkingImageFilePath);
+        String temPath=checkingImageFilePath+compid+"\\";
+        File dir = new File(temPath);
         dir.mkdirs();
-        File file = new File(checkingImageFilePath + fileName);
+        File file = new File(temPath+ fileName);
         try {
             Boolean b = file.createNewFile();
             System.out.println(b);
@@ -462,6 +463,25 @@ public class StockInServerImpl implements StockInServer {
     @Override
     public void downloadPicture(String fileName, HttpServletResponse response) throws ErpException {
         File file = new File(checkingImageFilePath + fileName);
+        if (!file.exists()) {
+            throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
+        }
+        try {
+            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
+        }
+    }
+    /**
+     * 新图片展示
+     *
+     * @param fileName 文件名称
+     */
+    @Override
+    public void showPicture(String fileName,String compid, HttpServletResponse response) throws ErpException {
+        String tempPath=checkingImageFilePath+compid+"\\";
+        File file = new File(tempPath+ fileName);
         if (!file.exists()) {
             throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
         }
