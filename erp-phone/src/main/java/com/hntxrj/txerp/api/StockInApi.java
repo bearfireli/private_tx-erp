@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -610,9 +611,12 @@ public class StockInApi {
             "isPassOrNot 是否合格 1合格 0不合格|picturePath 图片路径|matCode 材料编码|stkCode 库位编码")
     @PostMapping("/updateCheckStatus")
     public ResultVO updateCheckStatus(String compid, BigDecimal deductNum, String stICode,
-                                      @RequestParam(defaultValue = "1") int isPassOrNot,
-                                      String picturePath, String matCode, String stkCode, String notReason) {
-        stockInServer.updateCheckStatus(compid, deductNum, stICode, isPassOrNot, picturePath, matCode, stkCode, notReason);
+                                      @RequestParam(defaultValue = "1") int isPassOrNot, String picturePath,
+                                      String matCode, String stkCode, String notReason,
+                                      HttpServletRequest request) throws ErpException {
+        String token = request.getHeader("token");
+        stockInServer.updateCheckStatus(token,compid, deductNum, stICode, isPassOrNot, picturePath, matCode, stkCode,
+                notReason);
         return ResultVO.create();
     }
 

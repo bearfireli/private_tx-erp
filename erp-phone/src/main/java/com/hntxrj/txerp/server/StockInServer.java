@@ -292,8 +292,8 @@ public interface StockInServer {
      * @param matCode     材料编码
      * @param stkCode     库位编码
      */
-    void updateCheckStatus(String compid, BigDecimal deductNum, String stICode, int isPassOrNot, String picturePath,
-                           String matCode, String stkCode, String notReason);
+    void updateCheckStatus(String token,String compid, BigDecimal deductNum, String stICode, int isPassOrNot,
+                           String picturePath, String matCode, String stkCode, String notReason) throws ErpException;
 
     /**
      * 根据公司ID获取库存

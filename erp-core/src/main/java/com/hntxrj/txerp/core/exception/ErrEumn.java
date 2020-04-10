@@ -210,14 +210,14 @@ public enum ErrEumn {
     ADD_EPP_ADDRESS_EPP_CODE_IS_NULL(-100202, "工程代号不能为空"),
     GET_PICTURE_ERROR(-100203, "获取图片失败"),
     SAVE_PICTURE_ERROR(-100204, "保存图片失败"),
-    DRIVER_IS_BIND(-100203,"已有车辆排班此司机,请重新设置"),
+    DRIVER_IS_BIND(-100203, "已有车辆排班此司机,请重新设置"),
 
-    USER_IS_NULL( -100204,"该账户为登录，请先登录账户"),
-    ADD_FRIENDS_NULL(-100205,"没有添加好友，请输入好友账号"),
-    ADDSOURCE_IS_NULL(-100206,"好友来源为空，请输入好友来源"),
-    DEL_FRIENDS_NULL(-100207,"没有选择好友，请选择要删除的好友"),
-    TOACCOUNT_IS_NULL(-100208,"请选择消息接收人。"),
-    MsgBody_IS_NULL(-100209,"消息不能为空。"),
+    USER_IS_NULL(-100204, "该账户为登录，请先登录账户"),
+    ADD_FRIENDS_NULL(-100205, "没有添加好友，请输入好友账号"),
+    ADDSOURCE_IS_NULL(-100206, "好友来源为空，请输入好友来源"),
+    DEL_FRIENDS_NULL(-100207, "没有选择好友，请选择要删除的好友"),
+    TOACCOUNT_IS_NULL(-100208, "请选择消息接收人。"),
+    MsgBody_IS_NULL(-100209, "消息不能为空。"),
 
     ACCOUNT_NULL_ERROR(100301, "导入账号不能为空"),
     IM_SDK_ERROR(100302, "请求腾讯云即时通讯IM错误"),
@@ -227,12 +227,11 @@ public enum ErrEumn {
 
 
     TANK_ADD_ERROR(100401, "罐信息添加失败"),
-    STIRID_NULL_ERROR(100402,"请输入线号"),
+    STIRID_NULL_ERROR(100402, "请输入线号"),
     TANK_NULL_ERROR(100403, "没有此罐号"),
     PASSWORD_ERROR(100404, "输入密码错误"),
 
-   
-    ;
+    MATERIAL_CHECK_ERROR(100405, "材料检测失败");
 
 
     private Integer code;
