@@ -274,6 +274,12 @@ public interface StockInServer {
      * @param fileName 文件名称
      */
     void downloadPicture(String fileName, HttpServletResponse response) throws ErpException;
+/**
+     * 新图片展示
+     *
+     * @param fileName 文件名称
+     */
+    void showPicture(String fileName,String compid, HttpServletResponse response) throws ErpException;
 
     /**
      * 更新检验状态

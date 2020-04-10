@@ -23,15 +23,15 @@ import java.util.List;
 @RequestMapping("/api/stockIn")
 public class StockInApi {
     private final StockInSelectService stockInService;
-    private final StockInCollectService stoclInCollectService;
+    private final StockInCollectService stockInCollectService;
     private final StockInServer stockInServer;
 
     @Autowired
-    public StockInApi(StockInSelectService stockInService, StockInCollectService stoclInCollectService,
+    public StockInApi(StockInSelectService stockInService, StockInCollectService stockInCollectService,
                       StockInServer stockInServer) {
 
         this.stockInService = stockInService;
-        this.stoclInCollectService = stoclInCollectService;
+        this.stockInCollectService = stockInCollectService;
         this.stockInServer = stockInServer;
     }
 
@@ -233,7 +233,7 @@ public class StockInApi {
                                       Long endTime, @RequestParam(defaultValue = "1") Integer page,
                                       @RequestParam(defaultValue = "10") Integer pageSize, String matName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(stoclInCollectService.getMatDetailsList(vehicleId, supName, matSpecs, compid,
+        return ResultVO.create(stockInCollectService.getMatDetailsList(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, matName));
     }
@@ -255,7 +255,7 @@ public class StockInApi {
     public ResultVO getStockInCollectClose(String vehicleId, String supName, String matSpecs, String compid,
                                            Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(stoclInCollectService.getStockInCollectClose(vehicleId, supName, matSpecs, compid,
+        return ResultVO.create(stockInCollectService.getStockInCollectClose(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, MatName));
     }
@@ -277,7 +277,7 @@ public class StockInApi {
     public ResultVO getMatStatistics(String vehicleId, String supName, String matSpecs, String compid,
                                      Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(stoclInCollectService.getMatStatistics(vehicleId, supName, matSpecs, compid,
+        return ResultVO.create(stockInCollectService.getMatStatistics(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, MatName));
     }
@@ -299,7 +299,7 @@ public class StockInApi {
     public ResultVO getMatStatisticsClose(String vehicleId, String supName, String matSpecs, String compid,
                                           Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(stoclInCollectService.getMatStatisticsClose(vehicleId, supName, matSpecs, compid,
+        return ResultVO.create(stockInCollectService.getMatStatisticsClose(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, MatName));
     }
@@ -323,7 +323,7 @@ public class StockInApi {
                                      @RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "10") Integer pageSize, String MatName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return ResultVO.create(stoclInCollectService.getMaterialCount(vehicleId, supName, matSpecs, compid,
+        return ResultVO.create(stockInCollectService.getMaterialCount(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, MatName));
     }
@@ -662,6 +662,19 @@ public class StockInApi {
     @GetMapping("/downloadPicture")
     public void downloadPicture(String fileName, HttpServletResponse response) throws ErpException {
         stockInServer.downloadPicture(fileName, response);
+    }
+ /**
+     * 新图片展示
+     *
+     * @param fileName 文件名称
+     * @param compid      公司ID
+     * @throws ErpException 异常处理
+     */
+    @ApiOperation(value = "图片展示", httpMethod = "get", notes = "" +
+            "fileName 文件名称")
+    @GetMapping("/showPicture")
+    public void showPicture(String fileName,String compid, HttpServletResponse response) throws ErpException {
+        stockInServer.showPicture(fileName,compid, response);
     }
 
     /**
