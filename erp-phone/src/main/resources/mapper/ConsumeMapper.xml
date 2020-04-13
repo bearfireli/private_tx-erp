@@ -348,7 +348,7 @@
         left join PT_TaskPlan pt
         on pc.compid =pt.compid and pc.TaskId =pt.TaskId
         where pc.compid = #{compid}
-        and pc.RecStatus =1 and pt.RecStatus =1
+        and pc.RecStatus =1
         <if test="taskId != null">
             and pc.taskId like '%'+#{taskId}+'%'
         </if>
