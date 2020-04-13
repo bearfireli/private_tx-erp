@@ -370,7 +370,7 @@
         and cd.RecStatus=1
         and cd.verifyStatus = 1
         <if test="searchName != null and searchName!='' ">
-            and epp.EPPName like '%'+#{searchName}+'%' or bu.BuilderShortName like '%'+#{searchName}+'%'
+            and (epp.EPPName like '%'+#{searchName}+'%' or bu.BuilderShortName like '%'+#{searchName}+'%')
         </if>
 
     </select>
