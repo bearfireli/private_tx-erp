@@ -101,7 +101,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
      */
     @Override
     public UserVO login(String phoneNumber, String password,
-                        HttpServletRequest request, String loginUa,String version) throws ErpException {
+                        HttpServletRequest request, String loginUa, String version) throws ErpException {
 
         User user = userRepository.findByPhone(phoneNumber);
 
@@ -140,7 +140,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
 
         UserLogin userLogin = createUserLogin(user.getUid(), IpUtil.getIp(request), loginUa);
-        if (version!=null){
+        if (version != null) {
             userLogin.setLoginVersion(version);
             userLogin = userLoginRepository.save(userLogin);
         }
@@ -494,7 +494,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         //用userAuthVOS代替userAuths进行数据传递
         List<UserAuthVO> userAuthVOS = replaceUserAuth(userAuths);
-        String compid="";
+        String compid = "";
         if (enterpriseId != null) {
             if (String.valueOf(enterpriseId).length() <= 1) {
                 compid = "0" + enterpriseId;
@@ -503,7 +503,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
 
         List<UserListVO> userList = userMapper.getUserList(enterpriseId, user.getUsername(), user.getPhone(),
-                user.getEmail(),compid);
+                user.getEmail(), compid);
         StringBuilder driverCodes = new StringBuilder();
         for (UserListVO userListVO : userList) {
             String driverCode = userListVO.getDriverCode();
@@ -558,11 +558,15 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         PageInfo<UserAuthVO> pageInfo = new PageInfo<>(userAuthVOS);
         PageInfo<UserAuth> userAuthPageInfo = new PageInfo<>(userAuths);
         long total = userAuthPageInfo.getTotal();
+        int pages = userAuthPageInfo.getPages();
+
 
         pageInfo.setTotal(total);
         PageInfoUtil<UserAuthVO> pageInfoUtil = new PageInfoUtil<>();
+        PageVO<UserAuthVO> pageVO = pageInfoUtil.init(pageInfo);
+        pageVO.setTotalPage(pages);
 
-        return pageInfoUtil.init(pageInfo);
+        return pageVO;
 
     }
 
