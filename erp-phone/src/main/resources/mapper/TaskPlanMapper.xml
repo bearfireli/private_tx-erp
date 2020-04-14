@@ -773,7 +773,7 @@
         select sum(PreNum) PreNum
         from PT_TaskPlan
         where compid = #{compid}
-          and (taskStatus = 1 or PreTime between #{beginTime} and #{endTime})
+          and ( PreTime between #{beginTime} and #{endTime})
           and deletemark = 0
           and RecStatus = 1
     </select>
