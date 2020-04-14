@@ -1121,6 +1121,18 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         return userMapper.userAll(eid);
     }
 
+    @Override
+    public PageVO<UserLoginVO> userLoginList(String compid, String userName, String phoneNum,
+                                             Integer page, Integer pageSize) {
+
+        PageHelper.startPage(page, pageSize);
+        List<UserLoginVO> userLoginVOS = userMapper.userLoginList(compid, userName, phoneNum);
+        PageInfo<UserLoginVO> pageInfo = new PageInfo<>(userLoginVOS);
+        PageVO<UserLoginVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
     /**
      * 把用户的uid作为账号导入到腾讯云即时通讯中，并且和本企业其他用户
      * 添加好友
