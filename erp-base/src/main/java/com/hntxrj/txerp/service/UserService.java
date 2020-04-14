@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.service;
 
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.web.ResultVO;
 import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.UserAuthVO;
@@ -287,4 +288,6 @@ public interface UserService {
      * 根据企业id查询用户
      * */
     List<User> userAll(Integer eid);
+
+    ResultVO userLoginList(Integer eid);
 }

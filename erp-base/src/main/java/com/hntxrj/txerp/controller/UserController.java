@@ -510,4 +510,11 @@ public class UserController {
     }
 
 
+    /*根据eid 查询企业用户*/
+    @PostMapping("/userLoginList")
+    public ResultVO userLoginList(Integer eid) {
+
+        return userService.userLoginList(eid);
+    }
+
 }
