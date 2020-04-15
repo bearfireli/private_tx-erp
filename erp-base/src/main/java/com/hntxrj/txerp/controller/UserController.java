@@ -14,6 +14,10 @@ import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.web.ResultVO;
 import com.hntxrj.txerp.vo.UserSaveVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,6 +35,7 @@ import java.util.Arrays;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+@Api(tags = "用户接口", description = "提供用户相关的 api")
 @RestController
 @RequestMapping(value = "/user")
 @Slf4j
@@ -144,7 +149,7 @@ public class UserController {
     //登录接口
     @PostMapping("/login")
     public String login(String phone,
-                        String password,String version,
+                        String password, String version,
                         HttpServletRequest request)
             throws ErpException {
         log.info("【登录v1】phone={}, password={}", phone, password);
@@ -509,5 +514,34 @@ public class UserController {
         return JSON.toJSONString(resultVO);
     }
 
+
+    /**
+     * 查询用户登录信息列表
+     *
+     * @param compid   企业id
+     * @param userName 用户姓名
+     * @param phoneNum 手机号
+     * @param page     当前页码
+     * @param pageSize 每页大小
+     */
+    @ApiOperation(value = "查询用户登录信息列表", httpMethod = "post")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "compid", value = "企业代号", required = true, dataType = "String",
+                    paramType = "query"),
+            @ApiImplicitParam(name = "userName", value = "用户名（模糊搜索）", required = false, dataType = "String",
+                    paramType = "query"),
+            @ApiImplicitParam(name = "phoneNum", value = "手机号", required = false, dataType = "String",
+                    paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "当前页", required = false, dataType = "int",
+                    paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页大小", required = false, dataType = "int",
+                    paramType = "query")
+    })
+    @PostMapping("/userLoginList")
+    public ResultVO userLoginList(String compid, String userName, String phoneNum,
+                                  @RequestParam(required = false, defaultValue = "1") Integer page,
+                                  @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(userService.userLoginList(compid, userName, phoneNum, page, pageSize));
+    }
 
 }

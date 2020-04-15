@@ -1,9 +1,11 @@
 package com.hntxrj.txerp.service;
 
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.web.ResultVO;
 import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.UserAuthVO;
+import com.hntxrj.txerp.vo.UserLoginVO;
 import com.hntxrj.txerp.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,15 +26,15 @@ public interface UserService {
      * @param phoneNumber 手机号
      * @param password    密码
      * @param request     HTTP SERVLET Request 对象
-     * @param loginUa  不同项目登陆时的标识；
-     *                 例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
+     * @param loginUa     不同项目登陆时的标识；
+     *                    例如：手机erp项目登录时loginUa的值为:erpPhone;司机App登录时，loginUa的值是:erpDriver;
      * @return 登录用户
      * @throws ErpException throw ERP EXCEPTION
      */
     UserVO login(String phoneNumber, String password,
-                 HttpServletRequest request,String loginUa,String version) throws ErpException;
+                 HttpServletRequest request, String loginUa, String version) throws ErpException;
 
-    UserVO login(String value, String type, String loginIp,String loginUa) throws ErpException;
+    UserVO login(String value, String type, String loginIp, String loginUa) throws ErpException;
 
     /**
      * login out
@@ -143,7 +145,7 @@ public interface UserService {
 
     List<User> getUsers(Integer[] uids);
 
-    UserLogin createUserLogin(Integer userId, String loginIp,String loginUa) throws ErpException;
+    UserLogin createUserLogin(Integer userId, String loginIp, String loginUa) throws ErpException;
 
 
     /**
@@ -274,17 +276,28 @@ public interface UserService {
      * 从auth_value表中查询出该权限组的所有信息
      *
      * @param groupId 权限组id
-     * @param pid  项目代号
+     * @param pid     项目代号
      */
     List<AuthValueOld> getAuthValueOld(Integer groupId, Integer pid);
 
     /**
      * 查询所有企业所有用户
      */
-    List<User> selectAllUser(Integer compid,String userName);
+    List<User> selectAllUser(Integer compid, String userName);
 
     /**
      * 根据企业id查询用户
-     * */
+     */
     List<User> userAll(Integer eid);
+
+    /**
+     * 查询用户登录信息列表
+     *
+     * @param compid   企业id
+     * @param userName 用户姓名
+     * @param phoneNum 手机号
+     * @param page     当前页码
+     * @param pageSize 每页大小
+     */
+    PageVO<UserLoginVO> userLoginList(String compid, String userName, String phoneNum, Integer page, Integer pageSize);
 }

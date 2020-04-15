@@ -4,6 +4,7 @@ import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.AuthGroupVO;
 import com.hntxrj.txerp.vo.AuthValueVO;
 import com.hntxrj.txerp.vo.UserListVO;
+import com.hntxrj.txerp.vo.UserLoginVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,7 +31,7 @@ public interface UserMapper {
     void deleteUserStatus(Integer userId);
 
     /*获取用户列表*/
-    List<UserListVO> getUserList(Integer enterpriseId, String userName, String phone, String email,String compid);
+    List<UserListVO> getUserList(Integer enterpriseId, String userName, String phone, String email, String compid);
 
     /*根据权限组id获取所有权限方法的集合*/
     List<String> getOpenAuth(Integer groupId);
@@ -63,9 +64,11 @@ public interface UserMapper {
     List<User> selectAllUser(@Param("eid") Integer eid, @Param("userName") String userName);
 
     /*根据eid 查询企业用户*/
-    List<User> userAll(@Param("eid")Integer eid);
+    List<User> userAll(@Param("eid") Integer eid);
 
     /*根据权限组id查询企业id*/
     Integer getEnterpriseByGroupId(Integer groupId);
 
+    /*查询用户登录信息列表*/
+    List<UserLoginVO> userLoginList(String compid,String userName,String phoneNum);
 }
