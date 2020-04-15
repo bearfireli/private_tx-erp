@@ -1002,10 +1002,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         endTime = sdf.format(new Date());
         SquareQuantityVO squareQuantityVO = taskPlanMapper.phoneStatistics(compid, beginTime, endTime);
         if (taskPlanPreNum != null) {
-            if (squareQuantityVO != null) {
-                squareQuantityVO.setProduce_num((int) squareQuantityVO.getSaleNum());
-                squareQuantityVO.setPre_num((int) taskPlanPreNum.getPreNum());
+            if (squareQuantityVO == null) {
+                squareQuantityVO = new SquareQuantityVO();
             }
+            squareQuantityVO.setProduce_num((int) squareQuantityVO.getSaleNum());
+            squareQuantityVO.setPre_num((int) taskPlanPreNum.getPreNum());
         }
         JSONArray array = new JSONArray();
         if (squareQuantityVO != null) {
