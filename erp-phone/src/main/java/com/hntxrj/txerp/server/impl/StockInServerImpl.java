@@ -396,7 +396,7 @@ public class StockInServerImpl implements StockInServer {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         //说明查询的是本月的原材料采购
         if (type != null && type == 1) {
-            //用户设置的查询时间对象
+            //用户自定义设置的查询时间对象 (queryCode=1,queryType=2,说明查询的是材料结算查询这个功能)
             QueryTimeSetVO queryTime = publicInfoMapper.getSystemQueryTime(compid, 1, 2);
             if (queryTime != null) {
                 endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
