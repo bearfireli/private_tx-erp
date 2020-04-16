@@ -110,22 +110,25 @@
         order by Sto_Name
     </select>
     <select id="getStockCheck" resultType="com.hntxrj.txerp.vo.StockInCheckVO">
-        select
-        t1.stICode,
-        t1.isPassOrNot,
-        t1.PicturePath,
-        t1.MatCode,
-        t3.matName,
-        t1.StkCode,
-        t1.NotReason,
-        t1.StkCode,
-        t2.Sto_Name,
-        t1.DeductNum as deductNum,
-        t1.Inspector as inspector,
-        t1.InspectionTime as inspectionTime
-        from  MP_StockIn t1
-        left join  MP_Stock t2 on t1.StkCode=t2.StkCode and t2.compid=t1.compid
-        left join  MP_MaterialInfor t3 on t1.MatCode=t3.MatCode and t3.compid=t1.compid
+        select t1.stICode,
+           t1.isPassOrNot,
+           t1.PicturePath,
+           t1.MatCode,
+           t3.matName,
+           t1.StkCode,
+           t1.NotReason,
+           t1.StkCode,
+           t2.Sto_Name,
+           t1.DeductNum      as deductNum,
+           t1.Inspector      as inspector,
+           t1.InspectionTime as inspectionTime,
+           t1.VehicleID      as vehicleId,
+           t1.compid,
+           t4.Sup_Name as supName
+         from MP_StockIn t1
+         left join MP_Stock t2 on t1.StkCode = t2.StkCode and t2.compid = t1.compid
+         left join MP_MaterialInfor t3 on t1.MatCode = t3.MatCode and t3.compid = t1.compid
+         left join MP_Supplier t4 on t1.compid = t4.compid and t1.SupCode = t4.SupCode
         where t1.compid=#{compid} and t1.stICode=#{stICode}
     </select>
 
