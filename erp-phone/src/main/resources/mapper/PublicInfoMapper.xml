@@ -10,4 +10,22 @@
         and RecStatus =1
         and PI_Status =1
     </select>
+
+    <select id="getSystemQueryTime" resultType="com.hntxrj.txerp.vo.QueryTimeSetVO">
+        select compid,
+               QueryName,
+               QueryCode,
+               QueryType,
+               QueryStartTime,
+               QueryStopTime,
+               RecStatus,
+               CountInterval,
+               UpDownMark,
+               UpDown
+        from DD_QueryTimeSet
+        where compid = #{compid}
+          and RecStatus = 1
+          and QueryType = #{queryType}
+          and QueryCode = #{queryCode}
+    </select>
 </mapper>

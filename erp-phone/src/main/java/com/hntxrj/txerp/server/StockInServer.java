@@ -225,7 +225,7 @@ public interface StockInServer {
                                          String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize);
 
 
-    List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime);
+    List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime,Integer type);
 
 
     /**

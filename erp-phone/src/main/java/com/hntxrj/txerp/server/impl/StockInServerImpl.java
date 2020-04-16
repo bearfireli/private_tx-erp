@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.dao.StockInDao;
+import com.hntxrj.txerp.mapper.PublicInfoMapper;
 import com.hntxrj.txerp.mapper.StockMapper;
 import com.hntxrj.txerp.server.StockInServer;
 import com.hntxrj.txerp.vo.*;
@@ -24,6 +25,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +37,7 @@ import java.util.UUID;
 public class StockInServerImpl implements StockInServer {
     private final StockInDao stockInDao;
     private final StockMapper stockInWeighmatNsMapper;
+    private final PublicInfoMapper publicInfoMapper;
 
     @Value("${app.checking.imgFilePath}")
     private String checkingImageFilePath;
@@ -40,9 +45,11 @@ public class StockInServerImpl implements StockInServer {
     private String url;
 
     @Autowired
-    public StockInServerImpl(StockInDao stockInDao, StockMapper stockInWeighmatNsMapper) {
+    public StockInServerImpl(StockInDao stockInDao, StockMapper stockInWeighmatNsMapper,
+                             PublicInfoMapper publicInfoMapper) {
         this.stockInDao = stockInDao;
         this.stockInWeighmatNsMapper = stockInWeighmatNsMapper;
+        this.publicInfoMapper = publicInfoMapper;
     }
 
     /**
@@ -384,7 +391,48 @@ public class StockInServerImpl implements StockInServer {
     }
 
     @Override
-    public List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime) {
+    public List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime,
+                                                            Integer type) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //说明查询的是本月的原材料采购
+        if (type != null && type == 1) {
+            //用户自定义设置的查询时间对象 (queryCode=1,queryType=2,说明查询的是材料结算查询这个功能)
+            QueryTimeSetVO queryTime = publicInfoMapper.getSystemQueryTime(compid, 1, 2);
+            if (queryTime != null) {
+                endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
+                beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                String dateTime = sdf.format(new Date());
+                try {
+                    //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
+                    Date begin = sdf.parse(beginTime.substring(0, 10));
+                    Date nowTime = sdf.parse(dateTime);
+                    //判断开始时间和结束时间是否相同,
+                    //返回1:begin大于end;
+                    //返回0:begin等于end;
+                    //返回-1:begin小于end;
+                    if (begin.compareTo(nowTime) > 0) {
+                        //说明开始时间大于当前时间，需要把开始时间和结束时间减一个月。
+                        Date time = null;
+                        try {
+                            time = sdf.parse(beginTime);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        endTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                        Calendar cal = Calendar.getInstance();
+                        assert time != null;
+                        cal.setTime(time);
+                        cal.add(Calendar.MONTH, -1);
+                        beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                endTime = endTime.substring(0, 8) + "01 00:00:00";
+                beginTime = beginTime.substring(0, 8) + "01 00:00:01";
+            }
+        }
         return stockInWeighmatNsMapper.getWeightByMatParent(compid,
                 beginTime, endTime);
     }
@@ -432,11 +480,11 @@ public class StockInServerImpl implements StockInServer {
     @Override
     public String uploadCheckingImg(String compid, String stICode, MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString();
-        String temPath=checkingImageFilePath+compid+"\\";
+        String temPath = checkingImageFilePath + compid + "\\";
         //旧接口使用
         File dirOld = new File(checkingImageFilePath);
         dirOld.mkdirs();
-        File fileOld = new File(checkingImageFilePath+ fileName);
+        File fileOld = new File(checkingImageFilePath + fileName);
         try {
             Boolean b = fileOld.createNewFile();
             System.out.println(b);
@@ -449,7 +497,7 @@ public class StockInServerImpl implements StockInServer {
         // 新接口使用
         File dir = new File(temPath);
         dir.mkdirs();
-        File file = new File(temPath+ fileName);
+        File file = new File(temPath + fileName);
         try {
             Boolean b = file.createNewFile();
             System.out.println(b);
@@ -493,15 +541,17 @@ public class StockInServerImpl implements StockInServer {
             throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
         }
     }
+
     /**
      * 新图片展示
      * compid 企业id
+     *
      * @param fileName 文件名称
      */
     @Override
-    public void showPicture(String fileName,String compid, HttpServletResponse response) throws ErpException {
-        String tempPath=checkingImageFilePath+compid+"\\";
-        File file = new File(tempPath+ fileName);
+    public void showPicture(String fileName, String compid, HttpServletResponse response) throws ErpException {
+        String tempPath = checkingImageFilePath + compid + "\\";
+        File file = new File(tempPath + fileName);
         if (!file.exists()) {
             throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
         }

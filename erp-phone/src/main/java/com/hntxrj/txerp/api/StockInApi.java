@@ -506,11 +506,11 @@ public class StockInApi {
     @PostMapping("/getWeightByMatParent")
     public ResultVO getWeightByMatParent(String compid,
                                          Long beginTime,
-                                         Long endTime) {
+                                         Long endTime, Integer type) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<WeightMatParentNameVO> weightByMatParent = stockInServer.getWeightByMatParent(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
-                endTime == null ? null : sdf.format(new Date(endTime)));
+                endTime == null ? null : sdf.format(new Date(endTime)), type);
         return ResultVO.create(weightByMatParent);
     }
 
@@ -615,7 +615,7 @@ public class StockInApi {
                                       String matCode, String stkCode, String notReason,
                                       HttpServletRequest request) throws ErpException {
         String token = request.getHeader("token");
-        stockInServer.updateCheckStatus(token,compid, deductNum, stICode, isPassOrNot, picturePath, matCode, stkCode,
+        stockInServer.updateCheckStatus(token, compid, deductNum, stICode, isPassOrNot, picturePath, matCode, stkCode,
                 notReason);
         return ResultVO.create();
     }
@@ -667,18 +667,19 @@ public class StockInApi {
     public void downloadPicture(String fileName, HttpServletResponse response) throws ErpException {
         stockInServer.downloadPicture(fileName, response);
     }
- /**
+
+    /**
      * 新图片展示
      *
      * @param fileName 文件名称
-     * @param compid      公司ID
+     * @param compid   公司ID
      * @throws ErpException 异常处理
      */
     @ApiOperation(value = "图片展示", httpMethod = "get", notes = "" +
             "fileName 文件名称")
     @GetMapping("/showPicture")
-    public void showPicture(String fileName,String compid, HttpServletResponse response) throws ErpException {
-        stockInServer.showPicture(fileName,compid, response);
+    public void showPicture(String fileName, String compid, HttpServletResponse response) throws ErpException {
+        stockInServer.showPicture(fileName, compid, response);
     }
 
     /**
