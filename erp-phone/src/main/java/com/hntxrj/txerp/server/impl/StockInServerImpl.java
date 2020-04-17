@@ -604,7 +604,11 @@ public class StockInServerImpl implements StockInServer {
     @Override
     public PageVO<StockVO> getStockByComId(String compid, String searchWords, Integer page, Integer pageSize) {
         PageVO<StockVO> pageVO = new PageVO<>();
-        PageInfo<StockVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getStockByComId(compid, searchWords));
+        List<StockVO> stockVOList = stockInWeighmatNsMapper.getStockByComId(compid, searchWords);
+        for (StockVO stockVO : stockVOList) {
+            stockVO.setStoName(stockVO.getStirName() + "-" + stockVO.getStoName());
+        }
+        PageInfo<StockVO> pageInfo = new PageInfo<>(stockVOList);
         pageVO.format(pageInfo);
         return pageVO;
     }
