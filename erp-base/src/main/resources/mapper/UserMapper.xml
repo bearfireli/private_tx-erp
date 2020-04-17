@@ -157,7 +157,7 @@
         FROM user_login ul
         LEFT JOIN user_auth ua ON ua.uid=ul.user_id
         LEFT JOIN enterprise e ON e.eid=ua.eid
-        LEFT JOIN USER u ON ul.user_id=u.uid
+        LEFT JOIN `user` u ON ul.user_id=u.uid
         WHERE ua.eid=#{compid}
         <if test="userName != null ">
             and u.username like concat('%',#{userName},'%')
