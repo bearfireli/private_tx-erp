@@ -897,11 +897,15 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             int year = Integer.parseInt(endTime.substring(0, 4));
             endTime = endTime.replace(year + "-13", (year + 1) + "-01");
         }
-
         if (type == 3) {
             int queryType = 2;
             QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
-            if (queryTime != null) {
+            if (queryTime != null
+                    //如果用户设置的查询时间小于1号，大于28号，则按照默认时间1号到下个月1号
+                    && Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) >= 1
+                    && Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) <= 28
+                    && Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) >= 1
+                    && Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) <= 28) {
                 endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
                 beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
                 String dateTime = sdf.format(new Date());
@@ -934,7 +938,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 }
             } else {
                 endTime = endTime.substring(0, 8) + "01 00:00:00";
-                beginTime = beginTime.substring(0, 8) + "01 00:00:01";
+                beginTime = beginTime.substring(0, 8) + "01 00:00:00";
             }
         } else {
             //拼接时间
