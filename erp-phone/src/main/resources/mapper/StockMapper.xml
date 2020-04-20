@@ -101,17 +101,16 @@
     </select>
     <select id="getStockByComId" resultType="com.hntxrj.txerp.vo.StockVO">
         select
-        ms.StkCode,ms.Sto_Name,ds.StirName as stirName
+        ms.StkCode,ms.Sto_Name,StirId as stirId
         from MP_Stock ms
-        left join DD_StirInfoSet ds on ms.compid= ds.compid and ms.StirId=ds.StirId
         where ms.compid=#{compid}
         <if test="searchWords!=null and searchWords!=''">
             and ms.Sto_Name like '%'+#{searchWords}+'%'
         </if>
-        order by ms.Sto_Name
+        order by StirId
     </select>
     <select id="getStockCheck" resultType="com.hntxrj.txerp.vo.StockInCheckVO">
-       select ds.StirName + '-'+t2.Sto_Name as stoName,
+       select convert(varchar(10),t2.StirId)  + '->'+t2.Sto_Name as stoName,
            t1.stICode,
            t1.isPassOrNot,
            t1.PicturePath,
@@ -130,7 +129,6 @@
         left join MP_Stock t2 on t1.StkCode = t2.StkCode and t2.compid = t1.compid
         left join MP_MaterialInfor t3 on t1.MatCode = t3.MatCode and t3.compid = t1.compid
         left join MP_Supplier t4 on t1.compid = t4.compid and t1.SupCode = t4.SupCode
-        left join  DD_StirInfoSet ds on t1.compid=ds.compid and t2.StirId=ds.StirId
         where t1.compid=#{compid} and t1.stICode=#{stICode}
     </select>
 
