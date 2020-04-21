@@ -144,6 +144,29 @@
     <update id="deleteUserStatus" parameterType="int">
         update user_auth set  eadmin=0 where uid=#{userId}
     </update>
+    <select id="userLoginList" resultType="com.hntxrj.txerp.vo.UserLoginVO">
+        SELECT user_id AS uid,
+        u.username as userName,
+        u.phone as phoneNum,
+        e.ep_name AS enterpriseName,
+        e.ep_short_name AS shortName,
+        ul.login_ip AS loginIP,
+        ul.create_time AS loginTime,
+        ul.login_ua AS loginUa,
+        ul.login_version AS loginVersion
+        FROM user_login ul
+        LEFT JOIN user_auth ua ON ua.uid=ul.user_id
+        LEFT JOIN enterprise e ON e.eid=ua.eid
+        LEFT JOIN `user` u ON ul.user_id=u.uid
+        WHERE ua.eid=#{compid}
+        <if test="userName != null ">
+            and u.username like concat('%',#{userName},'%')
+        </if>
+        <if test="phoneNum != null ">
+            and u.phone like concat('%',#{phoneNum},'%')
+        </if>
+        order by ul.create_time desc
+    </select>
 
     <select id="getOpenAuth" resultType="string">
        select fun_name from auth_value_new where group_id=#{groupId} and value=1

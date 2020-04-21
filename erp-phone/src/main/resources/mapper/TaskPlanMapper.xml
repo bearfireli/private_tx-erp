@@ -195,7 +195,8 @@
 
     <!--查询所有正在生产的任务单的车辆情况-->
     <select id="getCarsByTaskIds" resultType="com.hntxrj.txerp.vo.DispatchVehicle">
-        select tsi.SendTime,tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType, tsi.VehicleID as carID,
+        select tsi.SendTime,tsi.TaskId as taskId,pt.TaskStatus as taskStatus, tsi.InvoiceType as invoiceType,
+        tsi.VehicleID as carID,
         dd.PI_TypeName statusName,vm.VehicleStatus,vm.StirId,dd2.StirName
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
@@ -209,7 +210,7 @@
         and InvoiceType in ('1', '2', '3', '4')
         and vm.VehicleStatus in ('2','3')
         group by tsi.TaskId, pt.TaskStatus, tsi.InvoiceType, tsi.VehicleID, dd.PI_TypeName, vm.VehicleStatus,
-         vm.StirId, dd2.StirName,tsi.SendTime
+        vm.StirId, dd2.StirName,tsi.SendTime
         order by dd.PI_TypeName,tsi.SendTime desc
     </select>
 
@@ -772,8 +773,9 @@
         select sum(PreNum) PreNum
         from PT_TaskPlan
         where compid = #{compid}
-          and (PreTime between #{beginTime} and #{endTime})
+          and ( PreTime between #{beginTime} and #{endTime})
           and deletemark = 0
+          and RecStatus = 1
     </select>
     <select id="queryTimeId" resultType="com.hntxrj.txerp.vo.QueryTimeSetVO">
         select top 1 dd.compid,
@@ -1032,7 +1034,6 @@
             and PI_TypeName like '%' +#{slump}+'%'
         </if>
     </select>
-
 
 
 </mapper>

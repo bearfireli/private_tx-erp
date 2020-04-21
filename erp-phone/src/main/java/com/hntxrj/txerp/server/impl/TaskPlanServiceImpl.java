@@ -42,7 +42,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     private final MsgMapper msgMapper;
     @Resource
-    private RedisTemplate<String,Date> redisTemplate;
+    private RedisTemplate<String, Date> redisTemplate;
 
     @Autowired
     public TaskPlanServiceImpl(TaskPlanMapper taskPlanMapper, TaskPlanRepository taskPlanRepository,
@@ -261,13 +261,13 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         if (taskIds.size() > 0) {
             cars = taskPlanMapper.getCarsByTaskIds(compid, taskIds);
         }
-        String carID ="";
+        String carID = "";
         //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
         for (SendCarListVO sendCarListVO : sendCarList) {
             List<DispatchVehicle> dispatchVehicleList = new ArrayList<>();
             for (DispatchVehicle car : cars) {
                 //判断重复的车号
-                if (!carID.equals(car.getCarID())){
+                if (!carID.equals(car.getCarID())) {
                     //判断厦门华信特殊情况（先打票，再生产）
                     if (compid.equals("24")) {
                         if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
@@ -280,7 +280,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                         dispatchVehicleList.add(car);
                     }
                 }
-                    carID =car.getCarID();
+                carID = car.getCarID();
             }
             sendCarListVO.setCars(dispatchVehicleList);
         }
@@ -902,19 +902,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             int queryType = 2;
             QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
             if (queryTime != null) {
-                    endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
-                    beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
-                    String dateTime =sdf.format(new Date());
+                endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
+                beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                String dateTime = sdf.format(new Date());
                 DateFormat fmt = new SimpleDateFormat("yyyyMMdd");
                 try {
                     //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
-                    Date begin =fmt.parse(beginTime.substring(0,10).replaceAll("-",""));
-                    Date date =fmt.parse(dateTime.replaceAll("-",""));
+                    Date begin = fmt.parse(beginTime.substring(0, 10).replaceAll("-", ""));
+                    Date date = fmt.parse(dateTime.replaceAll("-", ""));
                     //判断开始时间和结束时间是否相同,
                     //返回1:begin大于end;
                     //返回0:begin等于end;
                     //返回-1:begin小于end
-                    if (begin.compareTo(date) > 0){
+                    if (begin.compareTo(date) > 0) {
                         //说明开始时间大于当前时间，需要把开始时间和结束时间减一个月。
                         Date time = null;
                         try {
@@ -922,12 +922,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        endTime =beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                        endTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
                         Calendar cal = Calendar.getInstance();
                         assert time != null;
                         cal.setTime(time);
                         cal.add(Calendar.MONTH, -1);
-                        beginTime = sdf.format(cal.getTime()).substring(0,8)+ queryTime.getQueryStartTime();
+                        beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -1002,10 +1002,11 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         endTime = sdf.format(new Date());
         SquareQuantityVO squareQuantityVO = taskPlanMapper.phoneStatistics(compid, beginTime, endTime);
         if (taskPlanPreNum != null) {
-            if (squareQuantityVO != null) {
-                squareQuantityVO.setProduce_num((int) squareQuantityVO.getSaleNum());
-                squareQuantityVO.setPre_num((int) taskPlanPreNum.getPreNum());
+            if (squareQuantityVO == null) {
+                squareQuantityVO = new SquareQuantityVO();
             }
+            squareQuantityVO.setProduce_num((int) squareQuantityVO.getSaleNum());
+            squareQuantityVO.setPre_num((int) taskPlanPreNum.getPreNum());
         }
         JSONArray array = new JSONArray();
         if (squareQuantityVO != null) {
@@ -1230,7 +1231,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
         }
 
-        BigDecimal preNum = taskPlanMapper.getBuildTaskPreCount(contractDetailCodes,contractUIDList,
+        BigDecimal preNum = taskPlanMapper.getBuildTaskPreCount(contractDetailCodes, contractUIDList,
                 beginTime, endTime, eppCode, placing, taskId,
                 taskStatus, verifyStatus);
         map.put("preNum", preNum);

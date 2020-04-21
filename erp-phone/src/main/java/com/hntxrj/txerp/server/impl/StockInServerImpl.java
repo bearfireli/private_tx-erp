@@ -1,14 +1,17 @@
 package com.hntxrj.txerp.server.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.dao.StockInDao;
+import com.hntxrj.txerp.mapper.PublicInfoMapper;
 import com.hntxrj.txerp.mapper.StockMapper;
 import com.hntxrj.txerp.server.StockInServer;
 import com.hntxrj.txerp.vo.*;
+import okhttp3.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,13 +37,19 @@ import java.util.UUID;
 public class StockInServerImpl implements StockInServer {
     private final StockInDao stockInDao;
     private final StockMapper stockInWeighmatNsMapper;
+    private final PublicInfoMapper publicInfoMapper;
 
     @Value("${app.checking.imgFilePath}")
     private String checkingImageFilePath;
+    @Value("${app.cloud.host}")
+    private String url;
+
     @Autowired
-    public StockInServerImpl(StockInDao stockInDao, StockMapper stockInWeighmatNsMapper) {
+    public StockInServerImpl(StockInDao stockInDao, StockMapper stockInWeighmatNsMapper,
+                             PublicInfoMapper publicInfoMapper) {
         this.stockInDao = stockInDao;
         this.stockInWeighmatNsMapper = stockInWeighmatNsMapper;
+        this.publicInfoMapper = publicInfoMapper;
     }
 
     /**
@@ -376,7 +391,48 @@ public class StockInServerImpl implements StockInServer {
     }
 
     @Override
-    public List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime) {
+    public List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime,
+                                                            Integer type) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //说明查询的是本月的原材料采购
+        if (type != null && type == 1) {
+            //用户自定义设置的查询时间对象 (queryCode=1,queryType=2,说明查询的是材料结算查询这个功能)
+            QueryTimeSetVO queryTime = publicInfoMapper.getSystemQueryTime(compid, 1, 2);
+            if (queryTime != null) {
+                endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
+                beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                String dateTime = sdf.format(new Date());
+                try {
+                    //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
+                    Date begin = sdf.parse(beginTime.substring(0, 10));
+                    Date nowTime = sdf.parse(dateTime);
+                    //判断开始时间和结束时间是否相同,
+                    //返回1:begin大于end;
+                    //返回0:begin等于end;
+                    //返回-1:begin小于end;
+                    if (begin.compareTo(nowTime) > 0) {
+                        //说明开始时间大于当前时间，需要把开始时间和结束时间减一个月。
+                        Date time = null;
+                        try {
+                            time = sdf.parse(beginTime);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        endTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                        Calendar cal = Calendar.getInstance();
+                        assert time != null;
+                        cal.setTime(time);
+                        cal.add(Calendar.MONTH, -1);
+                        beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                endTime = endTime.substring(0, 8) + "01 00:00:00";
+                beginTime = beginTime.substring(0, 8) + "01 00:00:01";
+            }
+        }
         return stockInWeighmatNsMapper.getWeightByMatParent(compid,
                 beginTime, endTime);
     }
@@ -418,16 +474,32 @@ public class StockInServerImpl implements StockInServer {
 
     /**
      * 上传检验照片
+     *
      * @return 路径
      */
     @Override
-    public String uploadCheckingImg(String compid,String stICode,MultipartFile image) throws ErpException {
+    public String uploadCheckingImg(String compid, String stICode, MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString();
-        File dir = new File(checkingImageFilePath);
-        dir.mkdirs();
-        File file = new File(checkingImageFilePath + fileName);
+        String temPath = checkingImageFilePath + compid + "\\";
+        //旧接口使用
+        File dirOld = new File(checkingImageFilePath);
+        dirOld.mkdirs();
+        File fileOld = new File(checkingImageFilePath + fileName);
         try {
-            Boolean b=file.createNewFile();
+            Boolean b = fileOld.createNewFile();
+            System.out.println(b);
+            IOUtils.copy(image.getInputStream(), new FileOutputStream(fileOld));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
+        }
+
+        // 新接口使用
+        File dir = new File(temPath);
+        dir.mkdirs();
+        File file = new File(temPath + fileName);
+        try {
+            Boolean b = file.createNewFile();
             System.out.println(b);
             IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
         } catch (Exception e) {
@@ -435,20 +507,17 @@ public class StockInServerImpl implements StockInServer {
             throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
         }
 
-         StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(compid,stICode);
-            stockInCheckVO.setCompid(compid);
-            String  picturePath=stockInCheckVO.getPicturePath();
-        if(picturePath==null|| picturePath.equals("")){
+        StockInCheckVO stockInCheckVO = stockInWeighmatNsMapper.getStockCheck(compid, stICode);
+        stockInCheckVO.setCompid(compid);
+        String picturePath = stockInCheckVO.getPicturePath();
+        if (picturePath == null || picturePath.equals("")) {
             stockInCheckVO.setPicturePath(fileName);
-        }else{
-            stockInCheckVO.setPicturePath(stockInCheckVO.getPicturePath()+"#"+fileName);
+        } else {
+            stockInCheckVO.setPicturePath(stockInCheckVO.getPicturePath() + "#" + fileName);
         }
-        stockInWeighmatNsMapper.updateCheckStatus(compid, stICode, stockInCheckVO.getIsPassOrNot(),
-                stockInCheckVO.getPicturePath(),stockInCheckVO.getMatCode(),stockInCheckVO.getStkCode(),
-                stockInCheckVO.getNotReason());
-
-
-
+        stockInWeighmatNsMapper.updateCheckStatus(compid, null, stICode, stockInCheckVO.getIsPassOrNot(),
+                stockInCheckVO.getPicturePath(), stockInCheckVO.getMatCode(), stockInCheckVO.getStkCode(),
+                stockInCheckVO.getNotReason(), null, null);
 
 
         return fileName;
@@ -456,6 +525,7 @@ public class StockInServerImpl implements StockInServer {
 
     /**
      * 下载图片
+     *
      * @param fileName 文件名称
      */
     @Override
@@ -473,64 +543,111 @@ public class StockInServerImpl implements StockInServer {
     }
 
     /**
+     * 新图片展示
+     * compid 企业id
+     *
+     * @param fileName 文件名称
+     */
+    @Override
+    public void showPicture(String fileName, String compid, HttpServletResponse response) throws ErpException {
+        String tempPath = checkingImageFilePath + compid + "\\";
+        File file = new File(tempPath + fileName);
+        if (!file.exists()) {
+            throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
+        }
+        try {
+            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
+        }
+    }
+
+    /**
      * 更新检验状态
-     * @param compid 公司id
-     * @param stICode 过磅单号
+     *
+     * @param compid      公司id
+     * @param deductNum   另扣量
+     * @param stICode     过磅单号
      * @param isPassOrNot 是否合格
      * @param picturePath 图片路径
-     * @param matCode 材料编码
-     * @param stkCode 库位编码
+     * @param matCode     材料编码
+     * @param stkCode     库位编码
      */
     @Override
-    public void updateCheckStatus(String compid, String stICode, int isPassOrNot, String picturePath, String matCode,
-                                  String stkCode,String notReason) {
-         stockInWeighmatNsMapper.updateCheckStatus(compid, stICode, isPassOrNot, picturePath,matCode,stkCode,notReason);
-    }
-    /**
-     * 根据公司ID获取库存
-     * @param compid 公司ID
-     * @return 结果集列表
-     */
-    @Override
-    public PageVO<StockVO> getStockByComId(String compid,String searchWords,Integer page,Integer pageSize) {
-        PageVO<StockVO> pageVO = new PageVO<>();
-        PageInfo<StockVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getStockByComId(compid,searchWords));
-        pageVO.format(pageInfo);
-        return pageVO;
-    }
-    /**
-     * 根据公司ID获取库存
-     * @param compid 公司ID
-     * @return 结果集列表
-     */
-    @Override
-    public PageVO<MaterialVO> getMatByComId(String compid,String searchWords,Integer page,Integer pageSize) {
-        PageVO<MaterialVO> pageVO = new PageVO<>();
-        PageInfo<MaterialVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getMatByComId(compid,searchWords));
-        pageVO.format(pageInfo);
-        return pageVO;
-    }
-    /**
-     *  通过 compid  stICode 查询材料过磅
-     * @param compid 公司id
-     * @param stICode 过磅单号
+    public void updateCheckStatus(String token, String compid, BigDecimal deductNum, String stICode, int isPassOrNot,
+                                  String picturePath, String matCode, String stkCode,
+                                  String notReason) throws ErpException {
 
+        String inspector = "";
+        Date inspectionTime = new Date();
+
+        // 调用okhttp请求，根据token获取用户信息
+        JSONObject jsonObject = tokenGetUser(token);
+        if (jsonObject == null) {
+            throw new ErpException(ErrEumn.MATERIAL_CHECK_ERROR);
+        }
+        JSONObject data = (JSONObject) jsonObject.get("data");
+        if (data != null) {
+            inspector = (String) data.get("username");
+        }
+        stockInWeighmatNsMapper.updateCheckStatus(compid, deductNum, stICode, isPassOrNot, picturePath,
+                matCode, stkCode, notReason, inspector, inspectionTime);
+    }
+
+    /**
+     * 根据公司ID获取库存
+     *
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    @Override
+    public PageVO<StockVO> getStockByComId(String compid, String searchWords, Integer page, Integer pageSize) {
+        PageVO<StockVO> pageVO = new PageVO<>();
+        List<StockVO> stockVOList = stockInWeighmatNsMapper.getStockByComId(compid, searchWords);
+        for (StockVO stockVO : stockVOList) {
+            stockVO.setStoName(stockVO.getStirName() + "-" + stockVO.getStoName());
+        }
+        PageInfo<StockVO> pageInfo = new PageInfo<>(stockVOList);
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    /**
+     * 根据公司ID获取库存
+     *
+     * @param compid 公司ID
+     * @return 结果集列表
+     */
+    @Override
+    public PageVO<MaterialVO> getMatByComId(String compid, String searchWords, Integer page, Integer pageSize) {
+        PageVO<MaterialVO> pageVO = new PageVO<>();
+        PageInfo<MaterialVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getMatByComId(compid, searchWords));
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    /**
+     * 通过 compid  stICode 查询材料过磅
+     *
+     * @param compid  公司id
+     * @param stICode 过磅单号
      */
     @Override
     public StockInCheckVO getStockCheck(String compid, String stICode) {
 
 
-        return stockInWeighmatNsMapper.getStockCheck(compid,stICode);
+        return stockInWeighmatNsMapper.getStockCheck(compid, stICode);
     }
 
     @Override
     public StockInCheckVO deleteCheckingImg(String compid, String stICode, String image) {
 
-        StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(compid,stICode);
+        StockInCheckVO stockInCheckVO = stockInWeighmatNsMapper.getStockCheck(compid, stICode);
         stockInCheckVO.setCompid(compid);
-        String[] paths=stockInCheckVO.getPicturePath().split("#");
-        StringBuilder newPath= new StringBuilder();
-        if (paths.length>0) {
+        String[] paths = stockInCheckVO.getPicturePath().split("#");
+        StringBuilder newPath = new StringBuilder();
+        if (paths.length > 0) {
             for (String path : paths
             ) {
                 if (!path.equals(image)) {
@@ -538,11 +655,42 @@ public class StockInServerImpl implements StockInServer {
                 }
             }
         }
-        stockInWeighmatNsMapper.updateCheckStatus(compid, stICode, stockInCheckVO.getIsPassOrNot(),
-                newPath.toString(),stockInCheckVO.getMatCode(),stockInCheckVO.getStkCode(),
-                stockInCheckVO.getNotReason());
+        stockInWeighmatNsMapper.updateCheckStatus(compid, null, stICode, stockInCheckVO.getIsPassOrNot(),
+                newPath.toString(), stockInCheckVO.getMatCode(), stockInCheckVO.getStkCode(),
+                stockInCheckVO.getNotReason(), null, null);
 
         return stockInCheckVO;
+    }
+
+
+    private JSONObject tokenGetUser(String token) throws ErpException {
+
+        JSONObject resultJSON = null;
+        OkHttpClient client = new OkHttpClient();
+
+
+        RequestBody body = new FormBody.Builder()
+                .add("token", token)
+                .build();
+        Request request = new Request.Builder()
+                .url(url + "/user/tokenGetUser")
+                .post(body)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String result = responseBody.string();
+                resultJSON = JSONObject.parseObject(result);
+            }
+
+            return resultJSON;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.MATERIAL_CHECK_ERROR);
+        }
+
     }
 
 }
