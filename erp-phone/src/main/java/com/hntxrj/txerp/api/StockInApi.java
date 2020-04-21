@@ -588,7 +588,7 @@ public class StockInApi {
     @ApiOperation(value = "更新检验状态",httpMethod="get" ,notes="compid 公司ID|stICode 过磅单号|" +
             "isPassOrNot 是否合格 1合格 0不合格|picturePath 图片路径|matCode 材料编码|stkCode 库位编码")
     @PostMapping("/updateCheckStatus")
-    public ResultVO updateCheckStatus( String compid,double reduc,   String stICode,@RequestParam(defaultValue="1") int isPassOrNot,
+    public ResultVO updateCheckStatus( String compid,   String stICode,@RequestParam(defaultValue="1") int isPassOrNot,
                                        String picturePath,String matCode,String stkCode,String notReason) {
         stockInServer.updateCheckStatus(compid, stICode, isPassOrNot, picturePath,matCode,stkCode,notReason);
         return ResultVO.create();
@@ -616,7 +616,7 @@ public class StockInApi {
      * @param image 图片路径
      * @return 结果
      */
-    @ApiOperation(value = "删除照片",httpMethod="post" ,notes="" +
+    @ApiOperation(value = "删除照片",httpMethod="get" ,notes="" +
             "compid 公司ID|stICode 过磅单号|image 图片路径")
     @PostMapping("/deletePicture")
     public com.hntxrj.txerp.core.web.ResultVO deletePicture(String compid,String stICode, String image)  {

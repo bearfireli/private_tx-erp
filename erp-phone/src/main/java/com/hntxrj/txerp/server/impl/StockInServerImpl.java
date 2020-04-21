@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +31,6 @@ public class StockInServerImpl implements StockInServer {
 
     @Value("${app.checking.imgFilePath}")
     private String checkingImageFilePath;
-
     @Autowired
     public StockInServerImpl(StockInDao stockInDao, StockMapper stockInWeighmatNsMapper) {
         this.stockInDao = stockInDao;
@@ -420,17 +418,16 @@ public class StockInServerImpl implements StockInServer {
 
     /**
      * 上传检验照片
-     *
      * @return 路径
      */
     @Override
-    public String uploadCheckingImg(String compid, String stICode, MultipartFile image) throws ErpException {
+    public String uploadCheckingImg(String compid,String stICode,MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString();
         File dir = new File(checkingImageFilePath);
         dir.mkdirs();
         File file = new File(checkingImageFilePath + fileName);
         try {
-            Boolean b = file.createNewFile();
+            Boolean b=file.createNewFile();
             System.out.println(b);
             IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
         } catch (Exception e) {
@@ -438,17 +435,20 @@ public class StockInServerImpl implements StockInServer {
             throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
         }
 
-        StockInCheckVO stockInCheckVO = stockInWeighmatNsMapper.getStockCheck(compid, stICode);
-        stockInCheckVO.setCompid(compid);
-        String picturePath = stockInCheckVO.getPicturePath();
-        if (picturePath == null || picturePath.equals("")) {
+         StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(compid,stICode);
+            stockInCheckVO.setCompid(compid);
+            String  picturePath=stockInCheckVO.getPicturePath();
+        if(picturePath==null|| picturePath.equals("")){
             stockInCheckVO.setPicturePath(fileName);
-        } else {
-            stockInCheckVO.setPicturePath(stockInCheckVO.getPicturePath() + "#" + fileName);
+        }else{
+            stockInCheckVO.setPicturePath(stockInCheckVO.getPicturePath()+"#"+fileName);
         }
-        stockInWeighmatNsMapper.updateCheckStatus(compid, null, stICode, stockInCheckVO.getIsPassOrNot(),
-                stockInCheckVO.getPicturePath(), stockInCheckVO.getMatCode(), stockInCheckVO.getStkCode(),
+        stockInWeighmatNsMapper.updateCheckStatus(compid, stICode, stockInCheckVO.getIsPassOrNot(),
+                stockInCheckVO.getPicturePath(),stockInCheckVO.getMatCode(),stockInCheckVO.getStkCode(),
                 stockInCheckVO.getNotReason());
+
+
+
 
 
         return fileName;
@@ -456,7 +456,6 @@ public class StockInServerImpl implements StockInServer {
 
     /**
      * 下载图片
-     *
      * @param fileName 文件名称
      */
     @Override
@@ -475,70 +474,63 @@ public class StockInServerImpl implements StockInServer {
 
     /**
      * 更新检验状态
-     *
-     * @param compid      公司id
-     * @param deductNum   另扣量
-     * @param stICode     过磅单号
+     * @param compid 公司id
+     * @param stICode 过磅单号
      * @param isPassOrNot 是否合格
      * @param picturePath 图片路径
-     * @param matCode     材料编码
-     * @param stkCode     库位编码
+     * @param matCode 材料编码
+     * @param stkCode 库位编码
      */
     @Override
-    public void updateCheckStatus(String compid, BigDecimal deductNum, String stICode, int isPassOrNot, String picturePath, String matCode,
-                                  String stkCode, String notReason) {
-        stockInWeighmatNsMapper.updateCheckStatus(compid, deductNum, stICode, isPassOrNot, picturePath, matCode, stkCode, notReason);
+    public void updateCheckStatus(String compid, String stICode, int isPassOrNot, String picturePath, String matCode,
+                                  String stkCode,String notReason) {
+         stockInWeighmatNsMapper.updateCheckStatus(compid, stICode, isPassOrNot, picturePath,matCode,stkCode,notReason);
     }
-
     /**
      * 根据公司ID获取库存
-     *
      * @param compid 公司ID
      * @return 结果集列表
      */
     @Override
-    public PageVO<StockVO> getStockByComId(String compid, String searchWords, Integer page, Integer pageSize) {
+    public PageVO<StockVO> getStockByComId(String compid,String searchWords,Integer page,Integer pageSize) {
         PageVO<StockVO> pageVO = new PageVO<>();
-        PageInfo<StockVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getStockByComId(compid, searchWords));
+        PageInfo<StockVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getStockByComId(compid,searchWords));
         pageVO.format(pageInfo);
         return pageVO;
     }
-
     /**
      * 根据公司ID获取库存
-     *
      * @param compid 公司ID
      * @return 结果集列表
      */
     @Override
-    public PageVO<MaterialVO> getMatByComId(String compid, String searchWords, Integer page, Integer pageSize) {
+    public PageVO<MaterialVO> getMatByComId(String compid,String searchWords,Integer page,Integer pageSize) {
         PageVO<MaterialVO> pageVO = new PageVO<>();
-        PageInfo<MaterialVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getMatByComId(compid, searchWords));
+        PageInfo<MaterialVO> pageInfo = new PageInfo<>(stockInWeighmatNsMapper.getMatByComId(compid,searchWords));
         pageVO.format(pageInfo);
         return pageVO;
     }
-
     /**
-     * 通过 compid  stICode 查询材料过磅
-     *
-     * @param compid  公司id
+     *  通过 compid  stICode 查询材料过磅
+     * @param compid 公司id
      * @param stICode 过磅单号
+
      */
     @Override
     public StockInCheckVO getStockCheck(String compid, String stICode) {
 
 
-        return stockInWeighmatNsMapper.getStockCheck(compid, stICode);
+        return stockInWeighmatNsMapper.getStockCheck(compid,stICode);
     }
 
     @Override
     public StockInCheckVO deleteCheckingImg(String compid, String stICode, String image) {
 
-        StockInCheckVO stockInCheckVO = stockInWeighmatNsMapper.getStockCheck(compid, stICode);
+        StockInCheckVO stockInCheckVO=stockInWeighmatNsMapper.getStockCheck(compid,stICode);
         stockInCheckVO.setCompid(compid);
-        String[] paths = stockInCheckVO.getPicturePath().split("#");
-        StringBuilder newPath = new StringBuilder();
-        if (paths.length > 0) {
+        String[] paths=stockInCheckVO.getPicturePath().split("#");
+        StringBuilder newPath= new StringBuilder();
+        if (paths.length>0) {
             for (String path : paths
             ) {
                 if (!path.equals(image)) {
@@ -546,8 +538,8 @@ public class StockInServerImpl implements StockInServer {
                 }
             }
         }
-        stockInWeighmatNsMapper.updateCheckStatus(compid, null, stICode, stockInCheckVO.getIsPassOrNot(),
-                newPath.toString(), stockInCheckVO.getMatCode(), stockInCheckVO.getStkCode(),
+        stockInWeighmatNsMapper.updateCheckStatus(compid, stICode, stockInCheckVO.getIsPassOrNot(),
+                newPath.toString(),stockInCheckVO.getMatCode(),stockInCheckVO.getStkCode(),
                 stockInCheckVO.getNotReason());
 
         return stockInCheckVO;
