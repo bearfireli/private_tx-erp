@@ -744,4 +744,17 @@ public class TaskPlanApi {
                                      @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResultVO.create(taskPlanService.getSlumpDropDown(compid, slump, page, pageSize));
     }
+
+
+    /**
+     * 删除任务单
+     *
+     * @param compid 企业id
+     * @param taskId 任务单号
+     */
+    @PostMapping("deleteTaskPlan")
+    public ResultVO deleteTaskPlan(String compid, String taskId) throws ErpException {
+        taskPlanService.deleteTaskPlan(compid, taskId);
+        return ResultVO.create();
+    }
 }

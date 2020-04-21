@@ -36,6 +36,7 @@ public enum ErrEumn {
     ADD_WMCONFIGUREAPPLY_ERROR(-21109, "添加配件失败"),
     EDIT_WMCONFIGUREAPPLY_ERROR(-21109, "修改配件失败"),
     VERIFY_TASK_ERROR(-21120, "编辑任务单审核状态失败"),
+    DELETE_TASK_ERROR(-21121, "任务单已经审核完毕不能删除"),
 
     /* 附件 21201-21299 */
     ADD_CONTRACT_ADJUNCT_UPLOAD_ERROR(-21201, "上传合同附件失败"),
