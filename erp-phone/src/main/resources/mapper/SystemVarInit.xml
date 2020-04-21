@@ -7,4 +7,9 @@
         from De_SystemVarInit
         where compid=#{compid} and SystemVar='driverWaitLEDIsShow'
     </select>
+    <select id="getQuantityQueryType" resultType="java.lang.Integer">
+        select VarValue
+        from De_SystemVarInit
+        where compid=#{compid} and  SystemVar='quantityQueryType'
+    </select>
 </mapper>

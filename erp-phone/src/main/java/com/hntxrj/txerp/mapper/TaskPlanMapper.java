@@ -225,7 +225,7 @@ public interface TaskPlanMapper {
      * @param beginTime 　开始时间
      * @param endTime   　结束时间
      */
-    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime);
+    SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, Integer quantityQueryType);
 
     /**
      * 从DD_QueryTimeSet表中获取用户自定义查询时间
@@ -380,16 +380,16 @@ public interface TaskPlanMapper {
      *
      * @param contractDetailCodes 子合同集合
      * @param contractUIDList     主合同集合
-     * @param beginTime    开始时间
-     * @param endTime      结束时间
-     * @param eppCode      工程代号
-     * @param placing      浇筑部位
-     * @param taskId       任务单号
-     * @param taskStatus   任务单状态
-     * @param verifyStatus 审核标识  0：未审核； 1：已审核
+     * @param beginTime           开始时间
+     * @param endTime             结束时间
+     * @param eppCode             工程代号
+     * @param placing             浇筑部位
+     * @param taskId              任务单号
+     * @param taskStatus          任务单状态
+     * @param verifyStatus        审核标识  0：未审核； 1：已审核
      * @return 任务单列表预计方量汇总
      */
-    BigDecimal getBuildTaskPreCount(List<String> contractDetailCodes, List<String> contractUIDList,String beginTime,
+    BigDecimal getBuildTaskPreCount(List<String> contractDetailCodes, List<String> contractUIDList, String beginTime,
                                     String endTime, String eppCode, String placing,
                                     String taskId, Integer taskStatus, Integer verifyStatus);
 
@@ -432,8 +432,8 @@ public interface TaskPlanMapper {
     /**
      * 获取塌落度下拉
      *
-     * @param compid    企业id
-     * @param slump     塌落度
+     * @param compid 企业id
+     * @param slump  塌落度
      */
     List<SlumpDropDownVO> getSlumpDropDown(String compid, String slump);
 }

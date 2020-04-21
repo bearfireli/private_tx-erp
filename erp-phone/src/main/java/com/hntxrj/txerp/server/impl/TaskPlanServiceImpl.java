@@ -888,6 +888,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     @Override
     public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type) {
+        //从系统变量表查询用户设置的查询首页生产方量的查询方式（是按照派车时间查询还是出场时间查询）
+        //quantityQueryType的值---0:按照派车时间查询;1:按照出场时间查询
+        Integer quantityQueryType = systemVarInitMapper.getQuantityQueryType(compid);
+        if (quantityQueryType == null) {
+            quantityQueryType = 0;
+        }
         //根据传递过来的type，判断查询的是今日，昨日还是本月的方量。
         String _tmpMo = endTime.substring(5, 7);
         if ("13".equals(_tmpMo)) {
@@ -918,7 +924,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             endTime = yesterdayTime.get("endTime");
         }
 
-        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime, endTime);
+        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime,
+                endTime,quantityQueryType);
         //根据compid、beginTime、endTime从生产消耗表中查询出生产方量。
         BigDecimal productNum = concreteMapper.getProductConcreteSum(compid, beginTime, endTime);
         if (vehicleWorkloadDetailVOS != null) {
@@ -1344,7 +1351,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     cal.setTime(time);
                     cal.add(Calendar.DATE, -1);
                     beginTime = sdf.format(cal.getTime()).substring(0, 10) + " " + queryTime.getQueryStartTime();
-
                 }
             } catch (ParseException e) {
                 e.printStackTrace();

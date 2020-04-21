@@ -65,9 +65,8 @@ public class ConcreteServiceImpl implements ConcreteService {
         for (ConcreteVO c : vehicleWorkloadSummaryVOS) {
 
             //生产方量从生产消耗表中查询，不从小票表中查询，因为小票中生产方量不准确。
-            String produceBeginTime = c.getSendTime() + " 00:00:00";
-            String produceEndTime = c.getSendTime() + " 23:59:59";
-            BigDecimal productConcrete = concreteMapper.getProductConcreteByTaskId(compid, c.getTaskId(), produceBeginTime, produceEndTime);
+            BigDecimal productConcrete = concreteMapper.getProductConcreteByTaskId(compid, c.getTaskId(),
+                    beginTime, endTime);
             c.setProduceNum("0.00");
             if (productConcrete != null) {
                 c.setProduceNum(productConcrete.toString());
