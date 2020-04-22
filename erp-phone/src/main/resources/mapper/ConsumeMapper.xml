@@ -88,7 +88,7 @@
     <select id="getErrorProductList" resultType="com.hntxrj.txerp.vo.PlatelngredientsVO">
         select top ${pageSize} *
         from (select row_number()
-                     over(order by ProduceTime desc) as rownumber,
+        over(order by ProduceTime desc) as rownumber,
         pc.StirId,pc.ProduceTime,pc.VehicleID,pc.StgId,pc.TaskId,tp.Placing,pc.PanCode,pc.PanNum as qty,
         sum(pc.MatV1) as MatV1,sum(pc.MatV2) as MatV2,sum(pc.MatV3) as MatV3,
         sum(pc.MatV4) as MatV4,sum(pc.MatV5) as MatV5,sum(pc.MatV6) as MatV6,
@@ -264,82 +264,82 @@
     </select>
 
     <!--原材料统计汇总(新版本)-->
-        <select id="getProductionConsumptionDetails" resultType="com.hntxrj.txerp.vo.RawCollectVO">
-            select isnull(sum(pc.PanNum), 0) as qty,
-            isnull(sum(pc.MatV1), 0)
-            as MatV1,
-            isnull(sum(pc.MatV2), 0)  as MatV2,
-            isnull(sum(pc.MatV3), 0)  as MatV3,
-            isnull(sum(pc.MatV4), 0)  as MatV4,
-            isnull(sum(pc.MatV5), 0)  as MatV5,
-            isnull(sum(pc.MatV6), 0)  as MatV6,
-            isnull(sum(pc.MatV7), 0)  as MatV7,
-            isnull(sum(pc.MatV8), 0)  as MatV8,
-            isnull(sum(pc.MatV9), 0)  as MatV9,
-            isnull(sum(pc.MatV10), 0) as MatV10,
-            isnull(sum(pc.MatV11), 0) as
-            MatV11,
-            isnull(sum(pc.MatV12), 0) as MatV12,
-            isnull(sum(pc.MatV13), 0) as MatV13,
-            isnull(sum(pc.MatV14), 0) as MatV14,
-            isnull(sum(pc.MatV15), 0) as MatV15,
-            isnull(sum(pc.MatV16), 0) as
-            MatV16,
-            isnull(sum(pc.MatV17), 0) as MatV17,
-            isnull(sum(pc.MatV18), 0) as MatV18,
-            isnull(sum(pc.MatV19), 0) as MatV19,
-            isnull(sum(pc.MatV20), 0) as MatV20,
-            isnull(sum(pc.MatV21), 0) as MatV21,
-            isnull(sum(pc.MatV22), 0) as
-            MatV22,
-            isnull(sum(pc.MatV23), 0) as MatV23,
-            isnull(sum(pc.MatL1), 0)  as MatL1,
-            isnull(sum(pc.MatL2), 0)  as MatL2,
-            isnull(sum(pc.MatL3), 0)  as MatL3,
-            isnull(sum(pc.MatL4), 0)  as MatL4,
-            isnull(sum(pc.MatL5), 0)  as
-            MatL5,
-            isnull(sum(pc.MatL6), 0)  as MatL6,
-            isnull(sum(pc.MatL7), 0)  as MatL7,
-            isnull(sum(pc.MatL8), 0)  as MatL8,
-            isnull(sum(pc.MatL9), 0)  as MatL9,
-            isnull(sum(pc.MatL10), 0) as MatL10,
-            isnull(sum(pc.MatL11), 0) as MatL11,
-            isnull(sum(pc.MatL12), 0)
-            as MatL12,
-            isnull(sum(pc.MatL13), 0) as MatL13,
-            isnull(sum(pc.MatL14), 0) as MatL14,
-            isnull(sum(pc.MatL15), 0) as MatL15,
-            isnull(sum(pc.MatL16), 0) as MatL16,
-            isnull(sum(pc.MatL17), 0) as
-            MatL17,
-            isnull(sum(pc.MatL18), 0) as MatL18,
-            isnull(sum(pc.MatL19), 0) as MatL19,
-            isnull(sum(pc.MatL20), 0) as MatL20,
-            isnull(sum(pc.MatL21), 0) as MatL21,
-            isnull(sum(pc.MatL22), 0) as MatL22,
-            isnull(sum(pc.MatL23), 0) as MatL23
-            from PT_ProduceConsume pc
-            where pc.compid = #{compid}
-            <if test="taskId != null and taskId!='' ">
-                and pc.taskId like '%'+#{taskId}+'%'
-            </if>
+    <select id="getProductionConsumptionDetails" resultType="com.hntxrj.txerp.vo.RawCollectVO">
+        select isnull(sum(pc.PanNum), 0) as qty,
+        isnull(sum(pc.MatV1), 0)
+        as MatV1,
+        isnull(sum(pc.MatV2), 0) as MatV2,
+        isnull(sum(pc.MatV3), 0) as MatV3,
+        isnull(sum(pc.MatV4), 0) as MatV4,
+        isnull(sum(pc.MatV5), 0) as MatV5,
+        isnull(sum(pc.MatV6), 0) as MatV6,
+        isnull(sum(pc.MatV7), 0) as MatV7,
+        isnull(sum(pc.MatV8), 0) as MatV8,
+        isnull(sum(pc.MatV9), 0) as MatV9,
+        isnull(sum(pc.MatV10), 0) as MatV10,
+        isnull(sum(pc.MatV11), 0) as
+        MatV11,
+        isnull(sum(pc.MatV12), 0) as MatV12,
+        isnull(sum(pc.MatV13), 0) as MatV13,
+        isnull(sum(pc.MatV14), 0) as MatV14,
+        isnull(sum(pc.MatV15), 0) as MatV15,
+        isnull(sum(pc.MatV16), 0) as
+        MatV16,
+        isnull(sum(pc.MatV17), 0) as MatV17,
+        isnull(sum(pc.MatV18), 0) as MatV18,
+        isnull(sum(pc.MatV19), 0) as MatV19,
+        isnull(sum(pc.MatV20), 0) as MatV20,
+        isnull(sum(pc.MatV21), 0) as MatV21,
+        isnull(sum(pc.MatV22), 0) as
+        MatV22,
+        isnull(sum(pc.MatV23), 0) as MatV23,
+        isnull(sum(pc.MatL1), 0) as MatL1,
+        isnull(sum(pc.MatL2), 0) as MatL2,
+        isnull(sum(pc.MatL3), 0) as MatL3,
+        isnull(sum(pc.MatL4), 0) as MatL4,
+        isnull(sum(pc.MatL5), 0) as
+        MatL5,
+        isnull(sum(pc.MatL6), 0) as MatL6,
+        isnull(sum(pc.MatL7), 0) as MatL7,
+        isnull(sum(pc.MatL8), 0) as MatL8,
+        isnull(sum(pc.MatL9), 0) as MatL9,
+        isnull(sum(pc.MatL10), 0) as MatL10,
+        isnull(sum(pc.MatL11), 0) as MatL11,
+        isnull(sum(pc.MatL12), 0)
+        as MatL12,
+        isnull(sum(pc.MatL13), 0) as MatL13,
+        isnull(sum(pc.MatL14), 0) as MatL14,
+        isnull(sum(pc.MatL15), 0) as MatL15,
+        isnull(sum(pc.MatL16), 0) as MatL16,
+        isnull(sum(pc.MatL17), 0) as
+        MatL17,
+        isnull(sum(pc.MatL18), 0) as MatL18,
+        isnull(sum(pc.MatL19), 0) as MatL19,
+        isnull(sum(pc.MatL20), 0) as MatL20,
+        isnull(sum(pc.MatL21), 0) as MatL21,
+        isnull(sum(pc.MatL22), 0) as MatL22,
+        isnull(sum(pc.MatL23), 0) as MatL23
+        from PT_ProduceConsume pc
+        where pc.compid = #{compid}
+        <if test="taskId != null and taskId!='' ">
+            and pc.taskId like '%'+#{taskId}+'%'
+        </if>
 
-            <if test="stirId != null and stirId!='' ">
-                and pc.stirId like '%'+#{stirId}+'%'
-            </if>
+        <if test="stirId != null and stirId!='' ">
+            and pc.stirId like '%'+#{stirId}+'%'
+        </if>
 
-            <if test="stgId != null and stgId!=''">
-                and pc.StgId like '%'+#{stgId}+'%'
-            </if>
+        <if test="stgId != null and stgId!=''">
+            and pc.StgId like '%'+#{stgId}+'%'
+        </if>
 
-            <if test="vehicleId != null and vehicleId!=''">
-                and pc.VehicleId like '%'+#{vehicleId}+'%'
-            </if>
-            <if test="beginTime != null and endTime != null">
-                and pc.produceTime between #{beginTime} and #{endTime}
-            </if>
-        </select>
+        <if test="vehicleId != null and vehicleId!=''">
+            and pc.VehicleId like '%'+#{vehicleId}+'%'
+        </if>
+        <if test="beginTime != null and endTime != null">
+            and pc.produceTime between #{beginTime} and #{endTime}
+        </if>
+    </select>
 
 
     <!--生产消耗汇总合计汇总-->
@@ -369,22 +369,45 @@
     <select id="getProductDatail" resultType="com.hntxrj.txerp.vo.StockVO">
         select mp.StkCode, mp.Sto_Name,mm.MatCode,mm.MatName,mm.MatParent
         from MP_Stock mp
-         left join  MP_MaterialInfor mm on mp.compid =mm.compid and mp.MatCode =mm.MatCode
+        left join MP_MaterialInfor mm on mp.compid =mm.compid and mp.MatCode =mm.MatCode
         where mp.compid = #{compid}
         <if test="stirId != null ">
-          and mp.StirId = #{stirId}
+            and mp.StirId = #{stirId}
         </if>
-          and mp.RecStatus = 1
+        and mp.RecStatus = 1
         order by mp.OderBy
     </select>
 
 
     <!--超差盘数-->
-    <select id="getErrorPan" resultType="com.hntxrj.txerp.entity.ProductConsume">
-        select * from PT_ProduceConsume where compid=#{compid}
-        <if test="beginTime != null and endTime != null">
-            and produceTime between #{beginTime} and #{endTime}
-        </if>
+    <select id="getErrorPan" resultType="java.lang.Integer">
+        select count(*) from PT_ProduceConsume
+        where (
+              isnull(ABS(MatV1-MatL1)/nullif(MatV1,0),0)>0.02
+              or isnull(ABS(MatV2-MatL2)/nullif(MatV2,0),0)>0.02
+              or isnull(ABS(MatV3-MatL3)/nullif(MatV3,0),0)>0.02
+              or isnull(ABS(MatV4-MatL4)/nullif(MatV4,0),0)>0.02
+              or isnull(ABS(MatV5-MatL5)/nullif(MatV5,0),0)>0.02
+              or isnull(ABS(MatV6-MatL6)/nullif(MatV6,0),0)>0.01
+              or isnull(ABS(MatV7-MatL7)/nullif(MatV7,0),0)>0.01
+              or isnull(ABS(MatV8-MatL8)/nullif(MatV8,0),0)>0.01
+              or isnull(ABS(MatV9-MatL9)/nullif(MatV9,0),0)>0.01
+              or isnull(ABS(MatV10-MatL10)/nullif(MatV10,0),0)>0.01
+              or isnull(ABS(MatV11-MatL11)/nullif(MatV11,0),0)>0.01
+              or isnull(ABS(MatV12-MatL12)/nullif(MatV12,0),0)>0.01
+              or isnull(ABS(MatV13-MatL13)/nullif(MatV13,0),0)>0.01
+              or isnull(ABS(MatV14-MatL14)/nullif(MatV14,0),0)>0.01
+              or isnull(ABS(MatV15-MatL15)/nullif(MatV15,0),0)>0.01
+              or isnull(ABS(MatV16-MatL16)/nullif(MatV16,0),0)>0.01
+              or isnull(ABS(MatV17-MatL17)/nullif(MatV17,0),0)>0.01
+              or isnull(ABS(MatV18-MatL18)/nullif(MatV18,0),0)>0.01
+              or isnull(ABS(MatV19-MatL19)/nullif(MatV19,0),0)>0.01
+              or isnull(ABS(MatV20-MatL20)/nullif(MatV20,0),0)>0.01
+              or isnull(ABS(MatV21-MatL21)/nullif(MatV21,0),0)>0.01
+              or isnull(ABS(MatV22-MatL22)/nullif(MatV22,0),0)>0.01
+              or isnull(ABS(MatV23-MatL23)/nullif(MatV23,0),0)>0.01
+          )
+  and compid=#{compid} and  produceTime between #{beginTime} and #{endTime}
     </select>
 
 </mapper>

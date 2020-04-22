@@ -137,7 +137,7 @@ public interface ConsumeMapper {
      * @param beginTime 　开始时间
      * @param endTime   　结束时间
      */
-    List<ProductConsume> getErrorPan(String compid, String beginTime, String endTime);
+    Integer getErrorPan(String compid, String beginTime, String endTime);
 
     /**
      * 标号消耗汇总柱状图

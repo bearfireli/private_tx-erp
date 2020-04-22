@@ -32,20 +32,21 @@ public class ConsumeServiceImpl implements ConsumeService {
 
     /**
      * 生产消耗汇总
-     * @param mark  状态
-     * @param compid 企业
-     * @param currPage 当企业
-     * @param pageSize 页长度
-     * @param vehicleID 车号
-     * @param stirId 线号
-     * @param taskId 任务单好
-     * @param stgId 砼标号
-     * @param empName  操作员
-     * @param placing 浇筑部位
-     * @param eppName  工程名称
+     *
+     * @param mark             状态
+     * @param compid           企业
+     * @param currPage         当企业
+     * @param pageSize         页长度
+     * @param vehicleID        车号
+     * @param stirId           线号
+     * @param taskId           任务单好
+     * @param stgId            砼标号
+     * @param empName          操作员
+     * @param placing          浇筑部位
+     * @param eppName          工程名称
      * @param builderShortName 施工单位简称
-     * @param openTime 查询时间
-     * @param overTime 救赎时间
+     * @param openTime         查询时间
+     * @param overTime         救赎时间
      * @return json
      */
     @Override
@@ -65,19 +66,19 @@ public class ConsumeServiceImpl implements ConsumeService {
     /**
      * 生产消耗汇总 list  一次执行3个
      *
-     * @param compid          企业
-     * @param currPage        当企业
-     * @param pageSize        页长度
-     * @param vehicleID       车号
-     * @param stirId          线号
-     * @param taskId          任务单好
-     * @param stgId           砼标号
-     * @param empName         操作员
-     * @param placing         浇筑部位
-     * @param eppName         工程名称
+     * @param compid           企业
+     * @param currPage         当企业
+     * @param pageSize         页长度
+     * @param vehicleID        车号
+     * @param stirId           线号
+     * @param taskId           任务单好
+     * @param stgId            砼标号
+     * @param empName          操作员
+     * @param placing          浇筑部位
+     * @param eppName          工程名称
      * @param builderShortName 施工单位简称
-     * @param openTime        查询时间
-     * @param overTime        救赎时间
+     * @param openTime         查询时间
+     * @param overTime         救赎时间
      * @return json
      */
     @Override
@@ -329,7 +330,7 @@ public class ConsumeServiceImpl implements ConsumeService {
      * 查询生产材料详细名称
      *
      * @param compid 企业id
-     * @param stirId  线号
+     * @param stirId 线号
      * @return 查询材料名
      */
     @Override
@@ -343,153 +344,7 @@ public class ConsumeServiceImpl implements ConsumeService {
 
     @Override
     public Integer getErrorPan(String compid, String beginTime, String endTime) {
-        Integer panValue = 0;
-        List<ProductConsume> productConsumeList = consumeMapper.getErrorPan(compid, beginTime, endTime);
-        for (ProductConsume productConsume : productConsumeList) {
-            if (productConsume.getMatV1().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV1(),
-                    productConsume.getMatL1(), new BigDecimal("0.02"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV2().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV2(),
-                    productConsume.getMatL2(), new BigDecimal("0.02"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV3().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV3(),
-                    productConsume.getMatL3(), new BigDecimal("0.02"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV4().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV4(),
-                    productConsume.getMatL4(), new BigDecimal("0.02"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV5().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV5(),
-                    productConsume.getMatL5(), new BigDecimal("0.02"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV6().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV6(),
-                    productConsume.getMatL6(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV7().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV7(),
-                    productConsume.getMatL7(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV8().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV8(),
-                    productConsume.getMatL8(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV9().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV9(),
-                    productConsume.getMatL9(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV10().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV10(),
-                    productConsume.getMatL10(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV11().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV11(),
-                    productConsume.getMatL11(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV12().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV12(),
-                    productConsume.getMatL12(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV13().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV13(),
-                    productConsume.getMatL13(), new BigDecimal("0.01"))) {
-
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV14().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV14(),
-                    productConsume.getMatL14(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV15().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV15(),
-                    productConsume.getMatL15(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV16().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV16(),
-                    productConsume.getMatL16(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV17().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV17(),
-                    productConsume.getMatL17(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV18().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV18(),
-                    productConsume.getMatL18(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV19().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV19(),
-                    productConsume.getMatL19(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV20().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV20(),
-                    productConsume.getMatL20(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-            }
-            if (productConsume.getMatV21().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV21(),
-                    productConsume.getMatL21(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV22().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV22(),
-                    productConsume.getMatL22(), new BigDecimal("0.01"))) {
-                panValue++;
-                continue;
-
-            }
-            if (productConsume.getMatV23().compareTo(BigDecimal.ZERO) != 0 && outRange(productConsume.getMatV23(),
-                    productConsume.getMatL23(), new BigDecimal("0.01"))) {
-                panValue++;
-            }
-
-        }
-
-        return panValue;
-    }
-
-
-    //判断生产的理论用料和实际用料的误差是否超过规定误差，即超差生产
-    private boolean outRange(BigDecimal theory, BigDecimal actual, BigDecimal standard) {
-
-        //获得理论值和实际值的差值
-        BigDecimal subtract = theory.subtract(actual);
-        //获得差值占理论值的比重
-        BigDecimal divide = subtract.divide(theory, 3, RoundingMode.HALF_UP);
-        //获得差值所占百分比的绝对值
-        BigDecimal percentage = divide.abs();
-
-
-        return percentage.compareTo(standard) > 0;
+        return consumeMapper.getErrorPan(compid, beginTime, endTime);
     }
 
     private List<RawCollectVO> changeUnit(List<RawCollectVO> rawCollectVOS) {
