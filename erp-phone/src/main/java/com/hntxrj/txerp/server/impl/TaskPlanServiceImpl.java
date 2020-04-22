@@ -888,94 +888,46 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
     @Override
     public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type) {
+        //从系统变量表查询用户设置的查询首页生产方量的查询方式（是按照派车时间查询还是出场时间查询）
+        //quantityQueryType的值---0:按照派车时间查询;1:按照出场时间查询
+        Integer quantityQueryType = systemVarInitMapper.getQuantityQueryType(compid);
+        if (quantityQueryType == null) {
+            quantityQueryType = 0;
+        }
         //根据传递过来的type，判断查询的是今日，昨日还是本月的方量。
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-
         String _tmpMo = endTime.substring(5, 7);
         if ("13".equals(_tmpMo)) {
             int year = Integer.parseInt(endTime.substring(0, 4));
             endTime = endTime.replace(year + "-13", (year + 1) + "-01");
         }
-
+        //查询本月方量
         if (type == 3) {
             int queryType = 2;
             QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
-            if (queryTime != null) {
-                endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
-                beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
-                String dateTime = sdf.format(new Date());
-                DateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-                try {
-                    //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
-                    Date begin = fmt.parse(beginTime.substring(0, 10).replaceAll("-", ""));
-                    Date date = fmt.parse(dateTime.replaceAll("-", ""));
-                    //判断开始时间和结束时间是否相同,
-                    //返回1:begin大于end;
-                    //返回0:begin等于end;
-                    //返回-1:begin小于end
-                    if (begin.compareTo(date) > 0) {
-                        //说明开始时间大于当前时间，需要把开始时间和结束时间减一个月。
-                        Date time = null;
-                        try {
-                            time = sdf.parse(beginTime);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        endTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
-                        Calendar cal = Calendar.getInstance();
-                        assert time != null;
-                        cal.setTime(time);
-                        cal.add(Calendar.MONTH, -1);
-                        beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                endTime = endTime.substring(0, 8) + "01 00:00:00";
-                beginTime = beginTime.substring(0, 8) + "01 00:00:01";
-            }
-        } else {
-            //拼接时间
-            if (type == 1) {
-                int queryType = 6;
-                QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
-                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                if (queryTime != null) {
-                    beginTime = beginTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
-                } else {
-                    beginTime = beginTime.substring(0, 10) + " 00:00:00";
-                }
-                endTime = sdf1.format(new Date());
-            }
-            if (type == 2) {
-                int queryType = 6;
-                QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
-                endTime = endTime.substring(0, 10);
-                beginTime = beginTime.substring(0, 10);
-                try {
-                    Date date = sdf.parse(beginTime);
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(date);
-                    cal.add(Calendar.DATE, -1);
-                    if (queryTime != null) {
-                        beginTime = sdf.format(cal.getTime()) + " " + queryTime.getQueryStartTime();
-                        endTime = endTime + " " + queryTime.getQueryStartTime();
-                    } else {
-                        beginTime = sdf.format(cal.getTime()) + " " + "00:00:00";
-                        endTime = endTime.substring(0, 10) + " " + "00:00:00";
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
+            //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
+            Map<String, String> monthTimeMap = getMonthTime(beginTime, endTime, queryTime);
+            beginTime = monthTimeMap.get("beginTime");
+            endTime = monthTimeMap.get("endTime");
+        } else if (type == 1) {
+            int queryType = 6;
+            QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
+            //拼接开始时间和结束时间
+            Map<String, String> todayTime = getTodayTime(beginTime, queryTime);
+            beginTime = todayTime.get("beginTime");
+            endTime = todayTime.get("endTime");
+        } else if (type == 2) {
+            int queryType = 6;
+            QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
+            //拼接开始时间和结束时间
+            Map<String, String> yesterdayTime = getYesterdayTime(beginTime, endTime, queryTime);
+            beginTime = yesterdayTime.get("beginTime");
+            endTime = yesterdayTime.get("endTime");
         }
-        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime, endTime);
 
+        SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime,
+                endTime,quantityQueryType);
         //根据compid、beginTime、endTime从生产消耗表中查询出生产方量。
         BigDecimal productNum = concreteMapper.getProductConcreteSum(compid, beginTime, endTime);
-
         if (vehicleWorkloadDetailVOS != null) {
             vehicleWorkloadDetailVOS.setSale_num(vehicleWorkloadDetailVOS.getSaleNum());
             if (productNum != null) {
@@ -984,7 +936,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 vehicleWorkloadDetailVOS.setProduce_num(0);
             }
         }
-
         return vehicleWorkloadDetailVOS;
     }
 
@@ -1314,6 +1265,154 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         dirverLEDListVO.setCars(dispatchVehicles);
         dirverLEDListVO.setCarNum(0);
         driverLEDMap.put(String.valueOf(status), dirverLEDListVO);
+    }
+
+    //首页查询本月方量时拼接开始时间和结束时间
+    public Map<String, String> getMonthTime(String beginTime, String endTime,
+                                            QueryTimeSetVO queryTime) {
+        Map<String, String> map = new HashMap<>();
+        DateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateTime = sdf.format(new Date());
+        if (queryTime != null
+                //如果用户设置的查询时间小于1号，大于28号，则按照默认时间1号到下个月1号
+                && Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) >= 1
+                && Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) <= 28
+                && Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) >= 1
+                && Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) <= 28) {
+            endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
+            beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+            //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
+            Date begin;
+            Date date;
+            try {
+                begin = fmt.parse(beginTime.substring(0, 10).replaceAll("-", ""));
+                date = fmt.parse(dateTime.replaceAll("-", ""));
+                //判断开始时间和结束时间是否相同,
+                //返回1:begin大于end;
+                //返回0:begin等于end;
+                //返回-1:begin小于end
+                if (begin.compareTo(date) > 0) {
+                    //说明开始时间大于当前时间，需要把开始时间和结束时间减一个月。
+                    Date time = null;
+                    try {
+                        time = sdf.parse(beginTime);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    endTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                    Calendar cal = Calendar.getInstance();
+                    assert time != null;
+                    cal.setTime(time);
+                    cal.add(Calendar.MONTH, -1);
+                    beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            endTime = endTime.substring(0, 8) + "01 00:00:00";
+            beginTime = beginTime.substring(0, 8) + "01 00:00:00";
+        }
+        map.put("beginTime", beginTime);
+        map.put("endTime", endTime);
+        return map;
+    }
+
+    //首页查询今日方量时拼接开始时间和结束时间
+    public Map<String, String> getTodayTime(String beginTime,
+                                            QueryTimeSetVO queryTime) {
+        Map<String, String> map = new HashMap<>();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat fmt = new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateTime = sdf1.format(new Date());
+        if (queryTime != null) {
+            beginTime = beginTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
+            try {
+                //判断设置的时间与当前时间对比
+                String regex = "(-? ?:?)";
+                Date begin = fmt.parse(beginTime.replaceAll(regex, ""));
+                Date date = fmt.parse(dateTime.replaceAll(regex, ""));
+                //判断开始时间和结束时间是否相同,
+                //返回1:begin大于end;
+                //返回0:begin等于end;
+                //返回-1:begin小于end
+                if (begin.compareTo(date) > 0) {
+                    //说明开始时间大于当前时间，需要把开始时间和结束时间减一个天。
+                    Date time = null;
+                    try {
+                        time = sdf.parse(beginTime);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Calendar cal = Calendar.getInstance();
+                    assert time != null;
+                    cal.setTime(time);
+                    cal.add(Calendar.DATE, -1);
+                    beginTime = sdf.format(cal.getTime()).substring(0, 10) + " " + queryTime.getQueryStartTime();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            beginTime = beginTime.substring(0, 10) + " 00:00:00";
+        }
+        map.put("beginTime", beginTime);
+        map.put("endTime", sdf1.format(new Date()));
+        return map;
+    }
+
+    //首页查询昨日方量时拼接开始时间和结束时间
+    public Map<String, String> getYesterdayTime(String beginTime, String endTime,
+                                                QueryTimeSetVO queryTime) {
+        Map<String, String> map = new HashMap<>();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        endTime = endTime.substring(0, 10);
+        beginTime = beginTime.substring(0, 10);
+        String dateTime = sdf1.format(new Date());
+        DateFormat fmt = new SimpleDateFormat("yyyyMMddHHmmss");
+        try {
+            Date date = sdf.parse(beginTime);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.add(Calendar.DATE, -1);
+            if (queryTime != null) {
+                beginTime = sdf.format(cal.getTime()) + " " + queryTime.getQueryStartTime();
+                endTime = endTime + " " + queryTime.getQueryStartTime();
+                //判断设置的时间与当前时间对比，如果为超过，计算昨天时间，如果超过计算当当天时间
+                String regex = "(-? ?:?)";
+                Date begin = fmt.parse(endTime.replaceAll(regex, ""));
+                Date dates = fmt.parse(dateTime.replaceAll(regex, ""));
+                //判断开始时间和结束时间是否相同,
+                //返回1:begin大于end;
+                //返回0:begin等于end;
+                //返回-1:begin小于end
+                if (begin.compareTo(dates) > 0) {
+                    //说明开始时间大于当前时间，需要把开始时间和结束时间减一天。
+                    Date time = null;
+                    try {
+                        time = sdf.parse(beginTime);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    assert time != null;
+                    cal.setTime(time);
+                    cal.add(Calendar.DATE, -1);
+                    endTime = beginTime;
+                    beginTime = sdf.format(cal.getTime()).substring(0, 10) + " " + queryTime.getQueryStartTime();
+                }
+            } else {
+                beginTime = sdf.format(cal.getTime()) + " " + "00:00:00";
+                endTime = endTime.substring(0, 10) + " " + "00:00:00";
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        map.put("beginTime", beginTime);
+        map.put("endTime", endTime);
+        return map;
     }
 
 
