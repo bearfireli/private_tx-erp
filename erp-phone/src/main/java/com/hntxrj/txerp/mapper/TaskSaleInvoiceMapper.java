@@ -26,7 +26,7 @@ public interface TaskSaleInvoiceMapper {
      */
     List<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(String invoiceId, String compid, String beginTime, String endTime,
                                                        String eppCode, Byte upStatus, String builderCode,
-                                                       String taskId, String placing, String taskStatus,Integer type);
+                                                       String taskId, String placing, String taskStatus, Integer type);
 
     /**
      * 获取小票需求
@@ -66,5 +66,5 @@ public interface TaskSaleInvoiceMapper {
      */
     TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String id, String compid, String beginTime, String endTime,
                                                    String eppCode, Byte upStatus, String builderCode,
-                                                   String taskId, String placing, String taskStatus,Integer type);
+                                                   String taskId, String placing, String taskStatus, Integer type);
 }

@@ -201,7 +201,7 @@ public class TaskPlanApi {
     @PostMapping("/getTaskSaleInvoiceList")
     public ResultVO getTaskSaleInvoiceList(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
                                            Byte upStatus, String builderCode, String taskId, String placing,
-                                           String taskStatus, Integer type,@RequestParam(defaultValue = "1") Integer page,
+                                           String taskStatus, Integer type, @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(id, compid,
@@ -209,7 +209,7 @@ public class TaskPlanApi {
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 //upStatus属性老版本查询所有签收状态传的参数是-1，新版本传递的是null.兼顾新老版本，所以判断两次
                 eppCode, upStatus == null ? null : (upStatus == -1 ? null : upStatus), builderCode, taskId,
-                placing, taskStatus,type, page, pageSize));
+                placing, taskStatus, type, page, pageSize));
     }
 
 
@@ -231,12 +231,12 @@ public class TaskPlanApi {
     @PostMapping("/getTaskSaleInvoiceCount")
     public ResultVO getTaskSaleInvoiceCount(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
                                             Byte upStatus, String builderCode, String taskId,
-                                            String placing, String taskStatus,Integer type) {
+                                            String placing, String taskStatus, Integer type) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceCount(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
-                eppCode, upStatus, builderCode, taskId, placing, taskStatus,type));
+                eppCode, upStatus, builderCode, taskId, placing, taskStatus, type));
     }
 
     /**
