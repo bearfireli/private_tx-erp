@@ -10,6 +10,6 @@
     <select id="getQuantityQueryType" resultType="java.lang.Integer">
         select VarValue
         from De_SystemVarInit
-        where compid=#{compid} and  SystemVar='quantityQueryType'
+        where compid=#{compid} and  SystemVar='SalesStatisticTimeMode'
     </select>
 </mapper>
