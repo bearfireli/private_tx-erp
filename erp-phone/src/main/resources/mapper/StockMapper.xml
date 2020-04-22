@@ -101,7 +101,7 @@
     </select>
     <select id="getStockByComId" resultType="com.hntxrj.txerp.vo.StockVO">
         select
-        ms.StkCode,ms.Sto_Name,StirId as stirId
+        ms.StkCode,ms.Sto_Name,StirId as stirId,ms.Sto_Curqty  as stoCurqty
         from MP_Stock ms
         where ms.compid=#{compid}
         <if test="searchWords!=null and searchWords!=''">
@@ -110,7 +110,7 @@
         order by StirId
     </select>
     <select id="getStockCheck" resultType="com.hntxrj.txerp.vo.StockInCheckVO">
-       select convert(varchar(10),t2.StirId)  + '->'+t2.Sto_Name as stoName,
+       select convert(varchar(10),t2.StirId)  + '->'+t2.Sto_Name +'['+convert(varchar(32),t2.Sto_Curqty) +']'  as stoName ,
            t1.stICode,
            t1.isPassOrNot,
            t1.PicturePath,
