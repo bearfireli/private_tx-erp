@@ -606,7 +606,7 @@ public class StockInServerImpl implements StockInServer {
         PageVO<StockVO> pageVO = new PageVO<>();
         List<StockVO> stockVOList = stockInWeighmatNsMapper.getStockByComId(compid, searchWords);
         for (StockVO stockVO : stockVOList) {
-            stockVO.setStoName(stockVO.getStirId() + "->" + stockVO.getStoName());
+            stockVO.setStoName(stockVO.getStirId() + "->" + stockVO.getStoName()+"["+stockVO.getStoCurQty()+"]");
         }
         PageInfo<StockVO> pageInfo = new PageInfo<>(stockVOList);
         pageVO.format(pageInfo);
