@@ -21,11 +21,12 @@ public interface TaskSaleInvoiceMapper {
      * @param builderCode 施工单位代号
      * @param taskId      任务单id
      * @param placing     浇筑部位
+     * @param type        搜索时间类型：0表示派车时间；1表示出厂时间
      * @return 小票签收列表
      */
     List<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(String invoiceId, String compid, String beginTime, String endTime,
                                                        String eppCode, Byte upStatus, String builderCode,
-                                                       String taskId, String placing, String taskStatus);
+                                                       String taskId, String placing, String taskStatus,Integer type);
 
     /**
      * 获取小票需求
@@ -65,5 +66,5 @@ public interface TaskSaleInvoiceMapper {
      */
     TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String id, String compid, String beginTime, String endTime,
                                                    String eppCode, Byte upStatus, String builderCode,
-                                                   String taskId, String placing, String taskStatus);
+                                                   String taskId, String placing, String taskStatus,Integer type);
 }

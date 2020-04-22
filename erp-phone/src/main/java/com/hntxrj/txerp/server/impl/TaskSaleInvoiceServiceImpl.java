@@ -30,11 +30,11 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
     public PageVO<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(Integer invoiceId, String compid, String beginTime,
                                                                 String endTime, String eppCode, Byte upStatus,
                                                                 String builderCode, String taskId, String placing,
-                                                                String taskStatus, Integer page, Integer pageSize) {
+                                                                String taskStatus,Integer type, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize, "SendTime desc");
         List<TaskSaleInvoiceListVO> taskSaleInvoiceLists =
                 taskSaleInvoiceMapper.getTaskSaleInvoiceList(invoiceId == null ? null : String.valueOf(invoiceId),
-                        compid, beginTime, endTime, eppCode, upStatus, builderCode, taskId, placing, taskStatus);
+                        compid, beginTime, endTime, eppCode, upStatus, builderCode, taskId, placing, taskStatus,type);
         PageInfo<TaskSaleInvoiceListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
         PageVO<TaskSaleInvoiceListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -92,8 +92,8 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
     @Override
     public TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(Integer id,String compid, String beginTime, String endTime,
                                                           String eppCode, Byte upStatus, String builderCode,
-                                                          String taskId, String placing, String taskStatus) {
-        return taskSaleInvoiceMapper.getTaskSaleInvoiceCount(id == null ? null : String.valueOf(id),compid, beginTime, endTime, eppCode, upStatus, builderCode,
-                taskId, placing, taskStatus);
+                                                          String taskId, String placing, String taskStatus,Integer type) {
+        return taskSaleInvoiceMapper.getTaskSaleInvoiceCount(id == null ? null : String.valueOf(id),compid, beginTime,
+                endTime, eppCode, upStatus, builderCode,taskId, placing, taskStatus,type);
     }
 }

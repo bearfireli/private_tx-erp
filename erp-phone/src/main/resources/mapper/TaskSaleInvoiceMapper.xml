@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.TaskSaleInvoiceMapper">
+<!--    type搜索时间类型：0表示派车时间；1表示出厂时间-->
     <select id="getTaskSaleInvoiceList" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceListVO">
         select tsi.ID,
         vv.VehicleStatus,
@@ -45,11 +46,22 @@
         <if test="invoiceId != null ">
             and tsi.ID like '%'+#{invoiceId}+'%'
         </if>
-        <if test="beginTime != null and beginTime != '' ">
-            and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+
+        <if test="type == 0">
+            <if test="beginTime != null and beginTime != '' ">
+                and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+            </if>
         </if>
-        <if test="endTime != null and endTime != '' ">
-            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+        <if test="type == 1">
+            <if test="beginTime != null and beginTime != '' ">
+                and tsi.Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
+            </if>
         </if>
         <if test="eppCode != null and eppCode != ''">
             and tp.EPPCode = #{eppCode}
@@ -140,7 +152,7 @@
           and id = #{id}
     </update>
 
-
+    <!--    type搜索时间类型：0表示派车时间；1表示出厂时间-->
     <select id="getTaskSaleInvoiceCount" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceCountVO">
         select sum(tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) saleNum,
         sum(NumberOfSignings) signNum
@@ -152,12 +164,25 @@
         <if test="id != null ">
             and tsi.ID like '%'+#{id}+'%'
         </if>
-        <if test="beginTime != null and beginTime != '' ">
-            and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+
+        <if test="type == 0">
+            <if test="beginTime != null and beginTime != '' ">
+                and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+            </if>
         </if>
-        <if test="endTime != null and endTime != '' ">
-            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+        <if test="type == 1">
+            <if test="beginTime != null and beginTime != '' ">
+                and tsi.Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
+            </if>
         </if>
+
+
         <if test="eppCode != null and eppCode != ''">
             and tp.EPPCode = #{eppCode}
         </if>
