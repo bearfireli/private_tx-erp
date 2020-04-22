@@ -900,6 +900,10 @@
     <delete id="deletePPCodeStatus">
         delete from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
     </delete>
+    <update id="deleteTaskPlan">
+        update PT_TaskPlan set  DeleteMark=1 ,UpDownMark=0
+        where compid=#{compid} and TaskId=#{taskId}
+    </update>
 
     <!--施工方App中查询任务单列表-->
     <select id="buildTaskPlanList" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">

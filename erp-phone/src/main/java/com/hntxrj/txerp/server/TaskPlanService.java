@@ -422,8 +422,8 @@ public interface TaskPlanService {
      * @return 任务单列表预计方量汇总
      */
     Map<String, BigDecimal> getBuildTaskPreCount(String beginTime, String endTime, String eppCode, String placing,
-                                             String taskId, Integer taskStatus,  Integer verifyStatus,
-                                             Integer buildId) throws ErpException;
+                                                 String taskId, Integer taskStatus, Integer verifyStatus,
+                                                 Integer buildId) throws ErpException;
 
     /**
      * 获取任务单预计方量汇总
@@ -446,10 +446,18 @@ public interface TaskPlanService {
     /**
      * 获取塌落度下拉
      *
-     * @param compid    企业id
-     * @param slump     塌落度
-     * @param page      页码
-     * @param pageSize  每页条数
+     * @param compid   企业id
+     * @param slump    塌落度
+     * @param page     页码
+     * @param pageSize 每页条数
      */
     PageVO<SlumpDropDownVO> getSlumpDropDown(String compid, String slump, Integer page, Integer pageSize);
+
+    /**
+     * 删除任务单
+     *
+     * @param compid 企业id
+     * @param taskId 任务单号
+     */
+    void deleteTaskPlan(String compid, String taskId) throws ErpException;
 }

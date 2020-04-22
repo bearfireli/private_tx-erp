@@ -925,7 +925,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
 
         SquareQuantityVO vehicleWorkloadDetailVOS = taskPlanMapper.getSquareQuantitySum(compid, beginTime,
-                endTime,quantityQueryType);
+                endTime, quantityQueryType);
         //根据compid、beginTime、endTime从生产消耗表中查询出生产方量。
         BigDecimal productNum = concreteMapper.getProductConcreteSum(compid, beginTime, endTime);
         if (vehicleWorkloadDetailVOS != null) {
@@ -1222,6 +1222,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         PageVO<SlumpDropDownVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+    @Override
+    public void deleteTaskPlan(String compid, String taskId) throws ErpException {
+        //判断一下任务单信息，如果是已经审核过的状态，则不能删除
+        TaskPlanVO taskPlanVO = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
+        assert taskPlanVO != null;
+        if (taskPlanVO.isVerifyStatus()) {
+            //说明任务单已经审核过，无法删除
+            throw new ErpException(ErrEumn.DELETE_TASK_ERROR);
+        }
+        taskPlanMapper.deleteTaskPlan(compid, taskId);
     }
 
     //任务单号拼接

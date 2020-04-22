@@ -436,4 +436,7 @@ public interface TaskPlanMapper {
      * @param slump  塌落度
      */
     List<SlumpDropDownVO> getSlumpDropDown(String compid, String slump);
+
+    //删除任务单
+    void deleteTaskPlan(String compid, String taskId);
 }
