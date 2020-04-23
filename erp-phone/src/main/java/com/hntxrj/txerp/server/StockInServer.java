@@ -225,6 +225,14 @@ public interface StockInServer {
                                          String stoName, String supName, String beginTime, String endTime, Integer page, Integer pageSize);
 
 
+    /**
+     * 手机erp首页查询原材料采购
+     *
+     * @param compid    企业代号
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param type      标识：type=1代表查询本月
+     */
     List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime,Integer type);
 
 

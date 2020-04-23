@@ -390,51 +390,86 @@ public class StockInServerImpl implements StockInServer {
         return pageVO;
     }
 
+    /**
+     * 手机erp首页查询原材料采购
+     *
+     * @param compid    企业代号
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param type      标识：type=1代表查询本月的原材料采购
+     *                  根据用户自定义时间查询本月的原材料采购，首先需要判断用户自定义设置的查询时间是否规范，其次用当前时间和用户
+     *                  设置的时间进行比较，决定是查上个月还是下个月。最后要注意判断用户设置的时间的天数放到上个月或者下个是否规范，
+     *                  比如，用户查询的是3月份的数据，设置的时间是30 08:00:00,当前是23号，所以应该查询从2月30号 08:00:00
+     *                  到3月30号08:00:00,但是2月没有30号，所以要重新判断。最终查询2月28号08:00:00到3月30号08:00:00
+     */
     @Override
     public List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime,
                                                             Integer type) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        //说明查询的是本月的原材料采购
-        if (type != null && type == 1) {
-            //用户自定义设置的查询时间对象 (queryCode=1,queryType=2,说明查询的是材料结算查询这个功能)
-            QueryTimeSetVO queryTime = publicInfoMapper.getSystemQueryTime(compid, 1, 2);
-            if (queryTime != null) {
+
+        if (type != 1) {
+            //查询的是今日或者昨日的原材料采购
+            return stockInWeighmatNsMapper.getWeightByMatParent(compid, beginTime, endTime);
+        }
+
+        //用户设置的查询时间对象（属性举例:queryStartTime:01 08:00:00,queryStopTime:01 08:00:00）
+        QueryTimeSetVO queryTime = publicInfoMapper.getSystemQueryTime(compid, 1, 2);
+
+        //获取当前月的最后一天
+        Calendar ca = Calendar.getInstance();
+        String lastDay = getLastDayOfMouth(ca);
+        int lastDayOfMonth = Integer.parseInt(lastDay);
+
+        //验证用户设置的查询时间是否符合规范
+        checkQueryTime(queryTime, lastDay, lastDayOfMonth);
+        endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
+        beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+
+        try {
+            //判断设置的时间与当前时间对比，如果当前日期（即几号）小于设置的日期（几号），从上个月开始查询。
+            // 反之，从下个月查询
+            String dateTime = sdf.format(new Date());
+            int nowDay = Integer.parseInt(dateTime.substring(8, 10));
+            int begin = Integer.parseInt(beginTime.substring(8, 10));
+            Date time;
+            if (begin > nowDay) {
+                //说明设置的开始时间大于当前时间，需要把开始时间减去一个月
+                time = sdf.parse(beginTime);
                 endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
-                beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
-                String dateTime = sdf.format(new Date());
-                try {
-                    //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
-                    Date begin = sdf.parse(beginTime.substring(0, 10));
-                    Date nowTime = sdf.parse(dateTime);
-                    //判断开始时间和结束时间是否相同,
-                    //返回1:begin大于end;
-                    //返回0:begin等于end;
-                    //返回-1:begin小于end;
-                    if (begin.compareTo(nowTime) > 0) {
-                        //说明开始时间大于当前时间，需要把开始时间和结束时间减一个月。
-                        Date time = null;
-                        try {
-                            time = sdf.parse(beginTime);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        endTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
-                        Calendar cal = Calendar.getInstance();
-                        assert time != null;
-                        cal.setTime(time);
-                        cal.add(Calendar.MONTH, -1);
-                        beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                Calendar cal = Calendar.getInstance();
+                assert time != null;
+                cal.setTime(time);
+                cal.add(Calendar.MONTH, -1);
+                beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
+
+                //获取上个月的最后日期的天数，如果用户设置的时间大于上个月最后一天，则用上个月的最后一天替代用户设置的时间
+                String lastMonthLastDay = getLastDayOfMouth(ca);
+                int lastDayOfLastMonth = Integer.parseInt(lastMonthLastDay);
+                if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) > lastDayOfLastMonth) {
+                    beginTime = sdf.format(cal.getTime()).substring(0, 8) + lastMonthLastDay +
+                            queryTime.getQueryStartTime().substring(2);
                 }
             } else {
-                endTime = endTime.substring(0, 8) + "01 00:00:00";
-                beginTime = beginTime.substring(0, 8) + "01 00:00:01";
+                //说明开始时间小于当前时间，需要把结束时间延长一个月
+                time = sdf.parse(endTime);
+                beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                Calendar cal = Calendar.getInstance();
+                assert time != null;
+                cal.setTime(time);
+                cal.add(Calendar.MONTH, 1);
+                endTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStopTime();
+                //获取下个月的最后日期的天数，如果用户设置的时间大于下个月最后一天，则用下个月的最后一天替代用户设置的时间
+                String nextMothLastDay = getLastDayOfMouth(ca);
+                int lastDayOfNextMonth = Integer.parseInt(nextMothLastDay);
+                if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) > lastDayOfNextMonth) {
+                    endTime = sdf.format(cal.getTime()).substring(0, 8) + nextMothLastDay +
+                            queryTime.getQueryStopTime().substring(2);
+                }
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        return stockInWeighmatNsMapper.getWeightByMatParent(compid,
-                beginTime, endTime);
+        return stockInWeighmatNsMapper.getWeightByMatParent(compid, beginTime, endTime);
     }
 
     @Override
@@ -606,7 +641,7 @@ public class StockInServerImpl implements StockInServer {
         PageVO<StockVO> pageVO = new PageVO<>();
         List<StockVO> stockVOList = stockInWeighmatNsMapper.getStockByComId(compid, searchWords);
         for (StockVO stockVO : stockVOList) {
-            stockVO.setStoName(stockVO.getStirId() + "->" + stockVO.getStoName()+"["+stockVO.getStoCurQty()+"]");
+            stockVO.setStoName(stockVO.getStirId() + "->" + stockVO.getStoName() + "[" + stockVO.getStoCurQty() + "]");
         }
         PageInfo<StockVO> pageInfo = new PageInfo<>(stockVOList);
         pageVO.format(pageInfo);
@@ -691,6 +726,32 @@ public class StockInServerImpl implements StockInServer {
             throw new ErpException(ErrEumn.MATERIAL_CHECK_ERROR);
         }
 
+    }
+
+    //获取每个月的最后一天
+    private String getLastDayOfMouth(Calendar ca) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return sdf.format(ca.getTime()).substring(8, 10);
+    }
+
+    // 验证用户自定义设置的查询原材料采购的时间是否规范
+    // 如果用户设置的时间日期小于1号，则用1号代替用户设置的时间日期，如果大于本月最后一天，则用本月最后一天代替
+    private QueryTimeSetVO checkQueryTime(QueryTimeSetVO queryTime, String lastDay, int lastDayOfMonth) {
+        if (Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) < 1) {
+            queryTime.setQueryStartTime("01" + queryTime.getQueryStartTime().substring(2));
+        }
+        if (Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) > lastDayOfMonth) {
+            queryTime.setQueryStartTime(lastDay + queryTime.getQueryStartTime().substring(2));
+        }
+        if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) < 1) {
+            queryTime.setQueryStopTime("01" + queryTime.getQueryStopTime().substring(2));
+        }
+        if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) > lastDayOfMonth) {
+            queryTime.setQueryStopTime(lastDay + queryTime.getQueryStopTime().substring(2));
+        }
+
+        return queryTime;
     }
 
 }

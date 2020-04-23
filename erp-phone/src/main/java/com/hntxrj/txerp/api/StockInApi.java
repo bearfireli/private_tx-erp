@@ -503,6 +503,14 @@ public class StockInApi {
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
     }
 
+    /**
+     * 手机erp首页查询原材料采购
+     *
+     * @param compid    企业代号
+     * @param beginTime 开始时间
+     * @param endTime   结束时间
+     * @param type      标识：type=1代表查询本月
+     */
     @PostMapping("/getWeightByMatParent")
     public ResultVO getWeightByMatParent(String compid,
                                          Long beginTime,
