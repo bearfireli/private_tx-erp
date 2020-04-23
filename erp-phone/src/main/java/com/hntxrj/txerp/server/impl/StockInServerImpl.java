@@ -394,18 +394,35 @@ public class StockInServerImpl implements StockInServer {
     public List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime,
                                                             Integer type) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
         //说明查询的是本月的原材料采购
         if (type != null && type == 1) {
             //用户自定义设置的查询时间对象 (queryCode=1,queryType=2,说明查询的是材料结算查询这个功能)
             QueryTimeSetVO queryTime = publicInfoMapper.getSystemQueryTime(compid, 1, 2);
+
+            //首先判断用户设置开始时间和结束时间是否合理，如果日期小于1号或者大于本月最后一天，用1号或者本月最后一天代替
+            //然后当前时间和用户设置的时间，确定是查询上个月，还是下个月的数据，最后根据拼接的时间进行查询
             if (queryTime != null
-                    //如果用户设置的查询时间小于1号，大于28号，则按照用户传递的默认查询时间查询
                     && Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) >= 1
-                    && Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) <= 28
-                    && Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) >= 1
-                    && Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) <= 28) {
+                    && Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) >= 1) {
                 endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
                 beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+
+                //获取当前月的最后一天
+                Calendar ca = Calendar.getInstance();
+                ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+                String lastDay = sdf.format(ca.getTime()).substring(8, 10);
+                int lastDayOfMonth = Integer.parseInt(lastDay);
+                //判断用户设定的开始时间和结束时间是否大于本月最后一天，如果大于，则用本月最后一天代替用户设置的时间
+                if (Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) > lastDayOfMonth) {
+                    queryTime.setQueryStartTime(lastDay + queryTime.getQueryStartTime().substring(2));
+                    beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                }
+                if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) > lastDayOfMonth) {
+                    queryTime.setQueryStopTime(lastDay + queryTime.getQueryStopTime().substring(2));
+                    endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
+                }
+
                 String dateTime = sdf.format(new Date());
                 try {
                     //判断设置的时间与当前时间对比，如果当前日期（即几号）小于设置的日期（几号），从上个月开始查询。
@@ -431,15 +448,13 @@ public class StockInServerImpl implements StockInServer {
                         cal.setTime(time);
                         cal.add(Calendar.MONTH, 1);
                         endTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStopTime();
-
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
         }
-        return stockInWeighmatNsMapper.getWeightByMatParent(compid,
-                beginTime, endTime);
+        return stockInWeighmatNsMapper.getWeightByMatParent(compid, beginTime, endTime);
     }
 
     @Override
