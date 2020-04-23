@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.TaskSaleInvoiceMapper">
-<!--    type搜索时间类型：0表示派车时间；1表示出厂时间-->
+    <!--    type搜索时间类型：0表示派车时间；1表示出厂时间-->
     <select id="getTaskSaleInvoiceList" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceListVO">
         select tsi.ID,
         vv.VehicleStatus,
@@ -27,7 +27,7 @@
         upStatus,
         vs.PI_TypeName VehicleStatusName,
         it.PI_TypeName invoiceTypeName,
-        tsi.Leave_STTime  leaveTime
+        tsi.Leave_STTime leaveTime
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
         left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
@@ -47,7 +47,7 @@
             and tsi.ID like '%'+#{invoiceId}+'%'
         </if>
 
-        <if test="type == 0">
+        <if test=" type == null or type == 0 ">
             <if test="beginTime != null and beginTime != '' ">
                 and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
             </if>
@@ -165,7 +165,7 @@
             and tsi.ID like '%'+#{id}+'%'
         </if>
 
-        <if test="type == 0">
+        <if test=" type==null or type == 0">
             <if test="beginTime != null and beginTime != '' ">
                 and tsi.SendTime  <![CDATA[ >= ]]>  #{beginTime}
             </if>
@@ -181,8 +181,6 @@
                 and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
             </if>
         </if>
-
-
         <if test="eppCode != null and eppCode != ''">
             and tp.EPPCode = #{eppCode}
         </if>

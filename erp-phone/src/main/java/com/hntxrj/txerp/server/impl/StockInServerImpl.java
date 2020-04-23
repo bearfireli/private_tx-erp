@@ -398,39 +398,43 @@ public class StockInServerImpl implements StockInServer {
         if (type != null && type == 1) {
             //用户自定义设置的查询时间对象 (queryCode=1,queryType=2,说明查询的是材料结算查询这个功能)
             QueryTimeSetVO queryTime = publicInfoMapper.getSystemQueryTime(compid, 1, 2);
-            if (queryTime != null) {
+            if (queryTime != null
+                    //如果用户设置的查询时间小于1号，大于28号，则按照用户传递的默认查询时间查询
+                    && Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) >= 1
+                    && Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) <= 28
+                    && Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) >= 1
+                    && Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) <= 28) {
                 endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
                 beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
                 String dateTime = sdf.format(new Date());
                 try {
-                    //判断设置的时间与当前时间对比，如果为超过，计算上月时间，如果超过计算当前月时间
+                    //判断设置的时间与当前时间对比，如果当前日期小于设置的时间，从上个月开始查询。反之，从下个月查询
                     Date begin = sdf.parse(beginTime.substring(0, 10));
                     Date nowTime = sdf.parse(dateTime);
-                    //判断开始时间和结束时间是否相同,
-                    //返回1:begin大于end;
-                    //返回0:begin等于end;
-                    //返回-1:begin小于end;
+                    Date time;
                     if (begin.compareTo(nowTime) > 0) {
-                        //说明开始时间大于当前时间，需要把开始时间和结束时间减一个月。
-                        Date time = null;
-                        try {
-                            time = sdf.parse(beginTime);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        endTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                        //说明设置的开始时间大于当前时间，需要把开始时间减去一个月
+                        time = sdf.parse(beginTime);
+                        endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
                         Calendar cal = Calendar.getInstance();
                         assert time != null;
                         cal.setTime(time);
                         cal.add(Calendar.MONTH, -1);
                         beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
+                    } else {
+                        //说明开始时间小于当前时间，需要把结束时间延长一个月
+                        time = sdf.parse(endTime);
+                        beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
+                        Calendar cal = Calendar.getInstance();
+                        assert time != null;
+                        cal.setTime(time);
+                        cal.add(Calendar.MONTH, 1);
+                        endTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStopTime();
+
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-            } else {
-                endTime = endTime.substring(0, 8) + "01 00:00:00";
-                beginTime = beginTime.substring(0, 8) + "01 00:00:01";
             }
         }
         return stockInWeighmatNsMapper.getWeightByMatParent(compid,
@@ -606,7 +610,7 @@ public class StockInServerImpl implements StockInServer {
         PageVO<StockVO> pageVO = new PageVO<>();
         List<StockVO> stockVOList = stockInWeighmatNsMapper.getStockByComId(compid, searchWords);
         for (StockVO stockVO : stockVOList) {
-            stockVO.setStoName(stockVO.getStirId() + "->" + stockVO.getStoName()+"["+stockVO.getStoCurQty()+"]");
+            stockVO.setStoName(stockVO.getStirId() + "->" + stockVO.getStoName() + "[" + stockVO.getStoCurQty() + "]");
         }
         PageInfo<StockVO> pageInfo = new PageInfo<>(stockVOList);
         pageVO.format(pageInfo);
