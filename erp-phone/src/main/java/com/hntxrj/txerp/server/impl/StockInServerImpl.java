@@ -417,24 +417,11 @@ public class StockInServerImpl implements StockInServer {
 
         //获取当前月的最后一天
         Calendar ca = Calendar.getInstance();
-        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
-        String lastDay = sdf.format(ca.getTime()).substring(8, 10);
+        String lastDay = getLastDayOfMouth(ca);
         int lastDayOfMonth = Integer.parseInt(lastDay);
 
-        //如果用户设置的时间日期小于1号，则用1号代替用户设置的时间日期，如果大于本月最后一天，则用本月最后一天代替
-        if (Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) < 1) {
-            queryTime.setQueryStartTime("01" + queryTime.getQueryStartTime().substring(2));
-        }
-        if (Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) > lastDayOfMonth) {
-            queryTime.setQueryStartTime(lastDay + queryTime.getQueryStartTime().substring(2));
-        }
-        if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) < 1) {
-            queryTime.setQueryStopTime("01" + queryTime.getQueryStopTime().substring(2));
-        }
-        if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) > lastDayOfMonth) {
-            queryTime.setQueryStopTime(lastDay + queryTime.getQueryStopTime().substring(2));
-        }
-
+        //验证用户设置的查询时间是否符合规范
+        checkQueryTime(queryTime, lastDay, lastDayOfMonth);
         endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
         beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
 
@@ -456,8 +443,7 @@ public class StockInServerImpl implements StockInServer {
                 beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
 
                 //获取上个月的最后日期的天数，如果用户设置的时间大于上个月最后一天，则用上个月的最后一天替代用户设置的时间
-                ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
-                String lastMonthLastDay = sdf.format(ca.getTime()).substring(8, 10);
+                String lastMonthLastDay = getLastDayOfMouth(ca);
                 int lastDayOfLastMonth = Integer.parseInt(lastMonthLastDay);
                 if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) > lastDayOfLastMonth) {
                     beginTime = sdf.format(cal.getTime()).substring(0, 8) + lastMonthLastDay +
@@ -473,8 +459,7 @@ public class StockInServerImpl implements StockInServer {
                 cal.add(Calendar.MONTH, 1);
                 endTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStopTime();
                 //获取下个月的最后日期的天数，如果用户设置的时间大于下个月最后一天，则用下个月的最后一天替代用户设置的时间
-                ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
-                String nextMothLastDay = sdf.format(ca.getTime()).substring(8, 10);
+                String nextMothLastDay = getLastDayOfMouth(ca);
                 int lastDayOfNextMonth = Integer.parseInt(nextMothLastDay);
                 if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) > lastDayOfNextMonth) {
                     endTime = sdf.format(cal.getTime()).substring(0, 8) + nextMothLastDay +
@@ -741,6 +726,32 @@ public class StockInServerImpl implements StockInServer {
             throw new ErpException(ErrEumn.MATERIAL_CHECK_ERROR);
         }
 
+    }
+
+    //获取每个月的最后一天
+    private String getLastDayOfMouth(Calendar ca) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return sdf.format(ca.getTime()).substring(8, 10);
+    }
+
+    // 验证用户自定义设置的查询原材料采购的时间是否规范
+    // 如果用户设置的时间日期小于1号，则用1号代替用户设置的时间日期，如果大于本月最后一天，则用本月最后一天代替
+    private QueryTimeSetVO checkQueryTime(QueryTimeSetVO queryTime, String lastDay, int lastDayOfMonth) {
+        if (Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) < 1) {
+            queryTime.setQueryStartTime("01" + queryTime.getQueryStartTime().substring(2));
+        }
+        if (Integer.parseInt(queryTime.getQueryStartTime().substring(0, 2)) > lastDayOfMonth) {
+            queryTime.setQueryStartTime(lastDay + queryTime.getQueryStartTime().substring(2));
+        }
+        if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) < 1) {
+            queryTime.setQueryStopTime("01" + queryTime.getQueryStopTime().substring(2));
+        }
+        if (Integer.parseInt(queryTime.getQueryStopTime().substring(0, 2)) > lastDayOfMonth) {
+            queryTime.setQueryStopTime(lastDay + queryTime.getQueryStopTime().substring(2));
+        }
+
+        return queryTime;
     }
 
 }
