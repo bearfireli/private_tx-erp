@@ -408,7 +408,8 @@ public class StockInServerImpl implements StockInServer {
                 beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
                 String dateTime = sdf.format(new Date());
                 try {
-                    //判断设置的时间与当前时间对比，如果当前日期小于设置的时间，从上个月开始查询。反之，从下个月查询
+                    //判断设置的时间与当前时间对比，如果当前日期（即几号）小于设置的日期（几号），从上个月开始查询。
+                    // 反之，从下个月查询
                     Date begin = sdf.parse(beginTime.substring(0, 10));
                     Date nowTime = sdf.parse(dateTime);
                     Date time;
