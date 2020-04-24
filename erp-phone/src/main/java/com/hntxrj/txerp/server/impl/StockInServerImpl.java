@@ -407,7 +407,7 @@ public class StockInServerImpl implements StockInServer {
                                                             Integer type) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (type != 1) {
+        if (type == null || type != 1) {
             //查询的是今日或者昨日的原材料采购
             return stockInWeighmatNsMapper.getWeightByMatParent(compid, beginTime, endTime);
         }
