@@ -1,7 +1,7 @@
 package com.hntxrj.txerp.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErpException;
-import com.hntxrj.txerp.core.web.ResultVO;
 import com.hntxrj.txerp.entity.base.*;
 import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.UserAuthVO;
@@ -300,4 +300,12 @@ public interface UserService {
      * @param pageSize 每页大小
      */
     PageVO<UserLoginVO> userLoginList(String compid, String userName, String phoneNum, Integer page, Integer pageSize);
+
+    /**
+     * 判断用户是否有超级管理员的权限
+     *
+     * @param token 用户令牌
+     * @param data  用户设置的权限组对象
+     */
+    void checkSuperAuth(String token, JSONObject data) throws ErpException;
 }
