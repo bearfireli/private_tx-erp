@@ -791,6 +791,7 @@
           and ( PreTime between #{beginTime} and #{endTime})
           and deletemark = 0
           and RecStatus = 1
+          and VerifyStatus=1
     </select>
     <select id="queryTimeId" resultType="com.hntxrj.txerp.vo.QueryTimeSetVO">
         select top 1 dd.compid,
