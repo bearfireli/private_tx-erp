@@ -50,7 +50,7 @@ import java.util.*;
 @Service
 @Slf4j
 public class UserServiceImpl extends BaseServiceImpl implements UserService {
-
+    private final Integer SUPPER_ADMIN = 1;
     private final UserRepository userRepository;
 
     private final UserLoginRepository userLoginRepository;
@@ -1148,11 +1148,12 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         }
         //判断用户要设置的权限中有没有超级管理员权限，如果有。先检验当前用户是否是超级管理员，
         //只有超级管理员才能设置超级管理员权限
+        boolean isSupperAdmin = userIsSupperAdmin(currentUser.getUid());
         JSONArray jsonArray = data.getJSONArray("arr");
         for (Object json : jsonArray) {
             JSONObject userAuth = JSONObject.parseObject(json.toString());
-            int agId = (Integer) userAuth.get("agid");
-            if (agId == 1 && !userIsSupperAdmin(currentUser.getUid())) {
+            int agId = userAuth.getInteger("agid");
+            if (agId == SUPPER_ADMIN && !isSupperAdmin) {
                 throw new ErpException(ErrEumn.NOT_SET_SUPER_AUTH_ERROR);
             }
         }
