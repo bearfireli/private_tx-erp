@@ -1134,6 +1134,31 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     /**
+     * 判断用户是否有超级管理员的权限
+     *
+     * @param token 用户令牌
+     * @param data  用户设置的权限组对象
+     */
+    @Override
+    public void checkSuperAuth(String token, JSONObject data) throws ErpException {
+        //根据token获取用户uid
+        User currentUser = tokenGetUser(token);
+        if (currentUser == null) {
+            throw new ErpException(ErrEumn.USER_NO_EXIT);
+        }
+        //判断用户要设置的权限中有没有超级管理员权限，如果有。先检验当前用户是否是超级管理员，
+        //只有超级管理员才能设置超级管理员权限
+        JSONArray jsonArray = data.getJSONArray("arr");
+        for (Object json : jsonArray) {
+            JSONObject userAuth = JSONObject.parseObject(json.toString());
+            int agId = (Integer) userAuth.get("agid");
+            if (agId == 1 && !userIsSupperAdmin(currentUser.getUid())) {
+                throw new ErpException(ErrEumn.NOT_SET_SUPER_AUTH_ERROR);
+            }
+        }
+    }
+
+    /**
      * 把用户的uid作为账号导入到腾讯云即时通讯中，并且和本企业其他用户
      * 添加好友
      */

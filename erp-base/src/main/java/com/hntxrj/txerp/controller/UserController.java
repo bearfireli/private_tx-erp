@@ -331,6 +331,9 @@ public class UserController {
         Integer uid = data.getInteger("uid");
         Integer identification = data.getInteger("identification");
 
+        //判断用户是否有设置超级管理员的权限
+        userService.checkSuperAuth(token, data);
+
         if (uid == 0) {
             //新用户添加权限，调用新用户添加权限的借口
             User user = (User) redisTemplate.opsForValue().get(identification.toString());

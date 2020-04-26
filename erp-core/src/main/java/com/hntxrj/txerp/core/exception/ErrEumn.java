@@ -70,6 +70,7 @@ public enum ErrEumn {
     OTHER_LOGIN(-20006, "账号其他设备登录,请重新登录"),
     PARAM_IS_NULL(-10007, "参数为空"),
     OLD_PASSWORD_ERROR(-10007, "旧密码输入错误"),
+    NOT_SET_SUPER_AUTH_ERROR(-10007, "只有超级管理员才能设置超级管理员权限"),
 
 
     ADD_USER_UID_IS_NULL(-10008, "uid不能为空！"),
