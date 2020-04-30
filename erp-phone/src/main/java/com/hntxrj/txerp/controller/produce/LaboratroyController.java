@@ -446,7 +446,7 @@ public class LaboratroyController {
                                    String opid,
                                    @RequestParam(defaultValue = "1") Integer page,
                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat();
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(formulaService.getFormulaList(taskStatus, eppCode, placing, taskId,
                 startTime == null ? null : sdf.format(new Date(startTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),

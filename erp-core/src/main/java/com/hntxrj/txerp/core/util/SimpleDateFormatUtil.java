@@ -23,14 +23,6 @@ public class SimpleDateFormatUtil {
         return simpleDateFormat;
     }
 
-    /**
-     * 获取默认空参的SimpleDateFormat构造
-     */
-    public static SimpleDateFormat getSimpleDataFormat() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-        return simpleDateFormat;
-    }
 
     /**
      * 获取常用的截止到时分秒的simpleDateFormat
