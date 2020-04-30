@@ -21,7 +21,7 @@ import java.util.Date;
 public class TankApi {
 
     private final TankService tankService;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
     public TankApi(TankService tankService) {
         this.tankService = tankService;

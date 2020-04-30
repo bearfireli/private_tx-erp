@@ -381,7 +381,7 @@ public class UserController {
                 file.mkdirs();
             }
             InputStream stream = StringStream.getStream(base64);
-            SimpleDateFormat sim = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            SimpleDateFormat sim = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmssSSS");
             String format = sim.format(new Date());
             String uuid = format + UUID.randomUUID().toString().replace("-", "");
             //文件名称

@@ -82,7 +82,7 @@ public class ContractController {
             e.printStackTrace();
         }
         //产生个当前时间
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         String format = simpleDateFormat.format(new Date());
         System.out.println(format);
         if (StringUtils.isEmpty(compid) && StringUtils.isEmpty(opid)) {
@@ -957,7 +957,7 @@ public class ContractController {
 //            return jsonVoAndPage;
 //        }
 //
-////        String  PPCode = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+////        String  PPCode = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddhhmmss").format(new Date());
 //
 //        JSONArray jsonArray =cs.spinsertUpDelSMContractPriceMarkup(mark,compid,cContractCode,ContractUID,null,PPName,UnitPrice,JumpPrice,SelfDiscPrice,TowerCranePrice,OtherPrice,b);
 //

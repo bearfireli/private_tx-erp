@@ -65,7 +65,7 @@ public class TaskListController {
         //设置中条数
         pb.setRecordCount(0);//赋默认值
         //设置时间
-//        SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd");
+//        SimpleDateFormat sim = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
 //        Date beginDate = null;
 //        Date endDate = null;
         try {

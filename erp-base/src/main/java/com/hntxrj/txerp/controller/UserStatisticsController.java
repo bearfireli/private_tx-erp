@@ -133,7 +133,7 @@ public class UserStatisticsController {
     }
 
     private String timeFormat(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         String timeStr = format.format(date);
         return timeStr;
     }

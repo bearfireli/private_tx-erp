@@ -53,7 +53,7 @@ public class ConcreteApi {
                                      @RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "10") Integer pageSize) {
         log.info("getConcreteCount");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         ResultVO resultVO = ResultVO.create(concreteService.getConcreteCount(compid, eppCode, placing, taskId,
                 stgId, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),timeStatus, page, pageSize));
@@ -81,7 +81,7 @@ public class ConcreteApi {
                                    Integer timeStatus,
                                    @RequestParam(defaultValue = "1") Integer page,
                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(concreteService.getConcreteSum(compid, eppCode, placing, taskId,
                 stgId, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), timeStatus, page, pageSize));
@@ -104,7 +104,7 @@ public class ConcreteApi {
                                        String taskId, String stgId,
                                        Long beginTime, Long endTime,
                                        Integer timeStatus) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         return ResultVO.create(concreteService.getConcreteSaleNum(compid,eppCode,placing,taskId,stgId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -127,7 +127,7 @@ public class ConcreteApi {
                                        String taskId, String stgId,
                                        Long beginTime, Long endTime,
                                        Integer timeStatus) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         return ResultVO.create(concreteService.getConcreteStgIdNum(compid,eppCode,placing,taskId,stgId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),

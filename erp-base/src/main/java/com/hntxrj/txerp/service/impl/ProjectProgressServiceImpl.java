@@ -186,7 +186,7 @@ public class ProjectProgressServiceImpl implements ProjectProgressService {
         JSONObject scheduleObj = new JSONObject();
         scheduleObj.put("uid", user.getUid());
         scheduleObj.put("userName", user.getUsername());
-        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+        SimpleDateFormat format = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy年MM月dd日 HH时mm分ss秒");
         scheduleObj.put("createTime", format.format(new Date()));
         scheduleObj.put("msg", msg);
         scheduleArray.add(scheduleObj);

@@ -117,7 +117,7 @@ public class PartsApi {
                                  String requestDep, String verifyStatusOne,
                                  @RequestParam(defaultValue = "1") Integer page,
                                  @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(partsService.getPartsList(
                 compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),

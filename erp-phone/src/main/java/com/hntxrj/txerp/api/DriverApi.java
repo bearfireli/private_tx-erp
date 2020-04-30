@@ -61,7 +61,7 @@ public class DriverApi {
                                            String builderCode, String placing,
                                            @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize, String driverCode) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(driverService.getTaskSaleInvoiceList(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -293,7 +293,7 @@ public class DriverApi {
                                           String builderCode, String placing,
                                           @RequestParam(defaultValue = "1") Integer page,
                                           @RequestParam(defaultValue = "10") Integer pageSize, String driverCode) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(driverService.getTaskSaleInvoiceSum(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -312,7 +312,7 @@ public class DriverApi {
      */
     @PostMapping("/saveDriverWorkTime")
     public ResultVO saveDriverWorkTime(String compid, String driverCode, Long time, Integer timeType, Integer cardNumber) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         driverService.saveDriverWorkTime(compid, driverCode, sdf.format(new Date(time)), timeType, cardNumber);
         return ResultVO.create();
     }
@@ -326,7 +326,7 @@ public class DriverApi {
      */
     @PostMapping("/getDriverWorkTime")
     public ResultVO getDriverWorkTime(String compid, String driverCode, Long dateTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         String queryTime = sdf.format(new Date());
         if (dateTime != null) {
             queryTime = sdf.format(new Date(dateTime));
