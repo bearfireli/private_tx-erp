@@ -99,7 +99,7 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
             for (QueryTimeSetVO queryTimeSetVO : list) {
                String compid =null;
                String queryName = null;
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
                int queryTime =0;
                String queryStartTime ="00:00";
                String queryStopTime ="00:00";

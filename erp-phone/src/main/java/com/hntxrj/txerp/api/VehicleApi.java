@@ -44,7 +44,7 @@ public class VehicleApi {
                                              Long beginTime, Long endTime,
                                              @RequestParam(defaultValue = "1") Integer page,
                                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getVehicleWorkloadDetail(compid, personalName,
                 eppCode, placing, taskId,
                 vehicleId, beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -70,7 +70,7 @@ public class VehicleApi {
                                               Long beginTime, Long endTime,
                                               @RequestParam(defaultValue = "1") Integer page,
                                               @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getVehicleWorkloadSummary(compid, personalName,
                 eppCode, placing, taskId,
                 vehicleId, beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -96,7 +96,7 @@ public class VehicleApi {
                                                    Long beginTime, Long endTime,
                                                    @RequestParam(defaultValue = "1") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getVehicleWorkloadSummaryCount(compid, personalName,
                 eppCode, placing, taskId,
                 vehicleId, beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -122,7 +122,7 @@ public class VehicleApi {
                                                    Long beginTime, Long endTime,
                                                    @RequestParam(defaultValue = "1") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getVehicleWorkTowingPumpDetail(compid, personalName,
                 eppCode, placing, taskId,
                 vehicleId, beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -147,7 +147,7 @@ public class VehicleApi {
                                                   Long beginTime, Long endTime,
                                                   @RequestParam(defaultValue = "1") Integer page,
                                                   @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getVehicleWorkTowingPumpCount(compid, personalName,
                 eppCode, placing, taskId,
                 vehicleId, beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -172,7 +172,7 @@ public class VehicleApi {
                                           Long beginTime, Long endTime,
                                           @RequestParam(defaultValue = "1") Integer page,
                                           @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getWorkloadStatistics(compid,
                 eppCode, empName, weightType,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -195,7 +195,7 @@ public class VehicleApi {
     public ResultVO getWorkloadStatisticsCount(String compid, String eppCode, String empName,
                                           @RequestParam(defaultValue = "0")Integer weightType,
                                           Long beginTime, Long endTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getWorkloadStatisticsCount(compid,
                 eppCode, empName, weightType,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -222,7 +222,7 @@ public class VehicleApi {
                                                    Long beginTime, Long endTime,
                                                    @RequestParam(defaultValue = "1") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getDriverTransportationDetails(compid, eppCode,
                 placing, taskId, vehicleId, personalName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -251,7 +251,7 @@ public class VehicleApi {
                                                  Long beginTime, Long endTime,
                                                  @RequestParam(defaultValue = "1") Integer page,
                                                  @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("司机砼运输汇总: vehicleId=" + vehicleId);
         return ResultVO.create(vehicleService.getDriverTransportationCount(compid, eppCode,
                 placing, taskId, vehicleId, personalName,isNewVersion,
@@ -279,7 +279,7 @@ public class VehicleApi {
                                                Long beginTime, Long endTime,
                                                @RequestParam(defaultValue = "1") Integer page,
                                                @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getDriverTransportationSum(compid, eppCode,
                 placing, taskId, vehicleId, personalName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -306,7 +306,7 @@ public class VehicleApi {
                                                       Long beginTime, Long endTime,
                                                       @RequestParam(defaultValue = "1") Integer page,
                                                       @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getDriverTransportationCarNumList(compid, eppCode,
                 placing, taskId, vehicleId, personalName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -336,7 +336,7 @@ public class VehicleApi {
                                            Long beginTime, Long endTime,
                                            @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getDriverDragPumpCount(compid, eppCode, placing,
                 taskId, vehicleId, personalName,isNewVersion,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -363,7 +363,7 @@ public class VehicleApi {
                                       Long beginTime, Long endTime,
                                       @RequestParam(defaultValue = "1") Integer page,
                                       @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getPumpTruckCount(compid, eppCode, personalName, stirId, vehicleId,taskId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
@@ -391,7 +391,7 @@ public class VehicleApi {
                                               Long beginTime, Long endTime,
                                               @RequestParam(defaultValue = "1") Integer page,
                                               @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getPumpOperatorTruckCount(compid, eppCode, personalName,
                 stirId, vehicleId,taskId,isNewVersion,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -417,7 +417,7 @@ public class VehicleApi {
                                         Long beginTime, Long endTime,
                                         @RequestParam(defaultValue = "1") Integer page,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getPumpTruckDetails(compid, eppCode, personalName, stirId, vehicleId,typeName,taskId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
@@ -447,7 +447,7 @@ public class VehicleApi {
                                                    Long endTime,
                                                    @RequestParam(defaultValue = "1") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getPumpTruckWorkloadStatistics(compid, eppCode, personalName,taskId,
                 stirId, vehicleId, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
@@ -477,7 +477,7 @@ public class VehicleApi {
                                     Long endTime,
                                     @RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(vehicleService.getPumpTruckSum(compid, eppCode, personalName,
                 stirId, vehicleId, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));

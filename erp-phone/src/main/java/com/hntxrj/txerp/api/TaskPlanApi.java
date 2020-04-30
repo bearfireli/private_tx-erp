@@ -60,7 +60,7 @@ public class TaskPlanApi {
                                     Integer taskStatus, String compid, Integer verifyStatus,
                                     @RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskPlanService.getTaskPlanList(
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -86,7 +86,7 @@ public class TaskPlanApi {
     public ResultVO getPreNumCount(Long beginTime, Long endTime, String eppCode,
                                    String builderCode, String placing, String taskId,
                                    Integer taskStatus, String compid, Integer verifyStatus) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskPlanService.getPreNumCount(
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -203,7 +203,7 @@ public class TaskPlanApi {
                                            Byte upStatus, String builderCode, String taskId, String placing,
                                            String taskStatus, Integer type, @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -232,7 +232,7 @@ public class TaskPlanApi {
     public ResultVO getTaskSaleInvoiceCount(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
                                             Byte upStatus, String builderCode, String taskId,
                                             String placing, String taskStatus, Integer type) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceCount(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -284,7 +284,7 @@ public class TaskPlanApi {
     public ResultVO getSendDetail(String compid, String vehicleId, Long beginTime, Long endTime,
                                   @RequestParam(defaultValue = "1") Integer page,
                                   @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         return ResultVO.create(taskPlanService.getSendDetail(compid, vehicleId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -377,7 +377,7 @@ public class TaskPlanApi {
                                        Long beginTime, Long endTime,
                                        @RequestParam(defaultValue = "1") Integer page,
                                        @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskPlanService.getDriverShiftList(compid, vehicleId, personalCode, personalName,
                 workClass,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -403,7 +403,7 @@ public class TaskPlanApi {
                                           Long beginTime, Long endTime,
                                           @RequestParam(defaultValue = "1") Integer page,
                                           @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskPlanService.getDriverShiftListNew(compid, vehicleId, personalCode, personalName,
                 workClass,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -427,7 +427,7 @@ public class TaskPlanApi {
     public ResultVO getDriverShiftInsert(String compid, String opId, String personalCode, String vehicleId,
                                          String workClass, Long workStarTime, Long workOverTime,
                                          String remarks) throws ErpException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         taskPlanService.getDriverShiftInsert(compid, opId, personalCode,
                 vehicleId, workClass, workStarTime == null ? null : sdf.format(new Date(workStarTime)),
                 workOverTime == null ? null : sdf.format(new Date(workOverTime)), remarks);
@@ -452,7 +452,7 @@ public class TaskPlanApi {
     public ResultVO getDriverShiftUpdate(Integer id, String compid, String personalCode, String vehicleId,
                                          String workClass, Long workStarTime, Long workOverTime,
                                          String remarks) throws ErpException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         taskPlanService.getDriverShiftUpdate(id, compid, personalCode,
                 vehicleId, workClass, workStarTime == null ? null : sdf.format(new Date(workStarTime)),
                 workOverTime == null ? null : sdf.format(new Date(workOverTime)), remarks);
@@ -508,7 +508,7 @@ public class TaskPlanApi {
                                            @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize, Long time)
             throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd hh:mm:ss");
         return ResultVO.create(taskPlanService.getSendCarYesterDayNum(compid, page, pageSize,
                 time == null ? null : sdf.format(new Date(time))));
     }
@@ -524,7 +524,7 @@ public class TaskPlanApi {
                                      @RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "10") Integer pageSize,
                                      Long monthStart, Long monthEnd) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd hh:mm:ss");
         return ResultVO.create(taskPlanService.getMonthTotalNum(compid, page, pageSize,
                 monthStart == null ? null : sdf.format(new Date(monthStart)),
                 monthEnd == null ? null : sdf.format(new Date(monthEnd))));
@@ -554,7 +554,7 @@ public class TaskPlanApi {
                                        String taskId,
                                        @RequestParam(defaultValue = "1") Integer page,
                                        @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd hh:mm:ss");
         return ResultVO.create(taskPlanService.getProductionRatio(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -587,7 +587,7 @@ public class TaskPlanApi {
                                                 String placing, String taskId,
                                                 @RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd hh:mm:ss");
         return ResultVO.create(taskPlanService.getTheoreticalproportioning(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -699,7 +699,7 @@ public class TaskPlanApi {
                                       Integer taskStatus, String compid, Integer verifyStatus, Integer buildId,
                                       @RequestParam(defaultValue = "1") Integer page,
                                       @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskPlanService.buildTaskPlanList(
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -724,7 +724,7 @@ public class TaskPlanApi {
     public ResultVO getBuildTaskPreCount(Long beginTime, Long endTime, String eppCode, String placing,
                                          String taskId, Integer taskStatus, Integer verifyStatus,
                                          Integer buildId) throws ErpException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskPlanService.getBuildTaskPreCount(
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),

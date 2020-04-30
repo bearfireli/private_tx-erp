@@ -101,7 +101,7 @@ public class PartsServiceImpl implements PartsService {
         int page = 0;
         int pageSize = 1;
         //获取年
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yy-MM-dd");
+        SimpleDateFormat sdf2 = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yy-MM-dd");
         Date date = new Date();
         String year = sdf2.format(date);
         String requestNumber = year.replace("-", "");
@@ -129,7 +129,7 @@ public class PartsServiceImpl implements PartsService {
         }
         wmConFigureApply.setRequestNumber(requestNumber);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         wmConFigureApply.setCreateTime(sdf.format(new Date()));
 
         wmConFigureApply.setStockStatus("1");
@@ -218,7 +218,7 @@ public class PartsServiceImpl implements PartsService {
         try {
             //获取签收时间
             Date date = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
             String auditResultOne = "";
             String verifyTimeOne = "";
             boolean verifyStatusOne = false;

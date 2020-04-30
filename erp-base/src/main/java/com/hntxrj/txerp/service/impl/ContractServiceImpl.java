@@ -423,7 +423,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     private String makeContractId(Integer enterpriseId) {
-        SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMddHHmmss");
+        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("YYYYMMddHHmmss");
         StringBuilder dateString = new StringBuilder(sdf.format(new Date()));
         for (int i = 0; i < 3 - enterpriseId.toString().length(); i++) {
             dateString.append("0");

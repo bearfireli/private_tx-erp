@@ -66,7 +66,7 @@ public class FeedbackController {
         for (int i = 0; i < files.size(); ++i) {
             file = files.get(i);
             if (!file.isEmpty()) {
-                SimpleDateFormat sim = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                SimpleDateFormat sim = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmssSSS");
                 String destPath = realPath + upPath + sim.format(new Date()) + file.getOriginalFilename();
                 System.out.println(destPath);
                 BufferedInputStream bis = new BufferedInputStream(file.getInputStream());

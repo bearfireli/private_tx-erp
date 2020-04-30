@@ -75,7 +75,7 @@ public class FileUPController {
         //将String 装成 InputStream
         InputStream stream = StringStream.getStream(base64);
         //时间+uuid  为文件名
-        SimpleDateFormat sim = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        SimpleDateFormat sim = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmssSSS");
         String format = sim.format(new Date());
         String uuid = format + UUID.randomUUID().toString().replace("-", "");
 
