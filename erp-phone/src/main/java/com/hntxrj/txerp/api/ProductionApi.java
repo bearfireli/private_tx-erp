@@ -35,7 +35,7 @@ public class ProductionApi {
                                             String placeStyle,
                                             @RequestParam(defaultValue = "1") Integer page,
                                             @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(producetionStatisticsService.getProductionStatistics(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -48,7 +48,7 @@ public class ProductionApi {
                                                        String placeStyle,
                                             @RequestParam(defaultValue = "1") Integer page,
                                             @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(producetionStatisticsService.getProductionStatisticstotalPreNum(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),

@@ -794,9 +794,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public void initPassword(String token, Integer uid, String password) throws ErpException {
-        if (!userIsSupperAdmin(token)) {
-            throw new ErpException(ErrEumn.ONLY_ADMINISTRATOR_CAN_DO_IT);
-        }
+//        if (!userIsSupperAdmin(token)) {
+//            throw new ErpException(ErrEumn.ONLY_ADMINISTRATOR_CAN_DO_IT);
+//        }
         User user = findById(uid);
         user.setPassword(EncryptUtil.encryptPassword(password));
         // 修改密码删除所有历史token

@@ -349,7 +349,7 @@ public class TankServiceImpl implements TankService {
 
     //获取当前时间并转换格式
     private String getCurrentTime() {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(new Date());
     }
 }

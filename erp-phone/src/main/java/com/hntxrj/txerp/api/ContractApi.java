@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @RestController
@@ -255,8 +256,8 @@ public class ContractApi {
                                 String linkTel,
                                 String opid) throws ErpException {
         contractService.addContract(contractId,
-                salesman, new Date(signDate), expiresDate == null ? null : new Date(expiresDate),
-                effectDate == null ? null : new Date(effectDate), contractType, priceStyle, eppCode, builderCode,
+                salesman, new Timestamp(signDate), expiresDate == null ? null : new Timestamp(expiresDate),
+                effectDate == null ? null : new Timestamp(effectDate), contractType, priceStyle, eppCode, builderCode,
                 contractNum, preNum, preMoney, remarks, compid, address,linkMan,linkTel,opid);
         return ResultVO.create();
     }

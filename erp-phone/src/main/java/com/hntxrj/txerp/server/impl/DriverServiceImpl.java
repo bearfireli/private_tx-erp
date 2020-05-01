@@ -8,6 +8,7 @@ import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.dao.DriverDao;
 import com.hntxrj.txerp.mapper.DriverMapper;
 import com.hntxrj.txerp.server.DriverService;
+import com.hntxrj.txerp.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.vo.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void taskSaleInvoiceReceipt(String receiptPeople, Double numberOfSignings,
                                        String jumpVehicle, String sign, String invoiceId) {
-        SimpleDateFormat dateFormat = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (receiptPeople == null) {
             receiptPeople = "";
         }
@@ -156,13 +157,13 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double numberOfSignings) {
-        SimpleDateFormat dateFormat = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         driverMapper.saveSaleFileImage(compid, saleFileImage, invoiceId, dateFormat.format(new Date()), numberOfSignings);
     }
 
     @Override
     public void saveNumberOfSignings(String compid, Double numberOfSignings, String invoiceId) {
-        SimpleDateFormat dateFormat = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         driverMapper.saveNumberOfSignings(compid, numberOfSignings, invoiceId, dateFormat.format(new Date()));
     }
 
@@ -243,7 +244,7 @@ public class DriverServiceImpl implements DriverService {
      */
     @Override
     public void saveDriverWorkTime(String compid, String driverCode, String workTime, Integer timeType, Integer cardNumber) {
-        SimpleDateFormat dateFormat = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateTime = dateFormat.format(new Date());
 
         if (timeType == 0) {

@@ -138,7 +138,7 @@ public class ConcreteServiceImpl implements ConcreteService {
      */
     @Override
     public List<ConcreteHistogram> getConcreteSaleNum(String compid, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //用于最终返回数据的集合
         List<ConcreteHistogram> concreteHistogramsList = new ArrayList<>();
 

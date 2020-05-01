@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.server.ContractService;
+import com.hntxrj.txerp.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.vo.JsonVo;
 import com.hntxrj.txerp.vo.JsonVoAndPage;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +83,7 @@ public class ContractController {
             e.printStackTrace();
         }
         //产生个当前时间
-        SimpleDateFormat simpleDateFormat = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String format = simpleDateFormat.format(new Date());
         System.out.println(format);
         if (StringUtils.isEmpty(compid) && StringUtils.isEmpty(opid)) {
