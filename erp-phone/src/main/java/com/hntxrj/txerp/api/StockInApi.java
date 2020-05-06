@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.api;
 
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.server.StockInSelectService;
 import com.hntxrj.txerp.server.StockInServer;
 import com.hntxrj.txerp.server.StockInCollectService;
@@ -56,7 +57,7 @@ public class StockInApi {
                                       @RequestParam(defaultValue = "10") Integer pageSize, String saleType) {
 
 
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInService.getStockInDetails(matName, vehicleId, supName, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page,
@@ -85,7 +86,7 @@ public class StockInApi {
                                    Integer isPassOrNot) {
 
 
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInService.getStockInList(matName, vehicleId, supName, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize,
@@ -122,7 +123,7 @@ public class StockInApi {
     public ResultVO getStockInSelectClose(String matName, String vehicleId, String supName,
                                           String compid, Long beginTime, Long endTime,
                                           Integer page, Integer pageSize, String saleType) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInService.getStockInSelectClose(matName, vehicleId, supName, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize,
@@ -233,7 +234,7 @@ public class StockInApi {
     public ResultVO getMatDetailsList(String vehicleId, String supName, String matSpecs, String compid, Long beginTime,
                                       Long endTime, @RequestParam(defaultValue = "1") Integer page,
                                       @RequestParam(defaultValue = "10") Integer pageSize, String matName) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInCollectService.getMatDetailsList(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, matName));
@@ -255,7 +256,7 @@ public class StockInApi {
     @PostMapping("/getStockInCollectClose")
     public ResultVO getStockInCollectClose(String vehicleId, String supName, String matSpecs, String compid,
                                            Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInCollectService.getStockInCollectClose(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, MatName));
@@ -277,7 +278,7 @@ public class StockInApi {
     @PostMapping("/getMatStatistics")
     public ResultVO getMatStatistics(String vehicleId, String supName, String matSpecs, String compid,
                                      Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInCollectService.getMatStatistics(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, MatName));
@@ -299,7 +300,7 @@ public class StockInApi {
     @PostMapping("/getMatStatisticsClose")
     public ResultVO getMatStatisticsClose(String vehicleId, String supName, String matSpecs, String compid,
                                           Long beginTime, Long endTime, Integer page, Integer pageSize, String MatName) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInCollectService.getMatStatisticsClose(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, MatName));
@@ -323,7 +324,7 @@ public class StockInApi {
                                      Long beginTime, Long endTime,
                                      @RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "10") Integer pageSize, String MatName) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInCollectService.getMaterialCount(vehicleId, supName, matSpecs, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize, MatName));
@@ -347,7 +348,7 @@ public class StockInApi {
     public ResultVO getWeighByMat(String empName, String compid, String vehicleId,
                                   String stoName, String supName, Long beginTime, Long endTime, Integer page,
                                   Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightByMat(
                 empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -374,7 +375,7 @@ public class StockInApi {
     public ResultVO getWeighByVechicId(String empName, String compid, String vehicleId,
                                        String stoName, String supName, Long beginTime, Long endTime, Integer page,
                                        Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightByVehicleId(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
@@ -401,7 +402,7 @@ public class StockInApi {
                                       @RequestParam(defaultValue = "0") String isNewVersion,
                                       @RequestParam(defaultValue = "1") Integer page,
                                       @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightByStoName(empName, compid, vehicleId, stoName, supName,
                 isNewVersion, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
@@ -425,7 +426,7 @@ public class StockInApi {
     public ResultVO getWeighBySupName(String empName, String compid, String vehicleId,
                                       String stoName, String supName, Long beginTime, Long endTime, Integer page,
                                       Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightBySupName(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
@@ -449,7 +450,7 @@ public class StockInApi {
     public ResultVO getWeighByEmpName(String empName, String compid, String vehicleId,
                                       String stoName, String supName, Long beginTime, Long endTime, Integer page,
                                       Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightByEmpName(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
@@ -473,7 +474,7 @@ public class StockInApi {
     public ResultVO getSynthesizeByMat(String empName, String compid, String vehicleId,
                                        String stoName, String supName, Long beginTime, Long endTime, Integer page,
                                        Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getSynthesizeByMat(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
@@ -497,7 +498,7 @@ public class StockInApi {
     public ResultVO getWeightClose(String empName, String compid, String vehicleId,
                                    String stoName, String supName, Long beginTime, Long endTime, Integer page,
                                    Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getWeightClose(empName, compid, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));
@@ -515,7 +516,7 @@ public class StockInApi {
     public ResultVO getWeightByMatParent(String compid,
                                          Long beginTime,
                                          Long endTime, Integer type) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         List<WeightMatParentNameVO> weightByMatParent = stockInServer.getWeightByMatParent(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), type);
@@ -539,7 +540,7 @@ public class StockInApi {
     public ResultVO getHistogramByMat(String empName, String compid, String vehicleId,
                                       String stoName, String supName, Long beginTime, Long endTime,
                                       @RequestParam(defaultValue = "1") Integer matType) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(stockInServer.getHistogramByMat(compid, empName, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), matType));
@@ -561,7 +562,7 @@ public class StockInApi {
     @PostMapping("/getPieChartBySupName")
     public ResultVO getPieChartBySupName(String empName, String compid, String vehicleId,
                                          String stoName, String supName, Long beginTime, Long endTime) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         return ResultVO.create(stockInServer.getPieChartBySupName(compid, empName, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -584,7 +585,7 @@ public class StockInApi {
     @PostMapping("/getHistogramByStoName")
     public ResultVO getHistogramByStoName(String empName, String compid, String vehicleId,
                                           String stoName, String supName, Long beginTime, Long endTime) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         return ResultVO.create(stockInServer.getHistogramByStoName(compid, empName, vehicleId, stoName, supName,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),

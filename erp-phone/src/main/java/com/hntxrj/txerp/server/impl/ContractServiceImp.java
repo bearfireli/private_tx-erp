@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.ContractDao;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
@@ -431,7 +432,7 @@ public class ContractServiceImp implements ContractService {
                                                   String verifyStatus, Integer page, Integer pageSize) {
 
         PageHelper.startPage(page, pageSize, "SignDate desc");
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         String startTimeStr = startTime == null ? null : sdf.format(new Date(startTime));
         String endTimeStr = endTime == null ? null : sdf.format(new Date(endTime));
         log.info("【合同列表】startTime:{}, endTime:{}, contractCode:{}, " +
@@ -456,7 +457,7 @@ public class ContractServiceImp implements ContractService {
     public void verifyContract(String contractUid, String compid,
                                String opId, Integer verifyStatus) throws ErpException {
 
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         contractMapper.verifyContract(contractUid, compid, opId, sdf.format(new Date()), verifyStatus);
         ContractVO contractVO =contractMapper.getContractDetail(null
@@ -715,7 +716,7 @@ public class ContractServiceImp implements ContractService {
             contractGradePriceDetail.setContractUid(contractUid);
             contractGradePriceDetail.setCContractCode(contractDetailCode);
             contractGradePriceDetail.setVerifyStatus(true);
-            SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
             contractGradePriceDetail.setVerifyTime(sdf.format(new Date()));
             contractGradePriceDetail.setBuilderCode("0225");
             contractGradePriceDetail.setOpId("0225");
@@ -884,7 +885,7 @@ public class ContractServiceImp implements ContractService {
         }
         try {
             Date date = new Date();
-            SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = sdf.format(date);
 
             Integer pump = contractMapper.selectPumpTruck(compid, pumpType, contractUID, contractDetailCode);

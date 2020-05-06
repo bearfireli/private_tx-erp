@@ -3,6 +3,7 @@ package com.hntxrj.txerp.controller.base;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.server.FileUPServer;
 import com.hntxrj.txerp.util.App;
 import com.hntxrj.txerp.util.StringStream;
@@ -75,7 +76,7 @@ public class FileUPController {
         //将String 装成 InputStream
         InputStream stream = StringStream.getStream(base64);
         //时间+uuid  为文件名
-        SimpleDateFormat sim = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmssSSS");
+        SimpleDateFormat sim = SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmssSSS");
         String format = sim.format(new Date());
         String uuid = format + UUID.randomUUID().toString().replace("-", "");
 

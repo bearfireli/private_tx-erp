@@ -2,6 +2,7 @@ package com.hntxrj.txerp.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.sell.*;
 import com.hntxrj.txerp.mapper.ContractMapper;
 import com.hntxrj.txerp.service.ContractService;
@@ -423,7 +424,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     private String makeContractId(Integer enterpriseId) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("YYYYMMddHHmmss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("YYYYMMddHHmmss");
         StringBuilder dateString = new StringBuilder(sdf.format(new Date()));
         for (int i = 0; i < 3 - enterpriseId.toString().length(); i++) {
             dateString.append("0");

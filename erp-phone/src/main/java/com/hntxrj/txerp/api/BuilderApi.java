@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.api;
 
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.server.BuilderService;
 import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.log4j.Log4j;
@@ -18,7 +19,7 @@ import java.util.Date;
 @Log4j
 public class BuilderApi {
     private final BuilderService builderService;
-    private SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public BuilderApi(BuilderService builderService) {

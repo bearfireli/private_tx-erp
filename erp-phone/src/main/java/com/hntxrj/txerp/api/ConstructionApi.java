@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.api;
 
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.server.ConstructionService;
 import com.hntxrj.txerp.vo.ResultVO;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,7 +58,7 @@ public class ConstructionApi {
                                                   Long beginTime, Long endTime,
                                                   @RequestParam(defaultValue = "1") Integer page,
                                                   @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(constructionService.getInvitationList(compid, buildCode,
                 useStatus, createUser, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), page, pageSize));

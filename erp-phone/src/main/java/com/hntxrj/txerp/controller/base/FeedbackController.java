@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.controller.base;
 
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.server.FeedbackService;
 import com.hntxrj.txerp.util.jdbc.GetMsg;
 import com.hntxrj.txerp.vo.JsonVo;
@@ -66,7 +67,7 @@ public class FeedbackController {
         for (int i = 0; i < files.size(); ++i) {
             file = files.get(i);
             if (!file.isEmpty()) {
-                SimpleDateFormat sim = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmssSSS");
+                SimpleDateFormat sim = SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmssSSS");
                 String destPath = realPath + upPath + sim.format(new Date()) + file.getOriginalFilename();
                 System.out.println(destPath);
                 BufferedInputStream bis = new BufferedInputStream(file.getInputStream());

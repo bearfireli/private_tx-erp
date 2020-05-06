@@ -2,6 +2,7 @@ package com.hntxrj.txerp.controller.base;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.PermissDao;
 import com.hntxrj.txerp.entity.PermiUrl;
 import com.hntxrj.txerp.server.PermissService;
@@ -381,7 +382,7 @@ public class UserController {
                 file.mkdirs();
             }
             InputStream stream = StringStream.getStream(base64);
-            SimpleDateFormat sim = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmssSSS");
+            SimpleDateFormat sim = SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmssSSS");
             String format = sim.format(new Date());
             String uuid = format + UUID.randomUUID().toString().replace("-", "");
             //文件名称

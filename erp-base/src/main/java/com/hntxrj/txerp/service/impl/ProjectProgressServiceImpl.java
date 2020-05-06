@@ -3,6 +3,7 @@ package com.hntxrj.txerp.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.service.ProjectProgressService;
 import com.hntxrj.txerp.service.UserService;
 import com.hntxrj.txerp.entity.base.ProjectProgress;
@@ -186,7 +187,7 @@ public class ProjectProgressServiceImpl implements ProjectProgressService {
         JSONObject scheduleObj = new JSONObject();
         scheduleObj.put("uid", user.getUid());
         scheduleObj.put("userName", user.getUsername());
-        SimpleDateFormat format = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy年MM月dd日 HH时mm分ss秒");
+        SimpleDateFormat format = SimpleDateFormatUtil.getSimpleDataFormat("yyyy年MM月dd日 HH时mm分ss秒");
         scheduleObj.put("createTime", format.format(new Date()));
         scheduleObj.put("msg", msg);
         scheduleArray.add(scheduleObj);

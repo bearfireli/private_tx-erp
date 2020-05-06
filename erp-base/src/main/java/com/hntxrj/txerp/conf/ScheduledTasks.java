@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.conf;
 
 
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.base.UserStatistic;
 import com.hntxrj.txerp.mapper.UserLoginMapper;
 import com.hntxrj.txerp.service.PVStatisticsService;
@@ -58,7 +59,7 @@ public class ScheduledTasks {
 
 
     private String timeFormat(Date date) {
-        SimpleDateFormat format = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
+        SimpleDateFormat format = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         String timeStr = format.format(date);
         return timeStr;
     }

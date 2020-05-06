@@ -2,6 +2,7 @@ package com.hntxrj.txerp.server.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.Data;
 import com.hntxrj.txerp.mapper.ConcreteMapper;
 import com.hntxrj.txerp.server.ConcreteService;
@@ -138,7 +139,7 @@ public class ConcreteServiceImpl implements ConcreteService {
      */
     @Override
     public List<ConcreteHistogram> getConcreteSaleNum(String compid, String eppCode, String placing, String taskId, String stgId, String beginTime, String endTime, Integer timeStatus) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         //用于最终返回数据的集合
         List<ConcreteHistogram> concreteHistogramsList = new ArrayList<>();
 

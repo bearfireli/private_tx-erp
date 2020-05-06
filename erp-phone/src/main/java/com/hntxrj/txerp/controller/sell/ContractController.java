@@ -3,6 +3,7 @@ package com.hntxrj.txerp.controller.sell;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.server.ContractService;
 import com.hntxrj.txerp.vo.JsonVo;
@@ -82,7 +83,7 @@ public class ContractController {
             e.printStackTrace();
         }
         //产生个当前时间
-        SimpleDateFormat simpleDateFormat = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         String format = simpleDateFormat.format(new Date());
         System.out.println(format);
         if (StringUtils.isEmpty(compid) && StringUtils.isEmpty(opid)) {
@@ -957,7 +958,7 @@ public class ContractController {
 //            return jsonVoAndPage;
 //        }
 //
-////        String  PPCode = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddhhmmss").format(new Date());
+////        String  PPCode = SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddhhmmss").format(new Date());
 //
 //        JSONArray jsonArray =cs.spinsertUpDelSMContractPriceMarkup(mark,compid,cContractCode,ContractUID,null,PPName,UnitPrice,JumpPrice,SelfDiscPrice,TowerCranePrice,OtherPrice,b);
 //

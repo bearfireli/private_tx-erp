@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.api;
 
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.server.ConsumeService;
 import com.hntxrj.txerp.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class ConsumeApi {
     public ResultVO getTaskConsumeList(String compid, Long beginTime, Long endTime,
                                        String vehicleId, String stgId, String taskId, String stirId,
                                        Integer page, Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getTaskConsumeList(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -62,7 +63,7 @@ public class ConsumeApi {
     public ResultVO getFormulaDetails(String compid, Long beginTime, Long endTime,
                                       String vehicleId, String stgId, String taskId, String stirId,
                                       Integer page, Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getFormulaDetails(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -87,7 +88,7 @@ public class ConsumeApi {
                                         String vehicleId, String stgId, String taskId, String stirId,
                                         @RequestParam(defaultValue = "1") Integer page,
                                         @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getErrorProductList(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -111,7 +112,7 @@ public class ConsumeApi {
     public ResultVO getConsumptionTotal(String compid, Long beginTime, Long endTime,
                                         String vehicleId, String stgId, String taskId, String stirId,
                                         Integer page, Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getConsumptionTotal(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -136,7 +137,7 @@ public class ConsumeApi {
     public ResultVO getConsumptionHistogram(String compid, Long beginTime, Long endTime,
                                             String vehicleId, String stgId, String taskId, String stirId
     ) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getConsumptionHistogram(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -152,8 +153,8 @@ public class ConsumeApi {
      * @return 查询材料名
      */
     @PostMapping("/getProductDatail")
-    public ResultVO getProductDatail(String compid,Integer stirId){
-        return ResultVO.create(consumeService.getProductDatail(compid,stirId));
+    public ResultVO getProductDatail(String compid, Integer stirId) {
+        return ResultVO.create(consumeService.getProductDatail(compid, stirId));
 
     }
 
@@ -177,7 +178,7 @@ public class ConsumeApi {
                                 String stgId,
                                 @RequestParam(defaultValue = "1") Integer page,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getMatTotal(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -204,7 +205,7 @@ public class ConsumeApi {
                                    String stgId,
                                    @RequestParam(defaultValue = "1") Integer page,
                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getProductionConsumptionDetails(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -229,7 +230,7 @@ public class ConsumeApi {
     public ResultVO getConsumeClose(String compid, Long beginTime, Long endTime,
                                     String vehicleId, String stgId, String taskId, String stirId,
                                     Integer page, Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getConsumeClose(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -247,7 +248,7 @@ public class ConsumeApi {
      */
     @PostMapping("/getErroPan")
     public ResultVO getErroPan(String compid, Long beginTime, Long endTime) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         Integer value = consumeService.getErrorPan(compid, beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)));
         return ResultVO.create(value);
