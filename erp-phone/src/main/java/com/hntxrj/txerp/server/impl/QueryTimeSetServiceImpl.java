@@ -8,6 +8,7 @@ import com.arronlong.httpclientutil.common.HttpHeader;
 import com.arronlong.httpclientutil.exception.HttpProcessException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.mapper.QueryTimeSetMapper;
 import com.hntxrj.txerp.server.QueryTimeSetService;
 import com.hntxrj.txerp.vo.PageVO;
@@ -99,7 +100,7 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
             for (QueryTimeSetVO queryTimeSetVO : list) {
                String compid =null;
                String queryName = null;
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
                int queryTime =0;
                String queryStartTime ="00:00";
                String queryStopTime ="00:00";

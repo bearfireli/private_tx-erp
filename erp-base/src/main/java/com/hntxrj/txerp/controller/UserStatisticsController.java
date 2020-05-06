@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.controller;
 
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.core.web.ResultVO;
 import com.hntxrj.txerp.entity.base.UserStatistic;
 import com.hntxrj.txerp.service.UserStatisticsService;
@@ -133,7 +134,7 @@ public class UserStatisticsController {
     }
 
     private String timeFormat(Date date) {
-        SimpleDateFormat format = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
+        SimpleDateFormat format = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         String timeStr = format.format(date);
         return timeStr;
     }

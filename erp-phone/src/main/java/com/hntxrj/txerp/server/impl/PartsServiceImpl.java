@@ -2,6 +2,7 @@ package com.hntxrj.txerp.server.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.WmConFigureApply;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
@@ -9,7 +10,6 @@ import com.hntxrj.txerp.mapper.PartsMapper;
 import com.hntxrj.txerp.repository.WmConFigureApplyRepository;
 import com.hntxrj.txerp.server.PartsService;
 import com.hntxrj.txerp.util.EntityTools;
-import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +101,7 @@ public class PartsServiceImpl implements PartsService {
         int page = 0;
         int pageSize = 1;
         //获取年
-        SimpleDateFormat sdf2 = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yy-MM-dd");
+        SimpleDateFormat sdf2 = SimpleDateFormatUtil.getSimpleDataFormat("yy-MM-dd");
         Date date = new Date();
         String year = sdf2.format(date);
         String requestNumber = year.replace("-", "");
@@ -129,7 +129,7 @@ public class PartsServiceImpl implements PartsService {
         }
         wmConFigureApply.setRequestNumber(requestNumber);
 
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         wmConFigureApply.setCreateTime(sdf.format(new Date()));
 
         wmConFigureApply.setStockStatus("1");
@@ -218,7 +218,7 @@ public class PartsServiceImpl implements PartsService {
         try {
             //获取签收时间
             Date date = new Date();
-            SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
             String auditResultOne = "";
             String verifyTimeOne = "";
             boolean verifyStatusOne = false;

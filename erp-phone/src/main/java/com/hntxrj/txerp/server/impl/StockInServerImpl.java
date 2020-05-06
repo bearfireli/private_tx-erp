@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.StockInDao;
 import com.hntxrj.txerp.mapper.PublicInfoMapper;
 import com.hntxrj.txerp.mapper.StockMapper;
@@ -405,7 +406,7 @@ public class StockInServerImpl implements StockInServer {
     @Override
     public List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime,
                                                             Integer type) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
 
         if (type == null || type != 1) {
             //查询的是今日或者昨日的原材料采购
@@ -730,7 +731,7 @@ public class StockInServerImpl implements StockInServer {
 
     //获取每个月的最后一天
     private String getLastDayOfMouth(Calendar ca) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
         return sdf.format(ca.getTime()).substring(8, 10);
     }

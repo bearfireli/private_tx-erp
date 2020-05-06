@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
@@ -148,7 +149,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             taskPlan.setClientType(0);
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         if (StringUtils.isEmpty(taskPlan.getTaskId())) {
 
@@ -360,7 +361,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public PageVO<SendCarTotalNumVO> getSendCarYesterDayNum(String compid, Integer page, Integer pageSize,
                                                             String time) throws ParseException {
         SendCarTotalNumVO totalNum = new SendCarTotalNumVO();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         Date today = sdf.parse(sdf.format(new Date()));
         Date as = DateUtils.addDays(today, -1);
         if (totalNum.getTime() != as) {
@@ -383,7 +384,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public PageVO<SendCarTotalNumVO> getMonthTotalNum(String compid, Integer page, Integer pageSize,
                                                       String monthStart, String monthEnd) {
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat format = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM");
 
         Date date = new Date();
         monthStart = format.format(date) + "-01";
@@ -944,7 +945,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
         SquareQuantityVO taskPlanPreNum = taskPlanMapper.taskPlanPreNum(compid, beginTime, endTime);
         QueryTimeSetVO queryTime = taskPlanMapper.queryTimeId(compid);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         if (queryTime != null) {
             beginTime = beginTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
         } else {
@@ -970,7 +971,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public JSONArray todayTask(String compid, String beginTime, String endTime) {
         QueryTimeSetVO queryTime = taskPlanMapper.queryTimeTask(compid);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         if (queryTime != null) {
             try {
                 Date date = sdf.parse(beginTime);
@@ -1241,7 +1242,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         int page = 0;
         int pageSize = 1;
         //获取年
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yy");
+        SimpleDateFormat sdf2 = SimpleDateFormatUtil.getSimpleDataFormat("yy");
         Date date = new Date();
         String year = sdf2.format(date);
         String taskId = "P" + compid + year;
@@ -1283,8 +1284,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public Map<String, String> getMonthTime(String beginTime, String endTime,
                                             QueryTimeSetVO queryTime) {
         Map<String, String> map = new HashMap<>();
-        DateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat fmt = SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMdd");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         String dateTime = sdf.format(new Date());
         if (queryTime != null
                 //如果用户设置的查询时间小于1号，大于28号，则按照默认时间1号到下个月1号
@@ -1335,9 +1336,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public Map<String, String> getTodayTime(String beginTime,
                                             QueryTimeSetVO queryTime) {
         Map<String, String> map = new HashMap<>();
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat fmt = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat sdf1 = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
+        DateFormat fmt = SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmss");
         String dateTime = sdf1.format(new Date());
         if (queryTime != null) {
             beginTime = beginTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
@@ -1379,12 +1380,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public Map<String, String> getYesterdayTime(String beginTime, String endTime,
                                                 QueryTimeSetVO queryTime) {
         Map<String, String> map = new HashMap<>();
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf1 = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         endTime = endTime.substring(0, 10);
         beginTime = beginTime.substring(0, 10);
         String dateTime = sdf1.format(new Date());
-        DateFormat fmt = new SimpleDateFormat("yyyyMMddHHmmss");
+        DateFormat fmt = SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmss");
         try {
             Date date = sdf.parse(beginTime);
             Calendar cal = Calendar.getInstance();

@@ -4,6 +4,7 @@ package com.hntxrj.txerp.controller.produce;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.MsgMapper;
@@ -446,7 +447,7 @@ public class LaboratroyController {
                                    String opid,
                                    @RequestParam(defaultValue = "1") Integer page,
                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(formulaService.getFormulaList(taskStatus, eppCode, placing, taskId,
                 startTime == null ? null : sdf.format(new Date(startTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
