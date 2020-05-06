@@ -18,7 +18,7 @@ import java.util.Date;
 @Log4j
 public class BuilderApi {
     private final BuilderService builderService;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat sdf = com.hntxrj.txerp.core.util.SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public BuilderApi(BuilderService builderService) {
