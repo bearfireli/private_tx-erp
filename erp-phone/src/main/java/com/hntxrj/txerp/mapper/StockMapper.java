@@ -14,7 +14,8 @@ public interface StockMapper {
 
     List<Map<String, Object>> getStockAll(String compid);
 
-    List<StockVO> getStockByStirId(String compid, Integer stirId);
+    // 根据用户的设置获取实时库存
+    List<StockVO> getStockByStirId(String compid, Integer stirId, List<String> stkCodes);
 
     List<StockVO> getPublicStockByStirId(String compid, Integer stirId);
 
@@ -246,14 +247,14 @@ public interface StockMapper {
     /**
      * 更新检验状态
      *
-     * @param compid      公司id
-     * @param deductNum   另扣量
-     * @param stICode     过磅单号
-     * @param isPassOrNot 是否合格
-     * @param picturePath 图片路径
-     * @param matCode     材料编码
-     * @param stkCode     库位编码
-     * @param inspector   检测人
+     * @param compid         公司id
+     * @param deductNum      另扣量
+     * @param stICode        过磅单号
+     * @param isPassOrNot    是否合格
+     * @param picturePath    图片路径
+     * @param matCode        材料编码
+     * @param stkCode        库位编码
+     * @param inspector      检测人
      * @param inspectionTime 检测时间
      */
     void updateCheckStatus(String compid, BigDecimal deductNum, String stICode, int isPassOrNot, String picturePath,
@@ -282,4 +283,10 @@ public interface StockMapper {
      * @param stICode 过磅单号
      */
     StockInCheckVO getStockCheck(String compid, String stICode);
+
+    /**
+     * 根据线号获取所有的库位信息
+     */
+    List<StockSelectVO> getAllStockList(String compid, Integer stirId);
+
 }

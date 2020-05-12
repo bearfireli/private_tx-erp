@@ -3,14 +3,17 @@ package com.hntxrj.txerp.server.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.dao.StockDao;
 import com.hntxrj.txerp.mapper.StockMapper;
+import com.hntxrj.txerp.mapper.SystemVarInitMapper;
 import com.hntxrj.txerp.server.StockService;
 import com.hntxrj.txerp.vo.StirIdVO;
+import com.hntxrj.txerp.vo.StockSelectVO;
 import com.hntxrj.txerp.vo.StockVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,11 +28,14 @@ public class StockServiceImpl implements StockService {
 
     private final StockDao stockDao;
     private final StockMapper stockMapper;
+    private final SystemVarInitMapper systemVarInitMapper;
+
 
     @Autowired
-    public StockServiceImpl(StockDao stockDao, StockMapper stockMapper) {
+    public StockServiceImpl(StockDao stockDao, StockMapper stockMapper, SystemVarInitMapper systemVarInitMapper) {
         this.stockDao = stockDao;
         this.stockMapper = stockMapper;
+        this.systemVarInitMapper = systemVarInitMapper;
     }
 
     /**
@@ -56,8 +62,17 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<StockVO> getStock(String compid, Integer stirId) {
+
+        // 从系统变量表中查询出用户设置的不显示的库位的库位代号
+        String stock = systemVarInitMapper.getNotShowStock(compid);
+        List<String> stkCodes = new ArrayList<>();
+        if (stock != null) {
+            String[] split = stock.split(",");
+            stkCodes = Arrays.asList(split);
+        }
+
         // 获取库存数据
-        List<StockVO> stockVOS = stockMapper.getStockByStirId(compid, stirId);
+        List<StockVO> stockVOS = stockMapper.getStockByStirId(compid, stirId, stkCodes);
         // 替换公共罐数据
         List<StockVO> publicStockVOs = stockMapper.getPublicStockByStirId(compid, stirId);
 
@@ -83,5 +98,32 @@ public class StockServiceImpl implements StockService {
     @Override
     public List<StirIdVO> getStirIds(String compid) {
         return stockMapper.getStirIds(compid);
+    }
+
+    @Override
+    public List<StockSelectVO> getAllStockList(String compid, Integer stirId) {
+        return stockMapper.getAllStockList(compid, stirId);
+    }
+
+    @Override
+    public List<String> getSelectStock(String compid) {
+        String selectedStock = systemVarInitMapper.getNotShowStock(compid);
+        List<String> stkCodeList = new ArrayList<>();
+        if (selectedStock != null) {
+            String[] stkCodes = selectedStock.split(",");
+            stkCodeList = Arrays.asList(stkCodes);
+        }
+        return stkCodeList;
+    }
+
+    @Override
+    public void saveStockCodes(String compid, String stkCodes) {
+        String selectedStock = systemVarInitMapper.getNotShowStock(compid);
+        if (selectedStock == null) {
+            Integer maxId = systemVarInitMapper.getMaxId(compid);
+            systemVarInitMapper.saveStock(compid, stkCodes, maxId + 1);
+        } else {
+            systemVarInitMapper.updateStock(compid, stkCodes);
+        }
     }
 }

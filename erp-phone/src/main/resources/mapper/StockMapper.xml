@@ -12,11 +12,17 @@
 
     <select id="getStockByStirId" resultType="com.hntxrj.txerp.vo.StockVO">
         select MP_Stock.*,MP_MaterialInfor.MatParent
-        from MP_Stock  left join MP_MaterialInfor
+        from MP_Stock left join MP_MaterialInfor
         on MP_Stock.compid=MP_MaterialInfor.compid and MP_Stock.MatCode=MP_MaterialInfor.MatCode
         where MP_Stock.RecStatus = 1
-          and MP_Stock.compid = #{compid}
-          and MP_Stock.stirId = #{stirId}
+        and MP_Stock.compid = #{compid}
+        and MP_Stock.stirId = #{stirId}
+        <if test="stkCodes!=null and stkCodes.size() > 0">
+            and MP_Stock.StkCode not in
+            <foreach collection="stkCodes" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
 
     <select id="getPublicStockByStirId" resultType="com.hntxrj.txerp.vo.StockVO">
@@ -27,8 +33,7 @@
         where MP_Stock.RecStatus = 1
           and MP_Stock.compid = #{compid}
           and MP_Stock.stirId = #{stirId}
-          and OderBy in (select ERPStockCode from De_StockCompare where stirid = #{stirId}
-                                                                    and compid = #{compid})
+          and OderBy in (select ERPStockCode from De_StockCompare where stirid = #{stirId}                                                             and compid = #{compid})
     </select>
 
 
@@ -101,7 +106,7 @@
     </select>
     <select id="getStockByComId" resultType="com.hntxrj.txerp.vo.StockVO">
         select
-        ms.StkCode,ms.Sto_Name,StirId as stirId,ms.Sto_Curqty  as stoCurqty
+        ms.StkCode,ms.Sto_Name,StirId as stirId,ms.Sto_Curqty as stoCurqty
         from MP_Stock ms
         where ms.compid=#{compid}
         <if test="searchWords!=null and searchWords!=''">
@@ -130,6 +135,13 @@
         left join MP_MaterialInfor t3 on t1.MatCode = t3.MatCode and t3.compid = t1.compid
         left join MP_Supplier t4 on t1.compid = t4.compid and t1.SupCode = t4.SupCode
         where t1.compid=#{compid} and t1.stICode=#{stICode}
+    </select>
+
+
+    <select id="getAllStockList" resultType="com.hntxrj.txerp.vo.StockSelectVO">
+        select StkCode, Sto_Name, StirId
+        from MP_Stock
+        where compid = #{compid} and StirId = #{stirId}
     </select>
 
 </mapper>
