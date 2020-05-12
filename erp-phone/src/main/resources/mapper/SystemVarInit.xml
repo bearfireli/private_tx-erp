@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.SystemVarInitMapper">
+    <insert id="saveStock">
+        insert into De_SystemVarInit
+        (ID,compid,
+        systemvarname,
+        systemvar,
+        varvalue,
+        varinivalue,
+        systemvarvalue,
+        remarks,
+        updownmark,
+        updown,
+        recstatus)
+        values
+        (#{maxId},#{compid},
+        '手机erp实时库存不显示的库位',
+        'StockNotShow', 0, #{stkCodes}, 1,
+        '在手机端可以设置实时库存功能中不显示的库位名称，设置以后，手机erp的实时库存将不再显示用户选中的库位信息',
+         0, 0, 1);
+    </insert>
+    <update id="updateStock">
+        update De_SystemVarInit
+        set VarIniValue=#{stkCodes},UpDownMark=0
+        where compid = #{compid}
+        and SystemVar = 'StockNotShow'
+    </update>
 
     <select id="getDriverWaitLED" resultType="com.hntxrj.txerp.vo.DriverWaitLEDVO">
         select SystemVarValue as isShow,VarValue as value
@@ -12,4 +37,15 @@
         from De_SystemVarInit
         where compid=#{compid} and  SystemVar='SalesStatisticTimeMode'
     </select>
+    <select id="getNotShowStock" resultType="java.lang.String">
+        select VarIniValue
+        from De_SystemVarInit where compid=#{compid} and SystemVar='StockNotShow'
+    </select>
+
+    <select id="getMaxId" resultType="java.lang.Integer">
+        select max (ID)
+        from De_SystemVarInit where compid=#{compid}
+    </select>
+
+
 </mapper>
