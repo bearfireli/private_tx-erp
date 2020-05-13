@@ -51,6 +51,8 @@ app:
     headerPath: ${app.workspace}\upload\user\header\
   pay:
     imgFilePath: ${app.workspace}\upload\payImgPath\
+  enterprise:
+    imgFilePath: ${app.workspace}\upload\enterpriseImgPath\
   checking:
     imgFilePath: ${app.workspace}\upload\checkImgPath\
   feedback:
