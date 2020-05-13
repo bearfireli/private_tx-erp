@@ -788,11 +788,11 @@
         select sum(PreNum) PreNum
         from PT_TaskPlan
         where compid = #{compid}
-          and ( PreTime between #{beginTime} and #{endTime}
-          and deletemark = 0
-          and RecStatus = 1
-           or TaskStatus =1 )
-          and VerifyStatus=1
+          and (PreTime between #{beginTime} and #{endTime}
+                   and deletemark = 0
+                   and RecStatus = 1
+            or TaskStatus = 1)
+          and VerifyStatus = 1
     </select>
     <select id="queryTimeId" resultType="com.hntxrj.txerp.vo.QueryTimeSetVO">
         select top 1 dd.compid,

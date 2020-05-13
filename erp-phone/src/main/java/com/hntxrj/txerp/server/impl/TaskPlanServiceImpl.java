@@ -948,7 +948,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         if (queryTime != null) {
             beginTime = beginTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
-            endTime =endTime.substring(0,10)+" "+queryTime.getQueryStartTime();
+            endTime = endTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
         } else {
             beginTime = beginTime.substring(0, 10) + " 00:00:00";
         }
