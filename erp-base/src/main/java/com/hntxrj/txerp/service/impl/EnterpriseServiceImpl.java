@@ -521,13 +521,11 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         String fileName = UUID.randomUUID().toString() + ".PNG";
         String temPath = enterpriseImgFilePath;
 
-        // 新接口使用
         File dir = new File(temPath);
         dir.mkdirs();
         File file = new File(temPath + fileName);
         try {
             Boolean b = file.createNewFile();
-            System.out.println(b);
             IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
         } catch (Exception e) {
             e.printStackTrace();
