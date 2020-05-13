@@ -52,6 +52,8 @@ public class ControllerAspect {
     private static final String SELECT_USER_ALL = "/user/selectAllUser";
     private static final String SELECT_ALL_USER = "/user/userAll";
     private static final String TOKEN_GET_USER = "/user/tokenGetUser";
+    private static final String UPLOAD_ENTERPRISE_IMG = "/enterprise/uploadEnterprisePicture";
+    private static final String GET_ENTERPRISE_IMG = "/enterprise/getEnterprisePicture";
 
 
     private static final String DOCUMENT_URI = "/swagger";
@@ -75,7 +77,7 @@ public class ControllerAspect {
             LOGIN_API, TOKEN_USE, TOKEN_CHECK, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILE_DOWNLOAD, LOGIN_REST_API,
             FAVICON, JOURNALISM_LIST, JOURNALISM_BY_ID, JOURNALISM_SELECT_LIST, GET_AUTH_VALUE, USER_SET_USER_FAVORITE,
             USER_GET_USER_FAVORITE, UPLOAD_PICTURE, SAVE_COLLECTION_CODE, USER_EXPIRE_TIME, SELECT_USER_ALL,
-            SELECT_ALL_USER,TOKEN_GET_USER
+            SELECT_ALL_USER,TOKEN_GET_USER,UPLOAD_ENTERPRISE_IMG,GET_ENTERPRISE_IMG
     };
 
     private static final String[] PUBLIC_PATH = new String[]{

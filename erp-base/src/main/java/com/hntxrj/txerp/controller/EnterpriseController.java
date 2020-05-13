@@ -163,4 +163,17 @@ public class EnterpriseController {
         resultVO.setData(enterpriseService.saveCollectionCode(eid, imageFile, type));
         return resultVO;
     }
+
+
+    //上传企业头像
+    @RequestMapping("/uploadEnterprisePicture")
+    public ResultVO uploadEnterprisePicture(MultipartFile image) throws ErpException {
+        return ResultVO.create(enterpriseService.uploadEnterprisePicture(image));
+    }
+
+    //获取企业头像
+    @RequestMapping("/getEnterprisePicture")
+    public void getEnterprisePicture(String imgUrl, HttpServletResponse response) throws ErpException {
+        enterpriseService.getEnterprisePicture(imgUrl, response);
+    }
 }
