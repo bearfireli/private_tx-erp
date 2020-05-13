@@ -44,6 +44,10 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     @Value("${app.pay.imgFilePath}")
     private String imgFilePath;
 
+    @Value("${app.enterprise.imgFilePath}")
+    private String enterpriseImgFilePath;
+
+
     @Value("${app.host}")
     private String url;  //请求erpPhone项目的路径
 
@@ -381,7 +385,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     public void getCollectionCode(Integer eid, Integer type, HttpServletResponse response) throws ErpException {
         Enterprise enterprise = enterpriseRepository.findById(eid)
                 .orElseThrow(() -> new ErpException(ErrEumn.ENTERPRISE_NOEXIST));
-        String fileName ;
+        String fileName;
         if (enterprise.getCollectionCode() != null && !enterprise.getCollectionCode().equals("")) {
             fileName = enterprise.getCollectionCode();
         } else {
@@ -503,6 +507,42 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
         File file = new File(imgFilePath + fileName);
         if (!file.exists()) {
             throw new ErpException(ErrEumn.NOT_FOUNDNOT_FILE);
+        }
+        try {
+            IOUtils.copy(new FileInputStream(file), response.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
+        }
+    }
+
+    @Override
+    public String uploadEnterprisePicture(MultipartFile image) throws ErpException {
+        String fileName = UUID.randomUUID().toString() + ".PNG";
+        String temPath = enterpriseImgFilePath;
+
+        // 新接口使用
+        File dir = new File(temPath);
+        dir.mkdirs();
+        File file = new File(temPath + fileName);
+        try {
+            Boolean b = file.createNewFile();
+            System.out.println(b);
+            IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
+        }
+
+        return fileName;
+    }
+
+    @Override
+    public void getEnterprisePicture(String imgUrl, HttpServletResponse response) throws ErpException {
+        String tempPath = enterpriseImgFilePath;
+        File file = new File(tempPath + imgUrl);
+        if (!file.exists()) {
+            file=new File(tempPath + "default.png");
         }
         try {
             IOUtils.copy(new FileInputStream(file), response.getOutputStream());
