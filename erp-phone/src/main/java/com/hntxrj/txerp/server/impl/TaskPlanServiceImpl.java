@@ -943,14 +943,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public JSONArray phoneStatistics(String compid, String beginTime, String endTime) {
 
-        SquareQuantityVO taskPlanPreNum = taskPlanMapper.taskPlanPreNum(compid, beginTime, endTime);
+
         QueryTimeSetVO queryTime = taskPlanMapper.queryTimeId(compid);
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         if (queryTime != null) {
             beginTime = beginTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
+            endTime = endTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
         } else {
             beginTime = beginTime.substring(0, 10) + " 00:00:00";
         }
+        SquareQuantityVO taskPlanPreNum = taskPlanMapper.taskPlanPreNum(compid, beginTime, endTime);
         endTime = sdf.format(new Date());
         SquareQuantityVO squareQuantityVO = taskPlanMapper.phoneStatistics(compid, beginTime, endTime);
         if (taskPlanPreNum != null) {
