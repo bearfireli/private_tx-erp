@@ -4,6 +4,7 @@ package com.hntxrj.txerp.service;
 import com.hntxrj.txerp.entity.base.Enterprise;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.EnterpriseDropDownVO;
+import com.hntxrj.txerp.vo.EnterpriseInformationVO;
 import com.hntxrj.txerp.vo.PageVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,8 +70,14 @@ public interface EnterpriseService {
     void getimage(String fileName, HttpServletResponse response) throws ErpException;
 
     //上传企业头像
-    String uploadEnterprisePicture(MultipartFile image) throws ErpException;
+    String uploadEnterpriseLogo(MultipartFile image) throws ErpException;
 
     //获取企业头像
-    void getEnterprisePicture(String imgUrl, HttpServletResponse response) throws ErpException;
+    void getEnterpriseLogo(String imgUrl, HttpServletResponse response) throws ErpException;
+
+    //手机erp获取企业信息
+    EnterpriseInformationVO getEnterpriseInformation(Integer eid);
+
+    //手机erp修改企业信息
+    void updateEnterpriseInformation(Integer eid, String epName, String epShortName, String logoUrl);
 }

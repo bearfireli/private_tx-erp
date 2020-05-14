@@ -52,8 +52,9 @@ public class ControllerAspect {
     private static final String SELECT_USER_ALL = "/user/selectAllUser";
     private static final String SELECT_ALL_USER = "/user/userAll";
     private static final String TOKEN_GET_USER = "/user/tokenGetUser";
-    private static final String UPLOAD_ENTERPRISE_IMG = "/enterprise/uploadEnterprisePicture";
-    private static final String GET_ENTERPRISE_IMG = "/enterprise/getEnterprisePicture";
+    private static final String UPLOAD_ENTERPRISE_IMG = "/enterprise/uploadEnterpriseLogo";
+    private static final String GET_ENTERPRISE_IMG = "/enterprise/getEnterpriseLogo";
+    private static final String GET_ENTERPRISE_INFORMATION = "/enterprise/getEnterpriseInformation";
 
 
     private static final String DOCUMENT_URI = "/swagger";
@@ -77,13 +78,13 @@ public class ControllerAspect {
             LOGIN_API, TOKEN_USE, TOKEN_CHECK, THIRD_LOGIN, ERROR, USER_ENTERPRISE, FILE_DOWNLOAD, LOGIN_REST_API,
             FAVICON, JOURNALISM_LIST, JOURNALISM_BY_ID, JOURNALISM_SELECT_LIST, GET_AUTH_VALUE, USER_SET_USER_FAVORITE,
             USER_GET_USER_FAVORITE, UPLOAD_PICTURE, SAVE_COLLECTION_CODE, USER_EXPIRE_TIME, SELECT_USER_ALL,
-            SELECT_ALL_USER,TOKEN_GET_USER,UPLOAD_ENTERPRISE_IMG,GET_ENTERPRISE_IMG
+            SELECT_ALL_USER, TOKEN_GET_USER, UPLOAD_ENTERPRISE_IMG, GET_ENTERPRISE_IMG, GET_ENTERPRISE_INFORMATION
     };
 
     private static final String[] PUBLIC_PATH = new String[]{
             DOCUMENT_URI, WEBJARS, V2, JOURNALISM_IMAGES, USER_IMAGES, FEED_BOCK_IMAGES, ENTERPRISE_IMAGES,
             ENTERPRISE_IMAGE, USER_USERNAME, ENTERPRISE_GET_ENTERPRISE, USER_SET_HEADER, FEED_BOCK_UPLOAD_PICTURE,
-            FEED_BOCK_ADD_FEEDBACK, USER_STATISTIC, FUNCTION_MENU_LIST,USER_UPDATE_PASSWORD
+            FEED_BOCK_ADD_FEEDBACK, USER_STATISTIC, FUNCTION_MENU_LIST, USER_UPDATE_PASSWORD
     };
 
 
