@@ -52,8 +52,8 @@ public class ControllerAspect {
     private static final String SELECT_USER_ALL = "/user/selectAllUser";
     private static final String SELECT_ALL_USER = "/user/userAll";
     private static final String TOKEN_GET_USER = "/user/tokenGetUser";
-    private static final String UPLOAD_ENTERPRISE_IMG = "/enterprise/uploadEnterprisePicture";
-    private static final String GET_ENTERPRISE_IMG = "/enterprise/getEnterprisePicture";
+    private static final String UPLOAD_ENTERPRISE_IMG = "/enterprise/uploadEnterpriseLogo";
+    private static final String GET_ENTERPRISE_IMG = "/enterprise/getEnterpriseLogo";
     private static final String GET_ENTERPRISE_INFORMATION = "/enterprise/getEnterpriseInformation";
 
 
