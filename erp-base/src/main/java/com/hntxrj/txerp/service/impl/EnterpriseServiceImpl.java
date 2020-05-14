@@ -517,7 +517,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     }
 
     @Override
-    public String uploadEnterprisePicture(MultipartFile image) throws ErpException {
+    public String uploadEnterpriseLogo(MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString() + ".PNG";
         String temPath = enterpriseImgFilePath;
 
@@ -536,11 +536,11 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     }
 
     @Override
-    public void getEnterprisePicture(String imgUrl, HttpServletResponse response) throws ErpException {
+    public void getEnterpriseLogo(String imgUrl, HttpServletResponse response) throws ErpException {
         String tempPath = enterpriseImgFilePath;
         File file = new File(tempPath + imgUrl);
         if (!file.exists()) {
-            file=new File(tempPath + "default.png");
+            file = new File(tempPath + "default.png");
         }
         try {
             IOUtils.copy(new FileInputStream(file), response.getOutputStream());
@@ -548,6 +548,16 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             e.printStackTrace();
             throw new ErpException(ErrEumn.DOWNLOAD_FILE_ERROR);
         }
+    }
+
+    @Override
+    public EnterpriseInformationVO getEnterpriseInformation(Integer eid) {
+        return enterpriseMapper.getEnterpriseInformation(eid);
+    }
+
+    @Override
+    public void updateEnterpriseInformation(Integer eid, String epName, String epShortName, String logoUrl) {
+        enterpriseMapper.updateEnterpriseInformation(eid, epName, epShortName, logoUrl);
     }
 
     /**

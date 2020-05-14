@@ -166,14 +166,27 @@ public class EnterpriseController {
 
 
     //上传企业头像
-    @RequestMapping("/uploadEnterprisePicture")
-    public ResultVO uploadEnterprisePicture(MultipartFile image) throws ErpException {
-        return ResultVO.create(enterpriseService.uploadEnterprisePicture(image));
+    @RequestMapping("/uploadEnterpriseLogo")
+    public ResultVO uploadEnterpriseLogo(MultipartFile image) throws ErpException {
+        return ResultVO.create(enterpriseService.uploadEnterpriseLogo(image));
     }
 
     //获取企业头像
-    @RequestMapping("/getEnterprisePicture")
-    public void getEnterprisePicture(String imgUrl, HttpServletResponse response) throws ErpException {
-        enterpriseService.getEnterprisePicture(imgUrl, response);
+    @RequestMapping("/getEnterpriseLogo")
+    public void getEnterpriseLogo(String imgUrl, HttpServletResponse response) throws ErpException {
+        enterpriseService.getEnterpriseLogo(imgUrl, response);
+    }
+
+    //手机erp设置企业信息
+    @PostMapping("/updateEnterpriseInformation")
+    public ResultVO updateEnterpriseInformation(Integer eid, String epName, String epShortName, String logoUrl) {
+        enterpriseService.updateEnterpriseInformation(eid, epName, epShortName, logoUrl);
+        return ResultVO.create();
+    }
+
+    //手机erp获取企业信息
+    @PostMapping("/getEnterpriseInformation")
+    public ResultVO getEnterpriseInformation(Integer eid) {
+        return ResultVO.create(enterpriseService.getEnterpriseInformation(eid));
     }
 }
