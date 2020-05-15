@@ -70,10 +70,10 @@ public interface EnterpriseService {
 
     void getimage(String fileName, HttpServletResponse response) throws ErpException;
 
-    //上传企业头像
+    //上传企业logo
     Map<String,String> uploadEnterpriseLogo(MultipartFile image) throws ErpException;
 
-    //获取企业头像
+    //获取企业logo
     void getEnterpriseLogo(String imgUrl, HttpServletResponse response) throws ErpException;
 
     //手机erp获取企业信息
