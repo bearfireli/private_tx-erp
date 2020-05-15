@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 public interface EnterpriseService {
 
@@ -69,10 +70,10 @@ public interface EnterpriseService {
 
     void getimage(String fileName, HttpServletResponse response) throws ErpException;
 
-    //上传企业头像
-    String uploadEnterpriseLogo(MultipartFile image) throws ErpException;
+    //上传企业logo
+    Map<String,String> uploadEnterpriseLogo(MultipartFile image) throws ErpException;
 
-    //获取企业头像
+    //获取企业logo
     void getEnterpriseLogo(String imgUrl, HttpServletResponse response) throws ErpException;
 
     //手机erp获取企业信息
