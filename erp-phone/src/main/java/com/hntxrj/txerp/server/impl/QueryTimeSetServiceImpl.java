@@ -55,11 +55,11 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
         PageHelper.startPage(page, pageSize);
         //根据compid查询，设置的时间表
         List<QueryTimeSetVO> queryTimeSetVO = queryTimeSetMapper.getQueryTimeSetList(compid);
-        for (QueryTimeSetVO time:queryTimeSetVO) {
+        for (QueryTimeSetVO time : queryTimeSetVO) {
             SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
-            String beginTime = sdf.format(new Date()) +" 00:00:00";
-            String endTime =sdf.format(new Date()) +" 23:59:59";
-            Map<String, String> yesterdayTime =publicQueryTime(compid,beginTime,endTime,time.getQueryName(),queryTimeSetVO);
+            String beginTime = sdf.format(new Date()) + " 00:00:00";
+            String endTime = sdf.format(new Date()) + " 23:59:59";
+            Map<String, String> yesterdayTime = publicQueryTime(compid, beginTime, endTime, time.getQueryName(), queryTimeSetVO);
             time.setBeginTime(yesterdayTime.get("beginTime"));
             time.setEndTime(yesterdayTime.get("endTime"));
         }
@@ -176,7 +176,7 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
     }
 
     /**
-     * 时间查询公共接口
+     * 时间查询
      * @param compid   企业id
      * @param beginTime  开始时间
      * @param endTime   结束时间
