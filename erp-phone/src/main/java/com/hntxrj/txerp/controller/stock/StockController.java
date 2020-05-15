@@ -33,12 +33,15 @@ public class StockController {
     /**
      * 实时库存
      *
-     * @param stirId 搅拌楼号
-     * @return
+     * @param stirId    搅拌楼号
+     * @param compid    企业id
+     * @param opid      操作人代号
+     * @param queryType 材料查询分类 0全部库位 1 粉液料库位
+     * @return 实时库存
      */
     @ApiOperation("实时库存")
     @RequestMapping("/getRealStock")
-    public JsonVo getRealStock(String stirId, String compid, String opid) {
+    public JsonVo getRealStock(String stirId, String compid, String opid, Integer queryType) {
         JsonVo vo = new JsonVo();
         if (compid == null || "".equals(compid)) {
             vo.setCode(1);
@@ -48,7 +51,7 @@ public class StockController {
             vo.setMsg("ok");
             /* 为Null为空 */
             stirId = stirId == null || "".equals(stirId) ? null : stirId;
-            vo.setData(stockService.realStock(stirId, compid, opid));
+            vo.setData(stockService.realStock(stirId, compid, opid, queryType));
         }
         return vo;
     }

@@ -39,14 +39,17 @@ public class StockServiceImpl implements StockService {
     }
 
     /**
-     * 实时库存统计
+     * 实时库存
      *
-     * @param stirId 搅拌楼Id号
-     * @return
+     * @param stirId    搅拌楼号
+     * @param compid    企业id
+     * @param opid      操作人代号
+     * @param queryType 材料查询分类 0全部库位 1 粉液料库位
+     * @return 实时库存
      */
     @Override
-    public JSONArray realStock(String stirId, String compid, String opid) {
-        return stockDao.realStock(stirId, compid, opid);
+    public JSONArray realStock(String stirId, String compid, String opid, Integer queryType) {
+        return stockDao.realStock(stirId, compid, opid, queryType);
     }
 
     /**
