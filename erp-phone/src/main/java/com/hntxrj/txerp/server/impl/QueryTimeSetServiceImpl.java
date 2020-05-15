@@ -60,8 +60,8 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
             String beginTime = sdf.format(new Date()) + " 00:00:00";
             String endTime = sdf.format(new Date()) + " 23:59:59";
             Map<String, String> yesterdayTime = publicQueryTime(beginTime, endTime, time);
-            time.setBeginTime(yesterdayTime.get("beginTime"));
-            time.setEndTime(yesterdayTime.get("endTime"));
+            time.setBeginTime(yesterdayTime.get("beginTime")==null?beginTime:yesterdayTime.get("beginTime"));
+            time.setEndTime(yesterdayTime.get("endTime")==null?endTime:yesterdayTime.get("endTime"));
         }
 
 
