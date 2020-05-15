@@ -25,13 +25,4 @@ public interface QueryTimeSetService {
      */
     void upDateQueryTime( List<QueryTimeSetVO> list);
 
-    /**
-     * 时间查询公共接口
-     * @param compid   企业id
-     * @param beginTime  开始时间
-     * @param endTime   结束时间
-     * @param name     功能名称
-     * @return   返回map
-     */
-    Map<String, String> publicQueryTime(String compid, String beginTime, String endTime, String name);
 }

@@ -55,6 +55,15 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
         PageHelper.startPage(page, pageSize);
         //根据compid查询，设置的时间表
         List<QueryTimeSetVO> queryTimeSetVO = queryTimeSetMapper.getQueryTimeSetList(compid);
+        for (QueryTimeSetVO time:queryTimeSetVO) {
+            SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
+            String beginTime = sdf.format(new Date()) +" 00:00:00";
+            String endTime =sdf.format(new Date()) +" 23:59:59";
+            Map<String, String> yesterdayTime =publicQueryTime(compid,beginTime,endTime,time.getQueryName(),queryTimeSetVO);
+            time.setBeginTime(yesterdayTime.get("beginTime"));
+            time.setEndTime(yesterdayTime.get("endTime"));
+        }
+
 
         //查询menu表中的功能名称
         List<String> menuList = checkTokenIsNormal();
@@ -174,15 +183,13 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
      * @param name     功能名称
      * @return   返回map
      */
-    @Override
-    public Map<String, String> publicQueryTime(String compid, String beginTime, String endTime, String name) {
+    private Map<String, String> publicQueryTime(String compid, String beginTime, String endTime, String name,
+                                               List<QueryTimeSetVO> queryTimeSetVO) {
         Map<String, String> map = new HashMap<>();
         SimpleDateFormat sdfTime = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
         DateFormat fmt = SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmss");
         if (compid != null) {
-            //根据compid查询，设置的时间表
-            List<QueryTimeSetVO> queryTimeSetVO = queryTimeSetMapper.getQueryTimeSetList(compid);
             if (name != null) {
                 //获取当前时间
                 String dateTime = sdfTime.format(new Date());
