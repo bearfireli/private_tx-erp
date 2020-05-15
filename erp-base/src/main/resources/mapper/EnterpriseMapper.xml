@@ -3,7 +3,7 @@
 <mapper namespace="com.hntxrj.txerp.mapper.EnterpriseMapper">
 
 
-    <update id="updateId" parameterType="com.hntxrj.txerp.entity.base.Enterprise"   >
+    <update id="updateId" parameterType="com.hntxrj.txerp.entity.base.Enterprise">
         update  enterprise
         set
             eid =#{enterpriseOld.eid},
@@ -20,4 +20,18 @@
         where
           eid =#{id}
     </update>
+
+    <select id="updateEnterpriseInformation">
+        UPDATE enterprise
+        SET
+            ep_name=#{epName} ,
+            ep_short_name=#{epShortName},
+            logo_url=#{logoUrl}
+        WHERE eid=#{eid}
+    </select>
+
+    <select id="getEnterpriseInformation" resultType="com.hntxrj.txerp.vo.EnterpriseInformationVO">
+        SELECT ep_name as epName,ep_short_name as epShortName,logo_url as logoUrl
+        FROM enterprise WHERE eid=#{eid}
+    </select>
 </mapper>

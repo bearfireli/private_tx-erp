@@ -163,4 +163,30 @@ public class EnterpriseController {
         resultVO.setData(enterpriseService.saveCollectionCode(eid, imageFile, type));
         return resultVO;
     }
+
+
+    //上传企业头像
+    @RequestMapping("/uploadEnterpriseLogo")
+    public ResultVO uploadEnterpriseLogo(MultipartFile image) throws ErpException {
+        return ResultVO.create(enterpriseService.uploadEnterpriseLogo(image));
+    }
+
+    //获取企业头像
+    @RequestMapping("/getEnterpriseLogo")
+    public void getEnterpriseLogo(String imgUrl, HttpServletResponse response) throws ErpException {
+        enterpriseService.getEnterpriseLogo(imgUrl, response);
+    }
+
+    //手机erp设置企业信息
+    @PostMapping("/updateEnterpriseInformation")
+    public ResultVO updateEnterpriseInformation(Integer eid, String epName, String epShortName, String logoUrl) {
+        enterpriseService.updateEnterpriseInformation(eid, epName, epShortName, logoUrl);
+        return ResultVO.create();
+    }
+
+    //手机erp获取企业信息
+    @PostMapping("/getEnterpriseInformation")
+    public ResultVO getEnterpriseInformation(Integer eid) {
+        return ResultVO.create(enterpriseService.getEnterpriseInformation(eid));
+    }
 }
