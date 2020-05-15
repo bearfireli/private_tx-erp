@@ -913,7 +913,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             int queryType = 6;
             QueryTimeSetVO queryTime = taskPlanMapper.getQueryTime(compid, queryType);
             //拼接开始时间和结束时间
-            Map<String, String> todayTime = getTodayTime(beginTime, queryTime);
+            Map<String, String> todayTime = getTodayTime(beginTime, endTime, queryTime);
             beginTime = todayTime.get("beginTime");
             endTime = todayTime.get("endTime");
         } else if (type == 2) {
@@ -943,25 +943,14 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public JSONArray phoneStatistics(String compid, String beginTime, String endTime) {
 
-
         QueryTimeSetVO queryTime = taskPlanMapper.queryTimeId(compid);
-        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+
         if (queryTime != null) {
-            beginTime = beginTime.substring(0, 10) + " " + queryTime.getQueryStartTime();
-            SimpleDateFormat sdfTime = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
-            try {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(sdfTime.parse(endTime.substring(0, 10)));
-                cal.add(Calendar.DATE, 1);
-                endTime = sdfTime.format(cal.getTime()) + " " + queryTime.getQueryStartTime();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        } else {
-            beginTime = beginTime.substring(0, 10) + " 00:00:00";
+            Map<String, String> todayTime = getTodayTime(beginTime, endTime, queryTime);
+            beginTime = todayTime.get("beginTime");
+            endTime = todayTime.get("endTime");
         }
         SquareQuantityVO taskPlanPreNum = taskPlanMapper.taskPlanPreNum(compid, beginTime, endTime);
-        endTime = sdf.format(new Date());
         SquareQuantityVO squareQuantityVO = taskPlanMapper.phoneStatistics(compid, beginTime, endTime);
         if (taskPlanPreNum != null) {
             if (squareQuantityVO == null) {
@@ -1343,7 +1332,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     }
 
     //首页查询今日方量时拼接开始时间和结束时间
-    public Map<String, String> getTodayTime(String beginTime,
+    public Map<String, String> getTodayTime(String beginTime, String endTime,
                                             QueryTimeSetVO queryTime) {
         Map<String, String> map = new HashMap<>();
         SimpleDateFormat sdf1 = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
@@ -1363,17 +1352,20 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 //返回-1:begin小于end
                 if (begin.compareTo(date) > 0) {
                     //说明开始时间大于当前时间，需要把开始时间和结束时间减一个天。
-                    Date time = null;
-                    try {
-                        time = sdf.parse(beginTime);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    Date time = sdf.parse(beginTime);
                     Calendar cal = Calendar.getInstance();
                     assert time != null;
                     cal.setTime(time);
                     cal.add(Calendar.DATE, -1);
                     beginTime = sdf.format(cal.getTime()).substring(0, 10) + " " + queryTime.getQueryStartTime();
+                    endTime = endTime.substring(0, 10) + " " + queryTime.getQueryStopTime();
+                } else {
+                    Date time = sdf.parse(beginTime);
+                    Calendar cal = Calendar.getInstance();
+                    assert time != null;
+                    cal.setTime(time);
+                    cal.add(Calendar.DATE, 1);
+                    endTime = sdf.format(cal.getTime()).substring(0, 10) + " " + queryTime.getQueryStartTime();
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -1382,7 +1374,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             beginTime = beginTime.substring(0, 10) + " 00:00:00";
         }
         map.put("beginTime", beginTime);
-        map.put("endTime", sdf1.format(new Date()));
+        map.put("endTime", endTime);
         return map;
     }
 
