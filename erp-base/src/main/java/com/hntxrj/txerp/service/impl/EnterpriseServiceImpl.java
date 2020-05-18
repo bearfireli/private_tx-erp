@@ -517,7 +517,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     }
 
     @Override
-    public String uploadEnterpriseLogo(MultipartFile image) throws ErpException {
+    public Map<String, String> uploadEnterpriseLogo(MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString() + ".PNG";
         String temPath = enterpriseImgFilePath;
 
@@ -532,7 +532,10 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             throw new ErpException(ErrEumn.UPLOAD_FILE_ERROR);
         }
 
-        return fileName;
+        Map<String, String> map = new HashMap<>();
+        map.put("fileName", fileName);
+
+        return map;
     }
 
     @Override
