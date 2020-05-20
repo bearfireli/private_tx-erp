@@ -14,7 +14,8 @@ public interface StockMapper {
 
     List<Map<String, Object>> getStockAll(String compid);
 
-    List<StockVO> getStockByStirId(String compid, Integer stirId);
+    // 根据用户的设置获取实时库存
+    List<StockVO> getStockByStirId(String compid, Integer stirId, List<String> stkCodes);
 
     List<StockVO> getPublicStockByStirId(String compid, Integer stirId);
 
@@ -290,4 +291,10 @@ public interface StockMapper {
      * @param stICode 过磅单号
      */
     Map<String, String> getStockIn(String compid, String stICode);
+
+    /**
+     * 根据线号获取所有的库位信息
+     */
+    List<StockSelectVO> getAllStockList(String compid, Integer stirId);
+
 }

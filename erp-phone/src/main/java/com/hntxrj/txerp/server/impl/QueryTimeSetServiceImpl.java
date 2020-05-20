@@ -19,10 +19,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author qyb
@@ -55,6 +55,15 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
         PageHelper.startPage(page, pageSize);
         //根据compid查询，设置的时间表
         List<QueryTimeSetVO> queryTimeSetVO = queryTimeSetMapper.getQueryTimeSetList(compid);
+        for (QueryTimeSetVO time : queryTimeSetVO) {
+            SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
+            String beginTime = sdf.format(new Date()) + " 00:00:00";
+            String endTime = sdf.format(new Date()) + " 23:59:59";
+            Map<String, String> yesterdayTime = publicQueryTime(beginTime, endTime, time);
+            time.setBeginTime(yesterdayTime.get("beginTime")==null?beginTime:yesterdayTime.get("beginTime"));
+            time.setEndTime(yesterdayTime.get("endTime")==null?endTime:yesterdayTime.get("endTime"));
+        }
+
 
         //查询menu表中的功能名称
         List<String> menuList = checkTokenIsNormal();
@@ -164,5 +173,96 @@ public class QueryTimeSetServiceImpl implements QueryTimeSetService {
             e.printStackTrace();
         }
         return list;
+    }
+
+    /**
+     * 时间查询
+     * @param beginTime  开始时间
+     * @param endTime   结束时间
+     * @param queryTimeSetVO 默认时间类
+     * @return   返回map
+     */
+    private Map<String, String> publicQueryTime(String beginTime, String endTime,
+                                                QueryTimeSetVO queryTimeSetVO) {
+        Map<String, String> map = new HashMap<>();
+        SimpleDateFormat sdfTime = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd");
+        DateFormat fmt = SimpleDateFormatUtil.getSimpleDataFormat("yyyyMMddHHmmss");
+        //获取当前时间
+        String dateTime = sdfTime.format(new Date());
+        if (queryTimeSetVO.getQuerytime() == 0) {
+            if (queryTimeSetVO.getQueryStartTime() != null) {
+                beginTime = beginTime.substring(0, 10) + " " + queryTimeSetVO.getQueryStartTime();
+            }
+            if (queryTimeSetVO.getQueryStopTime() != null) {
+                endTime = endTime.substring(0, 10) + " " + queryTimeSetVO.getQueryStopTime();
+            }
+        } else {
+            //获取开始时间
+            beginTime = beginTime.substring(0, 10) + " " + queryTimeSetVO.getQueryStartTime();
+            endTime = endTime.substring(0, 10) + " " + queryTimeSetVO.getQueryStartTime();
+            String regex = "(-? ?:?)";
+            try {
+                Date dates = fmt.parse(dateTime.replaceAll(regex, ""));
+                if (queryTimeSetVO.getQuerytime() > 0) {
+                    //首先根据时间间隔把结束时间调整
+                    Date date = sdf.parse(endTime.substring(0, 10));
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
+                    cal.add(Calendar.DATE, queryTimeSetVO.getQuerytime());
+                    endTime = sdf.format(cal.getTime()).substring(0, 10) + " " +
+                            queryTimeSetVO.getQueryStartTime();
+                    Date begin = fmt.parse(beginTime.replaceAll(regex, ""));
+                    //判断开始时间和结束时间是否相同,
+                    //返回1:begin大于end;
+                    //返回0:begin等于end;
+                    //返回-1:begin小于end
+                    if (begin.compareTo(dates) > 0) {
+                        //说明开始时间大于当前时间，需要把开始时间和结束时间减一天。
+                        Date dateBegin = sdf.parse(beginTime);
+                        cal.setTime(dateBegin);
+                        cal.add(Calendar.DATE, -1);
+                        beginTime = sdf.format(cal.getTime()).substring(0, 10) + " " +
+                                queryTimeSetVO.getQueryStartTime();
+                        Date dateEnd = sdf.parse(endTime);
+                        cal.setTime(dateEnd);
+                        cal.add(Calendar.DATE, -1);
+                        endTime = sdf.format(cal.getTime()).substring(0, 10) + " " +
+                                queryTimeSetVO.getQueryStartTime();
+                    }
+                } else if (queryTimeSetVO.getQuerytime() < 0) {
+                    //首先根据时间间隔把开始时间调整
+                    Date date = sdf.parse(beginTime.substring(0, 10));
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
+                    cal.add(Calendar.DATE, queryTimeSetVO.getQuerytime());
+                    beginTime = sdf.format(cal.getTime()).substring(0, 10) + " " +
+                            queryTimeSetVO.getQueryStartTime();
+                    Date begin = fmt.parse(endTime.replaceAll(regex, ""));
+                    //判断开始时间和结束时间是否相同,
+                    //返回1:begin大于end;
+                    //返回0:begin等于end;
+                    //返回-1:begin小于end
+                    if (begin.compareTo(dates) > 0) {
+                        //说明开始时间大于当前时间，需要把开始时间和结束时间减一天。
+                        Date dateBegin = sdf.parse(beginTime);
+                        cal.setTime(dateBegin);
+                        cal.add(Calendar.DATE, -1);
+                        beginTime = sdf.format(cal.getTime()).substring(0, 10) + " " +
+                                queryTimeSetVO.getQueryStartTime();
+                        Date dateEnd = sdf.parse(endTime);
+                        cal.setTime(dateEnd);
+                        cal.add(Calendar.DATE, -1);
+                        endTime = sdf.format(cal.getTime()).substring(0, 10) + " " +
+                                queryTimeSetVO.getQueryStartTime();
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        map.put("beginTime", beginTime);
+        map.put("endTime", endTime);
+        return map;
     }
 }

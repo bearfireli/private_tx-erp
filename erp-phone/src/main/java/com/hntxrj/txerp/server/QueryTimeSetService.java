@@ -5,6 +5,7 @@ import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.QueryTimeSetVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface QueryTimeSetService {
 
@@ -23,4 +24,5 @@ public interface QueryTimeSetService {
      * @param list 传递的json参数
      */
     void upDateQueryTime( List<QueryTimeSetVO> list);
+
 }

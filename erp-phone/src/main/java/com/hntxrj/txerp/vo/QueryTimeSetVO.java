@@ -22,4 +22,6 @@ public class QueryTimeSetVO {
     private int countInterval;
     private int upDownMark;
     private int upDown;
+    private String beginTime;
+    private String endTime;
 }

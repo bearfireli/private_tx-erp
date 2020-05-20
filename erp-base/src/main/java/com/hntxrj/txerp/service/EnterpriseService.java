@@ -4,11 +4,13 @@ package com.hntxrj.txerp.service;
 import com.hntxrj.txerp.entity.base.Enterprise;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.vo.EnterpriseDropDownVO;
+import com.hntxrj.txerp.vo.EnterpriseInformationVO;
 import com.hntxrj.txerp.vo.PageVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 public interface EnterpriseService {
 
@@ -34,7 +36,7 @@ public interface EnterpriseService {
                                         long pageSize) throws ErpException;
 
 
-    Enterprise addEnterprise(String token,Enterprise enterprise) throws ErpException;
+    Enterprise addEnterprise(String token, Enterprise enterprise) throws ErpException;
 
     Enterprise updateEnterprise(Enterprise enterprise, Integer eidCode) throws ErpException;
 
@@ -52,6 +54,7 @@ public interface EnterpriseService {
      * @param type      收款码类型，1微信，2支付宝
      */
     Enterprise setCollectionCode(Integer eid, MultipartFile imageFile, Integer type) throws ErpException;
+
     /*读取地址
      * @param eid       企业id
      * @param type      收款码类型，1微信，2支付宝
@@ -66,4 +69,16 @@ public interface EnterpriseService {
     Enterprise saveCollectionCode(Integer eid, String imageFile, Integer type) throws ErpException;
 
     void getimage(String fileName, HttpServletResponse response) throws ErpException;
+
+    //上传企业logo
+    Map<String,String> uploadEnterpriseLogo(MultipartFile image) throws ErpException;
+
+    //获取企业logo
+    void getEnterpriseLogo(String imgUrl, HttpServletResponse response) throws ErpException;
+
+    //手机erp获取企业信息
+    EnterpriseInformationVO getEnterpriseInformation(Integer eid);
+
+    //手机erp修改企业信息
+    void updateEnterpriseInformation(Integer eid, String epName, String epShortName, String logoUrl);
 }
