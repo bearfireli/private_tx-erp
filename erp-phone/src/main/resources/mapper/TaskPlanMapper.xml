@@ -726,7 +726,7 @@
             and lm.taskid =#{taskId}
         </if>
     </select>
-    <!--获取方量统计-->
+        <!--获取方量统计-->
     <select id="getSquareQuantitySum" resultType="com.hntxrj.txerp.vo.SquareQuantityVO">
         <if test="quantityQueryType ==0 ">
             select sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum,
@@ -1053,6 +1053,18 @@
         <if test="slump!=null">
             and PI_TypeName like '%' +#{slump}+'%'
         </if>
+    </select>
+    <select id="selectOneByTaskId" resultType="java.util.HashMap">
+        select * from PT_TaskPlan   where TaskId=#{taskId} and compid=#{compid}
+    </select>
+    <select id="getDriverShiftById" resultType="java.util.HashMap">
+        select * from VM_PERSONALWORKCLASS where compid = #{compid} and ID = #{id}
+    </select>
+    <select id="getTaskPriceMarkup" resultType="java.util.Map">
+        select * from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId} and PPCode=#{ppCode}
+    </select>
+    <select id="getTaskPriceMarkupList" resultType="com.hntxrj.txerp.vo.TaskPriceMarkup">
+        select * from PT_TASKPRICEMARKUP where compid=#{compid} and TaskId=#{taskId}
     </select>
 
 

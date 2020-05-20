@@ -101,7 +101,7 @@
     </select>
     <select id="getStockByComId" resultType="com.hntxrj.txerp.vo.StockVO">
         select
-        ms.StkCode,ms.Sto_Name,StirId as stirId,ms.Sto_Curqty  as stoCurqty
+        ms.StkCode,ms.Sto_Name,StirId as stirId,ms.Sto_Curqty as stoCurqty
         from MP_Stock ms
         where ms.compid=#{compid}
         <if test="searchWords!=null and searchWords!=''">
@@ -131,5 +131,11 @@
         left join MP_Supplier t4 on t1.compid = t4.compid and t1.SupCode = t4.SupCode
         where t1.compid=#{compid} and t1.stICode=#{stICode}
     </select>
+
+    <select id="getStockIn" resultType="java.util.Map">
+       select * from MP_StockIn
+       where compid=#{compid} and StICode=#{stICode}
+    </select>
+
 
 </mapper>

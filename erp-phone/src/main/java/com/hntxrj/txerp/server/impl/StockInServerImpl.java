@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
@@ -26,12 +27,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Scope("prototype")
@@ -39,6 +38,8 @@ public class StockInServerImpl implements StockInServer {
     private final StockInDao stockInDao;
     private final StockMapper stockInWeighmatNsMapper;
     private final PublicInfoMapper publicInfoMapper;
+    private final SyncPlugin syncPlugin;
+    private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
 
     @Value("${app.checking.imgFilePath}")
     private String checkingImageFilePath;
@@ -47,10 +48,11 @@ public class StockInServerImpl implements StockInServer {
 
     @Autowired
     public StockInServerImpl(StockInDao stockInDao, StockMapper stockInWeighmatNsMapper,
-                             PublicInfoMapper publicInfoMapper) {
+                             PublicInfoMapper publicInfoMapper, SyncPlugin syncPlugin) {
         this.stockInDao = stockInDao;
         this.stockInWeighmatNsMapper = stockInWeighmatNsMapper;
         this.publicInfoMapper = publicInfoMapper;
+        this.syncPlugin = syncPlugin;
     }
 
     /**
@@ -629,6 +631,20 @@ public class StockInServerImpl implements StockInServer {
         }
         stockInWeighmatNsMapper.updateCheckStatus(compid, deductNum, stICode, isPassOrNot, picturePath,
                 matCode, stkCode, notReason, inspector, inspectionTime);
+
+        // 数据同步
+        Map<String, String> map = stockInWeighmatNsMapper.getStockIn(compid, stICode);
+        map.put("FirstTime", simpleDateFormat.format(map.get("FirstTime")));
+        map.put("SecondTime", simpleDateFormat.format(map.get("SecondTime")));
+        map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+        map.put("Sup_ExFactory", simpleDateFormat.format(map.get("Sup_ExFactory")));
+        map.put("InspectionTime", simpleDateFormat.format(map.get("InspectionTime")));
+        try {
+            syncPlugin.save(map, "MP_StockIn", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**

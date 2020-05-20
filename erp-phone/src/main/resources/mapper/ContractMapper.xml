@@ -49,7 +49,7 @@
     </select>
     <select id="getContractDetail" resultType="com.hntxrj.txerp.vo.ContractVO">
         select cm.LinkMan linkMan,
-        cm.LinkTel  linkTel,
+        cm.LinkTel linkTel,
         cd.EPPCode,
         cd.BuilderCode,
         epp.EPPName,
@@ -219,7 +219,7 @@
     </insert>
 
     <!-- 查询泵车价格 -->
-    <select id="selectPumpTruck"  resultType="java.lang.Integer">
+    <select id="selectPumpTruck" resultType="java.lang.Integer">
         select Pumptype from SM_PumpPriceSet
         where compid=#{compid}
         and Pumptype=#{pumpType}
@@ -229,7 +229,7 @@
 
 
     <!-- 修改合同泵车价格 -->
-    <select id="updatePumpTruck" >
+    <select id="updatePumpTruck">
         update SM_PumpPriceSet set
           OpId=#{opid},
           PumpPrice=#{pumPrice},
@@ -323,7 +323,7 @@
     </insert>
 
     <!--查询特殊加价材料-->
-    <select id="getContractPriceMarkup"  resultType="java.lang.String">
+    <select id="getContractPriceMarkup" resultType="java.lang.String">
          select PPCode from SM_ContractPriceMarkup
          where compid=#{compid}
          and ContractUID=#{contractUid}
@@ -413,8 +413,8 @@
         left join SM_ContractDetail cd on cm.ContractUID = cd.ContractUID and cm.compid=cd.compid
         left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid=epp.compid
         left join SM_BuilderInfo bu on cd.BuilderCode = bu.BuilderCode and cd.compid=bu.compid
-        left join  SM_BusinessGroup bg on  bg.compid = cm.compid  and  bg.SalesmanCode = cm.Salesman
-        where  cm.RecStatus=1
+        left join SM_BusinessGroup bg on bg.compid = cm.compid and bg.SalesmanCode = cm.Salesman
+        where cm.RecStatus=1
         and cd.RecStatus=1
         and cd.verifyStatus = 1
         and cd.CContractCode in
@@ -429,6 +429,17 @@
             and (epp.EPPName like '%'+#{searchName}+'%' or bu.BuilderShortName like '%'+#{searchName}+'%')
         </if>
 
+    </select>
+
+
+    <select id="getContractMaster" resultType="java.util.HashMap">
+        select * from SM_ContractMaster
+        where compid=#{compid} and  ContractId=#{contractId} and ContractUID=#{contractUid}
+    </select>
+
+    <select id="getContractDetailMap" resultType="java.util.HashMap">
+       select * from SM_ContractDetail
+       where ContractUID=#{contractUid} and CContractCode=#{contractDetailCode}
     </select>
 
 </mapper>

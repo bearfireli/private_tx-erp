@@ -1,12 +1,15 @@
 package com.hntxrj.txerp.mapper;
 
 
+import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface TaskPlanMapper {
@@ -439,4 +442,16 @@ public interface TaskPlanMapper {
 
     //删除任务单
     void deleteTaskPlan(String compid, String taskId);
+
+    // 根据任务单号查询任务单的实体类
+    HashMap<String,String> selectOneByTaskId(String taskId, String compid);
+
+    // 根据id查询司机排班信息
+    HashMap<String, String> getDriverShiftById(Integer id, String compid);
+
+    // 获取任务单加价项目
+    Map<String, String> getTaskPriceMarkup(String compid, String taskId, String ppCode);
+
+    // 获取任务单加价项目列表
+    List<TaskPriceMarkup> getTaskPriceMarkupList(String compid, String taskId);
 }

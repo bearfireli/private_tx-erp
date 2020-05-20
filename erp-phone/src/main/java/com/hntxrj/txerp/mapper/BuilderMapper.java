@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 施工单位 mapper
@@ -117,4 +118,7 @@ public interface BuilderMapper {
      */
     List<DispatchVehicle> getCarsByTaskIds(List<String> contractDetailCodes, List<String> contractUIDList,
                                            List<String> taskIds);
+
+    // 根据施工单位名称和施工单位简称获取施工单位信息。
+    Map<String, String> getBuilderInfoByName(String compid, String builderName, String builderShortName);
 }

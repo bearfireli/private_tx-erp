@@ -3,10 +3,12 @@ package com.hntxrj.txerp.controller.produce;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.im.MsgService;
+import com.hntxrj.txerp.mapper.FormulaMapper;
 import com.hntxrj.txerp.mapper.MsgMapper;
 import com.hntxrj.txerp.server.FormulaService;
 import com.hntxrj.txerp.server.LMTaskServer;
@@ -26,6 +28,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/laboratroy")
@@ -40,14 +43,20 @@ public class LaboratroyController {
 
     private final MsgService msgService;
     private final MsgMapper msgMapper;
+    private final FormulaMapper formulaMapper;
+    private final SyncPlugin syncPlugin;
+    private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
+
     @Autowired
     public LaboratroyController(FormulaService formulaService, WriteLog writeLog, LMTaskServer lmTaskServer,
-                                MsgService msgService, MsgMapper msgMapper) {
+                                MsgService msgService, MsgMapper msgMapper, FormulaMapper formulaMapper, SyncPlugin syncPlugin) {
         this.formulaService = formulaService;
         this.writeLog = writeLog;
         this.lmTaskServer = lmTaskServer;
         this.msgService = msgService;
         this.msgMapper = msgMapper;
+        this.formulaMapper = formulaMapper;
+        this.syncPlugin = syncPlugin;
     }
 
 
@@ -177,18 +186,28 @@ public class LaboratroyController {
             if (result.contains("成功")) {
                 jsonVoAndPage.setCode(0);
                 jsonVoAndPage.setMsg(result);
+
+                // 数据同步
+                Map<String, String> map = formulaMapper.getFormulaInfoByFormulaCode(compid, TaskId, stirid);
+                map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+                try {
+                    syncPlugin.save(map, "LM_TaskTheoryFormula", "UP", compid);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
                 int typeId = 6;
-                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
+                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
                 for (RecipientVO r : recipoentList) {
                     SendmsgVO sendmsgVO = new SendmsgVO();
                     sendmsgVO.setSyncOtherMachine(2);
                     sendmsgVO.setToAccount(r.getUid().toString());
                     sendmsgVO.setMsgLifeTime(7);
-                    String msgContent = "任务单号：["+TaskId+"],["+stirid+"]号线配比状态修改成功";
+                    String msgContent = "任务单号：[" + TaskId + "],[" + stirid + "]号线配比状态修改成功";
                     if (verifystatus == 1) {
-                        msgContent ="任务单号：["+TaskId+"],["+stirid+"]号线配比审核成功";
+                        msgContent = "任务单号：[" + TaskId + "],[" + stirid + "]号线配比审核成功";
                     } else if (verifystatus == 0) {
-                        msgContent ="任务单号：["+TaskId+"],["+stirid+"]号线配比取消审核成功";
+                        msgContent = "任务单号：[" + TaskId + "],[" + stirid + "]号线配比取消审核成功";
                     }
 
                     sendmsgVO.setMsgContent(msgContent);
@@ -401,14 +420,20 @@ public class LaboratroyController {
                 jsonVo.setCode(0);
                 jsonVo.setMsg(result);
                 jsonVo.setData(jsonArray);
+
+                // 数据同步
+                Map<String, String> map = formulaMapper.getFormulaInfoByFormulaCode(compid, taskid,
+                        Integer.valueOf(stirid));
+                syncPlugin.save(map, "LM_TaskTheoryFormula", "UP", compid);
+                map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
                 int typeId = 5;
-                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
+                List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
                 for (RecipientVO r : recipoentList) {
                     SendmsgVO sendmsgVO = new SendmsgVO();
                     sendmsgVO.setSyncOtherMachine(2);
                     sendmsgVO.setToAccount(r.getUid().toString());
                     sendmsgVO.setMsgLifeTime(7);
-                    String  msgContent ="任务单号：["+taskid+"],["+stirid+"]号线配比编辑成功.";
+                    String msgContent = "任务单号：[" + taskid + "],[" + stirid + "]号线配比编辑成功.";
                     sendmsgVO.setMsgContent(msgContent);
                     msgService.sendMsg(sendmsgVO);
                 }

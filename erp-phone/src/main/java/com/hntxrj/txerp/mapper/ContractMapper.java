@@ -5,6 +5,7 @@ import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -214,9 +215,9 @@ public interface ContractMapper {
     /**
      * 泵车价格查询
      *
-     * @param compid       企业代号
-     * @param pumpType     泵车类型
-     * @param contractUID  主合同
+     * @param compid             企业代号
+     * @param pumpType           泵车类型
+     * @param contractUID        主合同
      * @param contractDetailCode 子合同
      * @return 列表查询
      */
@@ -225,14 +226,14 @@ public interface ContractMapper {
     /**
      * 修改泵车价格
      *
-     * @param compid       企业代号
-     * @param opid         操作员id
-     * @param contractUID  主合同
+     * @param compid             企业代号
+     * @param opid               操作员id
+     * @param contractUID        主合同
      * @param contractDetailCode 子合同
-     * @param pumpType     泵车类型
-     * @param pumPrice     泵车价格
-     * @param tableExpense 台班费
-     * @param createTime   创建时间
+     * @param pumpType           泵车类型
+     * @param pumPrice           泵车价格
+     * @param tableExpense       台班费
+     * @param createTime         创建时间
      */
     void updatePumpTruck(String compid, String opid, String contractUID, String contractDetailCode, Integer pumpType, Double pumPrice, Double tableExpense, String createTime);
 
@@ -260,8 +261,8 @@ public interface ContractMapper {
     /**
      * 获取主合同号
      *
-     * @param compid 企业id
-     * @param contractDetailCode   子合同号
+     * @param compid             企业id
+     * @param contractDetailCode 子合同号
      */
     String getContractUID(String compid, String contractDetailCode);
 
@@ -275,4 +276,14 @@ public interface ContractMapper {
      * @return 合同列表
      */
     List<ContractListVO> getBuildContractListByEppOrBuild(List<String> contractDetailCodes, List<String> contractUIDList, String searchName);
+
+    /**
+     * 获取主合同信息
+     */
+    HashMap<String, String> getContractMaster(String compid, String contractId, String contractUid);
+
+    /**
+     * 获取子合同信息
+     */
+    HashMap<String, String> getContractDetailMap(String contractUid, String contractDetailCode);
 }

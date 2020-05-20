@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface TaskSaleInvoiceMapper {
@@ -47,7 +48,7 @@ public interface TaskSaleInvoiceMapper {
      * @param numberOfSignings 　签收数量
      * @param signingTime      签收时间
      */
-    void getTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double numberOfSignings, String saleFileImage,
+    void updateTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double numberOfSignings, String saleFileImage,
                                    Date signingTime);
 
     /**
@@ -67,4 +68,6 @@ public interface TaskSaleInvoiceMapper {
     TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String id, String compid, String beginTime, String endTime,
                                                    String eppCode, Byte upStatus, String builderCode,
                                                    String taskId, String placing, String taskStatus, Integer type);
+
+    Map<String, String> getTaskSaleInvoice(String compid, Integer id);
 }

@@ -1,7 +1,10 @@
 package com.hntxrj.txerp.controller.sell;
 
 import com.alibaba.fastjson.JSONArray;
+import com.hntxrj.SyncPlugin;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.PageBean;
+import com.hntxrj.txerp.mapper.BuilderMapper;
 import com.hntxrj.txerp.server.BuilderService;
 import com.hntxrj.txerp.util.jdbc.GetMsg;
 import com.hntxrj.txerp.vo.JsonVo;
@@ -14,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Map;
 
 /**
  * 功能:   施工单位控制器
@@ -29,10 +35,15 @@ import java.sql.Timestamp;
 public class BuilderController {
 
     private final BuilderService builderService;
+    private final BuilderMapper builderMapper;
+    private final SyncPlugin syncPlugin;
+    private final SimpleDateFormat simpleDateForma = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
 
     @Autowired
-    public BuilderController(BuilderService builderService) {
+    public BuilderController(BuilderService builderService, BuilderMapper builderMapper, SyncPlugin syncPlugin) {
         this.builderService = builderService;
+        this.builderMapper = builderMapper;
+        this.syncPlugin = syncPlugin;
     }
 
 
@@ -96,16 +107,16 @@ public class BuilderController {
     @RequestMapping("/insertUpDelBuilder")
     public JsonVo insertUpDelSMBuilderInfo(String compid,
 
-                                             String opid,
-                                             Integer mark,
-                                             String builderCode,
-                                             String builderName,
-                                             String builderShortName,
-                                             String address,
-                                             String corporation,
-                                             String fax,
-                                             String linkTel,
-                                             HttpServletRequest request) {
+                                           String opid,
+                                           Integer mark,
+                                           String builderCode,
+                                           String builderName,
+                                           String builderShortName,
+                                           String address,
+                                           String corporation,
+                                           String fax,
+                                           String linkTel,
+                                           HttpServletRequest request) {
         JsonVo vo = new JsonVo();
         //设置code = 1
         vo.setCode(1);
@@ -119,10 +130,15 @@ public class BuilderController {
             vo.setCode(0);
             JSONArray jsonArray = builderService.insertUpDel_SM_BUILDERINFO(mark, compid, opid, builderCode, builderName, builderShortName,
                     address, new Timestamp(System.currentTimeMillis()), corporation, fax, linkTel, (byte) 1);
-
-            System.out.println(vo);
-            System.out.println(jsonArray);
             GetMsg.getJsonMsg(vo, jsonArray);
+
+            Map<String, String> map = builderMapper.getBuilderInfoByName(compid, builderName, builderShortName);
+            map.put("CreateTime", simpleDateForma.format(map.get("CreateTime")));
+            try {
+                syncPlugin.save(map, "SM_BuilderInfo", "INS", compid);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return vo;
     }
