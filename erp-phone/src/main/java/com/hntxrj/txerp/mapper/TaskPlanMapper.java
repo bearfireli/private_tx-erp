@@ -444,7 +444,7 @@ public interface TaskPlanMapper {
     void deleteTaskPlan(String compid, String taskId);
 
     // 根据任务单号查询任务单的实体类
-    HashMap<String,String> selectOneByTaskId(String taskId, String compid);
+    HashMap<String, String> selectOneByTaskId(String taskId, String compid);
 
     // 根据id查询司机排班信息
     HashMap<String, String> getDriverShiftById(Integer id, String compid);
@@ -454,4 +454,7 @@ public interface TaskPlanMapper {
 
     // 获取任务单加价项目列表
     List<TaskPriceMarkup> getTaskPriceMarkupList(String compid, String taskId);
+
+    // 获取司机排班对象
+    Map<String, String> getDriverShiftVO(String compid, String vehicleId, String personalCode, String workStarTime);
 }

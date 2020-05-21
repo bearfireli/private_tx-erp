@@ -853,22 +853,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     workOverTime, remarks, createTime, workTime, upDown, upDownMark, recStatus);
 
             // 数据同步
-            Map<String, String> map = new HashMap<>();
-            map.put("compid", compid);
-            map.put("VehicleID", vehicleId);
-            map.put("PersonalCOde", personalCode);
-            map.put("WorkClass", workClass);
-            map.put("Remarks", remarks);
-            map.put("OpId", opId);
-            map.put("CreateTime", simpleDateFormat.format(createTime));
-            map.put("WorkStarTime", workStarTime);
-            map.put("WorkOverTime", workOverTime);
-            map.put("WorkTime", String.valueOf(workTime));
-            map.put("UpDown", "0");
-            map.put("UpDownMark", "0");
-            map.put("RecStatus", "1");
-            syncPlugin.save(map, "VM_PERSONALWORKCLASS", "INS", compid);
+            Map<String, String> map = taskPlanMapper.getDriverShiftVO(compid, vehicleId, personalCode, workStarTime);
 
+            map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+            map.put("WorkStarTime", simpleDateFormat.format(map.get("WorkStarTime")));
+            map.put("WorkOverTime", simpleDateFormat.format(map.get("WorkOverTime")));
+            syncPlugin.save(map, "VM_PERSONALWORKCLASS", "INS", compid);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_ERROR);
         }
