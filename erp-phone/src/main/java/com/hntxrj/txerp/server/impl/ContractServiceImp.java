@@ -600,6 +600,11 @@ public class ContractServiceImp implements ContractService {
         try {
             HashMap<String, String> contractMasterMap = contractMapper.getContractMaster(contractMaster.getCompid(),
                     contractMaster.getContractId(), contractMaster.getContractUid());
+
+            contractMasterMap.put("SignDate", simpleDateFormat.format(contractMasterMap.get("SignDate")));
+            contractMasterMap.put("EffectDate", simpleDateFormat.format(contractMasterMap.get("EffectDate")));
+            contractMasterMap.put("ExpiresDate", simpleDateFormat.format(contractMasterMap.get("ExpiresDate")));
+            contractMasterMap.put("CreateTime", simpleDateFormat.format(contractMasterMap.get("CreateTime")));
             syncPlugin.save(contractMasterMap, "SM_ContractMaster", "INS", compid);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -610,6 +615,12 @@ public class ContractServiceImp implements ContractService {
         try {
             HashMap<String, String> getContractDetailMap = contractMapper.getContractDetailMap(
                     contractDetail.getContractUid(), contractDetail.getCContractCode());
+
+            getContractDetailMap.put("StatusTime", simpleDateFormat.format(getContractDetailMap.get("StatusTime")));
+            getContractDetailMap.put("VerifyTime", simpleDateFormat.format(getContractDetailMap.get("VerifyTime")));
+            getContractDetailMap.put("CreateTime", simpleDateFormat.format(getContractDetailMap.get("CreateTime")));
+            getContractDetailMap.put("SecondVerifyTime", simpleDateFormat.format(getContractDetailMap.get("SecondVerifyTime")));
+            getContractDetailMap.put("OpenTime", simpleDateFormat.format(getContractDetailMap.get("OpenTime")));
             syncPlugin.save(getContractDetailMap, "SM_ContractDetail", "INS", compid);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -805,20 +816,8 @@ public class ContractServiceImp implements ContractService {
                 if (ppcode == null) {
                     contractMapper.saveContractPriceMarkup(compid, contractUid, contractDetailCode, pPCode, pPName,
                             unitPrice, jumpPrice, selfDiscPrice, towerCranePrice, otherPrice, isDefault);
-                    ContractPriceMarkup contractPriceMarkup = new ContractPriceMarkup();
-                    contractPriceMarkup.setCompid(compid);
-                    contractPriceMarkup.setCContractCode(contractDetailCode);
-                    contractPriceMarkup.setContractUid(contractUid);
-                    contractPriceMarkup.setPpCode(ppcode);
-                    contractPriceMarkup.setPpName(pPName);
-                    contractPriceMarkup.setUnitPrice(unitPrice);
-                    contractPriceMarkup.setJumpPrice(jumpPrice);
-                    contractPriceMarkup.setSelfDiscPrice(selfDiscPrice);
-                    contractPriceMarkup.setTowerCranePrice(towerCranePrice);
-                    contractPriceMarkup.setOtherPrice(otherPrice);
-                    contractPriceMarkup.setRecStatus("1");
-                    contractPriceMarkup.setUpDownMark(0);
-                    contractPriceMarkup.setIsDefault(isDefault ? "1" : "0");
+                    ContractPriceMarkup contractPriceMarkup = contractMapper.getContractMarkupVO(compid,
+                            contractUid, contractDetailCode, pPCode);
                     // 数据同步
                     syncPlugin.save(contractPriceMarkup, "SM_ContractPriceMarkup", "INS", compid);
                     log.info("【添加特殊材料】priceMarkupDropDowns={}", priceMarkupDropDowns);
@@ -953,19 +952,6 @@ public class ContractServiceImp implements ContractService {
 
             Integer pump = contractMapper.selectPumpTruck(compid, pumpType, contractUID, contractDetailCode);
 
-            Map<String, String> map = new HashMap<>();
-            map.put("compid", compid);
-            map.put("Pumptype", String.valueOf(pumpType));
-            map.put("PumpPrice", String.valueOf(pumPrice));
-            map.put("TableExpense", String.valueOf(tableExpense));
-            map.put("ContractUID", contractUID);
-            map.put("CContractCode", contractDetailCode);
-            map.put("CreateTime", createTime);
-            map.put("OpId", opid);
-            map.put("UpDownMark", "0");
-            map.put("UpDown", "0");
-            map.put("RecStatus", "1");
-
             if (pump == null) {
                 Integer row = contractMapper.insertPumpTruck(compid, opid, contractUID, contractDetailCode,
                         pumpType, pumPrice, tableExpense, createTime);
@@ -973,11 +959,13 @@ public class ContractServiceImp implements ContractService {
                     throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
                 }
                 // 数据同步
+                Map<String, String> map = getPumpTruck(compid, pumpType, contractUID, contractDetailCode);
                 syncPlugin.save(map, "SM_PumpPriceSet", "INS", compid);
             } else {
                 contractMapper.updatePumpTruck(compid, opid, contractUID, contractDetailCode,
                         pumpType, pumPrice, tableExpense, createTime);
                 // 数据同步
+                Map<String, String> map = getPumpTruck(compid, pumpType, contractUID, contractDetailCode);
                 syncPlugin.save(map, "SM_PumpPriceSet", "UP", compid);
             }
 
@@ -1054,6 +1042,19 @@ public class ContractServiceImp implements ContractService {
      */
     private Boolean getContractVerifyStatus(String contractUID, String cContractCode, String compid) {
         return contractMapper.getContractVerifyStatus(contractUID, cContractCode, compid);
+    }
+
+
+    /**
+     * 查询合同运距信息，并转换时间格式，确保同步程序能够正常运行
+     */
+    private Map<String, String> getPumpTruck(String compid, Integer pumpType, String contractUID,
+                                             String contractDetailCode) {
+        Map<String, String> map = contractMapper.getPumpTruck(compid, pumpType, contractUID, contractDetailCode);
+        map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+        map.put("PriceETime", simpleDateFormat.format(map.get("PriceETime")));
+        map.put("PriceStopTime", simpleDateFormat.format(map.get("PriceStopTime")));
+        return map;
     }
 
 }

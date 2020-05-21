@@ -442,4 +442,17 @@
        where ContractUID=#{contractUid} and CContractCode=#{contractDetailCode}
     </select>
 
+
+    <select id="getContractMarkupVO" resultType="com.hntxrj.txerp.entity.ContractPriceMarkup">
+       select top 1 * from sm_contractpricemarkup
+       where ContractUID=#{contractUid} and CContractCode=#{contractDetailCode}
+       and compid=#{compid} and PPCode=#{ppcode}
+    </select>
+
+    <select id="getPumpTruck" resultType="java.util.HashMap">
+       select top 1 * from  SM_PumpPriceSet
+       where compid=#{compid} and  Pumptype=#{pumpType}
+       and  ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
+    </select>
+
 </mapper>

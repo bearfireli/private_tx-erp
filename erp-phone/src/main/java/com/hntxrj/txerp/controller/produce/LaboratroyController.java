@@ -425,7 +425,7 @@ public class LaboratroyController {
                 Map<String, String> map = formulaMapper.getFormulaInfoByFormulaCode(compid, taskid,
                         Integer.valueOf(stirid));
                 syncPlugin.save(map, "LM_TaskTheoryFormula", "UP", compid);
-                map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+
                 int typeId = 5;
                 List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
                 for (RecipientVO r : recipoentList) {

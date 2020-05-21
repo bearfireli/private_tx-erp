@@ -1,12 +1,13 @@
 package com.hntxrj.txerp.mapper;
 
-import com.hntxrj.txerp.vo.*;
+import com.hntxrj.txerp.entity.ContractPriceMarkup;
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ContractMapper {
@@ -286,4 +287,14 @@ public interface ContractMapper {
      * 获取子合同信息
      */
     HashMap<String, String> getContractDetailMap(String contractUid, String contractDetailCode);
+
+    /**
+     * 获取合同加价项目对象
+     */
+    ContractPriceMarkup getContractMarkupVO(String compid, String contractUid, String contractDetailCode, String ppcode);
+
+    /**
+     * 获取合同泵车价格
+     */
+    Map<String, String> getPumpTruck(String compid, Integer pumpType, String contractUID, String contractDetailCode);
 }

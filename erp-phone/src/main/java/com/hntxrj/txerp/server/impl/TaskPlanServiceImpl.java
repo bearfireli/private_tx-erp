@@ -863,7 +863,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             map.put("CreateTime", simpleDateFormat.format(createTime));
             map.put("WorkStarTime", workStarTime);
             map.put("WorkOverTime", workOverTime);
-            map.put("WorkTime", simpleDateFormat.format(createTime));
+            map.put("WorkTime", String.valueOf(workTime));
             map.put("UpDown", "0");
             map.put("UpDownMark", "0");
             map.put("RecStatus", "1");
