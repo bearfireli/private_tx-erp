@@ -40,15 +40,14 @@ public class StockServiceImpl implements StockService {
     /**
      * 实时库存
      *
-     * @param stirId    搅拌楼号
-     * @param compid    企业id
-     * @param opid      操作人代号
-     * @param queryType 材料查询分类 0全部库位 1 粉液料库位
+     * @param stirId 搅拌楼号
+     * @param compid 企业id
+     * @param opid   操作人代号
      * @return 实时库存
      */
     @Override
-    public JSONArray realStock(String stirId, String compid, String opid, Integer queryType) {
-        return stockDao.realStock(stirId, compid, opid, queryType);
+    public JSONArray realStock(String stirId, String compid, String opid) {
+        return stockDao.realStock(stirId, compid, opid);
     }
 
     /**
@@ -69,7 +68,7 @@ public class StockServiceImpl implements StockService {
         Integer stockAggregateIsShow = systemVarInitMapper.getStockAggregateShow(compid);
 
         // 获取库存数据
-        List<StockVO> stockVOS = stockMapper.getStockByStirId(compid, stirId,stockAggregateIsShow);
+        List<StockVO> stockVOS = stockMapper.getStockByStirId(compid, stirId, stockAggregateIsShow);
         // 获取所有公共罐的数据
         List<PublicStockVO> publicStockVOs = stockMapper.getPublicStockByStirId(compid, stirId);
 
@@ -143,7 +142,7 @@ public class StockServiceImpl implements StockService {
         if (varValue == null) {
             //保存用户设置实时库存是否显示
             Integer maxId = systemVarInitMapper.getMaxId(compid);
-            systemVarInitMapper.saveStockAggregateShow(compid,aggregateIsShow,maxId+1);
+            systemVarInitMapper.saveStockAggregateShow(compid, aggregateIsShow, maxId + 1);
             //todo 后续需要把修改的内容添加到sync_data表中
         } else {
             //修改用户设置实时库存是否显示

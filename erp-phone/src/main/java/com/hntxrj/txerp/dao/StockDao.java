@@ -18,7 +18,7 @@ public interface StockDao {
      * @param stirId 搅拌楼Id号
      * @return
      */
-    JSONArray realStock(String stirId, String compid, String opid, Integer queryType);
+    JSONArray realStock(String stirId, String compid, String opid);
 
 
     /**

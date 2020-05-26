@@ -19,13 +19,12 @@ public interface StockService {
     /**
      * 实时库存
      *
-     * @param stirId    搅拌楼号
-     * @param compid    企业id
-     * @param opid      操作人代号
-     * @param queryType 材料查询分类 0全部库位 1 粉液料库位
+     * @param stirId 搅拌楼号
+     * @param compid 企业id
+     * @param opid   操作人代号
      * @return 实时库存
      */
-    JSONArray realStock(String stirId, String compid, String opid, Integer queryType);
+    JSONArray realStock(String stirId, String compid, String opid);
 
 
     /**
