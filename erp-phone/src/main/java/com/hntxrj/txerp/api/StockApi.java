@@ -96,10 +96,10 @@ public class StockApi {
      * 设置实时库存骨料是否显示
      *
      * @param compid          企业id
-     * @param aggregateIsShow 骨料是否显示
+     * @param aggregateIsShow 骨料是否显示 0:显示；  1:不显示
      */
-    @RequestMapping("/getStockAggregateShow")
-    public ResultVO getStockAggregateShow(String compid, Integer aggregateIsShow) {
+    @RequestMapping("/setStockAggregateShow")
+    public ResultVO setStockAggregateShow(String compid, Integer aggregateIsShow) {
         stockService.setStockAggregateShow(compid, aggregateIsShow);
         return ResultVO.create();
     }

@@ -66,10 +66,10 @@ public class StockServiceImpl implements StockService {
     public List<StockVO> getStock(String compid, Integer stirId) {
 
         //从系统变量表中查询是否显示骨料
-
+        Integer stockAggregateIsShow = systemVarInitMapper.getStockAggregateShow(compid);
 
         // 获取库存数据
-        List<StockVO> stockVOS = stockMapper.getStockByStirId(compid, stirId);
+        List<StockVO> stockVOS = stockMapper.getStockByStirId(compid, stirId,stockAggregateIsShow);
         // 获取所有公共罐的数据
         List<PublicStockVO> publicStockVOs = stockMapper.getPublicStockByStirId(compid, stirId);
 
@@ -143,10 +143,12 @@ public class StockServiceImpl implements StockService {
         if (varValue == null) {
             //保存用户设置实时库存是否显示
             Integer maxId = systemVarInitMapper.getMaxId(compid);
+            systemVarInitMapper.saveStockAggregateShow(compid,aggregateIsShow,maxId+1);
             //todo 后续需要把修改的内容添加到sync_data表中
         } else {
             //修改用户设置实时库存是否显示
             systemVarInitMapper.updateStockAggregateShow(compid, aggregateIsShow);
+            //todo 后续需要把修改的内容添加到sync_data表中
         }
     }
 }

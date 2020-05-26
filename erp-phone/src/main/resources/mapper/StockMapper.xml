@@ -12,23 +12,26 @@
 
     <select id="getStockByStirId" resultType="com.hntxrj.txerp.vo.StockVO">
         select ms.ID as id,
-               ms.StkCode as stkCode,
-               ms.Sto_Name as stoName,
-               mm.MatParent as matParent,
-               ms.Sto_Maxqty as stoMaxQty,
-               ms.Sto_Minqty as stoMinQty,
-               ms.Sto_Curqty as stoCurQty,
-               ms.MeasureUnit as measureUnit,
-               ms.StirId as stirId,
-               ms.compid as compid,
-               ms.OderBy as oderBy,
-               ms.MatCode as matCode,
-               mm.MatName as matName,
-               ms.Sto_Weight as stoWeight
+        ms.StkCode as stkCode,
+        ms.Sto_Name as stoName,
+        mm.MatParent as matParent,
+        ms.Sto_Maxqty as stoMaxQty,
+        ms.Sto_Minqty as stoMinQty,
+        ms.Sto_Curqty as stoCurQty,
+        ms.MeasureUnit as measureUnit,
+        ms.StirId as stirId,
+        ms.compid as compid,
+        ms.OderBy as oderBy,
+        ms.MatCode as matCode,
+        mm.MatName as matName,
+        ms.Sto_Weight as stoWeight
         from MP_Stock ms
         left join MP_MaterialInfor mm on ms.compid=mm.compid
-            and ms.MatCode=mm.MatCode
+        and ms.MatCode=mm.MatCode
         where ms.RecStatus = 1
+        <if test="stockAggregateIsShow == 1">
+            and mm.MatParent not in ('S','G')
+        </if>
         and ms.compid = #{compid}
         and ms.stirId = #{stirId}
         and ms.IsVisible=1
