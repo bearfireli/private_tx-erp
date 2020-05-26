@@ -80,4 +80,29 @@ public class StockApi {
         stockService.saveStockCodes(compid, stkCodes);
         return ResultVO.create();
     }
+
+
+    /**
+     * 获取用户设置的骨料是否显示的信息
+     *
+     * @param compid 企业id
+     */
+    @RequestMapping("/getStockAggregateShow")
+    public ResultVO getStockAggregateShow(String compid) {
+        return ResultVO.create(stockService.getStockAggregateShow(compid));
+    }
+
+    /**
+     * 设置实时库存骨料是否显示
+     *
+     * @param compid          企业id
+     * @param aggregateIsShow 骨料是否显示
+     */
+    @RequestMapping("/getStockAggregateShow")
+    public ResultVO getStockAggregateShow(String compid, Integer aggregateIsShow) {
+        stockService.setStockAggregateShow(compid, aggregateIsShow);
+        return ResultVO.create();
+    }
+
+
 }

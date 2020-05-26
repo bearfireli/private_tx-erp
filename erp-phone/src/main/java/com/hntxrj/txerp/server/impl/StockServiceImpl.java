@@ -5,6 +5,7 @@ import com.hntxrj.txerp.dao.StockDao;
 import com.hntxrj.txerp.mapper.StockMapper;
 import com.hntxrj.txerp.mapper.SystemVarInitMapper;
 import com.hntxrj.txerp.server.StockService;
+import com.hntxrj.txerp.vo.PublicStockVO;
 import com.hntxrj.txerp.vo.StirIdVO;
 import com.hntxrj.txerp.vo.StockSelectVO;
 import com.hntxrj.txerp.vo.StockVO;
@@ -12,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 功能:
@@ -66,32 +65,29 @@ public class StockServiceImpl implements StockService {
     @Override
     public List<StockVO> getStock(String compid, Integer stirId) {
 
-        // 从系统变量表中查询出用户设置的不显示的库位的库位代号
-        String stock = systemVarInitMapper.getNotShowStock(compid);
-        List<String> stkCodes = new ArrayList<>();
-        if (stock != null) {
-            String[] split = stock.split(",");
-            stkCodes = Arrays.asList(split);
-        }
+        //从系统变量表中查询是否显示骨料
+
 
         // 获取库存数据
-        List<StockVO> stockVOS = stockMapper.getStockByStirId(compid, stirId, stkCodes);
-        // 替换公共罐数据
-        List<StockVO> publicStockVOs = stockMapper.getPublicStockByStirId(compid, stirId);
+        List<StockVO> stockVOS = stockMapper.getStockByStirId(compid, stirId);
+        // 获取所有公共罐的数据
+        List<PublicStockVO> publicStockVOs = stockMapper.getPublicStockByStirId(compid, stirId);
 
+
+        //循环查询,查询是否是
         List<StockVO> resultVOS = new ArrayList<>();
-        boolean isPublic;
-        for (StockVO item : stockVOS) {
-            isPublic = false;
-            for (StockVO publicItem : publicStockVOs) {
-                if (item.getOderBy().equals(publicItem.getOderBy())) {
-                    resultVOS.add(publicItem);
-                    isPublic = true;
+        boolean publicShow;
+        for (StockVO stockVO : stockVOS) {
+            publicShow = false;
+            for (PublicStockVO publicStockVO : publicStockVOs) {
+                if (stockVO.getOderBy().equals(publicStockVO.getErpStockCode())
+                        && publicStockVO.getPublicUse() == 1) {
+                    publicShow = true;
                     break;
                 }
             }
-            if (!isPublic) {
-                resultVOS.add(item);
+            if (!publicShow) {
+                resultVOS.add(stockVO);
             }
         }
 
@@ -127,6 +123,30 @@ public class StockServiceImpl implements StockService {
             systemVarInitMapper.saveStock(compid, stkCodes, maxId + 1);
         } else {
             systemVarInitMapper.updateStock(compid, stkCodes);
+        }
+    }
+
+    @Override
+    public Map<String, Integer> getStockAggregateShow(String compid) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("aggregateIsShow", 0);
+        Integer aggregateIsShow = systemVarInitMapper.getStockAggregateShow(compid);
+        if (aggregateIsShow != null) {
+            map.put("aggregateIsShow", aggregateIsShow);
+        }
+        return map;
+    }
+
+    @Override
+    public void setStockAggregateShow(String compid, Integer aggregateIsShow) {
+        Integer varValue = systemVarInitMapper.getStockAggregateShow(compid);
+        if (varValue == null) {
+            //保存用户设置实时库存是否显示
+            Integer maxId = systemVarInitMapper.getMaxId(compid);
+            //todo 后续需要把修改的内容添加到sync_data表中
+        } else {
+            //修改用户设置实时库存是否显示
+            systemVarInitMapper.updateStockAggregateShow(compid, aggregateIsShow);
         }
     }
 }
