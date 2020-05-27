@@ -73,7 +73,7 @@ public class StockServiceImpl implements StockService {
         List<PublicStockVO> publicStockVOs = stockMapper.getPublicStockByStirId(compid, stirId);
 
 
-        //循环查询,查询是否是
+        //循环查询,查询是否时公共罐以及公共罐是否显示
         List<StockVO> resultVOS = new ArrayList<>();
         boolean publicShow;
         for (StockVO stockVO : stockVOS) {
