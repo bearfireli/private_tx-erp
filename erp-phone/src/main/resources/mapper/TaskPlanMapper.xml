@@ -773,26 +773,38 @@
           and QueryCode = 0
     </select>
     <select id="phoneStatistics" resultType="com.hntxrj.txerp.vo.SquareQuantityVO">
-        select sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum,
-               sum(ProduceNum)                                                   produceNum
-
-        from PT_TaskSaleInvoice tsi
-        where tsi.compid = #{compid}
-          and (VehiceNumber > '0')
-          and (VehicleStatus = '3')
-          and tsi.InvoiceType != 6
-          and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
-          and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+        <if test="quantityQueryType == 0 ">
+            select sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum,
+            sum(ProduceNum) produceNum
+            from PT_TaskSaleInvoice tsi
+            where tsi.compid = #{compid}
+            and (VehiceNumber > '0')
+            and (VehicleStatus = '3')
+            and tsi.InvoiceType != 6
+            and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
+            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="quantityQueryType == 1 ">
+            select sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum,
+            sum(ProduceNum) produceNum
+            from PT_TaskSaleInvoice tsi
+            where tsi.compid = #{compid}
+            and (VehiceNumber > '0')
+            and (VehicleStatus = '3')
+            and tsi.InvoiceType != 6
+            and tsi.Leave_STTime <![CDATA[ >= ]]>  #{beginTime}
+            and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
+        </if>
     </select>
     <select id="taskPlanPreNum" resultType="com.hntxrj.txerp.vo.SquareQuantityVO">
         select sum(PreNum) PreNum
         from PT_TaskPlan
         where compid = #{compid}
           and (PreTime between #{beginTime} and #{endTime}
-                   and deletemark = 0
-                   and RecStatus = 1
-            or TaskStatus = 1)
-          and VerifyStatus = 1
+                 or TaskStatus = 1)
+        and VerifyStatus = 1
+        and deletemark = 0
+        and RecStatus = 1
     </select>
     <select id="queryTimeId" resultType="com.hntxrj.txerp.vo.QueryTimeSetVO">
         select top 1 dd.compid,
