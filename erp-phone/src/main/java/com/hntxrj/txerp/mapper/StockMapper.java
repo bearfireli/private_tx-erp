@@ -15,9 +15,9 @@ public interface StockMapper {
     List<Map<String, Object>> getStockAll(String compid);
 
     // 根据用户的设置获取实时库存
-    List<StockVO> getStockByStirId(String compid, Integer stirId, List<String> stkCodes);
+    List<StockVO> getStockByStirId(String compid, Integer stirId, Integer stockAggregateIsShow);
 
-    List<StockVO> getPublicStockByStirId(String compid, Integer stirId);
+    List<PublicStockVO> getPublicStockByStirId(String compid, Integer stirId);
 
 
     /**

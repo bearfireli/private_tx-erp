@@ -34,7 +34,9 @@ public class StockController {
      * 实时库存
      *
      * @param stirId 搅拌楼号
-     * @return
+     * @param compid 企业id
+     * @param opid   操作人代号
+     * @return 实时库存
      */
     @ApiOperation("实时库存")
     @RequestMapping("/getRealStock")

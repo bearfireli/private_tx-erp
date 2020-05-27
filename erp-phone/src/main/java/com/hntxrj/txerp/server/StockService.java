@@ -7,6 +7,7 @@ import com.hntxrj.txerp.vo.StockSelectVO;
 import com.hntxrj.txerp.vo.StockVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 功能: 统计Service层
@@ -16,10 +17,12 @@ import java.util.List;
  */
 public interface StockService {
     /**
-     * 实时库存统计
+     * 实时库存
      *
-     * @param stirId 搅拌楼Id号
-     * @return
+     * @param stirId 搅拌楼号
+     * @param compid 企业id
+     * @param opid   操作人代号
+     * @return 实时库存
      */
     JSONArray realStock(String stirId, String compid, String opid);
 
@@ -63,4 +66,19 @@ public interface StockService {
      * @param stkCodes 用户选中的不展示的库位代号
      */
     void saveStockCodes(String compid, String stkCodes);
+
+    /**
+     * 获取用户设置的骨料是否显示的信息
+     *
+     * @param compid 企业id
+     */
+    Map<String, Integer> getStockAggregateShow(String compid);
+
+    /**
+     * 设置实时库存骨料是否显示
+     *
+     * @param compid          企业id
+     * @param aggregateIsShow 骨料是否显示
+     */
+    void setStockAggregateShow(String compid, Integer aggregateIsShow);
 }
