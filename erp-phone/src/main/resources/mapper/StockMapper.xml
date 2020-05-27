@@ -30,7 +30,7 @@
         and ms.MatCode=mm.MatCode
         where ms.RecStatus = 1
         <if test="stockAggregateIsShow == 1">
-            and mm.MatParent not in ('S','G')
+            and mm.MatParent != 'S' and mm.MatParent != 'G'
         </if>
         and ms.compid = #{compid}
         and ms.stirId = #{stirId}
