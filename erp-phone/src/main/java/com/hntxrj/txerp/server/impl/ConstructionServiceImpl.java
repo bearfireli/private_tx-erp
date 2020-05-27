@@ -60,7 +60,7 @@ public class ConstructionServiceImpl implements ConstructionService {
                 String contractUID = contractMapper.getContractUID(compid, code);
                 //把邀请码，compid，子合同号，主合同号插入
                 constructionMapper.getInvitationCode(buildInvitationCode, compid, code, useStatus, opid,
-                        new Date(),contractUID);
+                        new Date(), contractUID);
             }
             InvitationVO invitationVO = new InvitationVO();
             invitationVO.setBuildinvitationcode(buildInvitationCode);
@@ -83,7 +83,7 @@ public class ConstructionServiceImpl implements ConstructionService {
             Integer uid = Integer.valueOf(invitationVO.getCreateuser());
             String username = checkTokenIsNormal(uid);
             invitationVO.setCreateuser(username);
-            invitationVO.setCreatetime(invitationVO.getCreatetime().substring(0,16));
+            invitationVO.setCreatetime(invitationVO.getCreatetime().substring(0, 16));
         }
         PageInfo<InvitationVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
@@ -91,10 +91,10 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     @Override
-    public void invalidInvitationCode(String contractUID,String contractDetailCode, String buildInvitationCode)
+    public void invalidInvitationCode(String contractUID, String contractDetailCode, String buildInvitationCode)
             throws ErpException {
         try {
-            constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode, 2);
+            constructionMapper.updateInvalidStatus(contractUID, contractDetailCode, buildInvitationCode);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADJUNCT_UPDATE_ERROR);
         }
@@ -119,16 +119,16 @@ public class ConstructionServiceImpl implements ConstructionService {
                         String contractDetailCode = invitationVO.getContractDetailCode();
                         String contractUID = invitationVO.getContractUID();
                         //修改邀请码的使用状态为已使用
-                        constructionMapper.updateUseStatus(contractUID,contractDetailCode, buildInvitationCode,
+                        constructionMapper.updateUseStatus(buildId, contractUID, contractDetailCode, buildInvitationCode,
                                 useStatus);
                         //给此用户绑定合同
-                        constructionMapper.saveInvitation(buildId, compid, contractDetailCode,contractUID);
+                        constructionMapper.saveInvitation(buildId, compid, contractDetailCode, contractUID);
                     } else if (Integer.parseInt(invitationVO.getUsestatus()) == 1) {
                         throw new ErpException(ErrEumn.INVITATION_USESTATUS_EXIST);
                     } else {
                         throw new ErpException(ErrEumn.INVITATION_USESTATUS_VOID);
                     }
-                }else {
+                } else {
                     throw new ErpException(ErrEumn.INVITATION_USESTATUS_EXIST);
                 }
             }
@@ -151,21 +151,22 @@ public class ConstructionServiceImpl implements ConstructionService {
     }
 
     /**
-     *  删除合同
-     * @param buildId   用户id
-     * @param contractUid   主合同号
+     * 删除合同
+     *
+     * @param buildId     用户id
+     * @param contractUid 主合同号
      */
     @Override
     public void deleteBuildId(String buildId, String contractUid) throws ErpException {
-        if (buildId==null){
+        if (buildId == null) {
             throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_BUILDERCODE);
         }
-        if (contractUid==null){
+        if (contractUid == null) {
             throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_CONTRACTID);
         }
-        String [] ccontractCodeList =contractUid.split(",");
-        for (String contractCode: ccontractCodeList) {
-            constructionMapper.deleteBuildId(buildId,contractCode);
+        String[] ccontractCodeList = contractUid.split(",");
+        for (String contractCode : ccontractCodeList) {
+            constructionMapper.deleteBuildId(buildId, contractCode);
         }
     }
 

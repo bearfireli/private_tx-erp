@@ -34,10 +34,18 @@
 
     <update id="updateUseStatus" useGeneratedKeys="true">
         update bd_invitation_code
-        set use_status=#{useStatus}
+        set use_status=#{useStatus},
+        build_id=#{buildId},
         where  build_invitation_code = #{buildInvitationCode}
         and ccontract_code =#{contractDetailCode}
        and contractUID=#{contractUID}
+    </update>
+    <update id="updateInvalidStatus">
+        update bd_invitation_code
+        set use_status=2,
+        where  build_invitation_code = #{buildInvitationCode}
+            and ccontract_code =#{contractDetailCode}
+            and contractUID=#{contractUID}
     </update>
     <!--删除合同-->
     <delete id="deleteBuildId">
@@ -47,12 +55,12 @@
     <select id="getInvitationList" resultType="com.hntxrj.txerp.vo.InvitationVO">
         select bd.build_invitation_code buildinvitationcode,
         bd.compid,
-        sm.BuilderShortName as        builderName,
+        sm.BuilderShortName as builderName,
         se.EPPName as eppName,
         se.ShortName as shortName,
-        bd.create_time           createtime,
-        bd.create_user           createuser,
-        bd.use_status            usestatus,
+        bd.create_time createtime,
+        bd.create_user createuser,
+        bd.use_status usestatus,
         bd.ccontract_code as contractDetailCode,
         bd.contractUID
         from bd_invitation_code bd

@@ -41,12 +41,14 @@ public interface ConstructionMapper {
     /**
      * 修改施工方邀请码状态
      *
+     * @param buildId             施工方用户id
      * @param contractUID         主合同号
      * @param contractDetailCode  子合同号
      * @param buildInvitationCode 邀请码
      * @param useStatus           邀请码使用状态
      */
-    void updateUseStatus(String contractUID, String contractDetailCode, String buildInvitationCode, int useStatus);
+    void updateUseStatus(String buildId, String contractUID, String contractDetailCode,
+                         String buildInvitationCode, int useStatus);
 
 
     /**
@@ -98,9 +100,15 @@ public interface ConstructionMapper {
     List<String> getContractUID(Integer buildId);
 
     /**
-     *  删除合同
-     * @param buildId   用户id
-     * @param contractCode   主合同号
+     * 删除合同
+     *
+     * @param buildId      用户id
+     * @param contractCode 主合同号
      */
     void deleteBuildId(String buildId, String contractCode);
+
+    /**
+     * 作废邀请码
+     * */
+    void updateInvalidStatus(String contractUID, String contractDetailCode, String buildInvitationCode);
 }
