@@ -109,6 +109,15 @@ public interface ConstructionMapper {
 
     /**
      * 作废邀请码
-     * */
+     */
     void updateInvalidStatus(String contractUID, String contractDetailCode, String buildInvitationCode);
+
+    /**
+     * 解除用户绑定的合同
+     *
+     * @param buildId            用户id
+     * @param contractUID        主合同号
+     * @param contractDetailCode 子合同号
+     */
+    void removeBind(String buildId, String contractUID, String contractDetailCode);
 }

@@ -15,15 +15,15 @@ import java.util.Date;
 
 /**
  * @author qyb
- *  ConstructionApi
- *  施工单位
- *  19-7-25 下午4:06
+ * ConstructionApi
+ * 施工单位
+ * 19-7-25 下午4:06
  **/
 @RestController
 @RequestMapping("/api/construction")
 public class ConstructionApi {
 
-    private  final ConstructionService constructionService;
+    private final ConstructionService constructionService;
 
     public ConstructionApi(ConstructionService constructionService) {
         this.constructionService = constructionService;
@@ -31,33 +31,35 @@ public class ConstructionApi {
 
     /**
      * 生成施工方邀请码
-     * @param compid   企业
-     * @param opid     操作人
-     * @param contractDetailCodes     子合同号集合
-     * @return   生成邀请码
+     *
+     * @param compid              企业
+     * @param opid                操作人
+     * @param contractDetailCodes 子合同号集合
+     * @return 生成邀请码
      */
     @PostMapping("/getInvitationCode")
-    public ResultVO getInvitationCode(String compid, Integer  opid, String contractDetailCodes) throws ErpException {
-        return ResultVO.create(constructionService.getInvitationCode(compid,opid,contractDetailCodes));
+    public ResultVO getInvitationCode(String compid, Integer opid, String contractDetailCodes) throws ErpException {
+        return ResultVO.create(constructionService.getInvitationCode(compid, opid, contractDetailCodes));
     }
 
     /**
      * 施工方邀请码列表
-     * @param compid            企业
-     * @param buildCode       施工方代码
-     * @param useStatus        状态 已使用1、未使用0
-     * @param createUser       创建人
-     * @param beginTime         开始时间
-     * @param endTime           结束时间
-     * @param page              页码
-     * @param pageSize          每页数量
-     * @return                  施工方邀请码列表
+     *
+     * @param compid     企业
+     * @param buildCode  施工方代码
+     * @param useStatus  状态 已使用1、未使用0
+     * @param createUser 创建人
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
+     * @param page       页码
+     * @param pageSize   每页数量
+     * @return 施工方邀请码列表
      */
     @PostMapping("/getInvitationList")
     public ResultVO getInvitationList(String compid, String buildCode, String useStatus, String createUser,
-                                                  Long beginTime, Long endTime,
-                                                  @RequestParam(defaultValue = "1") Integer page,
-                                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+                                      Long beginTime, Long endTime,
+                                      @RequestParam(defaultValue = "1") Integer page,
+                                      @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(constructionService.getInvitationList(compid, buildCode,
                 useStatus, createUser, beginTime == null ? null : sdf.format(new Date(beginTime)),
@@ -66,19 +68,21 @@ public class ConstructionApi {
 
     /**
      * 作废施工方邀请码
-     * @param contractUID  主合同
+     *
+     * @param contractUID         主合同
      * @param contractDetailCode  子合同
-     * @param buildInvitationCode  邀请码
+     * @param buildInvitationCode 邀请码
      */
     @PostMapping("/invalidInvitationCode")
-    public ResultVO invalidInvitationCode(String contractUID,String contractDetailCode, String buildInvitationCode) throws ErpException {
-        constructionService.invalidInvitationCode(contractUID,contractDetailCode, buildInvitationCode);
+    public ResultVO invalidInvitationCode(String contractUID, String contractDetailCode, String buildInvitationCode) throws ErpException {
+        constructionService.invalidInvitationCode(contractUID, contractDetailCode, buildInvitationCode);
         return ResultVO.create();
     }
 
     /**
      * 绑定施工方邀请码
-     * @param buildId  用户id
+     *
+     * @param buildId             用户id
      * @param buildInvitationCode 邀请码
      * @throws ErpException 异常处理
      */
@@ -91,8 +95,9 @@ public class ConstructionApi {
 
     /**
      * 查询绑定合同
-     * @param buildId  用户id
-     * @return        查询绑定合同
+     *
+     * @param buildId 用户id
+     * @return 查询绑定合同
      */
     @PostMapping("/checkBind")
     public ResultVO checkBind(String buildId) {
@@ -100,14 +105,28 @@ public class ConstructionApi {
     }
 
     /**
-     *  删除合同
-     * @param buildId   用户id
-     * @param contractUid   主合同号
+     * 删除合同
+     *
+     * @param buildId     用户id
+     * @param contractUid 主合同号
      */
     @PostMapping("deleteBuildId")
-    public ResultVO deleteBuildId(String buildId,String contractUid) throws ErpException {
-        constructionService.deleteBuildId(buildId,contractUid);
-        return  ResultVO.create();
+    public ResultVO deleteBuildId(String buildId, String contractUid) throws ErpException {
+        constructionService.deleteBuildId(buildId, contractUid);
+        return ResultVO.create();
+    }
+
+    /**
+     * 解除用户绑定的合同
+     *
+     * @param buildId            用户id
+     * @param contractUID        主合同号
+     * @param contractDetailCode 子合同号
+     */
+    @PostMapping("removeBind")
+    public ResultVO removeBind(String buildId, String contractUID, String contractDetailCode) {
+        constructionService.removeBind(buildId, contractUID, contractDetailCode);
+        return ResultVO.create();
     }
 
 }

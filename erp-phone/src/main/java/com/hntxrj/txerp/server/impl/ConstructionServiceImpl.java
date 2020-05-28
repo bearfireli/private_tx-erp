@@ -170,6 +170,18 @@ public class ConstructionServiceImpl implements ConstructionService {
         }
     }
 
+    /**
+     * 解除用户绑定的合同
+     *
+     * @param buildId            用户id
+     * @param contractUID        主合同号
+     * @param contractDetailCode 子合同号
+     */
+    @Override
+    public void removeBind(String buildId, String contractUID, String contractDetailCode) {
+        constructionMapper.removeBind(buildId, contractUID, contractDetailCode);
+    }
+
 
     /**
      * 根据用户id查询用户名称

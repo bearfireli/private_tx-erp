@@ -249,7 +249,7 @@ public class BuilderServiceImpl implements BuilderService {
         if (taskIds.size() > 0) {
             cars = builderMapper.getCarsByTaskIds(contractDetailCodes, contractUIDList, taskIds);
         }
-        String carID ="";
+        String carID = "";
         //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
         for (SendCarListVO sendCarListVO : sendCarList) {
             List<DispatchVehicle> dispatchVehicleList = new ArrayList<>();
@@ -268,7 +268,7 @@ public class BuilderServiceImpl implements BuilderService {
                         dispatchVehicleList.add(car);
                     }
                 }
-                carID =car.getCarID();
+                carID = car.getCarID();
             }
             sendCarListVO.setCars(dispatchVehicleList);
         }
@@ -277,6 +277,43 @@ public class BuilderServiceImpl implements BuilderService {
 
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+
+    @Override
+    public TaskPlanVO getBuildTaskPlanDetail(String compid, String taskId, Integer buildId) throws ErpException {
+        //首先根据buildId查询出施工方用户关联的合同列表
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+
+        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
+            //说明施工方用户未绑定合同
+            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
+        }
+
+        List<String> ppCodes = builderMapper.getBuildPPCodeByTaskId(compid, taskId, contractUIDList, contractDetailCodes);
+        TaskPlanVO taskPlanVO = builderMapper.getBuildTaskPlanByTaskId(compid, taskId, contractUIDList, contractDetailCodes);
+
+        if (taskPlanVO == null) {
+            throw new ErpException(ErrEumn.TASK_NOT_EXIT_ERROR);
+        }
+
+        taskPlanVO.setPpCodes(ppCodes);
+        return taskPlanVO;
+    }
+
+    @Override
+    public TaskSaleInvoiceDetailVO getBuildTaskSaleInvoiceDetail(String compid, Integer id, Integer buildId) throws ErpException {
+
+        //首先根据buildId查询出施工方用户关联的合同列表
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+
+        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
+            //说明施工方用户未绑定合同
+            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
+        }
+        return builderMapper.getTaskSaleInvoiceDetailVO(id, compid, contractUIDList, contractDetailCodes);
     }
 
 

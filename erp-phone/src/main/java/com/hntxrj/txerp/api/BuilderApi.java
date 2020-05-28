@@ -94,7 +94,7 @@ public class BuilderApi {
     }
 
     /**
-     * 获取小票签收列表
+     * 获取工地端小票签收列表
      *
      * @param buildId     企业
      * @param beginTime   开始时间
@@ -136,6 +136,33 @@ public class BuilderApi {
                                         @RequestParam(defaultValue = "10") Integer pageSize,
                                         String searchName) throws ErpException {
         return ResultVO.create(builderService.getBuildSendCarList(buildId, searchName, page, pageSize));
+    }
+
+
+    /**
+     * 工地端获取任务单详情
+     *
+     * @param compid  企业id
+     * @param taskId  任务单id
+     * @param buildId 施工方用户id
+     * @return 任务单数据
+     */
+    @PostMapping("/getBuildTaskPlanDetail")
+    public ResultVO getBuildTaskPlanDetail(String compid, String taskId, Integer buildId) throws ErpException {
+        return ResultVO.create(builderService.getBuildTaskPlanDetail(compid, taskId, buildId));
+    }
+
+    /**
+     * 工地端获取小票详情
+     *
+     * @param id      小票id
+     * @param compid  企业id
+     * @param buildId 施工方用户id
+     * @return 小票详情
+     */
+    @PostMapping("/getBuildTaskSaleInvoiceDetail")
+    public ResultVO getTaskSaleInvoiceDetail(String compid, Integer id, Integer buildId) throws ErpException {
+        return ResultVO.create(builderService.getBuildTaskSaleInvoiceDetail(compid, id, buildId));
     }
 
 

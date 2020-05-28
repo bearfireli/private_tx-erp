@@ -84,7 +84,7 @@ public interface BuilderMapper {
      *
      * @param contractDetailCodes 企业代号
      * @param contractUIDList     企业代号
-     * @param searchWords          搜索关键字
+     * @param searchWords         搜索关键字
      * @return 调度派车列表
      */
     List<SendCarListVO> getBuildSendCarList(List<String> contractDetailCodes, List<String> contractUIDList,
@@ -117,4 +117,42 @@ public interface BuilderMapper {
      */
     List<DispatchVehicle> getCarsByTaskIds(List<String> contractDetailCodes, List<String> contractUIDList,
                                            List<String> taskIds);
+
+    /**
+     * 施工方绑定合同下任务单的加价项目集合
+     *
+     * @param compid              企业id
+     * @param taskId              任务单号
+     * @param contractDetailCodes 子合同号
+     * @param contractUIDList     主合同号
+     * @return 车辆集合
+     */
+    List<String> getBuildPPCodeByTaskId(String compid, String taskId, List<String> contractUIDList,
+                                        List<String> contractDetailCodes);
+
+    /**
+     * 施工方绑定合同下的任务单详情
+     *
+     * @param compid              企业id
+     * @param taskId              任务单号
+     * @param contractDetailCodes 子合同号
+     * @param contractUIDList     主合同号
+     * @return 车辆集合
+     */
+    TaskPlanVO getBuildTaskPlanByTaskId(String compid, String taskId,
+                                        List<String> contractUIDList, List<String> contractDetailCodes);
+
+
+    /**
+     * 施工方绑定合同下的小票详情
+     *
+     * @param compid              企业id
+     * @param id                  小票id
+     * @param contractDetailCodes 子合同号
+     * @param contractUIDList     主合同号
+     * @return 车辆集合
+     */
+    TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetailVO(Integer id, String compid,
+                                                       List<String> contractUIDList, List<String> contractDetailCodes);
+
 }

@@ -112,10 +112,10 @@ public interface BuilderService {
     /**
      * 调度派车列表
      *
-     * @param buildId    企业代号
+     * @param buildId     企业代号
      * @param searchWords 搜索关键字
-     * @param page       页码
-     * @param pageSize   每页数量
+     * @param page        页码
+     * @param pageSize    每页数量
      * @return 调度派车列表
      */
     PageVO<SendCarListVO> getBuildSendCarList(Integer buildId, String searchWords, Integer page,
@@ -136,4 +136,24 @@ public interface BuilderService {
     Map<String, BigDecimal> getBuilderConcreteSum(Integer buildId, String eppCode, String placing, String taskId,
                                                   String stgId, String beginTime, String endTime,
                                                   Integer type) throws ErpException;
+
+    /**
+     * 工地端获取任务单详情
+     *
+     * @param compid  企业id
+     * @param taskId  任务单id
+     * @param buildId 施工方用户id
+     * @return 任务单数据
+     */
+    TaskPlanVO getBuildTaskPlanDetail(String compid, String taskId, Integer buildId) throws ErpException;
+
+    /**
+     * 工地端获取任务单详情
+     *
+     * @param compid  企业id
+     * @param id      小票id
+     * @param buildId 施工方用户id
+     * @return 任务单数据
+     */
+    TaskSaleInvoiceDetailVO getBuildTaskSaleInvoiceDetail(String compid, Integer id, Integer buildId) throws ErpException;
 }
