@@ -37,11 +37,10 @@ public class StockDaoImpl implements StockDao {
      * @return
      */
     @Override
-    public JSONArray realStock(String stirId, String compid, String opid, Integer queryType) {
+    public JSONArray realStock(String stirId, String compid, String opid) {
         List<Param> paramList = new ArrayList<>();
         paramList.add(new Param(1, ParamType.INPARAM.getType(), compid));
         paramList.add(new Param(2, ParamType.INPARAM.getType(), stirId));
-        paramList.add(new Param(3, ParamType.INPARAM.getType(), queryType));
 
         procedure.init("sp_Query_Sto_Curqty", paramList);
 

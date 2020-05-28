@@ -3,6 +3,8 @@ package com.hntxrj.txerp.mapper;
 import com.hntxrj.txerp.vo.DriverWaitLEDVO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Map;
+
 
 @Mapper
 public interface SystemVarInitMapper {
@@ -26,7 +28,7 @@ public interface SystemVarInitMapper {
     /**
      * 保存用户设置的手机erp实时库存中不显示的库位
      */
-    void saveStock(String compid, String stkCodes,Integer maxId);
+    void saveStock(String compid, String stkCodes, Integer maxId);
 
     /**
      * 修改用户设置的手机erp实时库存中不显示的库位
@@ -35,4 +37,16 @@ public interface SystemVarInitMapper {
 
     // 获取系统变量表中该企业最大的id值
     Integer getMaxId(String compid);
+
+    // 获取用户设置的实时库存骨料是否显示
+    Integer getStockAggregateShow(String compid);
+
+    // 保存用户设置实时库存是否显示骨料信息
+    void saveStockAggregateShow(String compid, Integer aggregateIsShow, Integer maxId);
+
+    // 修改用户设置实时库存是否显示骨料信息
+    void updateStockAggregateShow(String compid, Integer aggregateIsShow);
+
+    // 获取用户设置的实时库存是否显示骨料的信息
+    Map getStockAggregate(String compid);
 }
