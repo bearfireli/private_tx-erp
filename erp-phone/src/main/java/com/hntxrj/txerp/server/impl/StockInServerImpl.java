@@ -719,8 +719,9 @@ public class StockInServerImpl implements StockInServer {
             if (responseBody != null) {
                 String result = responseBody.string();
                 resultJSON = JSONObject.parseObject(result);
+                responseBody.close();
             }
-
+            response.close();
             return resultJSON;
         } catch (IOException e) {
             e.printStackTrace();
