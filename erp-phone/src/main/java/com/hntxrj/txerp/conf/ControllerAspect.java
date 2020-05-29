@@ -217,8 +217,10 @@ public class ControllerAspect {
                 if (data == null) {
                     return 0;
                 }
+                responseBody.close();
                 return (long) data.get("expireTime");
             }
+            response.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

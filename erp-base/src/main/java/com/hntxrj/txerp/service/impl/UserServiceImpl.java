@@ -531,10 +531,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
         try {
             String result = HttpClientUtil.post(config);
-            JSONObject data1 = JSONObject.parseObject(result);
-            if (data1 != null) {
-                JSONObject data = data1.getJSONObject("data");
-
+            JSONObject resultVO = JSONObject.parseObject(result);
+                JSONObject data = resultVO.getJSONObject("data");
                 for (UserAuthVO userAuthVO1 : userAuthVOS) {
                     for (UserListVO userListVO : userList) {
                         if (userAuthVO1.getUser().getUid().equals(userListVO.getUid())) {
@@ -544,11 +542,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                             } else {
                                 userAuthVO1.setDriverName("");
                             }
-
                         }
                     }
                 }
-            }
         } catch (HttpProcessException e) {
             log.warn("请求spterp项目失败");
             e.printStackTrace();
