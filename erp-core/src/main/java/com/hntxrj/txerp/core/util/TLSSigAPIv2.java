@@ -5,6 +5,7 @@ import com.hntxrj.txerp.core.util.Base64URL;
 import sun.misc.BASE64Encoder;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.nio.charset.Charset;
 
@@ -33,17 +34,13 @@ public class TLSSigAPIv2 {
             contentToBeSigned += "TLS.userbuf:" + base64Userbuf + "\n";
         }
         try {
-            byte[] byteKey = key.getBytes("UTF-8");
+            byte[] byteKey = key.getBytes(StandardCharsets.UTF_8);
             Mac hmac = Mac.getInstance("HmacSHA256");
             SecretKeySpec keySpec = new SecretKeySpec(byteKey, "HmacSHA256");
             hmac.init(keySpec);
-            byte[] byteSig = hmac.doFinal(contentToBeSigned.getBytes("UTF-8"));
+            byte[] byteSig = hmac.doFinal(contentToBeSigned.getBytes(StandardCharsets.UTF_8));
             return (new BASE64Encoder().encode(byteSig)).replaceAll("\\s*", "");
-        } catch (UnsupportedEncodingException e) {
-            return "";
-        } catch (NoSuchAlgorithmException e) {
-            return "";
-        } catch (InvalidKeyException  e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             return "";
         }
     }
@@ -70,7 +67,7 @@ public class TLSSigAPIv2 {
         }
         sigDoc.put("TLS.sig", sig);
         Deflater compressor = new Deflater();
-        compressor.setInput(sigDoc.toString().getBytes(Charset.forName("UTF-8")));
+        compressor.setInput(sigDoc.toString().getBytes(StandardCharsets.UTF_8));
         compressor.finish();
         byte [] compressedBytes = new byte[2048];
         int compressedBytesLength = compressor.deflate(compressedBytes);

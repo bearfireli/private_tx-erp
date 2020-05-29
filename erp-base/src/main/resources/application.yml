@@ -52,7 +52,7 @@ app:
   pay:
     imgFilePath: ${app.workspace}\upload\payImgPath\
   enterprise:
-    imgFilePath: ${app.workspace}\upload\enterpriseImgPath\
+    logoPath: ${app.workspace}\upload\logoPath\
   checking:
     imgFilePath: ${app.workspace}\upload\checkImgPath\
   feedback:

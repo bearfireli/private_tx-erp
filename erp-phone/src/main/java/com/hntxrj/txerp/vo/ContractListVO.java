@@ -14,11 +14,11 @@ public class ContractListVO {
     private String contractDetailCode;
     private String compid;
 
-    private String eppName;
 
     private String builderName;
     private String builderCode;
     private String eppCode;
+    private String eppName;
     private String address;
     /**
      * 合同方量

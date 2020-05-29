@@ -59,12 +59,12 @@ app:
   cloud:
     CommunicationUrl: https://console.tim.qq.com/v4
 
-#    host: http://localhost:9501
-    host: http://192.168.31.86:9501
+    #    host: http://localhost:9501
+    host: http://localhost:9501
     auth: ${app.cloud.host}/user/tokenUse
 logging:
   file:
-    name: spterp.%d{yyyy-MM-dd HH:mm:ss.SSS}.log
+    #    name: spterp.%d{yyyy-MM-dd HH:mm:ss.SSS}.log
     path: /tmp/spterp/
     # 要保留日志的总大小
   level:

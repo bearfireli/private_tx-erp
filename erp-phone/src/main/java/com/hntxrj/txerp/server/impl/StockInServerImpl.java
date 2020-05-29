@@ -12,6 +12,7 @@ import com.hntxrj.txerp.mapper.PublicInfoMapper;
 import com.hntxrj.txerp.mapper.StockMapper;
 import com.hntxrj.txerp.server.StockInServer;
 import com.hntxrj.txerp.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @Scope("prototype")
 public class StockInServerImpl implements StockInServer {
@@ -432,17 +434,14 @@ public class StockInServerImpl implements StockInServer {
             String dateTime = sdf.format(new Date());
             int nowDay = Integer.parseInt(dateTime.substring(8, 10));
             int begin = Integer.parseInt(beginTime.substring(8, 10));
-            Date time;
             if (begin > nowDay) {
                 //说明设置的开始时间大于当前时间，需要把开始时间减去一个月
-                time = sdf.parse(beginTime);
+                Date time = sdf.parse(beginTime);
                 endTime = endTime.substring(0, 8) + queryTime.getQueryStopTime();
                 Calendar cal = Calendar.getInstance();
-                assert time != null;
                 cal.setTime(time);
                 cal.add(Calendar.MONTH, -1);
                 beginTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStartTime();
-
                 //获取上个月的最后日期的天数，如果用户设置的时间大于上个月最后一天，则用上个月的最后一天替代用户设置的时间
                 String lastMonthLastDay = getLastDayOfMouth(ca);
                 int lastDayOfLastMonth = Integer.parseInt(lastMonthLastDay);
@@ -452,10 +451,9 @@ public class StockInServerImpl implements StockInServer {
                 }
             } else {
                 //说明开始时间小于当前时间，需要把结束时间延长一个月
-                time = sdf.parse(endTime);
+                Date time = sdf.parse(endTime);
                 beginTime = beginTime.substring(0, 8) + queryTime.getQueryStartTime();
                 Calendar cal = Calendar.getInstance();
-                assert time != null;
                 cal.setTime(time);
                 cal.add(Calendar.MONTH, 1);
                 endTime = sdf.format(cal.getTime()).substring(0, 8) + queryTime.getQueryStopTime();
@@ -470,6 +468,8 @@ public class StockInServerImpl implements StockInServer {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        log.info("原材料采购查询本月: beginTime:{}, endTime:{}", beginTime, endTime);
         return stockInWeighmatNsMapper.getWeightByMatParent(compid, beginTime, endTime);
     }
 
@@ -713,14 +713,13 @@ public class StockInServerImpl implements StockInServer {
                 .post(body)
                 .build();
 
-        try {
-            Response response = client.newCall(request).execute();
+        try (Response response = client.newCall(request).execute()) {
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
                 String result = responseBody.string();
                 resultJSON = JSONObject.parseObject(result);
+                responseBody.close();
             }
-
             return resultJSON;
         } catch (IOException e) {
             e.printStackTrace();
