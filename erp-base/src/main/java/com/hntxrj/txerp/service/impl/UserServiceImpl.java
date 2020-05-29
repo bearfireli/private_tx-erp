@@ -532,19 +532,19 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         try {
             String result = HttpClientUtil.post(config);
             JSONObject resultVO = JSONObject.parseObject(result);
-                JSONObject data = resultVO.getJSONObject("data");
-                for (UserAuthVO userAuthVO1 : userAuthVOS) {
-                    for (UserListVO userListVO : userList) {
-                        if (userAuthVO1.getUser().getUid().equals(userListVO.getUid())) {
-                            //把司机姓名赋值给userAuth
-                            if (data.get(userListVO.getDriverCode()) != null) {
-                                userAuthVO1.setDriverName(data.getString(userListVO.getDriverCode()));
-                            } else {
-                                userAuthVO1.setDriverName("");
-                            }
+            JSONObject data = resultVO.getJSONObject("data");
+            for (UserAuthVO userAuthVO1 : userAuthVOS) {
+                for (UserListVO userListVO : userList) {
+                    if (userAuthVO1.getUser().getUid().equals(userListVO.getUid())) {
+                        //把司机姓名赋值给userAuth
+                        if (data.get(userListVO.getDriverCode()) != null) {
+                            userAuthVO1.setDriverName(data.getString(userListVO.getDriverCode()));
+                        } else {
+                            userAuthVO1.setDriverName("");
                         }
                     }
                 }
+            }
         } catch (HttpProcessException e) {
             log.warn("请求spterp项目失败");
             e.printStackTrace();
