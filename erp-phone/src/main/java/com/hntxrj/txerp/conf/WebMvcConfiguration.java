@@ -27,22 +27,22 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 "*.css", "*.js", "*.ttf", "*.png", "*.jpg", "*.png", "*.gif", "*.swf", "*.do", "*.txt", "/auth/**");
     }
 
-    private CorsConfiguration buildConfig() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        // 1添加允许使用的域名，也可以用"*"表示任何域名
-        corsConfiguration.addAllowedOrigin("*");
-        // 2允许任何头
-        corsConfiguration.addAllowedHeader("*");
-        // 3允许任何方法（post、get等）
-        corsConfiguration.addAllowedMethod("*");
-        return corsConfiguration;
-    }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", buildConfig()); // 4
-        return new CorsFilter(source);
-    }
+//    private CorsConfiguration buildConfig() {
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        // 1添加允许使用的域名，也可以用"*"表示任何域名
+//        corsConfiguration.addAllowedOrigin("*");
+//        // 2允许任何头
+//        corsConfiguration.addAllowedHeader("*");
+//        // 3允许任何方法（post、get等）
+//        corsConfiguration.addAllowedMethod("*");
+//        return corsConfiguration;
+//    }
+//
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", buildConfig()); // 4
+//        return new CorsFilter(source);
+//    }
 
 }
