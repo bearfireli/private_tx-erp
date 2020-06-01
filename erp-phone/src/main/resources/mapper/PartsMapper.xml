@@ -181,6 +181,10 @@
         where  w.RequestNumber =#{requestNumber}
         and  w.compid =#{compid}
     </select>
+    <select id="getConFigureApply" resultType="com.hntxrj.txerp.entity.WmConFigureApply">
+        select * from WM_ConFigureApply
+        where compid=#{compid} and RequestNumber=#{requestNumber}
+    </select>
 
     <update id="editRequestStatus">
         UPDATE WM_ConFigureApply

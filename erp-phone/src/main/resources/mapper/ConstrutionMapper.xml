@@ -116,5 +116,9 @@
         from bd_bind
         where build_id=#{buildId}
     </select>
+    <select id="getContractDetail" resultType="java.util.Map">
+        select * from SM_ContractDetail where compid = #{compid}
+          and contractUID = #{contractUid}
+    </select>
 
 </mapper>

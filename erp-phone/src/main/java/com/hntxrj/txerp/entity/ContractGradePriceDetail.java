@@ -3,7 +3,6 @@ package com.hntxrj.txerp.entity;
 import java.io.Serializable;
 
 import lombok.Data;
-import org.apache.http.ssl.PrivateKeyStrategy;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -72,7 +71,6 @@ public class ContractGradePriceDetail implements Serializable {
     private boolean recStatus;
     /* null */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 

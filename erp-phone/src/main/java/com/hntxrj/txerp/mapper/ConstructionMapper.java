@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ConstructionMapper {
@@ -103,4 +104,6 @@ public interface ConstructionMapper {
      * @param contractCode   主合同号
      */
     void deleteBuildId(String buildId, String contractCode);
+
+    Map<String, String> getContractDetail(String compid, String contractUid);
 }

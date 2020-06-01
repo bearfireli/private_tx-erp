@@ -2,6 +2,7 @@ package com.hntxrj.txerp.server.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.WmConFigureApply;
 import com.hntxrj.txerp.core.exception.ErpException;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,23 +34,25 @@ public class PartsServiceImpl implements PartsService {
 
     private final PartsMapper partsMapper;
     private final WmConFigureApplyRepository wmConFigureApplyRepository;
+    private final SyncPlugin syncPlugin;
 
     @Autowired
-    public PartsServiceImpl(PartsMapper partsMapper, WmConFigureApplyRepository wmConFigureApplyRepository) {
+    public PartsServiceImpl(PartsMapper partsMapper, WmConFigureApplyRepository wmConFigureApplyRepository, SyncPlugin syncPlugin) {
         this.partsMapper = partsMapper;
         this.wmConFigureApplyRepository = wmConFigureApplyRepository;
+        this.syncPlugin = syncPlugin;
     }
 
     @Override
     public PageVO<PartsVO> getPartsList(String compid, String beginTime, String endTime, String goodsName,
                                         String buyer, String specification, String department,
                                         String requestNumber, String requestStatus,
-                                        String requestDep,String verifyStatusOne, Integer page, Integer pageSize) {
+                                        String requestDep, String verifyStatusOne, Integer page, Integer pageSize) {
         PageVO<PartsVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize, "CreateTime desc");
         List<PartsVO> partsVOS = partsMapper.getPartsList(
                 compid, beginTime, endTime, goodsName, buyer, specification, department,
-                requestNumber, requestStatus, requestDep,verifyStatusOne);
+                requestNumber, requestStatus, requestDep, verifyStatusOne);
         PageInfo<PartsVO> pageInfo = new PageInfo<>(partsVOS);
         pageVO.format(pageInfo);
         return pageVO;
@@ -61,11 +65,11 @@ public class PartsServiceImpl implements PartsService {
      * @return 申请人列表
      */
     @Override
-    public PageVO<UserVO> getBuyerList(String compid, String searchName,Integer page, Integer pageSize) {
+    public PageVO<UserVO> getBuyerList(String compid, String searchName, Integer page, Integer pageSize) {
         PageVO<UserVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<UserVO> buyerVOS = partsMapper.getBuyerList(
-                compid,searchName);
+                compid, searchName);
         PageInfo<UserVO> pageInfo = new PageInfo<>(buyerVOS);
         pageVO.format(pageInfo);
         return pageVO;
@@ -153,6 +157,8 @@ public class PartsServiceImpl implements PartsService {
         EntityTools.setEntityDefaultValue(wmConFigureApply, time);
         try {
             wmConFigureApplyRepository.save(wmConFigureApply);
+            syncPlugin.save(wmConFigureApply, "wm_configureapply", "INS",
+                    wmConFigureApply.getCompid());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.ADD_WMCONFIGUREAPPLY_ERROR);
@@ -178,6 +184,7 @@ public class PartsServiceImpl implements PartsService {
         EntityTools.setEntityDefaultValue(wmConFigureApply, time);
         try {
             wmConFigureApplyRepository.save(wmConFigureApply);
+            syncPlugin.save(wmConFigureApply, "wm_configureapply", "UP", wmConFigureApply.getCompid());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.EDIT_WMCONFIGUREAPPLY_ERROR);
@@ -223,17 +230,20 @@ public class PartsServiceImpl implements PartsService {
             String verifyTimeOne = "";
             boolean verifyStatusOne = false;
 
-            if (Integer.valueOf(requestStatus) == 8) {
+            if (Integer.parseInt(requestStatus) == 8) {
                 verifyStatusOne = true;
                 verifyTimeOne = sdf.format(date);
                 auditResultOne = "不批准";
-            } else if (Integer.valueOf(requestStatus) < 8) {
+            } else if (Integer.parseInt(requestStatus) < 8) {
                 verifyTimeOne = sdf.format(date);
                 verifyStatusOne = true;
                 auditResultOne = "批准";
             }
             partsMapper.editRequestStatus(compid, requestNumber, requestStatus, verifyIdOne,
                     verifyStatusOne, verifyTimeOne, auditResultOne);
+
+            WmConFigureApply wmConFigureApply = partsMapper.getConFigureApply(compid, requestNumber);
+            syncPlugin.save(wmConFigureApply, "wm_configureapply", "UP", compid);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.VERIFY_TICKET_ERROR);
@@ -249,6 +259,13 @@ public class PartsServiceImpl implements PartsService {
         verifyIdOne = "";
         partsMapper.cancelRequestStatus(compid, requestNumber, requestStatus, verifyIdOne,
                 verifyStatusOne, verifyTimeOne, auditResultOne);
+
+        WmConFigureApply conFigureApply = partsMapper.getConFigureApply(compid, requestNumber);
+        try {
+            syncPlugin.save(conFigureApply, "wm_configureapply", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 

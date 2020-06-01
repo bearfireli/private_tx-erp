@@ -141,7 +141,7 @@
     </select>
 
     <!--小票签收审核-->
-    <update id="getTaskSaleInvoiceExamine">
+    <update id="updateTaskSaleInvoiceExamine">
         UPDATE PT_TaskSaleInvoice
         set NumberOfSignings       = #{numberOfSignings},
             upStatus      = 1,
@@ -200,6 +200,10 @@
         <if test="placing != null and placing != '' ">
             and tp.placing like '%'+#{placing}+'%'
         </if>
+    </select>
+    <select id="getTaskSaleInvoice" resultType="java.util.Map">
+        select * from  PT_TaskSaleInvoice
+        where compid = #{compid} and id = #{id}
     </select>
 
 
