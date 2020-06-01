@@ -306,13 +306,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             for (DispatchVehicle car : cars) {
                 //判断重复的车号
                 if (!carID.equals(car.getCarID())) {
-                    //判断厦门华信特殊情况（先打票，再生产）
-                    if (compid.equals("24")) {
-                        if (car.getTaskStatus() == 1 && car.getInvoiceType() == 4) {
-                            car.setVehicleStatus("3");
-                            car.setStatusName("生产");
-                        }
-                    }
                     //根据任务单号关联调度派车列表和其对应的车辆
                     if (sendCarListVO.getTaskId().equals(car.getTaskId())) {
                         dispatchVehicleList.add(car);
@@ -941,10 +934,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public SquareQuantityVO getSquareQuantitySum(String compid, String beginTime, String endTime, int type) {
         //从系统变量表查询用户设置的查询首页生产方量的查询方式（是按照派车时间查询还是出场时间查询）
-        //quantityQueryType的值---0:按照派车时间查询;1:按照出场时间查询
+        //quantityQueryType的值---0:按照派车时间查询;1:按照离厂时间查询
         Integer quantityQueryType = systemVarInitMapper.getQuantityQueryType(compid);
         if (quantityQueryType == null) {
-            quantityQueryType = 0;
+            quantityQueryType = 1;
         }
         //根据传递过来的type，判断查询的是今日，昨日还是本月的方量。
         String _tmpMo = endTime.substring(5, 7);
@@ -994,6 +987,14 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public JSONArray phoneStatistics(String compid, String beginTime, String endTime) {
 
+
+        //从系统变量表查询用户设置的查询首页生产方量的查询方式（是按照派车时间查询还是出场时间查询）
+        //quantityQueryType的值---0:按照派车时间查询;1:按照离厂时间查询
+        Integer quantityQueryType = systemVarInitMapper.getQuantityQueryType(compid);
+        if (quantityQueryType == null) {
+            quantityQueryType = 1;
+        }
+
         QueryTimeSetVO queryTime = taskPlanMapper.queryTimeId(compid);
 
         if (queryTime != null) {
@@ -1002,7 +1003,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             endTime = todayTime.get("endTime");
         }
         SquareQuantityVO taskPlanPreNum = taskPlanMapper.taskPlanPreNum(compid, beginTime, endTime);
-        SquareQuantityVO squareQuantityVO = taskPlanMapper.phoneStatistics(compid, beginTime, endTime);
+        SquareQuantityVO squareQuantityVO = taskPlanMapper.phoneStatistics(compid, beginTime, endTime, quantityQueryType);
         if (taskPlanPreNum != null) {
             if (squareQuantityVO == null) {
                 squareQuantityVO = new SquareQuantityVO();

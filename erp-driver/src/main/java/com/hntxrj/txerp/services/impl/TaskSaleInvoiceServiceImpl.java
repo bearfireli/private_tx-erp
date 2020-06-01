@@ -46,12 +46,13 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
                 log.info("【resultBody】respBody={}", respBody);
 
                 ResultVO resultVO = JSONObject.parseObject(respBody, ResultVO.class);
+                resp.body().close();
                 if (resultVO.getCode() != 0) { // ResultVO code不为0说明异常，将异常抛出。
                     throw new ErpException(resultVO.getCode(), resultVO.getMsg());
                 }
                 return JSONObject.parseObject(resultVO.getData().toString(), TaskSaleInvoiceDetailVO.class);
             }
-
+            resp.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

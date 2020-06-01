@@ -26,8 +26,10 @@ public class StockVO {
     private Integer oderBy;
     private String matCode;
     private String matName;
-    //线号名称$
+    //线号名称
     private String stirName;
+    //称重值
+    private BigDecimal stoWeight;
 
 
 }

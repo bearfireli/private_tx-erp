@@ -245,7 +245,7 @@ public interface TaskPlanMapper {
      * @param beginTime 开始时间
      * @param endTime   结束时间
      */
-    SquareQuantityVO phoneStatistics(String compid, String beginTime, String endTime);
+    SquareQuantityVO phoneStatistics(String compid, String beginTime, String endTime, Integer quantityQueryType);
 
     /**
      * 预计方量

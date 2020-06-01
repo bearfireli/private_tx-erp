@@ -20,11 +20,20 @@
         '在手机端可以设置实时库存功能中不显示的库位名称，设置以后，手机erp的实时库存将不再显示用户选中的库位信息',
          0, 0, 1);
     </insert>
+    <insert id="saveStockAggregateShow">
+        insert into De_SystemVarInit
+        values (#{maxId}, #{compid}, '手机erp实施库存是否显示骨料', 'AggregateIsShow', #{aggregateIsShow}, '1', 1,
+        '手机erp中实时库存是否显示骨料 0:显示；1:不显示', 0, 0, 1)
+    </insert>
     <update id="updateStock">
         update De_SystemVarInit
         set VarIniValue=#{stkCodes},UpDownMark=0
         where compid = #{compid}
         and SystemVar = 'StockNotShow'
+    </update>
+    <update id="updateStockAggregateShow">
+        update De_SystemVarInit set VarValue =#{aggregateIsShow}, UpDownMark=0
+        where compid=#{compid} and   SystemVar = 'AggregateIsShow'
     </update>
 
     <select id="getDriverWaitLED" resultType="com.hntxrj.txerp.vo.DriverWaitLEDVO">
@@ -45,6 +54,14 @@
     <select id="getMaxId" resultType="java.lang.Integer">
         select max (ID)
         from De_SystemVarInit where compid=#{compid}
+    </select>
+    <select id="getStockAggregateShow" resultType="java.lang.Integer">
+        select VarValue from De_SystemVarInit
+        where compid=#{compid} and SystemVar='AggregateIsShow'
+    </select>
+    <select id="getStockAggregate" resultType="java.util.HashMap">
+        select * from De_SystemVarInit
+        where compid=#{compid} and SystemVar='AggregateIsShow'
     </select>
 
 
