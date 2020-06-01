@@ -1,6 +1,5 @@
 package com.hntxrj.txerp.server.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.arronlong.httpclientutil.HttpClientUtil;
 import com.arronlong.httpclientutil.common.HttpConfig;
@@ -178,8 +177,11 @@ public class ConstructionServiceImpl implements ConstructionService {
      * @param contractDetailCode 子合同号
      */
     @Override
-    public void removeBind(String buildId, String contractUID, String contractDetailCode) {
+    @Transactional
+    public void removeBind(String buildId, String contractUID, String contractDetailCode, String buildInvitationCode) {
         constructionMapper.removeBind(buildId, contractUID, contractDetailCode);
+        //修改施工方邀请码的状态为解除绑定（使用状态  0:未使用;  1:已使用;  2:作废;  3:已解绑）
+        constructionMapper.updateUseStatus(buildId, contractUID, contractDetailCode, buildInvitationCode, 3);
     }
 
 

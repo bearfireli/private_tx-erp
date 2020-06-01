@@ -76,5 +76,5 @@ public interface ConstructionService {
      * @param contractUID        主合同号
      * @param contractDetailCode 子合同号
      */
-    void removeBind(String buildId, String contractUID, String contractDetailCode);
+    void removeBind(String buildId, String contractUID, String contractDetailCode, String buildInvitationCode);
 }

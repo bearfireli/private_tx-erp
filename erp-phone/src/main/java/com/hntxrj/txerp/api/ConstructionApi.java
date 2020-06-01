@@ -119,13 +119,15 @@ public class ConstructionApi {
     /**
      * 解除用户绑定的合同
      *
-     * @param buildId            用户id
-     * @param contractUID        主合同号
-     * @param contractDetailCode 子合同号
+     * @param buildId             用户id
+     * @param contractUID         主合同号
+     * @param contractDetailCode  子合同号
+     * @param buildInvitationCode 施工方邀请码
      */
     @PostMapping("removeBind")
-    public ResultVO removeBind(String buildId, String contractUID, String contractDetailCode) {
-        constructionService.removeBind(buildId, contractUID, contractDetailCode);
+    public ResultVO removeBind(String buildId, String contractUID, String contractDetailCode,
+                               String buildInvitationCode) {
+        constructionService.removeBind(buildId, contractUID, contractDetailCode, buildInvitationCode);
         return ResultVO.create();
     }
 
