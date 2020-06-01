@@ -125,7 +125,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public void addTaskPlan(TaskPlan taskPlan, String type) throws ErpException {
         if (StringUtils.isEmpty(taskPlan.getCompid())) {
-            throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_COMPID);
+            throw new ErpException(ErrEumn.NOT_FOUND_COMPID);
         }
         if (taskPlan.getPreTime() == null) {
             throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_PRETIME);

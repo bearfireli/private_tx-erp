@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
+
+import static com.hntxrj.txerp.util.WebUtilKt.getCompid;
 
 @RestController
 @RequestMapping("/api/contract/")
@@ -35,7 +38,6 @@ public class ContractApi {
      * @param eppCode      工程代号
      * @param buildCode    施工单位代号
      * @param salesMan     销售员代号
-     * @param compid       企业代号
      * @param page         页码
      * @param pageSize     每页数量
      * @return 合同列表
@@ -43,15 +45,15 @@ public class ContractApi {
     @PostMapping("/getContractList")
     public ResultVO getContractList(String startTime, String endTime,
                                     String contractCode, String eppCode,
-                                    String buildCode, String salesMan, String compid,
+                                    String buildCode, String salesMan,
                                     @RequestParam(required = false) String verifyStatus,
                                     @RequestParam(defaultValue = "1") Integer page,
-                                    @RequestParam(defaultValue = "10") Integer pageSize) {
+                                    @RequestParam(defaultValue = "10") Integer pageSize, HttpServletRequest request) {
 
         return ResultVO.create(contractService.getContractList(
                 startTime == null ? null : Long.parseLong(startTime),
                 endTime == null ? null : Long.parseLong(endTime), contractCode,
-                eppCode, buildCode, salesMan, compid, verifyStatus, page, pageSize));
+                eppCode, buildCode, salesMan, getCompid(request), verifyStatus, page, pageSize));
     }
 
     /**
@@ -87,7 +89,7 @@ public class ContractApi {
      *
      * @param contractUid        合同uid
      * @param contractDetailCode 子合同代号
-     * @param compid 企业id
+     * @param compid             企业id
      * @return 砼价格列表
      */
     @PostMapping("/getContractGradePrice")
@@ -118,7 +120,7 @@ public class ContractApi {
      * @param contractUid        合同uid
      * @param contractDetailCode 合同子合同号
      * @param compid             企业id
-     * @return   合同泵送价格列表
+     * @return 合同泵送价格列表
      */
     @PostMapping("/getContractPumpPrice")
     public ResultVO getContractPumpPrice(String contractUid, String contractDetailCode, String compid) {
@@ -139,7 +141,8 @@ public class ContractApi {
 
     /**
      * 获取合同类别
-     * @param compid             企业id
+     *
+     * @param compid 企业id
      * @return 合同类别下拉
      */
     @PostMapping("/getContractTypeDropDown")
@@ -149,7 +152,8 @@ public class ContractApi {
 
     /**
      * 合同价格执行方式
-     * @param compid             企业id
+     *
+     * @param compid 企业id
      * @return 合同价格执行方式下拉
      */
     @PostMapping("/getPriceTypeDropDown")
@@ -234,7 +238,7 @@ public class ContractApi {
      * @param address      交货地址
      * @param linkMan      合同联系人
      * @param linkTel      合同联系电话
-     * @param opid      操作员id
+     * @param opid         操作员id
      */
     @PostMapping("/addContract")
     public ResultVO addContract(String contractId,
@@ -258,7 +262,7 @@ public class ContractApi {
         contractService.addContract(contractId,
                 salesman, new Timestamp(signDate), expiresDate == null ? null : new Timestamp(expiresDate),
                 effectDate == null ? null : new Timestamp(effectDate), contractType, priceStyle, eppCode, builderCode,
-                contractNum, preNum, preMoney, remarks, compid, address,linkMan,linkTel,opid);
+                contractNum, preNum, preMoney, remarks, compid, address, linkMan, linkTel, opid);
         return ResultVO.create();
     }
 

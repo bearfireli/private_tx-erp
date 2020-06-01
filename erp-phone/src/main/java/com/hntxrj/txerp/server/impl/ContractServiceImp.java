@@ -327,7 +327,6 @@ public class ContractServiceImp implements ContractService {
     }
 
 
-
     /**
      * 合同运距添加
      *
@@ -460,24 +459,24 @@ public class ContractServiceImp implements ContractService {
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         contractMapper.verifyContract(contractUid, compid, opId, sdf.format(new Date()), verifyStatus);
-        ContractVO contractVO =contractMapper.getContractDetail(null
+        ContractVO contractVO = contractMapper.getContractDetail(null
                 , contractUid, compid);
         int typeId = 3;
-        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
+        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
         String contractCode = "";
-        if (contractVO!=null){
-            contractCode =contractVO.getContractCode();
+        if (contractVO != null) {
+            contractCode = contractVO.getContractCode();
         }
         for (RecipientVO r : recipoentList) {
             SendmsgVO sendmsgVO = new SendmsgVO();
             sendmsgVO.setSyncOtherMachine(2);
             sendmsgVO.setToAccount(r.getUid().toString());
             sendmsgVO.setMsgLifeTime(7);
-            String  msgContent ="合同号：["+contractCode+"]的审核状态修改成功";
+            String msgContent = "合同号：[" + contractCode + "]的审核状态修改成功";
             if (verifyStatus == 1) {
-                 msgContent ="合同号：["+contractCode+"]已审核";
+                msgContent = "合同号：[" + contractCode + "]已审核";
             } else if (verifyStatus == 0) {
-                msgContent ="合同号：["+contractCode+"]已取消审核";
+                msgContent = "合同号：[" + contractCode + "]已取消审核";
             }
             sendmsgVO.setMsgContent(msgContent);
             msgService.sendMsg(sendmsgVO);
@@ -586,13 +585,13 @@ public class ContractServiceImp implements ContractService {
         EntityTools.setEntityDefaultValue(contractDetail);
         contractDetailMapper.insert(contractDetail);
         int typeId = 3;
-        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid,typeId);
+        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
         for (RecipientVO r : recipoentList) {
             SendmsgVO sendmsgVO = new SendmsgVO();
             sendmsgVO.setSyncOtherMachine(2);
             sendmsgVO.setToAccount(r.getUid().toString());
             sendmsgVO.setMsgLifeTime(7);
-            String  msgContent ="有新合同,请审核";
+            String msgContent = "有新合同,请审核";
             sendmsgVO.setMsgContent(msgContent);
             msgService.sendMsg(sendmsgVO);
         }
@@ -953,12 +952,12 @@ public class ContractServiceImp implements ContractService {
 
         //首先根据buildId查询出此施工方用户下的所有合同uid和所有子合同号
         List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
-        List<ContractListVO> contractListVOList =new ArrayList<>();
-        if (contractDetailCodes.size()>0){
+        List<ContractListVO> contractListVOList = new ArrayList<>();
+        if (contractDetailCodes.size() > 0) {
             List<String> contractUIDList = constructionMapper.getContractUID(buildId);
 
             PageHelper.startPage(page, pageSize, "SignDate desc");
-           contractListVOList = contractMapper.getBuildContractListByEppOrBuild(contractDetailCodes,
+            contractListVOList = contractMapper.getBuildContractListByEppOrBuild(contractDetailCodes,
                     contractUIDList, searchName);
         }
         PageInfo<ContractListVO> pageInfo = new PageInfo<>(contractListVOList);

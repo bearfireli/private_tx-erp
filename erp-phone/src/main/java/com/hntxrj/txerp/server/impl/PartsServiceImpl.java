@@ -95,7 +95,7 @@ public class PartsServiceImpl implements PartsService {
     @Override
     public void addWmConFigureApply(WmConFigureApply wmConFigureApply) throws ErpException {
         if (StringUtils.isEmpty(wmConFigureApply.getCompid())) {
-            throw new ErpException(ErrEumn.ADD_TASK_NOT_FOUND_COMPID);
+            throw new ErpException(ErrEumn.NOT_FOUND_COMPID);
         }
 
         int page = 0;
