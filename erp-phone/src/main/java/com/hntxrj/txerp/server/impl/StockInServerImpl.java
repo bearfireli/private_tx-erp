@@ -720,6 +720,7 @@ public class StockInServerImpl implements StockInServer {
                 resultJSON = JSONObject.parseObject(result);
                 responseBody.close();
             }
+            response.close();
             return resultJSON;
         } catch (IOException e) {
             e.printStackTrace();
