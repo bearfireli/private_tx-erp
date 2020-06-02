@@ -54,7 +54,7 @@ public enum ErrEumn {
     SELECT_VEHICLEWORK_ERROR(-21210, "暂无数据"),
     ADD_INVITATION_ERROR(-21211, "生成邀请码失败"),
     ADD_USER_PHONE_EXIST(-21212, "手机号已注册！"),
-    INVITATION_USESTATUS_EXIST(-21213, "邀请码已使用！"),
+    INVITATION_USESTATUS_EXIST(-21213, "用户已经绑定过此合同"),
     INVITATION_USESTATUS_VOID(-21213, "邀请码已作废！"),
     INVITATION_COMPID_VOID(-21213, "重复绑定该企业！"),
     INVITATION_NULL(-21215, "邀请码不存在！"),
