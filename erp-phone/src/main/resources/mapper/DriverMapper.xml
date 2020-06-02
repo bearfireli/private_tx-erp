@@ -257,6 +257,19 @@
         where tsi.compid=#{compid} and tsi.PersonalCode=#{driverCode}
         order by Leave_STTime desc
     </select>
+    <select id="driverVehicleCount" resultType="com.hntxrj.txerp.vo.DriverVehicleCountVO">
+        select VehicleID as vehicleId, sum(SaleNum) as concreteNum,
+        count(VehiceNumber) as carNum,sum(Distance) as Distance from PT_TaskSaleInvoice
+        where compid = #{compid} and PersonalCode = #{driverCode}
+        <if test="beginTime != null and beginTime != '' ">
+            and tsi.Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != '' ">
+            and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+        group by VehicleID
+        order by concreteNum desc
+    </select>
 
     <update id="updateDriverWorkTime">
         <if test="timeType==1 ">
