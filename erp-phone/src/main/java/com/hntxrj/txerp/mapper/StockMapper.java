@@ -285,6 +285,14 @@ public interface StockMapper {
     StockInCheckVO getStockCheck(String compid, String stICode);
 
     /**
+     * 根据过磅单号获取材料过磅信息
+     *
+     * @param compid  企业id
+     * @param stICode 过磅单号
+     */
+    Map<String, String> getStockIn(String compid, String stICode);
+
+    /**
      * 根据线号获取所有的库位信息
      */
     List<StockSelectVO> getAllStockList(String compid, Integer stirId);

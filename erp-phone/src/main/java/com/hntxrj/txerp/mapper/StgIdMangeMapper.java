@@ -4,6 +4,8 @@ import com.hntxrj.txerp.vo.StgidManageVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
+
 /*砼标号管理*/
 @Mapper
 public interface StgIdMangeMapper {
@@ -49,4 +51,6 @@ public interface StgIdMangeMapper {
      * @return 砼价格列表
      */
     List<StgidManageVO>  getStgidList(String compid);
+
+    Map<String, String> getByStgId(String compid, String stgId);
 }

@@ -277,5 +277,10 @@ public class DriverServiceImpl implements DriverService {
         redisTemplate.opsForValue().set(key, new Date());
     }
 
+    @Override
+    public List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime) {
+        return driverMapper.driverVehicleCount(compid, driverCode, beginTime, endTime);
+    }
+
 
 }

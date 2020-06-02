@@ -2,27 +2,33 @@ package com.hntxrj.txerp.server.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.mapper.TaskSaleInvoiceMapper;
 import com.hntxrj.txerp.server.TaskSaleInvoiceService;
 import com.hntxrj.txerp.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
 public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
 
     private final TaskSaleInvoiceMapper taskSaleInvoiceMapper;
+    private final SyncPlugin syncPlugin;
+    private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
 
     @Autowired
-    public TaskSaleInvoiceServiceImpl(TaskSaleInvoiceMapper taskSaleInvoiceMapper) {
+    public TaskSaleInvoiceServiceImpl(TaskSaleInvoiceMapper taskSaleInvoiceMapper, SyncPlugin syncPlugin) {
         this.taskSaleInvoiceMapper = taskSaleInvoiceMapper;
+        this.syncPlugin = syncPlugin;
     }
 
 
@@ -68,7 +74,18 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
         try {
             //获取签收时间
             Date SigningTime = new Date();
-            taskSaleInvoiceMapper.getTaskSaleInvoiceExamine(compid, id, opid, numberOfSignings, saleFileImage, SigningTime);
+            taskSaleInvoiceMapper.updateTaskSaleInvoiceExamine(compid, id, opid, numberOfSignings, saleFileImage, SigningTime);
+            Map<String, String> map = taskSaleInvoiceMapper.getTaskSaleInvoice(compid, id);
+            map.put("SendTime", simpleDateFormat.format(map.get("SendTime")));
+            map.put("Leave_STTime", simpleDateFormat.format(map.get("Leave_STTime")));
+            map.put("Arrive_STTime", simpleDateFormat.format(map.get("Arrive_STTime")));
+            map.put("Arrive_WATime", simpleDateFormat.format(map.get("Arrive_WATime")));
+            map.put("Leave_WATime", simpleDateFormat.format(map.get("Leave_WATime")));
+            map.put("UnloadStarTime", simpleDateFormat.format(map.get("UnloadStarTime")));
+            map.put("UnlodeOverTime", simpleDateFormat.format(map.get("UnlodeOverTime")));
+            map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+            map.put("SigningTime", simpleDateFormat.format(map.get("SigningTime")));
+            syncPlugin.save(map, "PT_TaskSaleInvoice", "UP", compid);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.VERIFY_TICKET_ERROR);

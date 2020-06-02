@@ -193,7 +193,7 @@ public class TaskPlanApi {
      * @param upStatus    签收状态
      * @param builderCode 施工单位代号
      * @param taskId      任务单id
-     * @param placing     浇筑部位
+     * @param placing     浇筑部位g
      * @param type        搜索时间类型：0表示派车时间；1表示出厂时间
      * @param page        页数
      * @param pageSize    每页数量

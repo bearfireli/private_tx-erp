@@ -10,8 +10,6 @@ import java.util.Map;
 
 /**
  * 司机服务
- *
- * @update 2019-09-10 15:56:18
  */
 public interface DriverService {
 
@@ -201,6 +199,16 @@ public interface DriverService {
      * @param driverCode 司机代号
      */
     void driverOnlineStatus(String compid, String driverCode);
+
+    /**
+     * 司机端获取车辆工作量统计
+     *
+     * @param compid     企业代号
+     * @param driverCode 司机代号
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
+     */
+    List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime);
 }
 
 

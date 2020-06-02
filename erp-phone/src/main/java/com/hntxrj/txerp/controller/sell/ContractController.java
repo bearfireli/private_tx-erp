@@ -3,8 +3,11 @@ package com.hntxrj.txerp.controller.sell;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
+import com.hntxrj.txerp.entity.EppInfo;
 import com.hntxrj.txerp.entity.PageBean;
+import com.hntxrj.txerp.mapper.EppMapper;
 import com.hntxrj.txerp.server.ContractService;
 import com.hntxrj.txerp.vo.JsonVo;
 import com.hntxrj.txerp.vo.JsonVoAndPage;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,11 +41,15 @@ public class ContractController {
 
     private final ContractService cs;
     private final JdbcTemplate jdbcTemplat;
+    private final EppMapper eppMapper;
+    private final SyncPlugin syncPlugin;
 
     @Autowired
-    public ContractController(ContractService cs, JdbcTemplate jdbcTemplat) {
+    public ContractController(ContractService cs, JdbcTemplate jdbcTemplat, EppMapper eppMapper, SyncPlugin syncPlugin) {
         this.cs = cs;
         this.jdbcTemplat = jdbcTemplat;
+        this.eppMapper = eppMapper;
+        this.syncPlugin = syncPlugin;
     }
 
     /**
@@ -100,6 +108,14 @@ public class ContractController {
             if (result.contains("成功")) {
                 jsonVo.setCode(0);
                 jsonVo.setMsg(result);
+
+                // 数据同步
+                EppInfo eppInfo = eppMapper.getEppInfoByCreateTime(compid, format);
+                try {
+                    syncPlugin.save(eppInfo,"SM_EPPInfo","INS",compid);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             } else {
                 jsonVo.setCode(1);
                 jsonVo.setMsg(result);
@@ -113,6 +129,8 @@ public class ContractController {
             jsonVo.setMsg("result null");
             return jsonVo;
         }
+
+
     }
 
     /**

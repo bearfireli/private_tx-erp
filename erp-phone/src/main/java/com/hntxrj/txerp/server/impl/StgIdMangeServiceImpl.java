@@ -2,6 +2,7 @@ package com.hntxrj.txerp.server.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.mapper.StgIdMangeMapper;
 import com.hntxrj.txerp.server.StgIdMangeService;
 import com.hntxrj.txerp.vo.PageVO;
@@ -10,17 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /*砼标号管理*/
 @Service
 @Scope("prototype")
 public class StgIdMangeServiceImpl implements StgIdMangeService {
     private final StgIdMangeMapper stgIdMangeMapper;
+    private final SyncPlugin syncPlugin;
 
     @Autowired
-    public StgIdMangeServiceImpl(StgIdMangeMapper stgIdMangeMapper) {
+    public StgIdMangeServiceImpl(StgIdMangeMapper stgIdMangeMapper, SyncPlugin syncPlugin) {
         this.stgIdMangeMapper = stgIdMangeMapper;
+        this.syncPlugin = syncPlugin;
     }
 
     /**
@@ -79,6 +84,16 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
     @Override
     public void updateStgIdManage(String compid, String stgId, String grade, String pumpPrice, String notPumpPrice, String towerCranePrice) {
         stgIdMangeMapper.updateStgIdManage(grade, pumpPrice, notPumpPrice, towerCranePrice, compid, stgId);
+
+        // 数据同步
+        Map<String, String> map = stgIdMangeMapper.getByStgId(compid, stgId);
+        try {
+            syncPlugin.save(map, "SM_GradePriceInfo", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
@@ -100,6 +115,13 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
         notPumpPrice = notPumpPrice.replaceAll("\\s*", "");
         towerCranePrice = towerCranePrice.replaceAll("\\s*", "");
         stgIdMangeMapper.insertStgIdManage(compid, stgId, grade, pumpPrice, notPumpPrice, towerCranePrice);
+
+        Map<String, String> map = stgIdMangeMapper.getByStgId(compid, stgId);
+        try {
+            syncPlugin.save(map, "SM_GradePriceInfo", "INS", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -112,10 +134,18 @@ public class StgIdMangeServiceImpl implements StgIdMangeService {
     @Override
     public void deleteStgManage(String compid, String stgId) {
         stgIdMangeMapper.deleteStgIdManage(compid, stgId);
+
+        Map<String, String> map = stgIdMangeMapper.getByStgId(compid, stgId);
+        try {
+            syncPlugin.save(map, "SM_GradePriceInfo", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 获取砼价格列表
+     *
      * @param compid 企业id
      * @return 砼价格列表
      */
