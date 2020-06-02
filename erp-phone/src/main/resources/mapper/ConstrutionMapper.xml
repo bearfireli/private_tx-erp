@@ -42,7 +42,7 @@
     </update>
     <update id="updateInvalidStatus">
         update bd_invitation_code
-        set use_status=2,
+        set use_status=2
         where  build_invitation_code = #{buildInvitationCode}
             and ccontract_code =#{contractDetailCode}
             and contractUID=#{contractUID}

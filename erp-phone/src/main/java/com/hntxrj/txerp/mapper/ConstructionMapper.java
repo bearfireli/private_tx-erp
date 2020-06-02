@@ -47,7 +47,8 @@ public interface ConstructionMapper {
      * @param buildInvitationCode 邀请码
      * @param useStatus           邀请码使用状态
      */
-    void updateUseStatus(String contractUID, String contractDetailCode, String buildInvitationCode, int useStatus);
+    void updateUseStatus(String buildId, String contractUID, String contractDetailCode, String buildInvitationCode,
+                         int useStatus);
 
 
     /**
