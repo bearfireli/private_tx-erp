@@ -24,10 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class DriverApiTest {
     private MockMvc mockMvc;
-    private final String COMP_ID = "01";                 // 企业id
-    private final String PERSON_CODE = "R010000003";     // 司机代号
-    private final String VEHICLE_STATUS = "16";          // 车辆状态
-    private final String TYPE = "1";                     // 回厂类型 1:自动回厂； 0:手动回厂
 
     @Resource
     private DriverService DriverService;
@@ -40,6 +36,15 @@ public class DriverApiTest {
 
     @Test
     public void testUpdateVehicleStatus() throws Exception {
+        // 车辆状态
+        String VEHICLE_STATUS = "16";
+        // 企业id
+        String COMP_ID = "01";
+        // 回厂类型 1:自动回厂； 0:手动回厂
+        String TYPE = "1";
+        // 司机代号
+        String PERSON_CODE = "R010000003";
+
         mockMvc.perform(post("/driver/updateVehicleStatus")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("compid", COMP_ID)
