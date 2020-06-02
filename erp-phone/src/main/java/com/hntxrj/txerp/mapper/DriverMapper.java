@@ -179,4 +179,7 @@ public interface DriverMapper {
 
     //获取小票的车辆状态
     DriverTaskSaleDetailVO getTaskSaleInvoiceDetail(String driverCode, String compid);
+
+    //司机端获取车辆工作量统计
+    List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime);
 }

@@ -5,6 +5,10 @@ import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.server.DriverService;
 import com.hntxrj.txerp.vo.ResultVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,7 @@ import java.util.*;
 /**
  * 司机端api
  */
+@Api(tags = "司机端接口", description = "提供司机App相关的接口，功能")
 @RestController
 @RequestMapping("/driver")
 @Slf4j
@@ -346,5 +351,21 @@ public class DriverApi {
     public ResultVO driverOnlineStatus(String compid, String driverCode) {
         driverService.driverOnlineStatus(compid, driverCode);
         return ResultVO.create();
+    }
+
+
+    @ApiOperation("司机端获取车辆工作量统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "driverCode", value = "司机代号", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "beginTime", value = "开始时间", dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "Long", paramType = "query"),
+    })
+    @PostMapping("/driverVehicleCount")
+    public ResultVO driverVehicleCount(String compid, String driverCode, Long beginTime, Long endTime) {
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(driverService.driverVehicleCount(compid, driverCode,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
     }
 }

@@ -233,4 +233,8 @@
         )
         group by StirId, tf.VerifyStatus, tf.TaskId
     </select>
+    <select id="getFormulaInfoByFormulaCode" resultType="java.util.Map">
+        select top 1 * from LM_TaskTheoryFormula
+        where compid=#{compid} and TaskId=#{taskId} and StirId=#{stirId}
+    </select>
 </mapper>

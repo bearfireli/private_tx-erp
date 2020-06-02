@@ -380,6 +380,10 @@
         vm.StirId, dd2.StirName,tsi.SendTime
         order by dd.PI_TypeName,tsi.SendTime desc
     </select>
+    <select id="getBuilderInfoByName" resultType="java.util.Map">
+        select top 1 * from SM_BuilderInfo
+        where compid=#{compid} and BuilderName=#{builderName} and BuilderShortName=#{builderShortName}
+    </select>
 
     <select id="getBuildPPCodeByTaskId" resultType="string">
         select PPCode from PT_TASKPRICEMARKUP pp

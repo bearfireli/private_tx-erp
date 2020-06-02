@@ -194,7 +194,7 @@ public class DriverServiceImpl implements DriverService {
 //        2，当前车辆的状态时运输状态,或者是正在卸料,或者完成卸料的状态
 
         DriverTaskSaleDetailVO taskSaleInvoiceDetail = driverMapper.getTaskSaleInvoiceDetail(driverCode, compid);
-        if (taskSaleInvoiceDetail == null||taskSaleInvoiceDetail.getVehicleStatus()==null) {
+        if (taskSaleInvoiceDetail == null || taskSaleInvoiceDetail.getVehicleStatus() == null) {
             map.put("code", 1);
             map.put("message", "司机没有打票，自动回厂失败");
             return map;
@@ -268,6 +268,11 @@ public class DriverServiceImpl implements DriverService {
         String key = compid + driverCode;
         //以该司机的公司代号和司机代号为key,把请求时间存进缓存中
         redisTemplate.opsForValue().set(key, new Date());
+    }
+
+    @Override
+    public List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime) {
+        return driverMapper.driverVehicleCount(compid, driverCode, beginTime, endTime);
     }
 
 

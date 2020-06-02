@@ -205,7 +205,9 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             Response response = call.execute();
             if (response.body() != null) {
                 log.info("【向spterp项目添加企业】val={}", response.body().string());
+                response.body().close();
             }
+            response.close();
         } catch (IOException e) {
             log.error("【向spterp项目添加企业失败】err={}", e.getMessage());
             e.printStackTrace();
@@ -283,7 +285,9 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             Response response = call.execute();
             if (response.body() != null) {
                 log.info("【修改spterp项目企业】val={}", response.body().string());
+                response.body().close();
             }
+            response.close();
         } catch (IOException e) {
             log.error("【修改spterp项目企业失败】err={}", e.getMessage());
             e.printStackTrace();
@@ -324,7 +328,9 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
             Response response = call.execute();
             if (response.body() != null) {
                 log.info("【删除spterp项目企业】val={}", response.body().string());
+                response.body().close();
             }
+            response.close();
         } catch (IOException e) {
             log.error("【删除spterp项目企业失败】err={}", e.getMessage());
             e.printStackTrace();

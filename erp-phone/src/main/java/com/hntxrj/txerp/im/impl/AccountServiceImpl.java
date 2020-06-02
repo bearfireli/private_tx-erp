@@ -173,8 +173,9 @@ public class AccountServiceImpl implements AccountService {
             if (responseBody != null) {
                 String result = responseBody.string();
                 resultJSON = JSONObject.parseObject(result);
+                responseBody.close();
             }
-
+            response.close();
             return resultJSON;
         } catch (IOException e) {
             e.printStackTrace();
