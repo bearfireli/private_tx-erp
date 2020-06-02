@@ -128,7 +128,7 @@ public class ConstructionServiceImpl implements ConstructionService {
                         throw new ErpException(ErrEumn.INVITATION_USESTATUS_VOID);
                     }
                 } else {
-                    throw new ErpException(ErrEumn.INVITATION_USESTATUS_EXIST);
+                    throw new ErpException(ErrEumn.USER_ALREADY_BINGING_CONTRACT);
                 }
             }
         } else {
