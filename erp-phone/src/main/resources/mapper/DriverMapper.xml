@@ -262,10 +262,10 @@
         count(VehiceNumber) as carNum,sum(Distance) as Distance from PT_TaskSaleInvoice
         where compid = #{compid} and PersonalCode = #{driverCode}
         <if test="beginTime != null and beginTime != '' ">
-            and tsi.Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
+            and Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
         </if>
         <if test="endTime != null and endTime != '' ">
-            and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
+            and Leave_STTime <![CDATA[ <= ]]> #{endTime}
         </if>
         group by VehicleID
         order by concreteNum desc
