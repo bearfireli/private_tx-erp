@@ -170,11 +170,11 @@ public class BuilderApi {
      * 检验工地端用户绑定的合同是否包含小票
      *
      * @param buildId 施工方用户id
-     * @param buildId 施工方用户id
-     * @param buildId 施工方用户id
+     * @param compid  企业id
+     * @param id      小票id
      */
     @PostMapping("/checkTaskSaleInvoice")
-    public ResultVO checkTaskSaleInvoice(Integer buildId, String compid, String id) {
-        return ResultVO.create(builderService.checkTaskSaleInvoice());
+    public ResultVO checkTaskSaleInvoice(Integer buildId, String compid, Integer id) throws ErpException {
+        return ResultVO.create(builderService.checkTaskSaleInvoice(buildId, compid, id));
     }
 }

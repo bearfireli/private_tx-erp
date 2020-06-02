@@ -156,4 +156,13 @@ public interface BuilderService {
      * @return 任务单数据
      */
     TaskSaleInvoiceDetailVO getBuildTaskSaleInvoiceDetail(String compid, Integer id, Integer buildId) throws ErpException;
+
+    /**
+     * 检验工地端用户绑定的合同是否包含小票
+     *
+     * @param buildId 施工方用户id
+     * @param compid  企业id
+     * @param id      小票id
+     */
+    TaskSaleInvoiceDetailVO checkTaskSaleInvoice(Integer buildId, String compid, Integer id) throws ErpException;
 }

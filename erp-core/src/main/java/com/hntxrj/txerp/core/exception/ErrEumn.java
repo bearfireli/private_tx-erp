@@ -60,6 +60,7 @@ public enum ErrEumn {
     INVITATION_NULL(-21215, "邀请码不存在！"),
     ADD_ERROR(-21214, "添加失败！"),
     USER_LOGIN_ERROR(-21216, "用户名或密码错误！"),
+    TASK_SALE_INVOICE_NOT_EXIT(-21217, "小票不存在"),
 
     USER_NO_EXIT(-10000, "用户不存在"),
     ADD_USER_ERR(-10001, "添加用户失败"),

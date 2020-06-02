@@ -297,6 +297,19 @@ public class BuilderServiceImpl implements BuilderService {
         return builderMapper.getTaskSaleInvoiceDetailVO(id, compid, contractUIDList, contractDetailCodes);
     }
 
+    @Override
+    public TaskSaleInvoiceDetailVO checkTaskSaleInvoice(Integer buildId, String compid, Integer id) throws ErpException {
+        Map<String, List<String>> map = checkContract(buildId);
+        List<String> contractDetailCodes = map.get("contractDetailCodes");
+        List<String> contractUIDList = map.get("contractUIDList");
+        TaskSaleInvoiceDetailVO taskSaleInvoiceDetailVO = builderMapper.getTaskSaleInvoiceDetailVO(id,
+                compid, contractUIDList, contractDetailCodes);
+        if (taskSaleInvoiceDetailVO == null) {
+            throw new ErpException(ErrEumn.TASK_SALE_INVOICE_NOT_EXIT);
+        }
+        return taskSaleInvoiceDetailVO;
+    }
+
 
     // 验证施工方用户是否绑定合同，返回绑定的合同列表
     private Map<String, List<String>> checkContract(Integer buildId) throws ErpException {
