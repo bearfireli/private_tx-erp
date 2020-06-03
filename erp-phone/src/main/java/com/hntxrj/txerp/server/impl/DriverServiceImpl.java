@@ -201,7 +201,7 @@ public class DriverServiceImpl implements DriverService {
                 map.put("message", "自动回厂成功");
             } else if (taskSaleInvoiceDetail.getVehicleStatus() == 16) {
                 map.put("code", 1);
-                map.put("message", "车辆已自动回厂");
+                map.put("message", "车辆已回厂");
             } else {
                 map.put("code", 1);
                 map.put("message", "车辆不是运输状态，自动回厂失败");
@@ -234,7 +234,7 @@ public class DriverServiceImpl implements DriverService {
             map.put("message", "自动回厂成功");
         } else if (taskSaleInvoiceDetail.getVehicleStatus() == 16) {
             map.put("code", 1);
-            map.put("message", "车辆已自动回厂");
+            map.put("message", "车辆已回厂");
         } else {
             map.put("code", 1);
             map.put("message", "车辆不是运输状态，自动回厂失败");
