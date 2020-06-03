@@ -113,6 +113,7 @@ public class ConstructionServiceImpl implements ConstructionService {
                 if (bdBindVO == null) {
                     //说明此用户没有绑定过此合同
                     if (Integer.parseInt(invitationVO.getUsestatus()) == 0) {
+                        //邀请码可以使用
                         int useStatus = 1;
                         String compid = invitationVO.getCompid();
                         String contractDetailCode = invitationVO.getContractDetailCode();
@@ -123,9 +124,14 @@ public class ConstructionServiceImpl implements ConstructionService {
                         //给此用户绑定合同
                         constructionMapper.saveInvitation(buildId, compid, contractDetailCode, contractUID);
                     } else if (Integer.parseInt(invitationVO.getUsestatus()) == 1) {
+                        //邀请码已经使用
                         throw new ErpException(ErrEumn.INVITATION_USESTATUS_EXIST);
-                    } else {
+                    } else if (Integer.parseInt(invitationVO.getUsestatus()) == 2) {
+                        //邀请码已经作废
                         throw new ErpException(ErrEumn.INVITATION_USESTATUS_VOID);
+                    } else if (Integer.parseInt(invitationVO.getUsestatus()) == 3) {
+                        //邀请码已解绑
+                        throw new ErpException(ErrEumn.INVITATION_REMOVE_BIND);
                     }
                 } else {
                     throw new ErpException(ErrEumn.USER_ALREADY_BINGING_CONTRACT);

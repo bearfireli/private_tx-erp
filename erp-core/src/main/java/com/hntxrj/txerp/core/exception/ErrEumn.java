@@ -62,6 +62,7 @@ public enum ErrEumn {
     USER_ALREADY_BINGING_CONTRACT(-21218, "用户已经绑定过此合同"),
     INVITATION_USESTATUS_VOID(-21219, "邀请码已作废！"),
     INVITATION_COMPID_VOID(-21220, "重复绑定该企业！"),
+    INVITATION_REMOVE_BIND(-21221, "邀请码已经解绑！"),
 
     USER_NO_EXIT(-10000, "用户不存在"),
     ADD_USER_ERR(-10001, "添加用户失败"),
