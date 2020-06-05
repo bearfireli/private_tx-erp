@@ -57,10 +57,9 @@ public class RollMessageController {
     @ApiOperation("删除滚动信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id", dataType = "int", paramType = "query"),
-
     })
     @PostMapping("/removeRollMessage")
-    public ResultVO removeRollMessage(Integer id) throws ErpException {
+    public ResultVO removeRollMessage(Integer id) {
         rollMassageService.removeRollMessage(id);
         return ResultVO.create();
     }
@@ -78,7 +77,8 @@ public class RollMessageController {
 
     })
     @PostMapping("/updateRollMessage")
-    public ResultVO updateRollMessage(Integer id, String compid, String content, Long beginTime, Long endTime, Byte type) {
+    public ResultVO updateRollMessage(Integer id, String compid, String content, Long beginTime, Long endTime,
+                                      @RequestParam(defaultValue = "0") Byte type) {
         rollMassageService.updateRollMessage(id, compid, content,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), type);
@@ -92,7 +92,6 @@ public class RollMessageController {
     })
     @PostMapping("/getRollMessage")
     public ResultVO getRollMessage(String compid) {
-
         return ResultVO.create(rollMassageService.getRollMessage(compid));
     }
 }
