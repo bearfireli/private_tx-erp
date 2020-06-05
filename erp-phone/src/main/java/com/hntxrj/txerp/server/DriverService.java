@@ -175,13 +175,22 @@ public interface DriverService {
     void updateInvoiceVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus);
 
     /**
-     * 修改车辆表中的车辆状态
+     * 修改车辆表中的车辆状态（自动触发回厂功能）
      *
      * @param compid        企业
      * @param driverCode    车号
-     * @param vehicleStatus 车辆状态    1：场内待班
+     * @param vehicleStatus 车辆状态    16：自动回厂
      */
     Map<String, Object> updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus);
+
+    /**
+     * 手动自动回厂
+     *
+     * @param compid        企业
+     * @param driverCode    车号
+     * @param vehicleStatus 车辆状态    16：自动回厂
+     */
+    Map<String, Object> updateVehicleStatusByHand(String compid, String driverCode, Integer vehicleStatus);
 
     /**
      * 司机在线状态请求

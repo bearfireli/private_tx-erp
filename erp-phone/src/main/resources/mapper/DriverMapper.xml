@@ -139,7 +139,7 @@
     <update id="updateInvoiceVehicleStatus">
         update PT_TaskSaleInvoice set VehicleStatus=#{vehicleStatus},
         UpDownMark=0
-        <if test="vehicleStatus == 1 ">
+        <if test="vehicleStatus == 16 ">
             ,Arrive_STTime=#{dateTime}
         </if>
         <if test="vehicleStatus == 13 ">
