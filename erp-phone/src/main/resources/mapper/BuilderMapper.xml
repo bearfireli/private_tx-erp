@@ -385,5 +385,155 @@
         where compid=#{compid} and BuilderName=#{builderName} and BuilderShortName=#{builderShortName}
     </select>
 
+    <select id="getBuildPPCodeByTaskId" resultType="string">
+        select PPCode from PT_TASKPRICEMARKUP pp
+        left join PT_TaskPlan pt on pp.compid=pt.compid and pp.TaskId =pt.TaskId
+        where pp.compid=#{compid} and pp.TaskId=#{taskId}
+        and pt.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and pt.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="getBuildTaskPlanByTaskId" resultType="com.hntxrj.txerp.vo.TaskPlanVO">
+        select task.TaskId,
+        task.compid,
+        sm.ContractId,
+        task.ContractUID,
+        task.CContractCode as contractDetailCode,
+        task.EPPCode,
+        EPPName,
+        task.BuilderCode,
+        BuilderName,
+        stgid,
+        Attribute,
+        TechnicalRequirements,
+        task.preCarNum,
+        task.grade,
+        task.Address,
+        task.linkTel,
+        task.distance,
+        Placing,
+        PreNum,
+        sum(ProduceNum) overNum,
+        ConcreteMark,
+        StoneAsk,
+        dd.PI_TypeName stoneAskName,
+        PreTime,
+        task.linkMan,
+        StoneDia,
+        Slump,
+        CementVariety,
+        cv.PI_TypeName as CementVarietyName,
+        task.verifyStatus,
+        TaskStatus,
+        ts.PI_TypeName as TaskStatusName,
+        preRemark,
+        task.placeStyle,
+        ps.PI_TypeName placeStyleName,
+        task.client_type clientType,
+        ps.PI_TypeName placeStyleName,
+        task.IsTax tax,
+        task.IsExcess excess
+        from PT_TaskPlan task
+        left join PT_TaskSaleInvoice pt on task.compid = pt.compid and task.TaskId = pt.TaskId
+        and pt.InvoiceType !=6
+        left join SM_EPPInfo epp on epp.EPPCode = task.EPPCode and epp.compid = task.compid
+        left join SM_BuilderInfo builder
+        on builder.compid = task.compid and builder.BuilderCode = task.BuilderCode
+        left join DD_PublicInfo cv on cv.PI_Class = 32 and cv.PI_Values = CementVariety
+        and task.compid = cv.compid
+        left join DD_PublicInfo ts on ts.PI_Class = 23 and ts.PI_Values = TaskStatus
+        and task.compid = ts.compid
+        left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = task.PlaceStyle
+        and task.compid = ps.compid
+        left join DD_PublicInfo dd on dd.PI_Class = 31 and task.StoneAsk = dd.PI_Values
+        and task.compid = dd.compid
+        left join SM_ContractMaster sm on task.ContractUID = sm.ContractUID and task.compid = sm.compid
+        where task.compid = #{compid}
+        and task.taskid = #{taskId}
+        and task.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and task.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        group by task.compid,task.TaskId, sm.ContractId, task.ContractUID, task.CContractCode, task.EPPCode,
+        EPPName, task.BuilderCode, BuilderName, stgid, Attribute, TechnicalRequirements, task.preCarNum, task.grade,
+        task.Address, task.linkTel, task.distance, Placing, PreNum, ConcreteMark, StoneAsk, dd.PI_TypeName, PreTime,
+        task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus, ts.PI_TypeName,
+        preRemark, task.placeStyle, ps.PI_TypeName,task.client_type,task.isTax,task.IsExcess
+    </select>
+    <select id="getTaskSaleInvoiceDetailVO" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO">
+        select tsi.ID,
+        tsi.TaskId,
+        ps4.PI_TypeName InvoiceTypeName,
+        tsi.VehicleID,
+        (tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) SaleNum,
+        tsi.NumberOfSignings numberOfSignings,
+        e.EPPName,
+        e.EppCode,
+        b.BuilderName,
+        Placing,
+        shortname,
+        tsi.PersonalCode,
+        vm.PersonalName,
+        tsi.Distance,
+        us.empname,
+        SendTime,
+        tsi.StirId,
+        ps.PI_TypeName placeTypeName,
+        VehicleID_Jump jumpVehicleID,
+        (tsi.SaleNum - ReturnNum - RemnantNum -tsi.ScrapNum) SaleNum,
+        ThreeProduceNum,
+        tp.StgId,
+        StoneDia,
+        Slump,
+        ps3.PI_TypeName StoneAsk,
+        ps2.PI_TypeName CementVName,
+        Leave_STTime leaveTime,
+        Arrive_STTime arriveTime,
+        tsi.TaWeight,
+        tsi.GrWeight,
+        tsi.NetWeight,
+        tsi.VehiceNumber,
+        tp.TaskId,
+        tsi.Distance,
+        upStatus,
+        ProduceNum,
+        SaleFileImage
+        from PT_TaskSaleInvoice tsi
+        left join PT_TaskPlan tp on tsi.compid = tp.compid and tsi.TaskId = tp.TaskId
+        left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle
+        and tsi.compid = ps.compid
+        left join SM_EPPInfo e on tp.EPPCode = e.EPPCode and e.compid = tsi.compid
+        left join SM_BuilderInfo b on tp.BuilderCode = b.BuilderCode and b.compid = tsi.compid
+        left join User_employee us on tsi.compid = us.compid and tsi.OpId = us.OpId
+        left join VM_PersonalInfo vm on tsi.PersonalCode = vm.PersonalCode and tsi.compid = vm.compid
+        left join DD_PublicInfo ps2 on tp.CementVariety = ps2.PI_Values and ps2.PI_Class = '32'
+        and tsi.compid = ps2.compid
+        left join DD_PublicInfo ps3 on tp.StoneAsk = ps3.PI_Values and ps3.PI_Class = '31'
+        and tsi.compid = ps3.compid
+        left join DD_PublicInfo ps4
+        on tsi.compid = ps4.compid and tsi.InvoiceType = ps4.PI_Values and ps4.PI_Class = '51'
+        where tsi.compid = #{compid}
+        and tsi.id = #{id}
+        and tp.CContractCode in
+        <foreach collection="contractDetailCodes" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and tp.ContractUID in
+        <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
 
 </mapper>
