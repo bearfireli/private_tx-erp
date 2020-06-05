@@ -202,15 +202,6 @@ public class DriverApi {
     public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId,
                                                    String compid) throws ErpException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
-        if (file.exists()) {
-            //通知Java虚拟机回收未用对象,确保此文件一定能够删除。
-            System.gc();
-            boolean delete = file.delete();
-            if (!delete) {
-                throw new ErpException(ErrEumn.SAVE_PICTURE_ERROR);
-            }
-
-        }
         try {
             if (file.createNewFile()) {
                 IOUtils.copy(image.getInputStream(), new FileOutputStream(file));

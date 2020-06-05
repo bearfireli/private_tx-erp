@@ -37,6 +37,7 @@ public enum ErrEumn {
     EDIT_WMCONFIGUREAPPLY_ERROR(-21109, "修改配件失败"),
     VERIFY_TASK_ERROR(-21120, "编辑任务单审核状态失败"),
     DELETE_TASK_ERROR(-21121, "任务单已经审核完毕不能删除"),
+    TASK_NOT_EXIT_ERROR(-21122, "任务单不存在"),
 
     /* 附件 21201-21299 */
     ADD_CONTRACT_ADJUNCT_UPLOAD_ERROR(-21201, "上传合同附件失败"),
@@ -54,11 +55,14 @@ public enum ErrEumn {
     ADD_INVITATION_ERROR(-21211, "生成邀请码失败"),
     ADD_USER_PHONE_EXIST(-21212, "手机号已注册！"),
     INVITATION_USESTATUS_EXIST(-21213, "邀请码已使用！"),
-    INVITATION_USESTATUS_VOID(-21213, "邀请码已作废！"),
-    INVITATION_COMPID_VOID(-21213, "重复绑定该企业！"),
     INVITATION_NULL(-21215, "邀请码不存在！"),
     ADD_ERROR(-21214, "添加失败！"),
     USER_LOGIN_ERROR(-21216, "用户名或密码错误！"),
+    TASK_SALE_INVOICE_NOT_EXIT(-21217, "小票不存在"),
+    USER_ALREADY_BINGING_CONTRACT(-21218, "用户已经绑定过此合同"),
+    INVITATION_USESTATUS_VOID(-21219, "邀请码已作废！"),
+    INVITATION_COMPID_VOID(-21220, "重复绑定该企业！"),
+    INVITATION_REMOVE_BIND(-21221, "邀请码已经解绑！"),
 
     USER_NO_EXIT(-10000, "用户不存在"),
     ADD_USER_ERR(-10001, "添加用户失败"),

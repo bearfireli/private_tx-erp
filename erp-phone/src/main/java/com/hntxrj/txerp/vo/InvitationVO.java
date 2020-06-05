@@ -24,6 +24,8 @@ public class InvitationVO implements Serializable {
     private String contractUID;  //主合同号
     private String eppName; //工程名称
     private String shortName; //工程名称简称
+    private String bindUserName; //绑定邀请码的施工方用户账号
+    private Integer bindUserId;  //绑定邀请码的施工方用户id
 
 
 }
