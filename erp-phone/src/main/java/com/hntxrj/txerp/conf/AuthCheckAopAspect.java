@@ -35,8 +35,14 @@ public class AuthCheckAopAspect {
     private final String succeedCode = "0";
     private final String failedCode = "-1";
 
+    private static final String GET_DRIVER_NAME = "/driver/getDriverNames";
+    private static final String GET_QUERY_TIME = "/api/querytimeset/getQueryTimeSetList";
+    private static final String GET_STOCK = "/api/stock/getStock";
+    private static final String GET_STIR_IDS = "/api/stock/getStirIds";
+
 
     private static final String[] PUBLIC_API_LIST = new String[]{
+            GET_DRIVER_NAME, GET_QUERY_TIME, GET_STOCK, GET_STIR_IDS
 
     };
 
