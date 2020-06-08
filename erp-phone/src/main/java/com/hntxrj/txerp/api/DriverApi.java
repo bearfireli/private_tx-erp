@@ -89,17 +89,24 @@ public class DriverApi {
     }
 
 
-    /**
-     * 自动回厂修改车辆状态
-     *
-     * @param compid        企业
-     * @param driverCode    司机编号
-     * @param vehicleStatus 车辆状态    16：自动回厂
-     * @return 小票签收列表
-     */
+    @ApiOperation("自动回厂修改车辆状态")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "driverCode", value = "司机代号", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "vehicleStatus", value = "车辆状态(16:自动回厂)", required = true,
+                    dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "type", value = "回厂方式(0：自动触发回厂 1:手动触发回厂)", dataType = "int", paramType = "query"),
+    })
     @PostMapping("/updateVehicleStatus")
-    public ResultVO updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus) {
-        return ResultVO.create(driverService.updateVehicleStatus(compid, driverCode, vehicleStatus));
+    public ResultVO updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus,
+                                        @RequestParam(defaultValue = "0") Integer type) {
+        Map<String, Object> map;
+        if (type == 1) {
+            map = driverService.updateVehicleStatusByHand(compid, driverCode, vehicleStatus);
+        } else {
+            map = driverService.updateVehicleStatus(compid, driverCode, vehicleStatus);
+        }
+        return ResultVO.create(map);
     }
 
 
@@ -195,15 +202,6 @@ public class DriverApi {
     public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId,
                                                    String compid) throws ErpException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
-        if (file.exists()) {
-            //通知Java虚拟机回收未用对象,确保此文件一定能够删除。
-            System.gc();
-            boolean delete = file.delete();
-            if (!delete) {
-                throw new ErpException(ErrEumn.SAVE_PICTURE_ERROR);
-            }
-
-        }
         try {
             if (file.createNewFile()) {
                 IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
