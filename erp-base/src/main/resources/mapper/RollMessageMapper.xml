@@ -9,7 +9,7 @@
         #{currentTime},#{currentTime},#{compid},#{type})
     </insert>
     <update id="removeRollMessage">
-        delete from roll_message where id=#{id}
+        UPDATE roll_message SET STATUS=1 WHERE id=#{id}
     </update>
     <update id="updateRollMessage">
         UPDATE roll_message
@@ -33,5 +33,6 @@
         WHERE begin_time <![CDATA[<]]> #{currentTime}
         AND end_time <![CDATA[>]]> #{currentTime}
         AND (type=0 or compid=#{compid})
+        AND rm.status = 0
     </select>
 </mapper>

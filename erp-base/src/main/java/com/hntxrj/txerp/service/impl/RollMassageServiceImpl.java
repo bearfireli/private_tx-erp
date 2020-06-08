@@ -30,9 +30,8 @@ public class RollMassageServiceImpl implements RollMassageService {
     @Override
     public void addRollMessage(String token, String content, String compid, Byte type, String beginTime,
                                String endTime) throws ErpException {
-        if (content == null || "".equals(content)) {
-            throw new ErpException(ErrEumn.ROLL_MESSAGE_NOT_NULL);
-        }
+        //参数非空检验
+        checkParam(content, beginTime, endTime);
         User user = userService.tokenGetUser(token);
         String currentTime = sdf.format(new Date());
 
@@ -47,9 +46,8 @@ public class RollMassageServiceImpl implements RollMassageService {
     @Override
     public void updateRollMessage(Integer id, String compid, String content, String beginTime, String endTime,
                                   Byte type) throws ErpException {
-        if (content == null || "".equals(content)) {
-            throw new ErpException(ErrEumn.ROLL_MESSAGE_NOT_NULL);
-        }
+        //参数非空检验
+        checkParam(content, beginTime, endTime);
         String currentTime = sdf.format(new Date());
         rollMessageMapper.updateRollMessage(id, compid, content, beginTime, endTime, type, currentTime);
     }
@@ -58,5 +56,19 @@ public class RollMassageServiceImpl implements RollMassageService {
     public List<RollMessageVO> getRollMessage(String compid) {
         String currentTime = sdf.format(new Date());
         return rollMessageMapper.getRollMessage(compid, currentTime);
+    }
+
+
+    //校验用户修改的滚动消息内容，开始时间，结束时间是否为空
+    private void checkParam(String content, String beginTime, String endTime) throws ErpException {
+        if (content == null || "".equals(content)) {
+            throw new ErpException(ErrEumn.ROLL_MESSAGE_IS_NULL);
+        }
+        if (beginTime == null) {
+            throw new ErpException(ErrEumn.BEGIN_TIME_IS_NULL);
+        }
+        if (endTime == null) {
+            throw new ErpException(ErrEumn.END_TIME_IS_NULL);
+        }
     }
 }
