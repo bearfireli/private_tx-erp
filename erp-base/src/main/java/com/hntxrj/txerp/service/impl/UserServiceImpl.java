@@ -342,6 +342,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
             User saveUser = userRepository.save(user);
 
             //此处调用即时通讯IM的接口,把用户导入到IM消息通讯中。
+            //此功能需要购买腾讯云即时通讯，公司暂时没买，后期买过需要用的时候再放开
             //addUserToIM(saveUser);
             data.put("uid", saveUser.getUid());
         } catch (Exception e) {
