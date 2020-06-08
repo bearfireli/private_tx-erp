@@ -2,6 +2,7 @@ package com.hntxrj.txerp.api;
 
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.server.ContractService;
+import com.hntxrj.txerp.server.SalesmanService;
 import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
 
 import static com.hntxrj.txerp.util.WebUtilKt.getCompid;
 
@@ -23,10 +23,12 @@ import static com.hntxrj.txerp.util.WebUtilKt.getCompid;
 public class ContractApi {
 
     private final ContractService contractService;
+    private final SalesmanService salesmanService;
 
     @Autowired
-    public ContractApi(ContractService contractService) {
+    public ContractApi(ContractService contractService, SalesmanService salesmanService) {
         this.contractService = contractService;
+        this.salesmanService = salesmanService;
     }
 
     /**
@@ -463,6 +465,46 @@ public class ContractApi {
                                                      @RequestParam(defaultValue = "1") Integer page,
                                                      @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResultVO.create(contractService.getBuildContractListByEppOrBuild(buildId, searchName, page, pageSize));
+    }
+
+
+    /**
+     * 获取销售员下拉
+     *
+     * @param salesName 销售员名称
+     * @param compid    企业id
+     * @return 销售员下拉对象
+     */
+    @PostMapping("/getSalesMan")
+    public ResultVO getSalesMan(String salesName, String compid) {
+        return ResultVO.create(salesmanService.getSalesmanDropDown(salesName, compid));
+    }
+
+    /**
+     * 获取业务员的分组
+     *
+     * @param compid   企业id
+     * @param page     分页
+     * @param pageSize 每页数量
+     */
+    @PostMapping("/getSaleGroup")
+    public ResultVO getSaleGroup(String compid,
+                                 @RequestParam(defaultValue = "1") Integer page,
+                                 @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResultVO.create(salesmanService.getSaleGroup(compid, page, pageSize));
+    }
+
+    /**
+     * 添加销售员
+     *
+     * @param compid     企业id
+     * @param saleName   销售员姓名
+     * @param department 销售员部门分组
+     */
+    @PostMapping("/addSaleMan")
+    public ResultVO addSaleMan(String compid, String saleName, String department) {
+        salesmanService.addSaleMan(compid, saleName, department);
+        return ResultVO.create();
     }
 
 

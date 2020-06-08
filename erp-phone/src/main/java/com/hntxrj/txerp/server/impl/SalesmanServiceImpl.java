@@ -26,7 +26,7 @@ public class SalesmanServiceImpl implements SalesmanService {
                                                           Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<SalesmanDropDownVO> salesmanDropDownVOS =
-                salesmanMapper.getSalesmanDropDown(salesName, compid, page, pageSize);
+                salesmanMapper.getSalesmanDropDown(salesName, compid);
         PageInfo<SalesmanDropDownVO> pageInfo = new PageInfo<>(salesmanDropDownVOS);
         PageVO<SalesmanDropDownVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -34,7 +34,12 @@ public class SalesmanServiceImpl implements SalesmanService {
     }
 
     @Override
-    public PageVO<SalesmanDropDownVO> getSaleGroup(String compid,Integer page, Integer pageSize) {
+    public List<SalesmanDropDownVO> getSalesmanDropDown(String salesName, String compid) {
+        return salesmanMapper.getSalesmanDropDown(salesName, compid);
+    }
+
+    @Override
+    public PageVO<SalesmanDropDownVO> getSaleGroup(String compid, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<SalesmanDropDownVO> saleGroup = salesmanMapper.getSaleGroup(compid);
         PageInfo<SalesmanDropDownVO> pageInfo = new PageInfo<>(saleGroup);
@@ -50,13 +55,13 @@ public class SalesmanServiceImpl implements SalesmanService {
         List<String> saleCodes = salesmanMapper.selectSaleCodes(compid);
         //获取新增销售员的编号
         String saleManCode = getSaleManCode(saleCodes);
-        salesmanMapper.addSaleMan(compid,saleName,saleManCode,department);
+        salesmanMapper.addSaleMan(compid, saleName, saleManCode, department);
 
 
     }
 
     //得到新增销售员的编号
-    private String getSaleManCode(List<String> saleCodes){
+    private String getSaleManCode(List<String> saleCodes) {
         String saleManCode = "YW01000001";
         int code = 0;
         for (String saleCode : saleCodes) {

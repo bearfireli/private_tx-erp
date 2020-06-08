@@ -14,14 +14,9 @@ public class SalesmanApi {
 
     private final SalesmanService salesmanService;
 
-    private ResultVO resultVO;
 
     @Autowired
     public SalesmanApi(SalesmanService salesmanService) {
-        resultVO = new ResultVO();
-        resultVO.setCode(0);
-        resultVO.setMsg("ok");
-        resultVO.setData(null);
         this.salesmanService = salesmanService;
     }
 
@@ -38,33 +33,32 @@ public class SalesmanApi {
     public ResultVO getDropDown(String salesName, String compid,
                                 @RequestParam(defaultValue = "1") Integer page,
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
-        resultVO.setData(salesmanService.getSalesmanDropDown(salesName, compid, page, pageSize));
-        return resultVO;
+        return ResultVO.create(salesmanService.getSalesmanDropDown(salesName, compid, page, pageSize));
     }
 
     /**
      * 获取业务员的分组
      *
-     * @param compid 企业id
-     * @param page      分页
-     * @param pageSize  每页数量
+     * @param compid   企业id
+     * @param page     分页
+     * @param pageSize 每页数量
      */
     @PostMapping("/getSaleGroup")
     public ResultVO getSaleGroup(String compid,
                                  @RequestParam(defaultValue = "1") Integer page,
                                  @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(salesmanService.getSaleGroup(compid,page,pageSize));
+        return ResultVO.create(salesmanService.getSaleGroup(compid, page, pageSize));
     }
 
     /**
      * 添加销售员
      *
-     * @param compid   企业id
-     * @param saleName 销售员姓名
+     * @param compid     企业id
+     * @param saleName   销售员姓名
      * @param department 销售员部门分组
-     * */
+     */
     @PostMapping("/addSaleMan")
-    public ResultVO addSaleMan(String compid,String saleName,String department) {
+    public ResultVO addSaleMan(String compid, String saleName, String department) {
         salesmanService.addSaleMan(compid, saleName, department);
         return ResultVO.create();
     }

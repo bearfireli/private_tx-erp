@@ -18,22 +18,31 @@ public interface SalesmanService {
      */
     PageVO<SalesmanDropDownVO> getSalesmanDropDown(String salesName, String compid, Integer page, Integer pageSize);
 
+    /**
+     * 销售员数量少不需要分页，其他同上方法
+     *
+     * @param salesName 销售员名称
+     * @param compid    企业id
+     * @return 销售员集合
+     */
+    List<SalesmanDropDownVO> getSalesmanDropDown(String salesName, String compid);
+
 
     /**
      * 获取业务员的分组
      *
-     * @param compid 企业id
-     * @param page      分页
-     * @param pageSize  每页数量
+     * @param compid   企业id
+     * @param page     分页
+     * @param pageSize 每页数量
      */
-    PageVO<SalesmanDropDownVO> getSaleGroup(String compid,Integer page, Integer pageSize);
+    PageVO<SalesmanDropDownVO> getSaleGroup(String compid, Integer page, Integer pageSize);
 
     /**
      * 添加销售员
      *
-     * @param compid   企业id
-     * @param saleName 销售员姓名
+     * @param compid     企业id
+     * @param saleName   销售员姓名
      * @param department 销售员部门分组
-     * */
+     */
     void addSaleMan(String compid, String saleName, String department);
 }
