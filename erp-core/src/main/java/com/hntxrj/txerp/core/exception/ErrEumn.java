@@ -237,7 +237,10 @@ public enum ErrEumn {
     TANK_NULL_ERROR(100403, "没有此罐号"),
     PASSWORD_ERROR(100404, "输入密码错误"),
 
-    MATERIAL_CHECK_ERROR(100405, "材料检测失败");
+    MATERIAL_CHECK_ERROR(100405, "材料检测失败"),
+    ROLL_MESSAGE_IS_NULL(100406, "滚动消息不能为空"),
+    BEGIN_TIME_IS_NULL(100407, "开始时间不能为空"),
+    END_TIME_IS_NULL(100408, "结束时间不能为空");
 
 
     private Integer code;
