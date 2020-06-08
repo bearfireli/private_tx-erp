@@ -78,7 +78,7 @@ public class RollMessageController {
     })
     @PostMapping("/updateRollMessage")
     public ResultVO updateRollMessage(Integer id, String compid, String content, Long beginTime, Long endTime,
-                                      @RequestParam(defaultValue = "0") Byte type) {
+                                      @RequestParam(defaultValue = "0") Byte type) throws ErpException {
         rollMassageService.updateRollMessage(id, compid, content,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)), type);

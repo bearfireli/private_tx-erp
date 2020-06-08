@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.service.impl;
 
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.base.User;
 import com.hntxrj.txerp.mapper.RollMessageMapper;
@@ -29,6 +30,9 @@ public class RollMassageServiceImpl implements RollMassageService {
     @Override
     public void addRollMessage(String token, String content, String compid, Byte type, String beginTime,
                                String endTime) throws ErpException {
+        if (content == null || "".equals(content)) {
+            throw new ErpException(ErrEumn.ROLL_MESSAGE_NOT_NULL);
+        }
         User user = userService.tokenGetUser(token);
         String currentTime = sdf.format(new Date());
 
@@ -41,7 +45,11 @@ public class RollMassageServiceImpl implements RollMassageService {
     }
 
     @Override
-    public void updateRollMessage(Integer id, String compid, String content, String beginTime, String endTime, Byte type) {
+    public void updateRollMessage(Integer id, String compid, String content, String beginTime, String endTime,
+                                  Byte type) throws ErpException {
+        if (content == null || "".equals(content)) {
+            throw new ErpException(ErrEumn.ROLL_MESSAGE_NOT_NULL);
+        }
         String currentTime = sdf.format(new Date());
         rollMessageMapper.updateRollMessage(id, compid, content, beginTime, endTime, type, currentTime);
     }
@@ -49,6 +57,6 @@ public class RollMassageServiceImpl implements RollMassageService {
     @Override
     public List<RollMessageVO> getRollMessage(String compid) {
         String currentTime = sdf.format(new Date());
-        return rollMessageMapper.getRollMessage(compid,currentTime);
+        return rollMessageMapper.getRollMessage(compid, currentTime);
     }
 }
