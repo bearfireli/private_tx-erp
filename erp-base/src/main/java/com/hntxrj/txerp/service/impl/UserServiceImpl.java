@@ -340,12 +340,13 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         //将新添加的用户存入数据库
         try {
             User saveUser = userRepository.save(user);
+
+            //此处调用即时通讯IM的接口,把用户导入到IM消息通讯中。
+            //addUserToIM(saveUser);
             data.put("uid", saveUser.getUid());
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_USER_ERR);
         }
-        //此处调用即时通讯IM的接口,把用户导入到IM消息通讯中。
-        addUserToIM(user);
 
         Integer uid = data.getInteger("uid");
         JSONArray userAuthArray = data.getJSONArray("arr");
