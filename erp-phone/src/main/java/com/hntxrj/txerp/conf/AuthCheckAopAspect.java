@@ -32,8 +32,8 @@ public class AuthCheckAopAspect {
     @Value("${app.cloud.host}")
     private String url;
 
-    private final String succeedCode = "0";
-    private final String failedCode = "-1";
+    private static final String succeedCode = "0";
+    private static final String failedCode = "-1";
 
     private static final String GET_DRIVER_NAME = "/driver/getDriverNames";
     private static final String GET_QUERY_TIME = "/api/querytimeset/getQueryTimeSetList";
@@ -68,7 +68,7 @@ public class AuthCheckAopAspect {
 
         assert response != null;
         response.setHeader("Content-type", "text/html;charset=UTF-8");
-        //获取参数中的token和compid以及pid
+        //获取请求头中的token,pid,compid
         String token = request.getHeader("token");
         String pid = request.getHeader("pid");
         String compid = request.getHeader("compid");
@@ -115,6 +115,7 @@ public class AuthCheckAopAspect {
 
     private String getProjectName(String pid) {
         Map<String, String> projectName = new HashMap<>();
+        //项目：2->手机erp,  3->cloud项目, 25->司机App,  27->工地App
         projectName.put("2", "erpPhone");
         projectName.put("3", "erpBase");
         projectName.put("25", "erpDriver");
