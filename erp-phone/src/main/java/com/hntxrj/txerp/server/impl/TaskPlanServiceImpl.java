@@ -973,13 +973,15 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 endTime, quantityQueryType);
         //根据compid、beginTime、endTime从生产消耗表中查询出生产方量。
         BigDecimal productNum = concreteMapper.getProductConcreteSum(compid, beginTime, endTime);
-        if (vehicleWorkloadDetailVOS != null) {
-            vehicleWorkloadDetailVOS.setSale_num(vehicleWorkloadDetailVOS.getSaleNum());
-            if (productNum != null) {
-                vehicleWorkloadDetailVOS.setProduce_num(productNum.intValue());
-            } else {
-                vehicleWorkloadDetailVOS.setProduce_num(0);
-            }
+        if (vehicleWorkloadDetailVOS == null) {
+            vehicleWorkloadDetailVOS = new SquareQuantityVO();
+        }
+
+        vehicleWorkloadDetailVOS.setSale_num(vehicleWorkloadDetailVOS.getSaleNum());
+        if (productNum != null) {
+            vehicleWorkloadDetailVOS.setProduce_num(productNum.intValue());
+        } else {
+            vehicleWorkloadDetailVOS.setProduce_num(0);
         }
         return vehicleWorkloadDetailVOS;
     }

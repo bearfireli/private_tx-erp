@@ -739,7 +739,7 @@
             and (VehicleStatus = '3')
             and tsi.InvoiceType != 6
             and tsi.SendTime <![CDATA[ >= ]]>  #{beginTime}
-            and tsi.SendTime <![CDATA[ <= ]]> #{endTime}
+            and tsi.SendTime <![CDATA[ < ]]> #{endTime}
         </if>
         <if test="quantityQueryType ==1 ">
             select sum(tsi.SaleNum - tsi.ReturnNum - tsi.SeparateNum - tsi.ScrapNum) saleNum,
@@ -752,7 +752,7 @@
             and (VehicleStatus = '3')
             and tsi.InvoiceType != 6
             and tsi.Leave_STTime <![CDATA[ >= ]]>  #{beginTime}
-            and tsi.Leave_STTime <![CDATA[ <= ]]> #{endTime}
+            and tsi.Leave_STTime <![CDATA[ < ]]> #{endTime}
         </if>
     </select>
     <select id="getQueryTime" resultType="com.hntxrj.txerp.vo.QueryTimeSetVO">
