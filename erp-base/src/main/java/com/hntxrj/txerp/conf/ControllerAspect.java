@@ -55,6 +55,7 @@ public class ControllerAspect {
     private static final String UPLOAD_ENTERPRISE_IMG = "/enterprise/uploadEnterpriseLogo";
     private static final String GET_ENTERPRISE_IMG = "/enterprise/getEnterpriseLogo";
     private static final String GET_ENTERPRISE_INFORMATION = "/enterprise/getEnterpriseInformation";
+    private static final String GET_ROLL_MESSAGE = "/message/getRollMessage";
     private static final String CHECK_USER_AUTH = "/auth/isPermission";
 
 
@@ -80,7 +81,7 @@ public class ControllerAspect {
             FAVICON, JOURNALISM_LIST, JOURNALISM_BY_ID, JOURNALISM_SELECT_LIST, GET_AUTH_VALUE, USER_SET_USER_FAVORITE,
             USER_GET_USER_FAVORITE, UPLOAD_PICTURE, SAVE_COLLECTION_CODE, USER_EXPIRE_TIME, SELECT_USER_ALL,
             SELECT_ALL_USER, TOKEN_GET_USER, UPLOAD_ENTERPRISE_IMG, GET_ENTERPRISE_IMG, GET_ENTERPRISE_INFORMATION,
-            CHECK_USER_AUTH
+            GET_ROLL_MESSAGE ,CHECK_USER_AUTH
     };
 
     private static final String[] PUBLIC_PATH = new String[]{

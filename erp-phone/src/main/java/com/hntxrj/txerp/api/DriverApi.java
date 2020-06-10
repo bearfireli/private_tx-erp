@@ -5,6 +5,10 @@ import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.server.DriverService;
 import com.hntxrj.txerp.vo.ResultVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,7 @@ import java.util.*;
 /**
  * 司机端api
  */
+@Api(tags = "司机端接口", description = "提供司机App相关的接口，功能")
 @RestController
 @RequestMapping("/driver")
 @Slf4j
@@ -84,17 +89,24 @@ public class DriverApi {
     }
 
 
-    /**
-     * 自动回厂修改车辆状态
-     *
-     * @param compid        企业
-     * @param driverCode    司机编号
-     * @param vehicleStatus 车辆状态    16：自动回厂
-     * @return 小票签收列表
-     */
+    @ApiOperation("自动回厂修改车辆状态")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "driverCode", value = "司机代号", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "vehicleStatus", value = "车辆状态(16:自动回厂)", required = true,
+                    dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "type", value = "回厂方式(0：自动触发回厂 1:手动触发回厂)", dataType = "int", paramType = "query"),
+    })
     @PostMapping("/updateVehicleStatus")
-    public ResultVO updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus) {
-        return ResultVO.create(driverService.updateVehicleStatus(compid, driverCode, vehicleStatus));
+    public ResultVO updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus,
+                                        @RequestParam(defaultValue = "0") Integer type) {
+        Map<String, Object> map;
+        if (type == 1) {
+            map = driverService.updateVehicleStatusByHand(compid, driverCode, vehicleStatus);
+        } else {
+            map = driverService.updateVehicleStatus(compid, driverCode, vehicleStatus);
+        }
+        return ResultVO.create(map);
     }
 
 
@@ -190,15 +202,6 @@ public class DriverApi {
     public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId,
                                                    String compid) throws ErpException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
-        if (file.exists()) {
-            //通知Java虚拟机回收未用对象,确保此文件一定能够删除。
-            System.gc();
-            boolean delete = file.delete();
-            if (!delete) {
-                throw new ErpException(ErrEumn.SAVE_PICTURE_ERROR);
-            }
-
-        }
         try {
             if (file.createNewFile()) {
                 IOUtils.copy(image.getInputStream(), new FileOutputStream(file));
@@ -346,5 +349,21 @@ public class DriverApi {
     public ResultVO driverOnlineStatus(String compid, String driverCode) {
         driverService.driverOnlineStatus(compid, driverCode);
         return ResultVO.create();
+    }
+
+
+    @ApiOperation("司机端获取车辆工作量统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "driverCode", value = "司机代号", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "beginTime", value = "开始时间", dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "Long", paramType = "query"),
+    })
+    @PostMapping("/driverVehicleCount")
+    public ResultVO driverVehicleCount(String compid, String driverCode, Long beginTime, Long endTime) {
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(driverService.driverVehicleCount(compid, driverCode,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime))));
     }
 }

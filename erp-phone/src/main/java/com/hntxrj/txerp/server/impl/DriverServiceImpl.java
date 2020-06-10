@@ -126,19 +126,6 @@ public class DriverServiceImpl implements DriverService {
                 driverMapper.driverGetTaskSaleInvoiceList(invoiceId == null ? null : String.valueOf(invoiceId),
                         compid, beginTime, endTime, eppCode, upStatus, builderCode, placing, driverCode);
 
-
-        for (TaskSaleInvoiceDriverListVO taskSaleInvoice : taskSaleInvoiceLists) {
-            //判断小票的状态如果不是正在卸料（vehicleStatus=13）和完成卸料（vehicleStatus=14），就显示开始卸料
-            if (taskSaleInvoice.getVehicleStatus() != 13 && taskSaleInvoice.getVehicleStatus() != 14) {
-                taskSaleInvoice.setVehicleStatus(17);
-                taskSaleInvoice.setVehicleStatusName("开始卸料");
-                if (taskSaleInvoice.getVehicleStatus() == 1) {
-                    taskSaleInvoice.setVehicleStatus(14);
-                    taskSaleInvoice.setVehicleStatusName("完成卸料");
-                }
-            }
-        }
-
         PageInfo<TaskSaleInvoiceDriverListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
         PageVO<TaskSaleInvoiceDriverListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
@@ -194,7 +181,7 @@ public class DriverServiceImpl implements DriverService {
 //        2，当前车辆的状态时运输状态,或者是正在卸料,或者完成卸料的状态
 
         DriverTaskSaleDetailVO taskSaleInvoiceDetail = driverMapper.getTaskSaleInvoiceDetail(driverCode, compid);
-        if (taskSaleInvoiceDetail == null||taskSaleInvoiceDetail.getVehicleStatus()==null) {
+        if (taskSaleInvoiceDetail == null || taskSaleInvoiceDetail.getVehicleStatus() == null) {
             map.put("code", 1);
             map.put("message", "司机没有打票，自动回厂失败");
             return map;
@@ -212,6 +199,9 @@ public class DriverServiceImpl implements DriverService {
                 driverMapper.updateVehicleStatus(compid, taskSaleInvoiceDetail.getVehicleID(), vehicleStatus, nowDate);
                 map.put("code", 0);
                 map.put("message", "自动回厂成功");
+            } else if (taskSaleInvoiceDetail.getVehicleStatus() == 16) {
+                map.put("code", 1);
+                map.put("message", "车辆已回厂");
             } else {
                 map.put("code", 1);
                 map.put("message", "车辆不是运输状态，自动回厂失败");
@@ -221,6 +211,34 @@ public class DriverServiceImpl implements DriverService {
             map.put("message", "出厂时间小于30分钟，自动回厂失败");
         }
 
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> updateVehicleStatusByHand(String compid, String driverCode, Integer vehicleStatus) {
+        Map<String, Object> map = new HashMap<>();
+
+        DriverTaskSaleDetailVO taskSaleInvoiceDetail = driverMapper.getTaskSaleInvoiceDetail(driverCode, compid);
+        if (taskSaleInvoiceDetail == null) {
+            map.put("code", 1);
+            map.put("message", "司机没有打票，自动回厂失败");
+            return map;
+        }
+        if (taskSaleInvoiceDetail.getVehicleStatus() == 2) {
+            Date nowDate = new Date();
+            //修改小票表中的车辆状态为回厂待班。
+            driverMapper.updateInvoiceVehicleStatus(compid, taskSaleInvoiceDetail.getId(), vehicleStatus, nowDate);
+            //修改车辆表中的车辆状态为回厂待班。
+            driverMapper.updateVehicleStatus(compid, taskSaleInvoiceDetail.getVehicleID(), vehicleStatus, nowDate);
+            map.put("code", 0);
+            map.put("message", "自动回厂成功");
+        } else if (taskSaleInvoiceDetail.getVehicleStatus() == 16) {
+            map.put("code", 1);
+            map.put("message", "车辆已回厂");
+        } else {
+            map.put("code", 1);
+            map.put("message", "车辆不是运输状态，自动回厂失败");
+        }
         return map;
     }
 
@@ -268,6 +286,11 @@ public class DriverServiceImpl implements DriverService {
         String key = compid + driverCode;
         //以该司机的公司代号和司机代号为key,把请求时间存进缓存中
         redisTemplate.opsForValue().set(key, new Date());
+    }
+
+    @Override
+    public List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime) {
+        return driverMapper.driverVehicleCount(compid, driverCode, beginTime, endTime);
     }
 
 

@@ -34,32 +34,49 @@
 
     <update id="updateUseStatus" useGeneratedKeys="true">
         update bd_invitation_code
-        set use_status=#{useStatus}
+        set use_status=#{useStatus},
+        build_id=#{buildId}
         where  build_invitation_code = #{buildInvitationCode}
         and ccontract_code =#{contractDetailCode}
        and contractUID=#{contractUID}
+    </update>
+    <update id="updateInvalidStatus">
+        update bd_invitation_code
+        set use_status=2
+        where  build_invitation_code = #{buildInvitationCode}
+            and ccontract_code =#{contractDetailCode}
+            and contractUID=#{contractUID}
     </update>
     <!--删除合同-->
     <delete id="deleteBuildId">
         delete from bd_bind where build_id =#{buildId} and contractUID =#{contractCode}
     </delete>
+    <delete id="removeBind">
+        delete from bd_bind
+        where build_id=#{buildId}
+            and contractUID=#{contractUID}
+            and ccontract_code=#{contractDetailCode}
+    </delete>
     <!--施工方邀请码列表-->
     <select id="getInvitationList" resultType="com.hntxrj.txerp.vo.InvitationVO">
-        select bd.build_invitation_code buildinvitationcode,
+        select bb.build_id as bindUserId,
+        bb.build_login_name as bindUserName,
+        bd.build_invitation_code buildinvitationcode,
         bd.compid,
-        sm.BuilderShortName as        builderName,
+        sm.BuilderShortName as builderName,
         se.EPPName as eppName,
         se.ShortName as shortName,
-        bd.create_time           createtime,
-        bd.create_user           createuser,
-        bd.use_status            usestatus,
+        bd.create_time createtime,
+        bd.create_user createuser,
+        bd.use_status usestatus,
         bd.ccontract_code as contractDetailCode,
         bd.contractUID
         from bd_invitation_code bd
         left join SM_ContractDetail sc on bd.ccontract_code = sc.CContractCode and bd.contractUID = sc.ContractUID
         left join SM_BuilderInfo sm on bd.compid = sm.compid and sc.BuilderCode = sm.BuilderCode
         left join SM_EPPInfo se on bd.compid = se.compid and sc.EPPCode = se.EPPCode
-        where bd.compid=#{compid}
+        left join bd_build_accounts bb on bd.build_id = bb.build_id
+        where bd.compid = #{compid}
         <if test="buildCode != null">
             and sc.BuilderCode=#{buildCode}
         </if>

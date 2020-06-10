@@ -4,6 +4,10 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.server.BuilderService;
 import com.hntxrj.txerp.vo.ResultVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Api(tags = "工地端")
 @RestController
 @RequestMapping("/api/builder")
 @Log4j
@@ -28,15 +33,13 @@ public class BuilderApi {
     }
 
 
-    /**
-     * 获取施工单位下拉
-     *
-     * @param builderName 施工单位名称
-     * @param compid      企业id
-     * @param page        页码
-     * @param pageSize    每页数量
-     * @return 施工单位下拉对象
-     */
+    @ApiOperation("获取施工单位下拉")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "builderName", value = "施工单位名称", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "页码", dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页数量", dataType = "int", paramType = "query")
+    })
     @PostMapping("/getDropDown")
     public ResultVO getDropDown(String builderName, String compid,
                                 @RequestParam(defaultValue = "1") Integer page,
@@ -45,21 +48,19 @@ public class BuilderApi {
     }
 
 
-    /**
-     * 工地端App发货统计
-     *
-     * @param buildId   　 施工方用户id
-     * @param type      　 type: 查询时间类型; 1:派车时间；0:离场时间
-     * @param eppCode   　 工程代码
-     * @param placing   　 浇筑部位
-     * @param taskId    　 任务单号
-     * @param stgId     　 砼标号
-     * @param beginTime 　 开始时间
-     * @param endTime   　 结束时间
-     * @param page      　　页数
-     * @param pageSize  　　每页显示多少条
-     * @return 产销统计列表
-     */
+    @ApiOperation("工地端App发货统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "buildId", value = "施工方用户id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "type", value = "查询时间类型; 1:派车时间；0:离场时间", dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "eppCode", value = "工程代码", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "placing", value = "浇筑部位", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "taskId", value = "任务单号", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "stgId", value = "砼标号", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "beginTime", value = "开始时间", dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "页数", dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页显示多少条", dataType = "int", paramType = "query")
+    })
     @PostMapping("/getBuildConcreteCount")
     public ResultVO getBuilderConcreteCount(Integer buildId, String eppCode, String placing,
                                             String taskId, String stgId,
@@ -72,18 +73,17 @@ public class BuilderApi {
 
     }
 
-    /**
-     * 工地端App发货总量（销量）统计
-     *
-     * @param buildId   　施工方用户id
-     * @param type      　type: 查询时间类型; 1:派车时间；0:离场时间
-     * @param eppCode   　工程代码
-     * @param placing   　浇筑部位
-     * @param taskId    　　任务单号
-     * @param stgId     　　　砼标号
-     * @param beginTime 　　开始时间
-     * @param endTime   　　　结束时间
-     */
+    @ApiOperation("工地端App发货总量（销量）统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "buildId", value = "施工方用户id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "type", value = "查询时间类型; 1:派车时间；0:离场时间", dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "eppCode", value = "工程代码", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "placing", value = "浇筑部位", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "taskId", value = "任务单号", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "stgId", value = "砼标号", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "beginTime", value = "开始时间", dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "Long", paramType = "query")
+    })
     @PostMapping("/getBuildConcreteSum")
     public ResultVO getBuilderConcreteSum(Integer buildId, String eppCode, String placing,
                                           String taskId, String stgId,
@@ -93,27 +93,25 @@ public class BuilderApi {
                 endTime == null ? null : sdf.format(new Date(endTime)), type));
     }
 
-    /**
-     * 获取小票签收列表
-     *
-     * @param buildId     企业
-     * @param beginTime   开始时间
-     * @param endTime     结束时间
-     * @param eppCode     工程代号
-     * @param upStatus    签收状态
-     * @param builderCode 施工单位代号
-     * @param taskId      任务单id
-     * @param placing     浇筑部位
-     * @param page        页数
-     * @param pageSize    每页数量
-     * @return 小票签收列表
-     */
+    @ApiOperation("获取工地端小票签收列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "buildId", value = "施工方用户id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "eppCode", value = "工程代码", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "upStatus", value = "签收状态", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "builderCode", value = "施工单位代号", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "placing", value = "浇筑部位", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "taskId", value = "任务单号", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "taskStatus", value = "任务单状态", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "beginTime", value = "开始时间", dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "页数", dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页数量", dataType = "int", paramType = "query"),
+    })
     @PostMapping("/getBuildTaskSaleInvoiceList")
     public ResultVO getBuildTaskSaleInvoiceList(Integer buildId, Long beginTime, Long endTime, String eppCode,
                                                 Byte upStatus, String builderCode, String taskId, String placing,
                                                 String taskStatus, @RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer pageSize) throws ErpException {
-
         return ResultVO.create(builderService.getBuildTaskSaleInvoiceList(buildId,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
@@ -121,15 +119,13 @@ public class BuilderApi {
     }
 
 
-    /**
-     * 调度派车列表
-     *
-     * @param buildId    施工方用户id
-     * @param searchName 搜索关键字(以后此字段用searchWords代替)
-     * @param page       页码
-     * @param pageSize   每页数量
-     * @return 调度派车列表
-     */
+    @ApiOperation("调度派车列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "buildId", value = "施工方用户id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "searchName", value = "搜索关键字", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "页数", dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页数量", dataType = "int", paramType = "query"),
+    })
     @PostMapping("/getBuildSendCarList")
     public ResultVO getBuildSendCarList(Integer buildId,
                                         @RequestParam(defaultValue = "1") Integer page,
@@ -139,4 +135,37 @@ public class BuilderApi {
     }
 
 
+    @ApiOperation("工地端获取任务单详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "buildId", value = "施工方用户id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "taskId", value = "任务单id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+    })
+    @PostMapping("/getBuildTaskPlanDetail")
+    public ResultVO getBuildTaskPlanDetail(String compid, String taskId, Integer buildId) throws ErpException {
+        return ResultVO.create(builderService.getBuildTaskPlanDetail(compid, taskId, buildId));
+    }
+
+    @ApiOperation("工地端获取小票详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "小票id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "buildId", value = "施工方用户id", required = true, dataType = "String", paramType = "query"),
+    })
+    @PostMapping("/getBuildTaskSaleInvoiceDetail")
+    public ResultVO getTaskSaleInvoiceDetail(String compid, Integer id, Integer buildId) throws ErpException {
+        return ResultVO.create(builderService.getBuildTaskSaleInvoiceDetail(compid, id, buildId));
+    }
+
+    
+    @ApiOperation("检验工地端用户绑定的合同是否包含小票")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "buildId", value = "施工方用户id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "小票id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+    })
+    @PostMapping("/checkTaskSaleInvoice")
+    public ResultVO checkTaskSaleInvoice(Integer buildId, String compid, Integer id) throws ErpException {
+        return ResultVO.create(builderService.checkTaskSaleInvoice(buildId, compid, id));
+    }
 }

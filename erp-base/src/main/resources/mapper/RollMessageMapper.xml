@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.RollMessageMapper">
+
+
+    <insert id="addRollMessage">
+        insert into roll_message(content,begin_time,end_time,uid,create_time,update_time,compid,type)
+        values(#{content},#{beginTime},#{endTime},#{uid},
+        #{currentTime},#{currentTime},#{compid},#{type})
+    </insert>
+    <update id="removeRollMessage">
+        UPDATE roll_message SET STATUS=1 WHERE id=#{id}
+    </update>
+    <update id="updateRollMessage">
+        UPDATE roll_message
+        SET content=#{content}, type=#{type},compid=#{compid},begin_time=#{beginTime} ,
+        end_time=#{endTime},update_time=#{currentTime}
+        WHERE id=#{id}
+    </update>
+    <select id="getRollMessage" resultType="com.hntxrj.txerp.vo.RollMessageVO">
+        SELECT u.username as createUser,
+        rm.id,
+        rm.content,
+        rm.uid,
+        rm.type,
+        rm.compid,
+        rm.begin_time,
+        rm.end_time,
+        rm.create_time,
+        rm.update_time
+        FROM roll_message rm
+        LEFT JOIN USER u ON rm.uid=u.uid
+        WHERE begin_time <![CDATA[<]]> #{currentTime}
+        AND end_time <![CDATA[>]]> #{currentTime}
+        AND (type=0 or compid=#{compid})
+        AND rm.status = 0
+    </select>
+</mapper>
