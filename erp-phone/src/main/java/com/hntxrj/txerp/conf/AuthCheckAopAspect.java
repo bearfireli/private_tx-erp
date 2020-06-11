@@ -38,7 +38,9 @@ public class AuthCheckAopAspect {
     {
         //读取配置文件，获取配置的公共不需要验证权限的方法方法
         try {
-            File file = ResourceUtils.getFile("classpath:publicApi.txt");
+            //获取当前jar路径，加载当前jar包同级目录下的publicApi.txt文件
+            String path = System.getProperty("user.dir");
+            File file = new File(path, "publicApi.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String s;
             while ((s = br.readLine()) != null) {
