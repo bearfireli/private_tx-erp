@@ -138,7 +138,7 @@
     <update id="updateInvoiceVehicleStatus">
         update PT_TaskSaleInvoice set VehicleStatus=#{vehicleStatus},
         UpDownMark=0
-        <if test="vehicleStatus == 1 ">
+        <if test="vehicleStatus == 16 ">
             ,Arrive_STTime=#{dateTime}
         </if>
         <if test="vehicleStatus == 13 ">
@@ -269,6 +269,19 @@
         from GPS_LocateTempInfo
         where compid = #{compid}
           and VehicleId = #{vehicleId}
+    </select>
+    <select id="driverVehicleCount" resultType="com.hntxrj.txerp.vo.DriverVehicleCountVO">
+        select VehicleID as vehicleId, sum(SaleNum) as concreteNum,
+        count(VehiceNumber) as carNum,sum(Distance) as Distance from PT_TaskSaleInvoice
+        where compid = #{compid} and PersonalCode = #{driverCode}
+        <if test="beginTime != null and beginTime != '' ">
+            and Leave_STTime  <![CDATA[ >= ]]>  #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != '' ">
+            and Leave_STTime <![CDATA[ <= ]]> #{endTime}
+        </if>
+        group by VehicleID
+        order by concreteNum desc
     </select>
 
     <update id="updateDriverWorkTime">

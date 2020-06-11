@@ -62,7 +62,7 @@
             left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
             left join SM_BuilderInfo sb on pt.compid =sb.compid and pt.BuilderCode =sb.BuilderCode
             where tsi.compid = #{compid}
-          /*  and (VehiceNumber > '0')*/
+            /* and (VehiceNumber > '0')*/
             and (VehicleStatus = '3')
             and tsi.InvoiceType != 6
             <if test="eppCode != null and eppCode != ''">
@@ -140,7 +140,7 @@
             and ProduceTime <![CDATA[ >= ]]>  #{beginTime}
         </if>
         <if test="endTime != null and endTime != ''">
-            and ProduceTime <![CDATA[ <= ]]> #{endTime}
+            and ProduceTime <![CDATA[ < ]]> #{endTime}
         </if>
     </select>
 

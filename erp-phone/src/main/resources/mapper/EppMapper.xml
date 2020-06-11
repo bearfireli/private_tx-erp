@@ -30,4 +30,7 @@
     <select id="getEppInfo" resultType="com.hntxrj.txerp.entity.EppInfo">
         select * from SM_EPPInfo where EPPCode=#{eppCode} and compid=#{compid}
     </select>
+    <select id="getEppInfoByCreateTime" resultType="com.hntxrj.txerp.entity.EppInfo">
+        select * from SM_EPPInfo where compid=#{compid} and CreateTime=#{createTime}
+    </select>
 </mapper>

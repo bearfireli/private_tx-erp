@@ -65,4 +65,14 @@ public class ContractPriceMarkup implements Serializable {
     @Column(name = "updownmark")
     private Integer upDownMark;
 
+    /*ID*/
+    @Column(name = "ID")
+    private String id;
+    /*到期时间*/
+    @Column(name = "PriceETime")
+    private String priceETime;
+    /*价格停止时间*/
+    @Column(name = "PriceStopTime")
+    private String priceStopTime;
+
 }

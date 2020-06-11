@@ -163,7 +163,7 @@ public interface DriverMapper {
      *
      * @param compid        企业
      * @param invoiceId     小票id
-     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕
+     * @param vehicleStatus 车辆状态   13：正在卸料； 14：卸料完毕  16:自动回厂
      * @param dateTime      修改车辆状态时间
      */
     void updateInvoiceVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus, Date dateTime);
@@ -183,4 +183,6 @@ public interface DriverMapper {
 
 
     GpsLocateTempInfo getDriverLocation(String compid, String vehicleId);
+  
+    List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime);
 }

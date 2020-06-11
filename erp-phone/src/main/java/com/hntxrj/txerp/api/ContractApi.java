@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
 import static com.hntxrj.txerp.util.WebUtilKt.getCompid;
 
 @RestController

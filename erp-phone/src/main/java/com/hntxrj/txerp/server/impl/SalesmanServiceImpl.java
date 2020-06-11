@@ -2,6 +2,7 @@ package com.hntxrj.txerp.server.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.mapper.SalesmanMapper;
 import com.hntxrj.txerp.server.SalesmanService;
 import com.hntxrj.txerp.vo.PageVO;
@@ -9,16 +10,20 @@ import com.hntxrj.txerp.vo.SalesmanDropDownVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SalesmanServiceImpl implements SalesmanService {
 
     private final SalesmanMapper salesmanMapper;
+    private final SyncPlugin syncPlugin;
 
     @Autowired
-    public SalesmanServiceImpl(SalesmanMapper salesmanMapper) {
+    public SalesmanServiceImpl(SalesmanMapper salesmanMapper, SyncPlugin syncPlugin) {
         this.salesmanMapper = salesmanMapper;
+        this.syncPlugin = syncPlugin;
     }
 
     @Override
@@ -32,7 +37,6 @@ public class SalesmanServiceImpl implements SalesmanService {
         pageVO.format(pageInfo);
         return pageVO;
     }
-
     @Override
     public List<SalesmanDropDownVO> getSalesmanDropDown(String salesName, String compid) {
         return salesmanMapper.getSalesmanDropDown(salesName, compid);
@@ -56,7 +60,12 @@ public class SalesmanServiceImpl implements SalesmanService {
         //获取新增销售员的编号
         String saleManCode = getSaleManCode(saleCodes);
         salesmanMapper.addSaleMan(compid, saleName, saleManCode, department);
-
+        Map<String, String> saleMan = salesmanMapper.getSaleMan(compid, saleManCode);
+        try {
+            syncPlugin.save(saleMan, "SM_BusinessGroup", "INS", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 

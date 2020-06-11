@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ConstructionMapper {
@@ -46,7 +47,8 @@ public interface ConstructionMapper {
      * @param buildInvitationCode 邀请码
      * @param useStatus           邀请码使用状态
      */
-    void updateUseStatus(String contractUID, String contractDetailCode, String buildInvitationCode, int useStatus);
+    void updateUseStatus(String buildId, String contractUID, String contractDetailCode, String buildInvitationCode,
+                         int useStatus);
 
 
     /**
@@ -98,9 +100,26 @@ public interface ConstructionMapper {
     List<String> getContractUID(Integer buildId);
 
     /**
-     *  删除合同
-     * @param buildId   用户id
-     * @param contractCode   主合同号
+     * 删除合同
+     *
+     * @param buildId      用户id
+     * @param contractCode 主合同号
      */
     void deleteBuildId(String buildId, String contractCode);
+
+    Map<String, String> getContractDetail(String compid, String contractUid);
+
+    /**
+     * 作废邀请码
+     */
+    void updateInvalidStatus(String contractUID, String contractDetailCode, String buildInvitationCode);
+
+    /**
+     * 解除用户绑定的合同
+     *
+     * @param buildId            用户id
+     * @param contractUID        主合同号
+     * @param contractDetailCode 子合同号
+     */
+    void removeBind(String buildId, String contractUID, String contractDetailCode);
 }

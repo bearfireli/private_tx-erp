@@ -36,4 +36,7 @@ public interface EppMapper {
      * @return 带分页工程下拉列表
      */
     List<EppDropDownVO> getBuildDropDown(List<String> contractDetailCodes, List<String> contractUIDList, String eppName);
+
+    // 根据企业id和创建时间获取新添加的工程名称
+    EppInfo getEppInfoByCreateTime(String compid, String createTime);
 }

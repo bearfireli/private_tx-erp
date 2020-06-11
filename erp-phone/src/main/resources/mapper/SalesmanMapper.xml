@@ -30,4 +30,7 @@
         insert into SM_BusinessGroup(compid, ScaleName, SalesmanCode, DepartMent, UpDownMark, RecStatus)
         values (#{compid}, #{saleName}, #{saleManCode}, #{department}, 0, 1)
     </select>
+    <select id="getSaleMan" resultType="java.util.Map">
+        select * from SM_BusinessGroup where compid = #{compid} and SalesmanCode=#{saleManCode}
+    </select>
 </mapper>

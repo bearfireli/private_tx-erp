@@ -124,12 +124,10 @@ public class BuilderServiceImpl implements BuilderService {
             type = 1;
         }
 
-        //首先根据buildId查询出施工方用户关联的合同列表
-        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
-        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
-        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
-            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
-        }
+        //检测施工方用户是否绑定合同
+        Map<String, List<String>> map = checkContract(buildId);
+        List<String> contractDetailCodes = map.get("contractDetailCodes");
+        List<String> contractUIDList = map.get("contractUIDList");
 
         PageHelper.startPage(page, pageSize);
         //查询施工方用户关联合同下的产销统计
@@ -177,20 +175,17 @@ public class BuilderServiceImpl implements BuilderService {
         if (type == null) {
             type = 1;
         }
-        Map<String, BigDecimal> map = new HashMap<>();
-        //首先根据buildId查询出施工方用户关联的合同列表
-        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
-        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
-
-        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
-            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
-        }
+        Map<String, BigDecimal> concreteMap = new HashMap<>();
+        //检测施工方用户是否绑定合同
+        Map<String, List<String>> map = checkContract(buildId);
+        List<String> contractDetailCodes = map.get("contractDetailCodes");
+        List<String> contractUIDList = map.get("contractUIDList");
         BigDecimal totalSaleNum = builderMapper.getBuilderConcreteSum(contractDetailCodes, contractUIDList,
                 eppCode, placing, taskId, stgId, beginTime, endTime, type);
 
-        map.put("totalSaleNum", totalSaleNum);
+        concreteMap.put("totalSaleNum", totalSaleNum);
 
-        return map;
+        return concreteMap;
     }
 
     @Override
@@ -199,12 +194,10 @@ public class BuilderServiceImpl implements BuilderService {
                                                                      String taskId, String placing, String taskStatus,
                                                                      Integer page, Integer pageSize) throws ErpException {
         PageVO<TaskSaleInvoiceListVO> pageVO = new PageVO<>();
-        //首先根据buildId查询出施工方用户关联的合同列表
-        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
-        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
-        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
-            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
-        }
+        //检测施工方用户是否绑定合同
+        Map<String, List<String>> map = checkContract(buildId);
+        List<String> contractDetailCodes = map.get("contractDetailCodes");
+        List<String> contractUIDList = map.get("contractUIDList");
 
         PageHelper.startPage(page, pageSize, "SendTime desc");
         List<TaskSaleInvoiceListVO> taskSaleInvoiceLists = builderMapper.getBuildTaskSaleInvoiceList(contractDetailCodes,
@@ -219,14 +212,10 @@ public class BuilderServiceImpl implements BuilderService {
                                                      Integer pageSize) throws ErpException {
         PageVO<SendCarListVO> pageVO = new PageVO<>();
 
-        //首先根据buildId查询出施工方用户关联的合同列表
-        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
-        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
-
-        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
-            //说明施工方用户未绑定合同
-            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
-        }
+        //检测施工方用户是否绑定合同
+        Map<String, List<String>> map = checkContract(buildId);
+        List<String> contractDetailCodes = map.get("contractDetailCodes");
+        List<String> contractUIDList = map.get("contractUIDList");
 
         PageHelper.startPage(page, pageSize);
         List<SendCarListVO> sendCarList = builderMapper.getBuildSendCarList(contractDetailCodes, contractUIDList,
@@ -249,7 +238,7 @@ public class BuilderServiceImpl implements BuilderService {
         if (taskIds.size() > 0) {
             cars = builderMapper.getCarsByTaskIds(contractDetailCodes, contractUIDList, taskIds);
         }
-        String carID ="";
+        String carID = "";
         //根据每个车辆的任务单号，把所有车辆关联到调度派车列表中
         for (SendCarListVO sendCarListVO : sendCarList) {
             List<DispatchVehicle> dispatchVehicleList = new ArrayList<>();
@@ -268,7 +257,7 @@ public class BuilderServiceImpl implements BuilderService {
                         dispatchVehicleList.add(car);
                     }
                 }
-                carID =car.getCarID();
+                carID = car.getCarID();
             }
             sendCarListVO.setCars(dispatchVehicleList);
         }
@@ -277,6 +266,63 @@ public class BuilderServiceImpl implements BuilderService {
 
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+
+    @Override
+    public TaskPlanVO getBuildTaskPlanDetail(String compid, String taskId, Integer buildId) throws ErpException {
+        //检测施工方用户是否绑定合同
+        Map<String, List<String>> map = checkContract(buildId);
+        List<String> contractDetailCodes = map.get("contractDetailCodes");
+        List<String> contractUIDList = map.get("contractUIDList");
+
+        List<String> ppCodes = builderMapper.getBuildPPCodeByTaskId(compid, taskId, contractUIDList, contractDetailCodes);
+        TaskPlanVO taskPlanVO = builderMapper.getBuildTaskPlanByTaskId(compid, taskId, contractUIDList, contractDetailCodes);
+
+        if (taskPlanVO == null) {
+            throw new ErpException(ErrEumn.TASK_NOT_EXIT_ERROR);
+        }
+
+        taskPlanVO.setPpCodes(ppCodes);
+        return taskPlanVO;
+    }
+
+    @Override
+    public TaskSaleInvoiceDetailVO getBuildTaskSaleInvoiceDetail(String compid, Integer id, Integer buildId) throws ErpException {
+
+        //检测施工方用户是否绑定合同
+        Map<String, List<String>> map = checkContract(buildId);
+        List<String> contractDetailCodes = map.get("contractDetailCodes");
+        List<String> contractUIDList = map.get("contractUIDList");
+        return builderMapper.getTaskSaleInvoiceDetailVO(id, compid, contractUIDList, contractDetailCodes);
+    }
+
+    @Override
+    public TaskSaleInvoiceDetailVO checkTaskSaleInvoice(Integer buildId, String compid, Integer id) throws ErpException {
+        Map<String, List<String>> map = checkContract(buildId);
+        List<String> contractDetailCodes = map.get("contractDetailCodes");
+        List<String> contractUIDList = map.get("contractUIDList");
+        TaskSaleInvoiceDetailVO taskSaleInvoiceDetailVO = builderMapper.getTaskSaleInvoiceDetailVO(id,
+                compid, contractUIDList, contractDetailCodes);
+        if (taskSaleInvoiceDetailVO == null) {
+            throw new ErpException(ErrEumn.TASK_SALE_INVOICE_NOT_EXIT);
+        }
+        return taskSaleInvoiceDetailVO;
+    }
+
+
+    // 验证施工方用户是否绑定合同，返回绑定的合同列表
+    private Map<String, List<String>> checkContract(Integer buildId) throws ErpException {
+        Map<String, List<String>> map = new HashMap<>();
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
+        if (contractDetailCodes.size() == 0 || contractUIDList.size() == 0) {
+            //说明施工方用户未绑定合同
+            throw new ErpException(ErrEumn.NOT_BIND_CONTRACT);
+        }
+        map.put("contractUIDList", contractUIDList);
+        map.put("contractDetailCodes", contractDetailCodes);
+        return map;
     }
 
 

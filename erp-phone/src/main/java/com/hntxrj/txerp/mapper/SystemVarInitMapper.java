@@ -48,5 +48,5 @@ public interface SystemVarInitMapper {
     void updateStockAggregateShow(String compid, Integer aggregateIsShow);
 
     // 获取用户设置的实时库存是否显示骨料的信息
-    Map getStockAggregate(String compid);
+    Map<String,String> getStockAggregate(String compid);
 }

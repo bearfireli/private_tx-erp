@@ -105,6 +105,7 @@
         <if test="email != null">
             and u.email like #{_email}
         </if>
+        order by u.create_time desc
     </select>
 
     <select id="getUserList" resultType="com.hntxrj.txerp.vo.UserListVO">
