@@ -13,16 +13,15 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Component
 @Aspect
@@ -32,19 +31,24 @@ public class AuthCheckAopAspect {
     @Value("${app.cloud.host}")
     private String url;
 
+    private static List<String> publicApiList = new ArrayList<>();
     private static final String succeedCode = "0";
     private static final String failedCode = "-1";
 
-    private static final String GET_DRIVER_NAME = "/driver/getDriverNames";
-    private static final String GET_QUERY_TIME = "/api/querytimeset/getQueryTimeSetList";
-    private static final String GET_STOCK = "/api/stock/getStock";
-    private static final String GET_STIR_IDS = "/api/stock/getStirIds";
-
-
-    private static final String[] PUBLIC_API_LIST = new String[]{
-            GET_DRIVER_NAME, GET_QUERY_TIME, GET_STOCK, GET_STIR_IDS
-
-    };
+    {
+        //读取配置文件，获取配置的公共不需要验证权限的方法方法
+        try {
+            File file = ResourceUtils.getFile("classpath:publicApi.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String s;
+            while ((s = br.readLine()) != null) {
+                publicApiList.add(s);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Around("execution(* com.hntxrj.txerp.api.*.*(..))")
     private Object authCheck(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -54,33 +58,14 @@ public class AuthCheckAopAspect {
         HttpServletResponse response = ((ServletRequestAttributes)
                 RequestContextHolder.getRequestAttributes()).getResponse();
 
-        //打印出请求的地址
-        String uri = request.getRequestURI();
-        log.info(String.format("%s >>> %s", request.getMethod(), uri));
-
-
-        // 判断无权限接口
-        for (String publicApi : PUBLIC_API_LIST) {
-            if (publicApi.equals(uri)) {
-                return joinPoint.proceed();
-            }
-        }
-
         assert response != null;
         response.setHeader("Content-type", "text/html;charset=UTF-8");
-        //获取请求头中的token,pid,compid
-        String token = request.getHeader("token");
-        String pid = request.getHeader("pid");
-        String compid = request.getHeader("compid");
 
-        if (token == null || "".equals(token)) {
-            ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.NOT_LOGIN));
-        }
+
+        //获取请求头中的pid
+        String pid = request.getHeader("pid");
         if (pid == null || "".equals(pid)) {
             ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn._PID_NOT_FIND_IN_HEADER));
-        }
-        if (compid == null || "".equals(compid)) {
-            ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.ENTERPRISE_ID_NOTEXIST));
         }
 
         //通过AOP得到要访问的方法名和类名
@@ -99,6 +84,27 @@ public class AuthCheckAopAspect {
         String appName = getProjectName(pid);
 
         functionName = appName + "_" + className + "_" + methodName;
+
+
+        //公共方法直接放行
+        for (String publicApi : publicApiList) {
+            if (publicApi.equals(functionName)) {
+                return joinPoint.proceed();
+            }
+        }
+
+
+        //获取请求头中的token,pid,compid
+        String token = request.getHeader("token");
+        String compid = request.getHeader("compid");
+
+        if (token == null || "".equals(token)) {
+            ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.NOT_LOGIN));
+        }
+        if (compid == null || "".equals(compid)) {
+            ExceptionUtil.defaultErrorHandler(request, response, new ErpException(ErrEumn.ENTERPRISE_ID_NOTEXIST));
+        }
+
 
         //向erpBase项目发送请求，验证用户是否有权限访问此方法
         String permissionCode = isPermission(token, functionName, compid);
