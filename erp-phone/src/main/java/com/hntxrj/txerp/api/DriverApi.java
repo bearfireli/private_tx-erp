@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 司机端api
@@ -346,5 +348,21 @@ public class DriverApi {
     public ResultVO driverOnlineStatus(String compid, String driverCode) {
         driverService.driverOnlineStatus(compid, driverCode);
         return ResultVO.create();
+    }
+
+
+    /**
+     * 获取司机位置信息
+     * 暂时只有工地端使用该接口
+     * 本接口返回数据来源于GPS_LocateTempInfo
+     * GPS_LocateTempInfo表的数据是通过独立定时任务程序读取的gps平台数据采集进来的
+     *
+     * @param compid    企业id
+     * @param vehicleId 车号
+     * @return 车辆位置信息
+     */
+    @PostMapping("/driverLocation")
+    public ResultVO driverLocation(String compid, String vehicleId) {
+        return ResultVO.create(driverService.getDriverLocation(compid, vehicleId));
     }
 }

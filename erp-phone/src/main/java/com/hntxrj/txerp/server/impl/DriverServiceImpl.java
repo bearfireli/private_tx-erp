@@ -7,6 +7,7 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.DriverDao;
+import com.hntxrj.txerp.entity.GpsLocateTempInfo;
 import com.hntxrj.txerp.mapper.DriverMapper;
 import com.hntxrj.txerp.server.DriverService;
 import com.hntxrj.txerp.vo.*;
@@ -21,7 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 功能及介绍：司机模块数据处理层
@@ -194,7 +198,7 @@ public class DriverServiceImpl implements DriverService {
 //        2，当前车辆的状态时运输状态,或者是正在卸料,或者完成卸料的状态
 
         DriverTaskSaleDetailVO taskSaleInvoiceDetail = driverMapper.getTaskSaleInvoiceDetail(driverCode, compid);
-        if (taskSaleInvoiceDetail == null||taskSaleInvoiceDetail.getVehicleStatus()==null) {
+        if (taskSaleInvoiceDetail == null || taskSaleInvoiceDetail.getVehicleStatus() == null) {
             map.put("code", 1);
             map.put("message", "司机没有打票，自动回厂失败");
             return map;
@@ -270,5 +274,9 @@ public class DriverServiceImpl implements DriverService {
         redisTemplate.opsForValue().set(key, new Date());
     }
 
+    @Override
+    public GpsLocateTempInfo getDriverLocation(String compid, String vehicleId) {
+        return driverMapper.getDriverLocation(compid, vehicleId);
+    }
 
 }

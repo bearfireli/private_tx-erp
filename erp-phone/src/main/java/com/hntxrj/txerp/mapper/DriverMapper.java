@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.mapper;
 
+import com.hntxrj.txerp.entity.GpsLocateTempInfo;
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -179,4 +180,7 @@ public interface DriverMapper {
 
     //获取小票的车辆状态
     DriverTaskSaleDetailVO getTaskSaleInvoiceDetail(String driverCode, String compid);
+
+
+    GpsLocateTempInfo getDriverLocation(String compid, String vehicleId);
 }
