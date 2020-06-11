@@ -34,7 +34,8 @@ public class StockServiceImpl implements StockService {
 
 
     @Autowired
-    public StockServiceImpl(StockDao stockDao, StockMapper stockMapper, SystemVarInitMapper systemVarInitMapper, SyncPlugin syncPlugin) {
+    public StockServiceImpl(StockDao stockDao, StockMapper stockMapper, SystemVarInitMapper systemVarInitMapper,
+                            SyncPlugin syncPlugin) {
         this.stockDao = stockDao;
         this.stockMapper = stockMapper;
         this.systemVarInitMapper = systemVarInitMapper;
