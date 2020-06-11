@@ -36,10 +36,9 @@ public class PVStatisticsFilter implements Filter {
                         "undefined".equals(req.getHeader("enterprise"))
                 ) {
                     pvStatisticsService.augmentPV(req.getRequestURI(), 0);
-
                 } else {
-                    pvStatisticsService.augmentPV(req.getRequestURI(), Integer.valueOf(req.getHeader("enterprise")));
-
+                    pvStatisticsService.augmentPV(req.getRequestURI(),
+                            Integer.valueOf(req.getHeader("enterprise")));
                 }
             }
         } finally {

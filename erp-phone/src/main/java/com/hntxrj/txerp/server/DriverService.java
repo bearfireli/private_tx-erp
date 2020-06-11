@@ -2,6 +2,7 @@ package com.hntxrj.txerp.server;
 
 import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.entity.GpsLocateTempInfo;
 import com.hntxrj.txerp.vo.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -199,6 +200,8 @@ public interface DriverService {
      * @param driverCode 司机代号
      */
     void driverOnlineStatus(String compid, String driverCode);
+
+    GpsLocateTempInfo getDriverLocation(String compid, String vehicleId);
 
     /**
      * 司机端获取车辆工作量统计

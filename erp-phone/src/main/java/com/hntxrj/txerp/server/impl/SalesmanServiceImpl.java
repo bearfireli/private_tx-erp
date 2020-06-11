@@ -31,11 +31,15 @@ public class SalesmanServiceImpl implements SalesmanService {
                                                           Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<SalesmanDropDownVO> salesmanDropDownVOS =
-                salesmanMapper.getSalesmanDropDown(salesName, compid, page, pageSize);
+                salesmanMapper.getSalesmanDropDown(salesName, compid);
         PageInfo<SalesmanDropDownVO> pageInfo = new PageInfo<>(salesmanDropDownVOS);
         PageVO<SalesmanDropDownVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
+    }
+    @Override
+    public List<SalesmanDropDownVO> getSalesmanDropDown(String salesName, String compid) {
+        return salesmanMapper.getSalesmanDropDown(salesName, compid);
     }
 
     @Override
@@ -62,7 +66,6 @@ public class SalesmanServiceImpl implements SalesmanService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
 
     }
 

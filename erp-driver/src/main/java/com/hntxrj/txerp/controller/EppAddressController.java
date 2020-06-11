@@ -68,7 +68,7 @@ public class EppAddressController {
 
 
     @PostMapping("/getDriverLocals")
-    public ResultVO getDriverLocals(String compid, String token){
+    public ResultVO getDriverLocals(String compid, String token) {
         return ResultVO.create(eppAddressService.getDriverLocals(compid));
     }
 }

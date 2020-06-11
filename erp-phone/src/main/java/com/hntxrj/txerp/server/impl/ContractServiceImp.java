@@ -458,7 +458,6 @@ public class ContractServiceImp implements ContractService {
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         contractMapper.verifyContract(contractUid, compid, opId, sdf.format(new Date()), verifyStatus);
-
         // 数据同步
         Map<String, String> map = constructionMapper.getContractDetail(compid, contractUid);
         // 把时间戳类型的时间转换成字符串形式存到sync_data表中

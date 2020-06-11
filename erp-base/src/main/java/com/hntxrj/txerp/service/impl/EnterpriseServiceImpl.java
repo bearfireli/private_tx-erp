@@ -44,8 +44,8 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     @Value("${app.pay.imgFilePath}")
     private String imgFilePath;
 
-    @Value("${app.enterprise.imgFilePath}")
-    private String enterpriseImgFilePath;
+    @Value("${app.enterprise.logoPath}")
+    private String enterpriseLogoPath;
 
 
     @Value("${app.host}")
@@ -525,7 +525,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
     @Override
     public Map<String, String> uploadEnterpriseLogo(MultipartFile image) throws ErpException {
         String fileName = UUID.randomUUID().toString() + ".PNG";
-        String temPath = enterpriseImgFilePath;
+        String temPath = enterpriseLogoPath;
 
         File dir = new File(temPath);
         dir.mkdirs();
@@ -546,7 +546,7 @@ public class EnterpriseServiceImpl extends BaseServiceImpl implements Enterprise
 
     @Override
     public void getEnterpriseLogo(String imgUrl, HttpServletResponse response) throws ErpException {
-        String tempPath = enterpriseImgFilePath;
+        String tempPath = enterpriseLogoPath;
         File file = new File(tempPath + imgUrl);
         if (!file.exists()) {
             file = new File(tempPath + "default.png");

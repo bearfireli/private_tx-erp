@@ -527,7 +527,7 @@ public class UserController {
      * @param page     当前页码
      * @param pageSize 每页大小
      */
-    @ApiOperation(value = "查询用户登录信息列表", httpMethod = "post")
+    @ApiOperation(value = "查询用户登录信息列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "compid", value = "企业代号", required = true, dataType = "String",
                     paramType = "query"),

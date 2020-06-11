@@ -25,7 +25,7 @@ public enum ErrEumn {
 
 
     /* 任务单 21101-21199*/
-    ADD_TASK_NOT_FOUND_COMPID(-21101, "找不到企业ID"),
+    NOT_FOUND_COMPID(-21101, "找不到企业ID"),
     ADD_TASK_NOT_FOUND_TASKID(-21102, "找不到任务单号"),
     ADD_TASK_NOT_FOUND_PRETIME(-21103, "预计时间不能为空！"),
     ADD_TASK_NOT_FOUND_CONTRACT(-21104, "请选择合同！"),
