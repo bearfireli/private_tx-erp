@@ -13,7 +13,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -21,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Component
@@ -40,8 +40,10 @@ public class AuthCheckAopAspect {
         try {
             //获取当前jar路径，加载当前jar包同级目录下的publicApi.txt文件
             String path = System.getProperty("user.dir");
-            File file = new File(path, "publicApi.txt");
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            File file = new File(path, "allow_func");
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(isr);
             String s;
             while ((s = br.readLine()) != null) {
                 publicApiList.add(s);
