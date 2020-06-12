@@ -353,8 +353,7 @@ public class DriverApi {
         return ResultVO.create();
     }
 
-
-  /**
+    /**
      * 获取司机位置信息
      * 暂时只有工地端使用该接口
      * 本接口返回数据来源于GPS_LocateTempInfo
@@ -367,9 +366,9 @@ public class DriverApi {
     @PostMapping("/driverLocation")
     public ResultVO driverLocation(String compid, String vehicleId) {
         return ResultVO.create(driverService.getDriverLocation(compid, vehicleId));
+    }
 
-      
-    
+
     @ApiOperation("司机端获取车辆工作量统计")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
