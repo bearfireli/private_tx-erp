@@ -29,7 +29,7 @@
         rm.create_time,
         rm.update_time
         FROM roll_message rm
-        LEFT JOIN USER u ON rm.uid=u.uid
+        LEFT JOIN `user` u ON rm.uid=u.uid
         WHERE begin_time <![CDATA[<]]> #{currentTime}
         AND end_time <![CDATA[>]]> #{currentTime}
         AND (type=0 or compid=#{compid})
