@@ -9,21 +9,21 @@ import lombok.Data;
 public class VehicleWorkloadSummaryVO {
 
     /**
-     *车数
+     * 车数
      */
     private Integer carNum;
     /**
      * 砼产量
      */
-    private  double num;
+    private double num;
     /**
      * 运距
      */
-    private  double distance;
+    private double distance;
     /**
      * 车号
      */
-    private  Integer vehicleId;
+    private String vehicleId;
 
     /**
      * 砼产量汇总
