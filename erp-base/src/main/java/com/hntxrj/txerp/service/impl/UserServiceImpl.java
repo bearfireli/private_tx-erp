@@ -522,6 +522,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         Header[] headers = HttpHeader.custom()
                 .other("version", "1")
                 .other("token", token)
+                .other("pid","3")
                 .build();
         //插件式配置请求参数（网址、请求参数、编码、client）
         HttpConfig config = HttpConfig.custom()
