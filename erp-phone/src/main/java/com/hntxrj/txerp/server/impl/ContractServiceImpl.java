@@ -564,7 +564,7 @@ public class ContractServiceImpl implements ContractService {
 
         String contractMasterUid = UUID.randomUUID().toString();
         contractMaster.setContractUid(contractMasterUid);
-        contractMaster.setCreateTime(new Date());
+        contractMaster.setCreateTime(simpleDateFormat.format(new Date()));
         contractMaster.setRecStatus("1");
         contractMaster.setCompid(compid);
         contractMaster.setContractId(contractId);
@@ -1046,6 +1046,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public SMContractMaster saveContractMaster(SMContractMaster contractMaster) {
+        contractMaster.setContractUID(UUID.randomUUID().toString());
         return contractMasterRepository.save(contractMaster);
     }
 

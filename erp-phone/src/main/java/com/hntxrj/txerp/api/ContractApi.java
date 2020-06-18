@@ -1,8 +1,11 @@
 package com.hntxrj.txerp.api;
 
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.entity.SMContractDetail;
+import com.hntxrj.txerp.entity.SMContractMaster;
 import com.hntxrj.txerp.server.ContractService;
 import com.hntxrj.txerp.server.SalesmanService;
+import com.hntxrj.txerp.util.AuthUtilKt;
 import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import static com.hntxrj.txerp.util.WebUtilKt.getCompid;
+
+import static com.hntxrj.txerp.util.AuthUtilKt.getCompid;
 
 @RestController
 @RequestMapping("/api/contract/")
@@ -49,7 +53,7 @@ public class ContractApi {
                                     String buildCode, String salesMan,
                                     @RequestParam(required = false) String verifyStatus,
                                     @RequestParam(defaultValue = "1") Integer page,
-                                    @RequestParam(defaultValue = "10") Integer pageSize, HttpServletRequest request) {
+                                    @RequestParam(defaultValue = "10") Integer pageSize, HttpServletRequest request) throws ErpException {
 
         return ResultVO.create(contractService.getContractList(
                 startTime == null ? null : Long.parseLong(startTime),
@@ -505,6 +509,14 @@ public class ContractApi {
         salesmanService.addSaleMan(compid, saleName, department);
         return ResultVO.create();
     }
-
-
+    @PostMapping("/saveContractMaster")
+    public ResultVO saveContractMaster(SMContractMaster contractMaster, HttpServletRequest request) throws ErpException {
+        contractMaster.setOpId(AuthUtilKt.getOpId(request));
+        return ResultVO.create(contractService.saveContractMaster(contractMaster));
+    }
+    @PostMapping("/saveContractDetail")
+    public ResultVO saveContractDetail(SMContractDetail contractDetail, HttpServletRequest request) throws ErpException {
+        contractDetail.setOpId(AuthUtilKt.getOpId(request));
+        return ResultVO.create(contractService.saveContractDetail(contractDetail));
+    }
 }

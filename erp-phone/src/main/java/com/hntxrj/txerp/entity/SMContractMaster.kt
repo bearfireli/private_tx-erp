@@ -1,5 +1,8 @@
 package com.hntxrj.txerp.entity
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import java.math.BigDecimal
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -23,16 +26,18 @@ open class SMContractMaster {
     var salesman: String? = null
 
     @Basic
+    @JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @Column(name = "signdate", nullable = true)
-    var signDate: java.sql.Timestamp? = null
+    var signDate: Date? = null
 
     @Basic
+    @JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @Column(name = "effectdate", nullable = true)
-    var effectDate: java.sql.Timestamp? = null
+    var effectDate: Date? = null
 
     @Basic
-    @Column(name = "expiresdate", nullable = true)
-    var expiresDate: java.sql.Timestamp? = null
+    @JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    var expiresDate: Date? = null
 
     @Basic
     @Column(name = "contracttype", nullable = true)
@@ -48,7 +53,7 @@ open class SMContractMaster {
 
     @Basic
     @Column(name = "lockrate", nullable = true)
-    var lockRate: java.math.BigDecimal? = null
+    var lockRate: BigDecimal? = null
 
     @Basic
     @Column(name = "linkman", nullable = true)
@@ -68,7 +73,7 @@ open class SMContractMaster {
 
     @Basic
     @Column(name = "pricefloatlimits", nullable = true)
-    var priceFloatLimits: java.math.BigDecimal? = null
+    var priceFloatLimits: BigDecimal? = null
 
     @Basic
     @Column(name = "paymentterms", nullable = true)
@@ -96,11 +101,11 @@ open class SMContractMaster {
 
     @Basic
     @Column(name = "payrate", nullable = false)
-    var payRate: java.math.BigDecimal? = null
+    var payRate: BigDecimal = BigDecimal(0.0)
 
     @Basic
     @Column(name = "updownmark", nullable = false)
-    var upDownMark: Int? = null
+    var upDownMark: Int = 0
 
 
     override fun toString(): String =
