@@ -3,7 +3,9 @@ package com.hntxrj.txerp.mapper;
 import com.hntxrj.txerp.vo.SalesmanDropDownVO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface SalesmanMapper {
@@ -43,4 +45,7 @@ public interface SalesmanMapper {
      * @param department  部门分组
      */
     void addSaleMan(String compid, String saleName, String saleManCode, String department);
+
+    Map<String,String> getSaleMan(String compid, String saleManCode);
+
 }

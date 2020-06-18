@@ -25,13 +25,13 @@ public class ContractMaster {
     private String salesman;
     /* 签订日期 */
     @Column(name = "signDate")
-    private Date signDate;
+    private String signDate;
     /* 执行日期 */
     @Column(name = "effectDate")
-    private Date effectDate;
+    private String effectDate;
     /* 到期日期 */
     @Column(name = "expiresDate")
-    private Date expiresDate;
+    private String expiresDate;
     /* 合同类别 */
     @Column(name = "contractType")
     private Integer contractType;
@@ -70,7 +70,7 @@ public class ContractMaster {
     private String opId;
     /* 创建日期 */
     @Column(name = "createTime")
-    private Date createTime;
+    private String createTime;
     /* 网络标识 */
     @Column(name = "upDown")
     private String upDown;

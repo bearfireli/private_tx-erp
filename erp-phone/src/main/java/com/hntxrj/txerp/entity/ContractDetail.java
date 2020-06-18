@@ -75,7 +75,7 @@ public class ContractDetail implements Serializable {
     private Integer contractStatus;
     /* 状态修改时间 */
     @Column(name = "statusTime")
-    private Date statusTime;
+    private String statusTime;
     /* 审核状态 */
     @Column(name = "verifyStatus")
     private String verifyStatus;
@@ -84,13 +84,13 @@ public class ContractDetail implements Serializable {
     private String verifyId;
     /* 审核时间 */
     @Column(name = "verifyTime")
-    private Date verifyTime;
+    private String verifyTime;
     /* 创建人代码 */
     @Column(name = "opId")
     private String opId;
     /* 创建时间 */
     @Column(name = "createTime")
-    private Date createTime;
+    private String createTime;
     /* 工地是否GPS标定 */
     @Column(name = "isGpsLocate")
     private String isGpsLocate;
@@ -153,9 +153,9 @@ public class ContractDetail implements Serializable {
     private String secondVerifyName;
     /* 二级审核时间 */
     @Column(name = "secondVerifyTime")
-    private Date secondVerifyTime;
+    private String secondVerifyTime;
     /* 开盘时间 */
     @Column(name = "openTime")
-    private Date openTime;
+    private String openTime;
 
 }

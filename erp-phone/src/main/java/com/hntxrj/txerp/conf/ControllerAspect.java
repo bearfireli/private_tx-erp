@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
-
 import okhttp3.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -65,6 +64,7 @@ public class ControllerAspect {
         functionMap.put("getMatStatistics", "原材料汇总");
         functionMap.put("getStockInSelectClose", "原材料过磅查询");
         functionMap.put("getRealStock", "实时库存");
+        functionMap.put("driverLocation", "司机位置");
     }
 
     @Autowired

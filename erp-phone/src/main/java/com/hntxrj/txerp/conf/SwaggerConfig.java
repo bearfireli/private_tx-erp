@@ -1,13 +1,13 @@
 package com.hntxrj.txerp.conf;
 
 
-import springfox.documentation.service.Parameter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.schema.ModelRef;
+import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -23,7 +23,7 @@ public class SwaggerConfig {
         ParameterBuilder tokenPar = new ParameterBuilder();
         ParameterBuilder pidPar = new ParameterBuilder();
 
-        List<Parameter> pars = new ArrayList<Parameter>();
+        List<Parameter> pars = new ArrayList<>();
         tokenPar.name("token").description("user token")
                 .modelRef(new ModelRef("string")).parameterType("header")
                 .required(false).build(); //header中的ticket参数非必填，传空也可以

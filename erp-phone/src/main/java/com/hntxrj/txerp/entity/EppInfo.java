@@ -22,7 +22,7 @@ public class EppInfo {
   private String linkman;
   private String linktel;
   private String opid;
-  private java.sql.Timestamp createtime;
+  private String createtime;
   private String remarks;
   private String recstatus;
   private String updown;

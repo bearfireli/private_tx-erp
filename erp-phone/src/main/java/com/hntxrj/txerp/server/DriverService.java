@@ -2,6 +2,7 @@ package com.hntxrj.txerp.server;
 
 import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.entity.GpsLocateTempInfo;
 import com.hntxrj.txerp.vo.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -10,8 +11,6 @@ import java.util.Map;
 
 /**
  * 司机服务
- *
- * @update 2019-09-10 15:56:18
  */
 public interface DriverService {
 
@@ -177,13 +176,22 @@ public interface DriverService {
     void updateInvoiceVehicleStatus(String compid, Integer invoiceId, Integer vehicleStatus);
 
     /**
-     * 修改车辆表中的车辆状态
+     * 修改车辆表中的车辆状态（自动触发回厂功能）
      *
      * @param compid        企业
      * @param driverCode    车号
-     * @param vehicleStatus 车辆状态    1：场内待班
+     * @param vehicleStatus 车辆状态    16：自动回厂
      */
     Map<String, Object> updateVehicleStatus(String compid, String driverCode, Integer vehicleStatus);
+
+    /**
+     * 手动自动回厂
+     *
+     * @param compid        企业
+     * @param driverCode    车号
+     * @param vehicleStatus 车辆状态    16：自动回厂
+     */
+    Map<String, Object> updateVehicleStatusByHand(String compid, String driverCode, Integer vehicleStatus);
 
     /**
      * 司机在线状态请求
@@ -192,6 +200,18 @@ public interface DriverService {
      * @param driverCode 司机代号
      */
     void driverOnlineStatus(String compid, String driverCode);
+
+    GpsLocateTempInfo getDriverLocation(String compid, String vehicleId);
+
+    /**
+     * 司机端获取车辆工作量统计
+     *
+     * @param compid     企业代号
+     * @param driverCode 司机代号
+     * @param beginTime  开始时间
+     * @param endTime    结束时间
+     */
+    List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime);
 }
 
 

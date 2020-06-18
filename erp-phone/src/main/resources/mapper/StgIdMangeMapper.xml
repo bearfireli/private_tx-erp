@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.StgIdMangeMapper">
-   <!-- 砼标号管理-->
+    <!-- 砼标号管理-->
     <select id="getStgidManage" resultType="com.hntxrj.txerp.vo.StgidManageVO">
         select StgId,grade,pumpPrice,notPumpPrice,towerCranePrice,PriceDifference
         from SM_GradePriceInfo
@@ -14,7 +14,6 @@
             and grade like '%'+#{grade}+'%'
         </if>
     </select>
-
 
 
     <!-- 砼标号详情-->
@@ -35,6 +34,9 @@
         from SM_GradePriceInfo
         where compid =#{compid}
         and RecStatus =1
+    </select>
+    <select id="getByStgId" resultType="java.util.Map">
+        select * from SM_GradePriceInfo where compid=#{compid} and StgId=#{stgId}
     </select>
 
 

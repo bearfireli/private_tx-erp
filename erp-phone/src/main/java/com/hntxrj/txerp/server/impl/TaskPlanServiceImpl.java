@@ -3,6 +3,7 @@ package com.hntxrj.txerp.server.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +44,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final MsgService msgService;
 
     private final MsgMapper msgMapper;
+    private final SyncPlugin syncPlugin;
+    private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
     @Resource
     private RedisTemplate<String, Date> redisTemplate;
 
@@ -50,7 +54,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                                StockMapper stockMapper, ConcreteMapper concreteMapper,
                                PublicInfoMapper publicInfoMapper, SystemVarInitMapper systemVarInitMapper,
                                ConstructionMapper constructionMapper, StirInfoSetServiceImpl stirInfoSetMapper,
-                               MsgService msgService, MsgMapper msgMapper) {
+                               MsgService msgService, MsgMapper msgMapper, SyncPlugin syncPlugin) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
@@ -61,6 +65,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         this.stirInfoSetMapper = stirInfoSetMapper;
         this.msgService = msgService;
         this.msgMapper = msgMapper;
+        this.syncPlugin = syncPlugin;
     }
 
     @Override
@@ -195,6 +200,21 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlan.setAdjustmentTime(taskPlan.getPreTime());
         try {
             taskPlanRepository.save(taskPlan);
+            HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskPlan.getTaskId(), taskPlan.getCompid());
+            map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+            map.put("PreTime", simpleDateFormat.format(map.get("PreTime")));
+            map.put("TaskOverTime", simpleDateFormat.format(map.get("TaskOverTime")));
+            map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+            map.put("FormulaTime", simpleDateFormat.format(map.get("FormulaTime")));
+            map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
+            map.put("OverTime", simpleDateFormat.format(map.get("OverTime")));
+            map.put("LinkPipeTime", simpleDateFormat.format(map.get("LinkPipeTime")));
+            map.put("DownTime", simpleDateFormat.format(map.get("DownTime")));
+            map.put("AdjustmentTime", simpleDateFormat.format(map.get("AdjustmentTime")));
+            map.put("LinkPipeOverTime", simpleDateFormat.format(map.get("LinkPipeOverTime")));
+            // 数据同步
+            syncPlugin.save(map, "pt_taskplan", "INS", taskPlan.getCompid());
+
             int typeId = 1;
             List<RecipientVO> recipient = msgMapper.getRecipientList(taskPlan.getCompid(), typeId);
             for (RecipientVO r : recipient) {
@@ -216,6 +236,23 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public void verifyTaskPlan(String taskId, String compid, Integer verifyStatus) throws ErpException {
         try {
             taskPlanMapper.verifyTaskPlan(taskId, compid, verifyStatus, new Date());
+
+
+            HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskId, compid);
+            map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+            map.put("PreTime", simpleDateFormat.format(map.get("PreTime")));
+            map.put("TaskOverTime", simpleDateFormat.format(map.get("TaskOverTime")));
+            map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+            map.put("FormulaTime", simpleDateFormat.format(map.get("FormulaTime")));
+            map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
+            map.put("OverTime", simpleDateFormat.format(map.get("OverTime")));
+            map.put("LinkPipeTime", simpleDateFormat.format(map.get("LinkPipeTime")));
+            map.put("DownTime", simpleDateFormat.format(map.get("DownTime")));
+            map.put("AdjustmentTime", simpleDateFormat.format(map.get("AdjustmentTime")));
+            map.put("LinkPipeOverTime", simpleDateFormat.format(map.get("LinkPipeOverTime")));
+            // 数据同步
+            syncPlugin.save(map, "PT_TaskPlan", "UP", compid);
+
 
             int typeId = 2;
             List<RecipientVO> recipient = msgMapper.getRecipientList(compid, typeId);
@@ -807,6 +844,14 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             taskPlanMapper.getDriverShiftInsert(compid, opId, personalCode,
                     vehicleId, workClass, workStarTime,
                     workOverTime, remarks, createTime, workTime, upDown, upDownMark, recStatus);
+
+            // 数据同步
+            Map<String, String> map = taskPlanMapper.getDriverShiftVO(compid, vehicleId, personalCode, workStarTime);
+
+            map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+            map.put("WorkStarTime", simpleDateFormat.format(map.get("WorkStarTime")));
+            map.put("WorkOverTime", simpleDateFormat.format(map.get("WorkOverTime")));
+            syncPlugin.save(map, "VM_PERSONALWORKCLASS", "INS", compid);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_ERROR);
         }
@@ -840,6 +885,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             taskPlanMapper.getDriverShiftUpdate(id, compid, personalCode, vehicleId,
                     workClass, workStarTime,
                     workOverTime, remarks, createTime);
+            // 数据同步
+            Map<String, String> map = taskPlanMapper.getDriverShiftById(id, compid);
+            map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+            map.put("WorkStarTime", simpleDateFormat.format(map.get("WorkStarTime")));
+            map.put("WorkOverTime", simpleDateFormat.format(map.get("WorkOverTime")));
+            syncPlugin.save(map, "VM_PERSONALWORKCLASS", "UP", compid);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADJUNCT_UPDATE_ERROR);
         }
@@ -922,13 +973,15 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                 endTime, quantityQueryType);
         //根据compid、beginTime、endTime从生产消耗表中查询出生产方量。
         BigDecimal productNum = concreteMapper.getProductConcreteSum(compid, beginTime, endTime);
-        if (vehicleWorkloadDetailVOS != null) {
-            vehicleWorkloadDetailVOS.setSale_num(vehicleWorkloadDetailVOS.getSaleNum());
-            if (productNum != null) {
-                vehicleWorkloadDetailVOS.setProduce_num(productNum.intValue());
-            } else {
-                vehicleWorkloadDetailVOS.setProduce_num(0);
-            }
+        if (vehicleWorkloadDetailVOS == null) {
+            vehicleWorkloadDetailVOS = new SquareQuantityVO();
+        }
+
+        vehicleWorkloadDetailVOS.setSale_num(vehicleWorkloadDetailVOS.getSaleNum());
+        if (productNum != null) {
+            vehicleWorkloadDetailVOS.setProduce_num(productNum.intValue());
+        } else {
+            vehicleWorkloadDetailVOS.setProduce_num(0);
         }
         return vehicleWorkloadDetailVOS;
     }
@@ -1054,6 +1107,15 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlanMapper.addTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode(), priceMarkupVO.getUnitPrice(),
                 priceMarkupVO.getSelfDiscPrice(), priceMarkupVO.getJumpPrice(),
                 priceMarkupVO.getTowerCranePrice(), priceMarkupVO.getOtherPrice());
+
+        // 数据同步
+        Map<String, String> map = taskPlanMapper.getTaskPriceMarkup(compid, taskId, priceMarkupVO.getPPCode());
+        try {
+            syncPlugin.save(map, "PT_TASKPRICEMARKUP", "INS", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -1086,6 +1148,24 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     String concreteMark = markFlag + "-" + stgId + "-" + x + slumpFlag + "-" + ppNames + "-GB/T14902";
                     //把选择的特殊材料名称添加到技术要求里面
                     taskPlanMapper.updateTechnicalRequirements(compid, taskId, ppNames, concreteMark);
+                    HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskId, compid);
+                    map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+                    map.put("PreTime", simpleDateFormat.format(map.get("PreTime")));
+                    map.put("TaskOverTime", simpleDateFormat.format(map.get("TaskOverTime")));
+                    map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+                    map.put("FormulaTime", simpleDateFormat.format(map.get("FormulaTime")));
+                    map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
+                    map.put("OverTime", simpleDateFormat.format(map.get("OverTime")));
+                    map.put("LinkPipeTime", simpleDateFormat.format(map.get("LinkPipeTime")));
+                    map.put("DownTime", simpleDateFormat.format(map.get("DownTime")));
+                    map.put("AdjustmentTime", simpleDateFormat.format(map.get("AdjustmentTime")));
+                    map.put("LinkPipeOverTime", simpleDateFormat.format(map.get("LinkPipeOverTime")));
+                    // 数据同步
+                    try {
+                        syncPlugin.save(map, "PT_TaskPlan", "UP", compid);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -1097,6 +1177,16 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     @Override
     public void deletePPCodeStatus(String compid, String taskId) {
         taskPlanMapper.deletePPCodeStatus(compid, taskId);
+        List<TaskPriceMarkup> taskPriceMarkupList = taskPlanMapper.getTaskPriceMarkupList(compid, taskId);
+        for (TaskPriceMarkup taskPriceMarkup : taskPriceMarkupList) {
+            try {
+                // 数据同步
+                syncPlugin.save(taskPriceMarkup, "PT_TASKPRICEMARKUP", "DEL", compid);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /**
@@ -1235,6 +1325,14 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             throw new ErpException(ErrEumn.DELETE_TASK_ERROR);
         }
         taskPlanMapper.deleteTaskPlan(compid, taskId);
+
+        HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskId, compid);
+        // 数据同步
+        try {
+            syncPlugin.save(map, "PT_TaskPlan", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     //任务单号拼接

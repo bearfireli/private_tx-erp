@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.mapper;
 
+import com.hntxrj.txerp.entity.WmConFigureApply;
 import com.hntxrj.txerp.vo.*;
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
@@ -12,15 +13,15 @@ public interface PartsMapper {
                                String endTime, String goodsName,
                                String buyer, String specification,
                                String department, String requestNumber,
-                               String requestStatus, String requestDep,String verifyStatusOne);
+                               String requestStatus, String requestDep, String verifyStatusOne);
 
-    List<UserVO> getBuyerList(String compid,String searchName);
+    List<UserVO> getBuyerList(String compid, String searchName);
 
     List<DepartmentVO> getDepartmentList(String compid);
 
     List<RequestStatusListVO> getRequestStatusList(String compid);
 
-    PartsVO selectid(String compid,String requestNumber);
+    PartsVO selectid(String compid, String requestNumber);
 
     List<RequestModeVO> getRequestMode(String compid);
 
@@ -33,4 +34,7 @@ public interface PartsMapper {
 
     void cancelRequestStatus(String compid, String requestNumber, String requestStatus, String verifyIdOne,
                              String verifyStatusOne, String verifyTimeOne, String auditResultOne);
+
+    // 获取配件单号获取仓库配件详情
+    WmConFigureApply getConFigureApply(String compid, String requestNumber);
 }

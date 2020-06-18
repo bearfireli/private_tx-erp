@@ -17,6 +17,7 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.util.EntityTools;
 import com.hntxrj.txerp.vo.*;
+import com.hntxrj.SyncPlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -58,6 +57,8 @@ public class ContractServiceImpl implements ContractService {
 
     private final MsgService msgService;
     private final MsgMapper msgMapper;
+    private final SyncPlugin syncPlugin;
+    private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
 
     private final ContractMasterRepository contractMasterRepository;
     private final ContractDetailRepository contractDetailRepository;
@@ -72,7 +73,7 @@ public class ContractServiceImpl implements ContractService {
                                ContractGradePriceDetailRepository contractGradePriceDetailRepository,
                                ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
                                ContractMasterRepository contractMasterRepository,
-                               ContractDetailRepository contractDetailRepository) {
+                               ContractDetailRepository contractDetailRepository,SyncPlugin syncPlugin) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -83,6 +84,7 @@ public class ContractServiceImpl implements ContractService {
         this.constructionMapper = constructionMapper;
         this.msgService = msgService;
         this.msgMapper = msgMapper;
+        this.syncPlugin = syncPlugin;
         this.contractMasterRepository = contractMasterRepository;
         this.contractDetailRepository = contractDetailRepository;
     }
@@ -465,6 +467,20 @@ public class ContractServiceImpl implements ContractService {
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
         contractMapper.verifyContract(contractUid, compid, opId, sdf.format(new Date()), verifyStatus);
+        // 数据同步
+        Map<String, String> map = constructionMapper.getContractDetail(compid, contractUid);
+        // 把时间戳类型的时间转换成字符串形式存到sync_data表中
+        map.put("StatusTime", simpleDateFormat.format(map.get("StatusTime")));
+        map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+        map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+        map.put("SecondVerifyTime", simpleDateFormat.format(map.get("SecondVerifyTime")));
+        map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
+        try {
+            syncPlugin.save(map, "SM_ContractDetail", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         ContractVO contractVO = contractMapper.getContractDetail(null
                 , contractUid, compid);
         int typeId = 3;
@@ -559,13 +575,13 @@ public class ContractServiceImpl implements ContractService {
         contractMaster.setLinkTel(linkTel);
 
         if (expiresDate != null) {
-            contractMaster.setExpiresDate(expiresDate);
+            contractMaster.setExpiresDate(simpleDateFormat.format(expiresDate));
         }
         if (effectDate != null) {
-            contractMaster.setExpiresDate(effectDate);
+            contractMaster.setExpiresDate(simpleDateFormat.format(effectDate));
         }
 
-        contractMaster.setSignDate(signDate);
+        contractMaster.setSignDate(simpleDateFormat.format(signDate));
         contractMaster.setPriceStyle(priceStyle);
 
         contractMaster.setOpId(opid);
@@ -573,7 +589,7 @@ public class ContractServiceImpl implements ContractService {
 
         contractDetail.setCContractCode(contractMaster.getContractId() + "-01");
         contractDetail.setContractUid(contractMasterUid);
-        contractDetail.setCreateTime(new Date());
+        contractDetail.setCreateTime(simpleDateFormat.format(new Date()));
         contractDetail.setRecStatus("1");
         contractDetail.setPreMoney(preMoney);
         contractDetail.setPreNum(preNum);
@@ -588,8 +604,35 @@ public class ContractServiceImpl implements ContractService {
 
         EntityTools.setEntityDefaultValue(contractMaster);
         contractMasterMapper.insert(contractMaster);
+        // 同步数据
+        try {
+            HashMap<String, String> contractMasterMap = contractMapper.getContractMaster(contractMaster.getCompid(),
+                    contractMaster.getContractId(), contractMaster.getContractUid());
+
+            contractMasterMap.put("SignDate", simpleDateFormat.format(contractMasterMap.get("SignDate")));
+            contractMasterMap.put("EffectDate", simpleDateFormat.format(contractMasterMap.get("EffectDate")));
+            contractMasterMap.put("ExpiresDate", simpleDateFormat.format(contractMasterMap.get("ExpiresDate")));
+            contractMasterMap.put("CreateTime", simpleDateFormat.format(contractMasterMap.get("CreateTime")));
+            syncPlugin.save(contractMasterMap, "SM_ContractMaster", "INS", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         EntityTools.setEntityDefaultValue(contractDetail);
         contractDetailMapper.insert(contractDetail);
+        // 同步数据
+        try {
+            HashMap<String, String> getContractDetailMap = contractMapper.getContractDetailMap(
+                    contractDetail.getContractUid(), contractDetail.getCContractCode());
+
+            getContractDetailMap.put("StatusTime", simpleDateFormat.format(getContractDetailMap.get("StatusTime")));
+            getContractDetailMap.put("VerifyTime", simpleDateFormat.format(getContractDetailMap.get("VerifyTime")));
+            getContractDetailMap.put("CreateTime", simpleDateFormat.format(getContractDetailMap.get("CreateTime")));
+            getContractDetailMap.put("SecondVerifyTime", simpleDateFormat.format(getContractDetailMap.get("SecondVerifyTime")));
+            getContractDetailMap.put("OpenTime", simpleDateFormat.format(getContractDetailMap.get("OpenTime")));
+            syncPlugin.save(getContractDetailMap, "SM_ContractDetail", "INS", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         int typeId = 3;
         List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
         for (RecipientVO r : recipoentList) {
@@ -742,6 +785,10 @@ public class ContractServiceImpl implements ContractService {
         try {
             log.info("【保存合同砼价格】contractGradePriceDetails={}", contractGradePriceDetails);
             contractGradePriceDetailRepository.saveAll(contractGradePriceDetails);
+            for (ContractGradePriceDetail contractGradePriceDetail : contractGradePriceDetails) {
+                // 数据同步
+                syncPlugin.save(contractGradePriceDetail, "sm_contractgradepricedetail", "INS", compid);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.ADD_CONTRACT_GRADE_PRICE_ERROR);
@@ -776,8 +823,11 @@ public class ContractServiceImpl implements ContractService {
                 String ppcode = contractMapper.getContractPriceMarkup(compid, contractUid, contractDetailCode, pPCode);
                 if (ppcode == null) {
                     contractMapper.saveContractPriceMarkup(compid, contractUid, contractDetailCode, pPCode, pPName,
-                            unitPrice, jumpPrice, selfDiscPrice,
-                            towerCranePrice, otherPrice, isDefault);
+                            unitPrice, jumpPrice, selfDiscPrice, towerCranePrice, otherPrice, isDefault);
+                    ContractPriceMarkup contractPriceMarkup = contractMapper.getContractMarkupVO(compid,
+                            contractUid, contractDetailCode, pPCode);
+                    // 数据同步
+                    syncPlugin.save(contractPriceMarkup, "SM_ContractPriceMarkup", "INS", compid);
                     log.info("【添加特殊材料】priceMarkupDropDowns={}", priceMarkupDropDowns);
                 }
 
@@ -850,15 +900,30 @@ public class ContractServiceImpl implements ContractService {
         }
 
         try {
-
             ContractDistanceVO contractDistance = contractMapper.getContractDistance(compid, contractUID, cContractCode);
+
+            // 同步数据
+            Map<String, String> map = new HashMap<>();
+            map.put("ContractUID", contractUID);
+            map.put("CContractCode", cContractCode);
+            map.put("compid", compid);
+            map.put("Distance", String.valueOf(distance));
+            map.put("RecStatus", "1");
+            map.put("Remarks", remarks);
+            map.put("UpDown", "0");
+            map.put("UpDownMark", "0");
+
             if (contractDistance == null) {
                 //用户要新增合同运距
                 contractMapper.saveContractDistance(contractUID, cContractCode, compid,
                         distance, remarks, recStatus, upDown, upDownMark);
+                // 数据同步
+                syncPlugin.save(map, "SM_ContractDistanceSet", "INS", compid);
             } else {
                 contractMapper.updateContractDistance(contractUID, cContractCode, compid,
                         distance, remarks, recStatus);
+                // 数据同步
+                syncPlugin.save(map, "SM_ContractDistanceSet", "UP", compid);
             }
 
         } catch (Exception e) {
@@ -894,15 +959,22 @@ public class ContractServiceImpl implements ContractService {
             String createTime = sdf.format(date);
 
             Integer pump = contractMapper.selectPumpTruck(compid, pumpType, contractUID, contractDetailCode);
+
             if (pump == null) {
                 Integer row = contractMapper.insertPumpTruck(compid, opid, contractUID, contractDetailCode,
                         pumpType, pumPrice, tableExpense, createTime);
                 if (row == null || row == 0) {
                     throw new ErpException(ErrEumn.ADJUNCT_SAVE_ERROR);
                 }
+                // 数据同步
+                Map<String, String> map = getPumpTruck(compid, pumpType, contractUID, contractDetailCode);
+                syncPlugin.save(map, "SM_PumpPriceSet", "INS", compid);
             } else {
                 contractMapper.updatePumpTruck(compid, opid, contractUID, contractDetailCode,
                         pumpType, pumPrice, tableExpense, createTime);
+                // 数据同步
+                Map<String, String> map = getPumpTruck(compid, pumpType, contractUID, contractDetailCode);
+                syncPlugin.save(map, "SM_PumpPriceSet", "UP", compid);
             }
 
         } catch (Exception e) {
@@ -988,6 +1060,19 @@ public class ContractServiceImpl implements ContractService {
      */
     private Boolean getContractVerifyStatus(String contractUID, String cContractCode, String compid) {
         return contractMapper.getContractVerifyStatus(contractUID, cContractCode, compid);
+    }
+
+
+    /**
+     * 查询合同运距信息，并转换时间格式，确保同步程序能够正常运行
+     */
+    private Map<String, String> getPumpTruck(String compid, Integer pumpType, String contractUID,
+                                             String contractDetailCode) {
+        Map<String, String> map = contractMapper.getPumpTruck(compid, pumpType, contractUID, contractDetailCode);
+        map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+        map.put("PriceETime", simpleDateFormat.format(map.get("PriceETime")));
+        map.put("PriceStopTime", simpleDateFormat.format(map.get("PriceStopTime")));
+        return map;
     }
 
 }

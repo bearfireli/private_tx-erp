@@ -1,6 +1,7 @@
 package com.hntxrj.txerp.server.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.dao.StockDao;
 import com.hntxrj.txerp.mapper.StockMapper;
 import com.hntxrj.txerp.mapper.SystemVarInitMapper;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -28,13 +30,16 @@ public class StockServiceImpl implements StockService {
     private final StockDao stockDao;
     private final StockMapper stockMapper;
     private final SystemVarInitMapper systemVarInitMapper;
+    private final SyncPlugin syncPlugin;
 
 
     @Autowired
-    public StockServiceImpl(StockDao stockDao, StockMapper stockMapper, SystemVarInitMapper systemVarInitMapper) {
+    public StockServiceImpl(StockDao stockDao, StockMapper stockMapper, SystemVarInitMapper systemVarInitMapper,
+                            SyncPlugin syncPlugin) {
         this.stockDao = stockDao;
         this.stockMapper = stockMapper;
         this.systemVarInitMapper = systemVarInitMapper;
+        this.syncPlugin = syncPlugin;
     }
 
     /**
@@ -143,11 +148,22 @@ public class StockServiceImpl implements StockService {
             //保存用户设置实时库存是否显示
             Integer maxId = systemVarInitMapper.getMaxId(compid);
             systemVarInitMapper.saveStockAggregateShow(compid, aggregateIsShow, maxId + 1);
-            //todo 后续需要把修改的内容添加到sync_data表中
+
+            Map<String, String> stockAggregateMap = systemVarInitMapper.getStockAggregate(compid);
+            try {
+                syncPlugin.save(stockAggregateMap, "De_SystemVarInit", "INS", compid);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } else {
             //修改用户设置实时库存是否显示
             systemVarInitMapper.updateStockAggregateShow(compid, aggregateIsShow);
-            //todo 后续需要把修改的内容添加到sync_data表中
+            Map<String, String> stockAggregateMap = systemVarInitMapper.getStockAggregate(compid);
+            try {
+                syncPlugin.save(stockAggregateMap, "De_SystemVarInit", "UP", compid);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
