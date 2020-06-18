@@ -14,9 +14,9 @@ spring:
       max-file-size: 10MB
       max-request-size: 20MB
   datasource:
-    url: jdbc:mysql://192.168.31.2/tx-cloud?characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2b8
+    url: jdbc:mysql://localhost/tx-cloud?characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
     username: root
-    password: TongXin2019
+    password: root
     hikari:
       pool-name: base_pool1_0_2
   jpa:

@@ -4,6 +4,8 @@ package com.hntxrj.txerp.server;
 import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.entity.Adjunct;
 import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.entity.SMContractDetail;
+import com.hntxrj.txerp.entity.SMContractMaster;
 import com.hntxrj.txerp.vo.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -617,4 +619,11 @@ public interface ContractService {
      */
     PageVO<ContractListVO> getBuildContractListByEppOrBuild(Integer buildId, String searchName, Integer page,
                                                             Integer pageSize);
+
+
+
+    SMContractMaster saveContractMaster(SMContractMaster contractMaster);
+
+    SMContractDetail saveContractDetail(SMContractDetail contractDetail);
 }
+

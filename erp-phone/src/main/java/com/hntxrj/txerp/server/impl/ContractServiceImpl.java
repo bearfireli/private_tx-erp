@@ -6,14 +6,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.ContractDao;
+import com.hntxrj.txerp.entity.*;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
+import com.hntxrj.txerp.repository.ContractDetailRepository;
 import com.hntxrj.txerp.repository.ContractGradePriceDetailRepository;
+import com.hntxrj.txerp.repository.ContractMasterRepository;
 import com.hntxrj.txerp.server.ContractService;
-import com.hntxrj.txerp.entity.Adjunct;
-import com.hntxrj.txerp.entity.ContractDetail;
-import com.hntxrj.txerp.entity.ContractGradePriceDetail;
-import com.hntxrj.txerp.entity.ContractMaster;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.util.EntityTools;
@@ -40,7 +39,7 @@ import java.util.UUID;
 @Service
 @Scope("prototype")
 @Slf4j
-public class ContractServiceImp implements ContractService {
+public class ContractServiceImpl implements ContractService {
 
     private final ContractDao dao;
 
@@ -60,15 +59,20 @@ public class ContractServiceImp implements ContractService {
     private final MsgService msgService;
     private final MsgMapper msgMapper;
 
+    private final ContractMasterRepository contractMasterRepository;
+    private final ContractDetailRepository contractDetailRepository;
+
     @Value("${app.spterp.contractAdjunctPath}")
     private String contractAdjunctPath;
 
     @Autowired
-    public ContractServiceImp(ContractDao dao, ContractMapper contractMapper, PublicInfoMapper publicInfoMapper,
-                              ContractMasterMapper contractMasterMapper, ContractDetailMapper contractDetailMapper,
-                              AdjunctMapper adjunctMapper,
-                              ContractGradePriceDetailRepository contractGradePriceDetailRepository,
-                              ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper) {
+    public ContractServiceImpl(ContractDao dao, ContractMapper contractMapper, PublicInfoMapper publicInfoMapper,
+                               ContractMasterMapper contractMasterMapper, ContractDetailMapper contractDetailMapper,
+                               AdjunctMapper adjunctMapper,
+                               ContractGradePriceDetailRepository contractGradePriceDetailRepository,
+                               ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
+                               ContractMasterRepository contractMasterRepository,
+                               ContractDetailRepository contractDetailRepository) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -79,6 +83,8 @@ public class ContractServiceImp implements ContractService {
         this.constructionMapper = constructionMapper;
         this.msgService = msgService;
         this.msgMapper = msgMapper;
+        this.contractMasterRepository = contractMasterRepository;
+        this.contractDetailRepository = contractDetailRepository;
     }
 
 
@@ -964,6 +970,16 @@ public class ContractServiceImp implements ContractService {
         PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+    @Override
+    public SMContractMaster saveContractMaster(SMContractMaster contractMaster) {
+        return contractMasterRepository.save(contractMaster);
+    }
+
+    @Override
+    public SMContractDetail saveContractDetail(SMContractDetail contractDetail) {
+        return contractDetailRepository.save(contractDetail);
     }
 
 
