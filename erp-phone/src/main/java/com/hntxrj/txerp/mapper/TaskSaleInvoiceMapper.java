@@ -23,11 +23,12 @@ public interface TaskSaleInvoiceMapper {
      * @param taskId      任务单id
      * @param placing     浇筑部位
      * @param type        搜索时间类型：0表示派车时间；1表示出厂时间
+     * @param stirId      楼号
      * @return 小票签收列表
      */
     List<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(String invoiceId, String compid, String beginTime, String endTime,
-                                                       String eppCode, Byte upStatus, String builderCode,
-                                                       String taskId, String placing, String taskStatus, Integer type);
+                                                       String eppCode, Byte upStatus, String builderCode, String taskId,
+                                                       String placing, String taskStatus, Integer type, String stirId);
 
     /**
      * 获取小票需求
@@ -49,7 +50,7 @@ public interface TaskSaleInvoiceMapper {
      * @param signingTime      签收时间
      */
     void updateTaskSaleInvoiceExamine(String compid, Integer id, String opid, Double numberOfSignings, String saleFileImage,
-                                   Date signingTime);
+                                      Date signingTime);
 
     /**
      * 获取小票签收列表
@@ -63,11 +64,12 @@ public interface TaskSaleInvoiceMapper {
      * @param taskId      任务单id
      * @param placing     浇筑部位
      * @param taskStatus  生产状态
+     * @param stirId      楼号
      * @return 小票签收列表
      */
     TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(String id, String compid, String beginTime, String endTime,
-                                                   String eppCode, Byte upStatus, String builderCode,
-                                                   String taskId, String placing, String taskStatus, Integer type);
+                                                   String eppCode, Byte upStatus, String builderCode, String taskId,
+                                                   String placing, String taskStatus, Integer type, String stirId);
 
     Map<String, String> getTaskSaleInvoice(String compid, Integer id);
 }

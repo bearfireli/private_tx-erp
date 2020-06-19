@@ -157,7 +157,7 @@ public class BuilderApi {
         return ResultVO.create(builderService.getBuildTaskSaleInvoiceDetail(compid, id, buildId));
     }
 
-    
+
     @ApiOperation("检验工地端用户绑定的合同是否包含小票")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "buildId", value = "施工方用户id", required = true, dataType = "String", paramType = "query"),

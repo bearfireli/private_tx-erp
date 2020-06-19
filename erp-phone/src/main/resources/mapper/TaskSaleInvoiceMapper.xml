@@ -82,6 +82,9 @@
         <if test="placing != null and placing != '' ">
             and tp.placing like '%'+#{placing}+'%'
         </if>
+        <if test="stirId != null and stirId != '' ">
+            and tsi.StirId = #{stirId}
+        </if>
     </select>
 
     <select id="getTaskSaleInvoiceDetailVO" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDetailVO">
@@ -199,6 +202,9 @@
         </if>
         <if test="placing != null and placing != '' ">
             and tp.placing like '%'+#{placing}+'%'
+        </if>
+        <if test="stirId != null and stirId != '' ">
+            and tsi.StirId = #{stirId}
         </if>
     </select>
     <select id="getTaskSaleInvoice" resultType="java.util.Map">
