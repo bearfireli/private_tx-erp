@@ -3,9 +3,9 @@ spring:
     restart:
       exclude: /static/**,/templates/**
   datasource:
-    url: jdbc:sqlserver://192.168.31.2:1433;databaseName=SPTERPNEWData
+    url: jdbc:sqlserver://192.168.1.122:1433;databaseName=SPTERPNEWData
     username: sa
-    password: TongXin2019
+    password: sa2015
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

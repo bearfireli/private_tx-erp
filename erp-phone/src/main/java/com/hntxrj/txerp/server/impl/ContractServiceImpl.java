@@ -9,7 +9,9 @@ import com.hntxrj.txerp.dao.ContractDao;
 import com.hntxrj.txerp.entity.*;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
+import com.hntxrj.txerp.repository.ContractDetailRepository;
 import com.hntxrj.txerp.repository.ContractGradePriceDetailRepository;
+import com.hntxrj.txerp.repository.ContractMasterRepository;
 import com.hntxrj.txerp.server.ContractService;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
@@ -36,7 +38,7 @@ import java.util.*;
 @Service
 @Scope("prototype")
 @Slf4j
-public class ContractServiceImp implements ContractService {
+public class ContractServiceImpl implements ContractService {
 
     private final ContractDao dao;
 
@@ -58,15 +60,20 @@ public class ContractServiceImp implements ContractService {
     private final SyncPlugin syncPlugin;
     private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
 
+    private final ContractMasterRepository contractMasterRepository;
+    private final ContractDetailRepository contractDetailRepository;
+
     @Value("${app.spterp.contractAdjunctPath}")
     private String contractAdjunctPath;
 
     @Autowired
-    public ContractServiceImp(ContractDao dao, ContractMapper contractMapper, PublicInfoMapper publicInfoMapper,
-                              ContractMasterMapper contractMasterMapper, ContractDetailMapper contractDetailMapper,
-                              AdjunctMapper adjunctMapper,
-                              ContractGradePriceDetailRepository contractGradePriceDetailRepository,
-                              ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper, SyncPlugin syncPlugin) {
+    public ContractServiceImpl(ContractDao dao, ContractMapper contractMapper, PublicInfoMapper publicInfoMapper,
+                               ContractMasterMapper contractMasterMapper, ContractDetailMapper contractDetailMapper,
+                               AdjunctMapper adjunctMapper,
+                               ContractGradePriceDetailRepository contractGradePriceDetailRepository,
+                               ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
+                               ContractMasterRepository contractMasterRepository,
+                               ContractDetailRepository contractDetailRepository,SyncPlugin syncPlugin) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -78,6 +85,8 @@ public class ContractServiceImp implements ContractService {
         this.msgService = msgService;
         this.msgMapper = msgMapper;
         this.syncPlugin = syncPlugin;
+        this.contractMasterRepository = contractMasterRepository;
+        this.contractDetailRepository = contractDetailRepository;
     }
 
 
@@ -1033,6 +1042,17 @@ public class ContractServiceImp implements ContractService {
         PageVO<ContractListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
+    }
+
+    @Override
+    public SMContractMaster saveContractMaster(SMContractMaster contractMaster) {
+        contractMaster.setContractUID(UUID.randomUUID().toString());
+        return contractMasterRepository.save(contractMaster);
+    }
+
+    @Override
+    public SMContractDetail saveContractDetail(SMContractDetail contractDetail) {
+        return contractDetailRepository.save(contractDetail);
     }
 
 

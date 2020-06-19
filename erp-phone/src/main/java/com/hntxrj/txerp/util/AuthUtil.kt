@@ -36,3 +36,12 @@ fun getCompid(request: HttpServletRequest): String? {
 
     return null
 }
+
+
+@Throws(ErpException::class)
+fun getOpId(request: HttpServletRequest): String? {
+    if (!request.getParameter("opid").isNullOrEmpty()) {
+        return request.getParameter("opid")
+    }
+    return null
+}
