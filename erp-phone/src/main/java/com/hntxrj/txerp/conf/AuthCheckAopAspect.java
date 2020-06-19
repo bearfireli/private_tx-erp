@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -39,18 +40,25 @@ public class AuthCheckAopAspect {
     static {
         //读取配置文件，获取配置的公共不需要验证权限的方法方法
         try {
-            //获取当前jar路径，加载当前jar包同级目录下的publicApi.txt文件
+            //获取当前jar路径
             String path = System.getProperty("user.dir");
+            //加载当前jar包同级目录下的allow_func目录
             File file = new File(path, "allow_func");
-            FileInputStream fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            InputStreamReader isr;
+            if (file.exists()) {
+                FileInputStream fis = new FileInputStream(file);
+                isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            } else {
+                ClassPathResource classPathResource = new ClassPathResource("allow_func");
+                InputStream inputStream = classPathResource.getInputStream();
+                isr = new InputStreamReader(inputStream);
+            }
             BufferedReader br = new BufferedReader(isr);
             String s;
             while ((s = br.readLine()) != null) {
                 publicApiList.add(s);
             }
             br.close();
-            // TODO: 多重方案读取文件，并且允许没有该文件
         } catch (IOException e) {
             e.printStackTrace();
         }
