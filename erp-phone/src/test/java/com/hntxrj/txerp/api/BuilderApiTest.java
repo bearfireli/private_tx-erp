@@ -1,7 +1,7 @@
-package com.hntxrj.txerp.services;
+package com.hntxrj.txerp.api;
 
-import com.hntxrj.txerp.api.DriverApi;
-import com.hntxrj.txerp.server.DriverService;
+import com.hntxrj.txerp.api.BuilderApi;
+import com.hntxrj.txerp.server.BuilderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,35 +22,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
-public class DriverApiTest {
+public class BuilderApiTest {
     private MockMvc mockMvc;
-
     @Resource
-    private DriverService DriverService;
+    private BuilderService builderService;
 
     @Before
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new DriverApi(DriverService)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new BuilderApi(builderService)).build();
     }
 
-
     @Test
-    public void testUpdateVehicleStatus() throws Exception {
-        // 车辆状态
-        String VEHICLE_STATUS = "16";
-        // 企业id
-        String COMP_ID = "01";
-        // 回厂类型 1:自动回厂； 0:手动回厂
-        String TYPE = "1";
-        // 司机代号
-        String PERSON_CODE = "R010000003";
-
-        mockMvc.perform(post("/driver/updateVehicleStatus")
+    public void testGetBuildTaskSaleInvoiceList() throws Exception {
+        mockMvc.perform(post("/api/builder/getBuildTaskSaleInvoiceList")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("compid", COMP_ID)
-                .param("driverCode", PERSON_CODE)
-                .param("vehicleStatus", VEHICLE_STATUS)
-                .param("type", TYPE)
+                .param("buildId", "1")
                 .accept(MediaType.APPLICATION_JSON)) //执行请求
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.status().isOk())
