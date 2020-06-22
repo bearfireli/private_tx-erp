@@ -1,4 +1,4 @@
-package com.hntxrj.txerp.services;
+package com.hntxrj.txerp.api;
 
 import io.github.swagger2markup.Swagger2MarkupConfig;
 import io.github.swagger2markup.Swagger2MarkupConverter;

@@ -20,14 +20,15 @@ public interface TaskSaleInvoiceService {
      * @param taskId      任务单id
      * @param placing     浇筑部位
      * @param type        搜索时间类型：0表示派车时间；1表示出厂时间
+     * @param stirId      楼号
      * @param page        页数
      * @param pageSize    每页数量
      * @return 小票签收列表
      */
     PageVO<TaskSaleInvoiceListVO> getTaskSaleInvoiceList(Integer invoiceId, String compid, String beginTime, String endTime,
                                                          String eppCode, Byte upStatus, String builderCode, String taskId,
-                                                         String placing, String taskStatus, Integer type, Integer page,
-                                                         Integer pageSize);
+                                                         String placing, String taskStatus, Integer type, String stirId,
+                                                         Integer page, Integer pageSize);
 
 
     /**
@@ -63,9 +64,10 @@ public interface TaskSaleInvoiceService {
      * @param taskId      任务单id
      * @param placing     浇筑部位
      * @param taskStatus  生产状态
+     * @param stirId      楼号
      * @return 小票签收列表
      */
     TaskSaleInvoiceCountVO getTaskSaleInvoiceCount(Integer id, String compid, String beginTime, String endTime, String eppCode,
                                                    Byte upStatus, String builderCode, String taskId,
-                                                   String placing, String taskStatus, Integer type);
+                                                   String placing, String taskStatus, Integer type, String stirId);
 }

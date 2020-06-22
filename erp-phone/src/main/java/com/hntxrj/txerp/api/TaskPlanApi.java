@@ -195,6 +195,7 @@ public class TaskPlanApi {
      * @param taskId      任务单id
      * @param placing     浇筑部位g
      * @param type        搜索时间类型：0表示派车时间；1表示出厂时间
+     * @param stirId      楼号
      * @param page        页数
      * @param pageSize    每页数量
      * @return 小票签收列表
@@ -202,7 +203,8 @@ public class TaskPlanApi {
     @PostMapping("/getTaskSaleInvoiceList")
     public ResultVO getTaskSaleInvoiceList(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
                                            Byte upStatus, String builderCode, String taskId, String placing,
-                                           String taskStatus, Integer type, @RequestParam(defaultValue = "1") Integer page,
+                                           String taskStatus, Integer type, String stirId,
+                                           @RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize) {
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceList(id, compid,
@@ -210,7 +212,7 @@ public class TaskPlanApi {
                 endTime == null ? null : sdf.format(new Date(endTime)),
                 //upStatus属性老版本查询所有签收状态传的参数是-1，新版本传递的是null.兼顾新老版本，所以判断两次
                 eppCode, upStatus == null ? null : (upStatus == -1 ? null : upStatus), builderCode, taskId,
-                placing, taskStatus, type, page, pageSize));
+                placing, taskStatus, type, stirId, page, pageSize));
     }
 
 
@@ -232,12 +234,12 @@ public class TaskPlanApi {
     @PostMapping("/getTaskSaleInvoiceCount")
     public ResultVO getTaskSaleInvoiceCount(Integer id, String compid, Long beginTime, Long endTime, String eppCode,
                                             Byte upStatus, String builderCode, String taskId,
-                                            String placing, String taskStatus, Integer type) {
+                                            String placing, String taskStatus, Integer type, String stirId) {
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(taskSaleInvoiceService.getTaskSaleInvoiceCount(id, compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime)),
-                eppCode, upStatus, builderCode, taskId, placing, taskStatus, type));
+                eppCode, upStatus, builderCode, taskId, placing, taskStatus, type, stirId));
     }
 
     /**
