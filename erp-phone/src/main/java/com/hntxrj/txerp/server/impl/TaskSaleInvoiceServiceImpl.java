@@ -78,15 +78,15 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
             Date SigningTime = new Date();
             taskSaleInvoiceMapper.updateTaskSaleInvoiceExamine(compid, id, opid, numberOfSignings, saleFileImage, SigningTime);
             Map<String, String> map = taskSaleInvoiceMapper.getTaskSaleInvoice(compid, id);
-            map.put("SendTime", simpleDateFormat.format(map.get("SendTime")));
-            map.put("Leave_STTime", simpleDateFormat.format(map.get("Leave_STTime")));
-            map.put("Arrive_STTime", simpleDateFormat.format(map.get("Arrive_STTime")));
-            map.put("Arrive_WATime", simpleDateFormat.format(map.get("Arrive_WATime")));
-            map.put("Leave_WATime", simpleDateFormat.format(map.get("Leave_WATime")));
-            map.put("UnloadStarTime", simpleDateFormat.format(map.get("UnloadStarTime")));
-            map.put("UnlodeOverTime", simpleDateFormat.format(map.get("UnlodeOverTime")));
-            map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
-            map.put("SigningTime", simpleDateFormat.format(map.get("SigningTime")));
+            map.put("SendTime", SimpleDateFormatUtil.timeConvert(map.get("SendTime")));
+            map.put("Leave_STTime", SimpleDateFormatUtil.timeConvert(map.get("Leave_STTime")));
+            map.put("Arrive_STTime", SimpleDateFormatUtil.timeConvert(map.get("Arrive_STTime")));
+            map.put("Arrive_WATime", SimpleDateFormatUtil.timeConvert(map.get("Arrive_WATime")));
+            map.put("Leave_WATime", SimpleDateFormatUtil.timeConvert(map.get("Leave_WATime")));
+            map.put("UnloadStarTime", SimpleDateFormatUtil.timeConvert(map.get("UnloadStarTime")));
+            map.put("UnlodeOverTime", SimpleDateFormatUtil.timeConvert(map.get("UnlodeOverTime")));
+            map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));
+            map.put("SigningTime", SimpleDateFormatUtil.timeConvert(map.get("SigningTime")));
             syncPlugin.save(map, "PT_TaskSaleInvoice", "UP", compid);
         } catch (Exception e) {
             e.printStackTrace();

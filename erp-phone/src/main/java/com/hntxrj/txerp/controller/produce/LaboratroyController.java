@@ -189,7 +189,7 @@ public class LaboratroyController {
 
                 // 数据同步
                 Map<String, String> map = formulaMapper.getFormulaInfoByFormulaCode(compid, TaskId, stirid);
-                map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+                map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));
                 try {
                     syncPlugin.save(map, "LM_TaskTheoryFormula", "UP", compid);
                 } catch (SQLException e) {

@@ -34,4 +34,18 @@ public class SimpleDateFormatUtil {
     }
 
 
+    /**
+     * 此方法用于把dataTime类型的数据转换成String类型，在手机erp进行增删改操作时向sync_data表中插入数据时调用
+     */
+    public static String timeConvert(Object dataTime) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        String time = null;
+        if (dataTime != null) {
+            time = simpleDateFormat.format(dataTime);
+        }
+        return time;
+    }
+
+
 }

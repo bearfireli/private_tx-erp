@@ -153,7 +153,7 @@
         where compid = #{compid} and StirId = #{stirId}
     </select>
 
-    <select id="getStockIn" resultType="java.util.Map">
+    <select id="getStockIn" resultType="java.util.HashMap">
        select * from MP_StockIn
        where compid=#{compid} and StICode=#{stICode}
     </select>

@@ -201,17 +201,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         try {
             taskPlanRepository.save(taskPlan);
             HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskPlan.getTaskId(), taskPlan.getCompid());
-            map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
-            map.put("PreTime", simpleDateFormat.format(map.get("PreTime")));
-            map.put("TaskOverTime", simpleDateFormat.format(map.get("TaskOverTime")));
-            map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
-            map.put("FormulaTime", simpleDateFormat.format(map.get("FormulaTime")));
-            map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
-            map.put("OverTime", simpleDateFormat.format(map.get("OverTime")));
-            map.put("LinkPipeTime", simpleDateFormat.format(map.get("LinkPipeTime")));
-            map.put("DownTime", simpleDateFormat.format(map.get("DownTime")));
-            map.put("AdjustmentTime", simpleDateFormat.format(map.get("AdjustmentTime")));
-            map.put("LinkPipeOverTime", simpleDateFormat.format(map.get("LinkPipeOverTime")));
+            map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
+            map.put("PreTime", SimpleDateFormatUtil.timeConvert(map.get("PreTime")));
+            map.put("TaskOverTime", SimpleDateFormatUtil.timeConvert(map.get("TaskOverTime")));
+            map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));
+            map.put("FormulaTime", SimpleDateFormatUtil.timeConvert(map.get("FormulaTime")));
+            map.put("OpenTime", SimpleDateFormatUtil.timeConvert(map.get("OpenTime")));
+            map.put("OverTime", SimpleDateFormatUtil.timeConvert(map.get("OverTime")));
+            map.put("LinkPipeTime", SimpleDateFormatUtil.timeConvert(map.get("LinkPipeTime")));
+            map.put("DownTime", SimpleDateFormatUtil.timeConvert(map.get("DownTime")));
+            map.put("AdjustmentTime", SimpleDateFormatUtil.timeConvert(map.get("AdjustmentTime")));
+            map.put("LinkPipeOverTime", SimpleDateFormatUtil.timeConvert(map.get("LinkPipeOverTime")));
+            map.put("TaskOpenTime", SimpleDateFormatUtil.timeConvert(map.get("TaskOpenTime")));
+            map.put("VerifyTimeTwo", SimpleDateFormatUtil.timeConvert(map.get("VerifyTimeTwo")));
             // 数据同步
             syncPlugin.save(map, "pt_taskplan", "INS", taskPlan.getCompid());
 
@@ -239,17 +241,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
 
 
             HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskId, compid);
-            map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
-            map.put("PreTime", simpleDateFormat.format(map.get("PreTime")));
-            map.put("TaskOverTime", simpleDateFormat.format(map.get("TaskOverTime")));
-            map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
-            map.put("FormulaTime", simpleDateFormat.format(map.get("FormulaTime")));
-            map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
-            map.put("OverTime", simpleDateFormat.format(map.get("OverTime")));
-            map.put("LinkPipeTime", simpleDateFormat.format(map.get("LinkPipeTime")));
-            map.put("DownTime", simpleDateFormat.format(map.get("DownTime")));
-            map.put("AdjustmentTime", simpleDateFormat.format(map.get("AdjustmentTime")));
-            map.put("LinkPipeOverTime", simpleDateFormat.format(map.get("LinkPipeOverTime")));
+            map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
+            map.put("PreTime", SimpleDateFormatUtil.timeConvert(map.get("PreTime")));
+            map.put("TaskOverTime", SimpleDateFormatUtil.timeConvert(map.get("TaskOverTime")));
+            map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));
+            map.put("FormulaTime", SimpleDateFormatUtil.timeConvert(map.get("FormulaTime")));
+            map.put("OpenTime", SimpleDateFormatUtil.timeConvert(map.get("OpenTime")));
+            map.put("OverTime", SimpleDateFormatUtil.timeConvert(map.get("OverTime")));
+            map.put("LinkPipeTime", SimpleDateFormatUtil.timeConvert(map.get("LinkPipeTime")));
+            map.put("DownTime", SimpleDateFormatUtil.timeConvert(map.get("DownTime")));
+            map.put("AdjustmentTime", SimpleDateFormatUtil.timeConvert(map.get("AdjustmentTime")));
+            map.put("LinkPipeOverTime", SimpleDateFormatUtil.timeConvert(map.get("LinkPipeOverTime")));
+            map.put("TaskOpenTime", SimpleDateFormatUtil.timeConvert(map.get("TaskOpenTime")));
+            map.put("VerifyTimeTwo", SimpleDateFormatUtil.timeConvert(map.get("VerifyTimeTwo")));
             // 数据同步
             syncPlugin.save(map, "PT_TaskPlan", "UP", compid);
 
@@ -848,9 +852,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             // 数据同步
             Map<String, String> map = taskPlanMapper.getDriverShiftVO(compid, vehicleId, personalCode, workStarTime);
 
-            map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
-            map.put("WorkStarTime", simpleDateFormat.format(map.get("WorkStarTime")));
-            map.put("WorkOverTime", simpleDateFormat.format(map.get("WorkOverTime")));
+            map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
+            map.put("WorkStarTime", SimpleDateFormatUtil.timeConvert(map.get("WorkStarTime")));
+            map.put("WorkOverTime", SimpleDateFormatUtil.timeConvert(map.get("WorkOverTime")));
             syncPlugin.save(map, "VM_PERSONALWORKCLASS", "INS", compid);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_ERROR);
@@ -887,9 +891,9 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     workOverTime, remarks, createTime);
             // 数据同步
             Map<String, String> map = taskPlanMapper.getDriverShiftById(id, compid);
-            map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
-            map.put("WorkStarTime", simpleDateFormat.format(map.get("WorkStarTime")));
-            map.put("WorkOverTime", simpleDateFormat.format(map.get("WorkOverTime")));
+            map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
+            map.put("WorkStarTime", SimpleDateFormatUtil.timeConvert(map.get("WorkStarTime")));
+            map.put("WorkOverTime", SimpleDateFormatUtil.timeConvert(map.get("WorkOverTime")));
             syncPlugin.save(map, "VM_PERSONALWORKCLASS", "UP", compid);
         } catch (Exception e) {
             throw new ErpException(ErrEumn.ADJUNCT_UPDATE_ERROR);
@@ -1149,17 +1153,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                     //把选择的特殊材料名称添加到技术要求里面
                     taskPlanMapper.updateTechnicalRequirements(compid, taskId, ppNames, concreteMark);
                     HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskId, compid);
-                    map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
-                    map.put("PreTime", simpleDateFormat.format(map.get("PreTime")));
-                    map.put("TaskOverTime", simpleDateFormat.format(map.get("TaskOverTime")));
-                    map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
-                    map.put("FormulaTime", simpleDateFormat.format(map.get("FormulaTime")));
-                    map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
-                    map.put("OverTime", simpleDateFormat.format(map.get("OverTime")));
-                    map.put("LinkPipeTime", simpleDateFormat.format(map.get("LinkPipeTime")));
-                    map.put("DownTime", simpleDateFormat.format(map.get("DownTime")));
-                    map.put("AdjustmentTime", simpleDateFormat.format(map.get("AdjustmentTime")));
-                    map.put("LinkPipeOverTime", simpleDateFormat.format(map.get("LinkPipeOverTime")));
+                    map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
+                    map.put("PreTime", SimpleDateFormatUtil.timeConvert(map.get("PreTime")));
+                    map.put("TaskOverTime", SimpleDateFormatUtil.timeConvert(map.get("TaskOverTime")));
+                    map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));
+                    map.put("FormulaTime", SimpleDateFormatUtil.timeConvert(map.get("FormulaTime")));
+                    map.put("OpenTime", SimpleDateFormatUtil.timeConvert(map.get("OpenTime")));
+                    map.put("OverTime", SimpleDateFormatUtil.timeConvert(map.get("OverTime")));
+                    map.put("LinkPipeTime", SimpleDateFormatUtil.timeConvert(map.get("LinkPipeTime")));
+                    map.put("DownTime", SimpleDateFormatUtil.timeConvert(map.get("DownTime")));
+                    map.put("AdjustmentTime", SimpleDateFormatUtil.timeConvert(map.get("AdjustmentTime")));
+                    map.put("LinkPipeOverTime", SimpleDateFormatUtil.timeConvert(map.get("LinkPipeOverTime")));
+                    map.put("TaskOpenTime", SimpleDateFormatUtil.timeConvert(map.get("TaskOpenTime")));
+                    map.put("VerifyTimeTwo", SimpleDateFormatUtil.timeConvert(map.get("VerifyTimeTwo")));
                     // 数据同步
                     try {
                         syncPlugin.save(map, "PT_TaskPlan", "UP", compid);
@@ -1327,6 +1333,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlanMapper.deleteTaskPlan(compid, taskId);
 
         HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskId, compid);
+        map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
+        map.put("PreTime", simpleDateFormat.format(map.get("PreTime")));
+        map.put("TaskOverTime", simpleDateFormat.format(map.get("TaskOverTime")));
+        map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
+        map.put("FormulaTime", simpleDateFormat.format(map.get("FormulaTime")));
+        map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
+        map.put("OverTime", simpleDateFormat.format(map.get("OverTime")));
+        map.put("LinkPipeTime", simpleDateFormat.format(map.get("LinkPipeTime")));
+        map.put("DownTime", simpleDateFormat.format(map.get("DownTime")));
+        map.put("AdjustmentTime", simpleDateFormat.format(map.get("AdjustmentTime")));
+        map.put("LinkPipeOverTime", simpleDateFormat.format(map.get("LinkPipeOverTime")));
+        map.put("TaskOpenTime", simpleDateFormat.format(map.get("TaskOpenTime")));
+        map.put("VerifyTimeTwo", simpleDateFormat.format(map.get("VerifyTimeTwo")));
         // 数据同步
         try {
             syncPlugin.save(map, "PT_TaskPlan", "UP", compid);

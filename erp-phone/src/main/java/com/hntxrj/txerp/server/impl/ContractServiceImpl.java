@@ -73,7 +73,7 @@ public class ContractServiceImpl implements ContractService {
                                ContractGradePriceDetailRepository contractGradePriceDetailRepository,
                                ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
                                ContractMasterRepository contractMasterRepository,
-                               ContractDetailRepository contractDetailRepository,SyncPlugin syncPlugin) {
+                               ContractDetailRepository contractDetailRepository, SyncPlugin syncPlugin) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -470,11 +470,11 @@ public class ContractServiceImpl implements ContractService {
         // 数据同步
         Map<String, String> map = constructionMapper.getContractDetail(compid, contractUid);
         // 把时间戳类型的时间转换成字符串形式存到sync_data表中
-        map.put("StatusTime", simpleDateFormat.format(map.get("StatusTime")));
-        map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
-        map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
-        map.put("SecondVerifyTime", simpleDateFormat.format(map.get("SecondVerifyTime")));
-        map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
+        map.put("StatusTime", SimpleDateFormatUtil.timeConvert(map.get("StatusTime")));
+        map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));
+        map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
+        map.put("SecondVerifyTime", SimpleDateFormatUtil.timeConvert(map.get("SecondVerifyTime")));
+        map.put("OpenTime", SimpleDateFormatUtil.timeConvert(map.get("OpenTime")));
         try {
             syncPlugin.save(map, "SM_ContractDetail", "UP", compid);
         } catch (SQLException e) {
@@ -609,10 +609,10 @@ public class ContractServiceImpl implements ContractService {
             HashMap<String, String> contractMasterMap = contractMapper.getContractMaster(contractMaster.getCompid(),
                     contractMaster.getContractId(), contractMaster.getContractUid());
 
-            contractMasterMap.put("SignDate", simpleDateFormat.format(contractMasterMap.get("SignDate")));
-            contractMasterMap.put("EffectDate", simpleDateFormat.format(contractMasterMap.get("EffectDate")));
-            contractMasterMap.put("ExpiresDate", simpleDateFormat.format(contractMasterMap.get("ExpiresDate")));
-            contractMasterMap.put("CreateTime", simpleDateFormat.format(contractMasterMap.get("CreateTime")));
+            contractMasterMap.put("SignDate", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("SignDate")));
+            contractMasterMap.put("EffectDate", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("EffectDate")));
+            contractMasterMap.put("ExpiresDate", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("ExpiresDate")));
+            contractMasterMap.put("CreateTime", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("CreateTime")));
             syncPlugin.save(contractMasterMap, "SM_ContractMaster", "INS", compid);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -623,12 +623,12 @@ public class ContractServiceImpl implements ContractService {
         try {
             HashMap<String, String> getContractDetailMap = contractMapper.getContractDetailMap(
                     contractDetail.getContractUid(), contractDetail.getCContractCode());
-
-            getContractDetailMap.put("StatusTime", simpleDateFormat.format(getContractDetailMap.get("StatusTime")));
-            getContractDetailMap.put("VerifyTime", simpleDateFormat.format(getContractDetailMap.get("VerifyTime")));
-            getContractDetailMap.put("CreateTime", simpleDateFormat.format(getContractDetailMap.get("CreateTime")));
-            getContractDetailMap.put("SecondVerifyTime", simpleDateFormat.format(getContractDetailMap.get("SecondVerifyTime")));
-            getContractDetailMap.put("OpenTime", simpleDateFormat.format(getContractDetailMap.get("OpenTime")));
+            getContractDetailMap.put("StatusTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("StatusTime")));
+            getContractDetailMap.put("VerifyTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("VerifyTime")));
+            getContractDetailMap.put("CreateTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("CreateTime")));
+            getContractDetailMap.put("SecondVerifyTime",
+                    SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("SecondVerifyTime")));
+            getContractDetailMap.put("OpenTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("OpenTime")));
             syncPlugin.save(getContractDetailMap, "SM_ContractDetail", "INS", compid);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1070,9 +1070,9 @@ public class ContractServiceImpl implements ContractService {
     private Map<String, String> getPumpTruck(String compid, Integer pumpType, String contractUID,
                                              String contractDetailCode) {
         Map<String, String> map = contractMapper.getPumpTruck(compid, pumpType, contractUID, contractDetailCode);
-        map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
-        map.put("PriceETime", simpleDateFormat.format(map.get("PriceETime")));
-        map.put("PriceStopTime", simpleDateFormat.format(map.get("PriceStopTime")));
+        map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
+        map.put("PriceETime", SimpleDateFormatUtil.timeConvert(map.get("PriceETime")));
+        map.put("PriceStopTime", SimpleDateFormatUtil.timeConvert(map.get("PriceStopTime")));
         return map;
     }
 
