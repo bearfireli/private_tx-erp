@@ -634,11 +634,11 @@ public class StockInServerImpl implements StockInServer {
 
         // 数据同步
         Map<String, String> map = stockInWeighmatNsMapper.getStockIn(compid, stICode);
-        map.put("FirstTime", simpleDateFormat.format(map.get("FirstTime")));
-        map.put("SecondTime", simpleDateFormat.format(map.get("SecondTime")));
-        map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
-        map.put("Sup_ExFactory", simpleDateFormat.format(map.get("Sup_ExFactory")));
-        map.put("InspectionTime", simpleDateFormat.format(map.get("InspectionTime")));
+        map.put("FirstTime", SimpleDateFormatUtil.timeConvert(map.get("FirstTime")));
+        map.put("SecondTime", SimpleDateFormatUtil.timeConvert(map.get("SecondTime")));
+        map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));
+        map.put("Sup_ExFactory", SimpleDateFormatUtil.timeConvert(map.get("Sup_ExFactory")));
+        map.put("InspectionTime", SimpleDateFormatUtil.timeConvert(map.get("InspectionTime")));
         try {
             syncPlugin.save(map, "MP_StockIn", "UP", compid);
         } catch (SQLException e) {

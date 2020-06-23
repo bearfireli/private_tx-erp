@@ -133,7 +133,7 @@ public class BuilderController {
             GetMsg.getJsonMsg(vo, jsonArray);
 
             Map<String, String> map = builderMapper.getBuilderInfoByName(compid, builderName, builderShortName);
-            map.put("CreateTime", simpleDateForma.format(map.get("CreateTime")));
+            map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
             try {
                 syncPlugin.save(map, "SM_BuilderInfo", "INS", compid);
             } catch (SQLException e) {

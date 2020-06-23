@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -290,7 +291,7 @@ public interface StockMapper {
      * @param compid  企业id
      * @param stICode 过磅单号
      */
-    Map<String, String> getStockIn(String compid, String stICode);
+    HashMap<String, String> getStockIn(String compid, String stICode);
 
     /**
      * 根据线号获取所有的库位信息
