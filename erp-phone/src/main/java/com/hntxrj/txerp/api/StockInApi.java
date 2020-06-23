@@ -896,6 +896,7 @@ public class StockInApi {
      * @param picturePath 图片路径
      * @param matCode     材料编码
      * @param stkCode     库位编码
+     * @param isAllowOut  是否允许出厂过磅:0不允许 1允许
      */
     @ApiOperation("保存材料检测")
     @ApiImplicitParams({
@@ -907,16 +908,19 @@ public class StockInApi {
             @ApiImplicitParam(name = "picturePath", value = "图片路径", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "matCode", value = "材料代号", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "stkCode", value = "库位代号", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "notReason", value = "不合格原因", dataType = "file", paramType = "query"),
+            @ApiImplicitParam(name = "notReason", value = "不合格原因", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "isAllowOut", value = "是否允许出厂过磅:0不允许 1允许",
+                    dataType = "Int", paramType = "query"),
     })
     @PostMapping("/updateCheckStatus")
     public ResultVO updateCheckStatus(String compid, BigDecimal deductNum, String stICode,
                                       @RequestParam(defaultValue = "1") int isPassOrNot, String picturePath,
                                       String matCode, String stkCode, String notReason,
+                                      @RequestParam(defaultValue = "0") int isAllowOut,
                                       HttpServletRequest request) throws ErpException {
         String token = request.getHeader("token");
         stockInServer.updateCheckStatus(token, compid, deductNum, stICode, isPassOrNot, picturePath, matCode, stkCode,
-                notReason);
+                notReason, isAllowOut);
         return ResultVO.create();
     }
 

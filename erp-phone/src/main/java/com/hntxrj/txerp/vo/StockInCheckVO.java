@@ -39,7 +39,8 @@ public class StockInCheckVO {
     private String inspector;
     /*检测时间*/
     private String inspectionTime;
-
+    /*是否允许出厂过磅:0不允许 1允许*/
+    private Integer isAllowOut;
 
 
 }

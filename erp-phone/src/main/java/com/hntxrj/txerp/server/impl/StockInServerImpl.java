@@ -555,7 +555,7 @@ public class StockInServerImpl implements StockInServer {
         }
         stockInWeighmatNsMapper.updateCheckStatus(compid, null, stICode, stockInCheckVO.getIsPassOrNot(),
                 stockInCheckVO.getPicturePath(), stockInCheckVO.getMatCode(), stockInCheckVO.getStkCode(),
-                stockInCheckVO.getNotReason(), null, null);
+                stockInCheckVO.getNotReason(), null, null, stockInCheckVO.getIsAllowOut());
 
 
         return fileName;
@@ -615,7 +615,7 @@ public class StockInServerImpl implements StockInServer {
     @Override
     public void updateCheckStatus(String token, String compid, BigDecimal deductNum, String stICode, int isPassOrNot,
                                   String picturePath, String matCode, String stkCode,
-                                  String notReason) throws ErpException {
+                                  String notReason, int isAllowOut) throws ErpException {
 
         String inspector = "";
         Date inspectionTime = new Date();
@@ -630,7 +630,7 @@ public class StockInServerImpl implements StockInServer {
             inspector = (String) data.get("username");
         }
         stockInWeighmatNsMapper.updateCheckStatus(compid, deductNum, stICode, isPassOrNot, picturePath,
-                matCode, stkCode, notReason, inspector, inspectionTime);
+                matCode, stkCode, notReason, inspector, inspectionTime, isAllowOut);
 
         // 数据同步
         Map<String, String> map = stockInWeighmatNsMapper.getStockIn(compid, stICode);
@@ -709,7 +709,7 @@ public class StockInServerImpl implements StockInServer {
         }
         stockInWeighmatNsMapper.updateCheckStatus(compid, null, stICode, stockInCheckVO.getIsPassOrNot(),
                 newPath.toString(), stockInCheckVO.getMatCode(), stockInCheckVO.getStkCode(),
-                stockInCheckVO.getNotReason(), null, null);
+                stockInCheckVO.getNotReason(), null, null, stockInCheckVO.getIsAllowOut());
 
         return stockInCheckVO;
     }
