@@ -1,27 +1,28 @@
 package com.hntxrj.txerp.entity;
 
-import java.util.Date;
-import java.io.Serializable;
-
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-@Table(name = "SM_ContractDetail")
+@Table(name = "sm_contractdetail")
 public class ContractDetail implements Serializable {
 
+    /* 子合同号 */
+    @Id
+    @Column(name = "cContractCode")
+    private String cContractCode;
+    /* 企业id */
+    @Id
+    @Column(name = "compid")
+    private String compid;
     /* 主合同UID号 */
     @Column(name = "contractUid")
     private String contractUid;
-    /* 子合同号 */
-    @Column(name = "cContractCode")
-    private String cContractCode;
-    /* null */
-    @Column(name = "compid")
-    private String compid;
     /* 项目代号 */
     @Column(name = "eppCode")
     private String eppCode;
@@ -134,8 +135,8 @@ public class ContractDetail implements Serializable {
     @Column(name = "tableExpenseModule")
     private Integer tableExpenseModule;
     /* null */
-    @Column(name = "upDownMark")
-    private Integer upDownMark;
+    @Column(name = "upDownMark", insertable = false, updatable = false)
+    private Integer upDownMark = 0;
     /* 空载收费方式 */
     @Column(name = "noloadMoneyStyle")
     private Integer noloadMoneyStyle;
@@ -159,3 +160,5 @@ public class ContractDetail implements Serializable {
     private String openTime;
 
 }
+
+

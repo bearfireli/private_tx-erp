@@ -1,6 +1,6 @@
 package com.hntxrj.txerp.entity
 
-import com.fasterxml.jackson.annotation.JsonFormat
+import org.springframework.format.annotation.DateTimeFormat
 import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
@@ -21,89 +21,88 @@ open class SMContractMaster {
     @Column(name = "contractuid", nullable = false)
     var contractUID: String? = null
 
-    @Basic
     @Column(name = "salesman", nullable = true)
     var salesman: String? = null
 
-    @Basic
-    @JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "signdate", nullable = true)
     var signDate: Date? = null
 
-    @Basic
-    @JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "effectdate", nullable = true)
     var effectDate: Date? = null
 
-    @Basic
-    @JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @Column(name = "expiresdate", nullable = true)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     var expiresDate: Date? = null
 
-    @Basic
+
     @Column(name = "contracttype", nullable = true)
     var contractType: Int? = null
 
-    @Basic
+
     @Column(name = "accountday", nullable = true)
     var accountDay: Int? = null
 
-    @Basic
+
     @Column(name = "lockdate", nullable = true)
     var lockDate: Int? = null
 
-    @Basic
+
     @Column(name = "lockrate", nullable = true)
     var lockRate: BigDecimal? = null
 
-    @Basic
+
     @Column(name = "linkman", nullable = true)
     var linkMan: String? = null
 
-    @Basic
+
     @Column(name = "linktel", nullable = true)
     var linkTel: String? = null
 
-    @Basic
+
     @Column(name = "contractstatus", nullable = true)
     var contractStatus: Int? = null
 
-    @Basic
+
     @Column(name = "pricestyle", nullable = true)
     var priceStyle: Int? = null
 
-    @Basic
+
     @Column(name = "pricefloatlimits", nullable = true)
     var priceFloatLimits: BigDecimal? = null
 
-    @Basic
+
     @Column(name = "paymentterms", nullable = true)
     var paymentTerms: Int? = null
 
-    @Basic
+
     @Column(name = "computestyle", nullable = true)
     var computeStyle: String? = null
 
-    @Basic
+
     @Column(name = "opid", nullable = false)
     var opId: String? = null
 
-    @Basic
+
     @Column(name = "createtime", nullable = true, insertable = false, updatable = false)
     var createTime: java.sql.Timestamp? = null
 
-    @Basic
+
     @Column(name = "updown", nullable = true)
     var upDown: Boolean? = null
 
-    @Basic
+
     @Column(name = "recstatus", nullable = true)
     var recStatus: Boolean? = null
 
-    @Basic
+
     @Column(name = "payrate", nullable = false)
     var payRate: BigDecimal = BigDecimal(0.0)
 
-    @Basic
+
     @Column(name = "updownmark", nullable = false)
     var upDownMark: Int = 0
 

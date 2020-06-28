@@ -1,7 +1,7 @@
 package com.hntxrj.txerp.api;
 
 import com.hntxrj.txerp.core.exception.ErpException;
-import com.hntxrj.txerp.entity.SMContractDetail;
+import com.hntxrj.txerp.entity.ContractDetail;
 import com.hntxrj.txerp.entity.SMContractMaster;
 import com.hntxrj.txerp.server.ContractService;
 import com.hntxrj.txerp.server.SalesmanService;
@@ -17,8 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
-import static com.hntxrj.txerp.util.AuthUtilKt.getCompid;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/contract/")
@@ -58,7 +57,7 @@ public class ContractApi {
         return ResultVO.create(contractService.getContractList(
                 startTime == null ? null : Long.parseLong(startTime),
                 endTime == null ? null : Long.parseLong(endTime), contractCode,
-                eppCode, buildCode, salesMan, getCompid(request), verifyStatus, page, pageSize));
+                eppCode, buildCode, salesMan, AuthUtilKt.getCompid(request), verifyStatus, page, pageSize));
     }
 
     /**
@@ -509,14 +508,17 @@ public class ContractApi {
         salesmanService.addSaleMan(compid, saleName, department);
         return ResultVO.create();
     }
+
     @PostMapping("/saveContractMaster")
     public ResultVO saveContractMaster(SMContractMaster contractMaster, HttpServletRequest request) throws ErpException {
         contractMaster.setOpId(AuthUtilKt.getOpId(request));
         return ResultVO.create(contractService.saveContractMaster(contractMaster));
     }
+
     @PostMapping("/saveContractDetail")
-    public ResultVO saveContractDetail(SMContractDetail contractDetail, HttpServletRequest request) throws ErpException {
-        contractDetail.setOpId(AuthUtilKt.getOpId(request));
-        return ResultVO.create(contractService.saveContractDetail(contractDetail));
+    public ResultVO saveContractDetail(ContractDetail contractDetail, HttpServletRequest request) throws ErpException {
+        contractDetail.setOpId(Objects.requireNonNull(AuthUtilKt.getOpId(request)));
+        contractService.saveContractDetail(contractDetail);
+        return ResultVO.create();
     }
 }

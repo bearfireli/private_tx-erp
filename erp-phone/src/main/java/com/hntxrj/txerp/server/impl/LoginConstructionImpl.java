@@ -30,12 +30,12 @@ public class LoginConstructionImpl implements LoginConstructionService {
      *
      * @param userName 账户名
      * @param passWord 密码
-     * @param tokens  登录缓存
+     * @param tokens   登录缓存
      */
     @Override
     public LoginClibationVO getAccountPassword(String userName, String passWord, String tokens) throws ErpException {
         LoginClibationVO loginClibationVO;
-        if ( null!=tokens ) {
+        if (null != tokens) {
             loginClibationVO = redisUtil.redisGetValue(tokens);
             System.out.println("是不是空:" + loginClibationVO);
             if (loginClibationVO != null) {
@@ -59,15 +59,15 @@ public class LoginConstructionImpl implements LoginConstructionService {
     }
 
     @Override
-    public void addUser(String userName, String passWord,String buildName) throws ErpException {
+    public void addUser(String userName, String passWord, String buildName) throws ErpException {
         BuildAccountsVO user = loginConstructionMapper.findByBuildId(userName);
         if (user != null) {
             throw new ErpException(ErrEumn.ADD_USER_PHONE_EXIST);
         }
-        passWord =getMd5Password(passWord);
-        try{
-            loginConstructionMapper.save(userName,passWord,buildName);
-        }catch (Exception e){
+        passWord = getMd5Password(passWord);
+        try {
+            loginConstructionMapper.save(userName, passWord, buildName);
+        } catch (Exception e) {
             throw new ErpException(ErrEumn.ADD_ERROR);
         }
 
@@ -75,7 +75,7 @@ public class LoginConstructionImpl implements LoginConstructionService {
 
     @Override
     public void updatePassword(String buildId, String oldPassword, String newPassword) throws ErpException {
-        BuildAccountsVO buildAccountsVO= loginConstructionMapper.findUser(buildId);
+        BuildAccountsVO buildAccountsVO = loginConstructionMapper.findUser(buildId);
         if (buildAccountsVO == null) {
             //用户不存在
             throw new ErpException(ErrEumn.USER_NO_EXIT);
