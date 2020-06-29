@@ -4,7 +4,7 @@
 
     <!--生成邀请码-->
     <insert id="getInvitationCode">
-       insert into bd_invitation_code
+        insert into bd_invitation_code
         (build_invitation_code,
          compid,
          ccontract_code,
@@ -13,12 +13,12 @@
          create_time,
          ContractUID)
         VALUES (#{buildInvitationCode},
-        #{compid},
-        #{contractDetailCode},
-        #{useStatus},
-        #{opid},
-        #{date},
-        #{contractUID})
+                #{compid},
+                #{contractDetailCode},
+                #{useStatus},
+                #{opid},
+                #{date},
+                #{contractUID})
     </insert>
     <insert id="saveInvitation" useGeneratedKeys="true">
         insert into bd_bind
@@ -28,34 +28,38 @@
          ccontract_code)
         VALUES (#{buildId},
                 #{compid},
-                 #{contractUID},
+                #{contractUID},
                 #{contractDetailCode})
     </insert>
 
     <update id="updateUseStatus" useGeneratedKeys="true">
         update bd_invitation_code
         set use_status=#{useStatus},
-        build_id=#{buildId}
-        where  build_invitation_code = #{buildInvitationCode}
-        and ccontract_code =#{contractDetailCode}
-       and contractUID=#{contractUID}
+            build_id=#{buildId}
+        where build_invitation_code = #{buildInvitationCode}
+          and ccontract_code = #{contractDetailCode}
+          and contractUID = #{contractUID}
     </update>
     <update id="updateInvalidStatus">
         update bd_invitation_code
         set use_status=2
-        where  build_invitation_code = #{buildInvitationCode}
-            and ccontract_code =#{contractDetailCode}
-            and contractUID=#{contractUID}
+        where build_invitation_code = #{buildInvitationCode}
+          and ccontract_code = #{contractDetailCode}
+          and contractUID = #{contractUID}
     </update>
     <!--删除合同-->
     <delete id="deleteBuildId">
-        delete from bd_bind where build_id =#{buildId} and contractUID =#{contractCode}
+        delete
+        from bd_bind
+        where build_id = #{buildId}
+          and contractUID = #{contractCode}
     </delete>
     <delete id="removeBind">
-        delete from bd_bind
-        where build_id=#{buildId}
-            and contractUID=#{contractUID}
-            and ccontract_code=#{contractDetailCode}
+        delete
+        from bd_bind
+        where build_id = #{buildId}
+          and contractUID = #{contractUID}
+          and ccontract_code = #{contractDetailCode}
     </delete>
     <!--施工方邀请码列表-->
     <select id="getInvitationList" resultType="com.hntxrj.txerp.vo.InvitationVO">
@@ -96,7 +100,7 @@
     <select id="selectInvitation" resultType="com.hntxrj.txerp.vo.InvitationVO">
         select bd.build_invitation_code buildinvitationcode,
                bd.compid,
-               bd.ccontract_code            contractDetailCode,
+               bd.ccontract_code        contractDetailCode,
                bd.create_time           createtime,
                bd.create_user           createuser,
                bd.use_status            usestatus,
@@ -105,37 +109,40 @@
         where bd.build_invitation_code = #{buildInvitationCode}
     </select>
     <select id="checkBind" resultType="com.hntxrj.txerp.vo.BdBindVO">
-        select build_id   buildId,
-           bd.compid,
-           bd.ccontract_code as contractDetailCode,
-           bd.contractUID
+        select build_id             buildId,
+               bd.compid,
+               bd.ccontract_code as contractDetailCode,
+               bd.contractUID
         from bd_bind bd
         where build_id = #{buildId}
     </select>
     <select id="checkBindContract" resultType="com.hntxrj.txerp.vo.BdBindVO">
-        select build_id   buildId,
+        select build_id          buildId,
                compid,
                ccontract_code as contractDetailCode,
                contractUID
         from bd_bind
-        where ccontract_code=#{contractDetailCode}
-        and contractUID=#{contractUID}
-        and build_id = #{buildId}
+        where ccontract_code = #{contractDetailCode}
+          and contractUID = #{contractUID}
+          and build_id = #{buildId}
     </select>
     <select id="getContractCodeList" resultType="java.lang.String">
         select ccontract_code
         from bd_bind
-        where build_id=#{buildId}
+        where build_id = #{buildId}
     </select>
 
     <select id="getContractUID" resultType="java.lang.String">
         select contractUID
         from bd_bind
-        where build_id=#{buildId}
+        where build_id = #{buildId}
     </select>
     <select id="getContractDetail" resultType="java.util.Map">
-        select * from SM_ContractDetail where compid = #{compid}
+        select *
+        from SM_ContractDetail
+        where compid = #{compid}
           and contractUID = #{contractUid}
+          and ccontractCode = #{ccontractCode}
     </select>
 
 </mapper>

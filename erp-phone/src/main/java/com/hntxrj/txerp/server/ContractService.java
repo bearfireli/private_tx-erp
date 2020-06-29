@@ -346,7 +346,9 @@ public interface ContractService {
      * @param opId         操作员代号
      * @param verifyStatus 审核状态
      */
-    void verifyContract(String contractUid, String compid, String opId, Integer verifyStatus) throws ErpException;
+//    void verifyContract(String contractUid, String compid, String opId, Integer verifyStatus) throws ErpException;
+    void verifyContract(String contractUid, String ccontractCode, String compid,
+                        String opId, Integer verifyStatus) throws ErpException;
 
     /**
      * 获取合同砼价格列表

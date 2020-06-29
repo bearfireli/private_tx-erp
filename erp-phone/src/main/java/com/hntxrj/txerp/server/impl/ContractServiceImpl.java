@@ -9,6 +9,7 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.ContractDao;
+import com.hntxrj.txerp.dao.ContractDetailDao;
 import com.hntxrj.txerp.entity.*;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
@@ -49,7 +50,7 @@ public class ContractServiceImpl implements ContractService {
     private final PublicInfoMapper publicInfoMapper;
 
     private final ContractMasterMapper contractMasterMapper;
-    private final ContractDetailMapper contractDetailMapper;
+    private final ContractDetailDao contractDetailDao;
 
     private final AdjunctMapper adjunctMapper;
 
@@ -69,16 +70,15 @@ public class ContractServiceImpl implements ContractService {
 
     @Autowired
     public ContractServiceImpl(ContractDao dao, ContractMapper contractMapper, PublicInfoMapper publicInfoMapper,
-                               ContractMasterMapper contractMasterMapper, ContractDetailMapper contractDetailMapper,
-                               AdjunctMapper adjunctMapper,
+                               ContractMasterMapper contractMasterMapper, AdjunctMapper adjunctMapper,
                                ContractGradePriceDetailRepository contractGradePriceDetailRepository,
                                ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
-                               ContractMasterRepository contractMasterRepository, SyncPlugin syncPlugin) {
+                               ContractMasterRepository contractMasterRepository, SyncPlugin syncPlugin,
+                               ContractDetailDao contractDetailDao) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
         this.contractMasterMapper = contractMasterMapper;
-        this.contractDetailMapper = contractDetailMapper;
         this.adjunctMapper = adjunctMapper;
         this.contractGradePriceDetailRepository = contractGradePriceDetailRepository;
         this.constructionMapper = constructionMapper;
@@ -86,6 +86,7 @@ public class ContractServiceImpl implements ContractService {
         this.msgMapper = msgMapper;
         this.syncPlugin = syncPlugin;
         this.contractMasterRepository = contractMasterRepository;
+        this.contractDetailDao = contractDetailDao;
     }
 
 
@@ -460,14 +461,14 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void verifyContract(String contractUid, String compid,
+    public void verifyContract(String contractUid, String ccontractCode, String compid,
                                String opId, Integer verifyStatus) throws ErpException {
 
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
-        contractMapper.verifyContract(contractUid, compid, opId, sdf.format(new Date()), verifyStatus);
+        contractMapper.verifyContract(contractUid, ccontractCode, compid, opId, sdf.format(new Date()), verifyStatus);
         // 数据同步
-        Map<String, String> map = constructionMapper.getContractDetail(compid, contractUid);
+        Map<String, String> map = constructionMapper.getContractDetail(compid, contractUid, ccontractCode);
         // 把时间戳类型的时间转换成字符串形式存到sync_data表中
         map.put("StatusTime", SimpleDateFormatUtil.timeConvert(map.get("StatusTime")));
         map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));
@@ -586,10 +587,10 @@ public class ContractServiceImpl implements ContractService {
         contractMaster.setOpId(opid);
 
 
-        contractDetail.setCContractCode(contractMaster.getContractId() + "-01");
-        contractDetail.setContractUid(contractMasterUid);
-        contractDetail.setCreateTime(simpleDateFormat.format(new Date()));
-        contractDetail.setRecStatus("1");
+        contractDetail.setCcontractCode(contractMaster.getContractId() + "-01");
+        contractDetail.setContractUID(contractMasterUid);
+        contractDetail.setCreateTime(new Date());
+        contractDetail.setRecStatus(true);
         contractDetail.setPreMoney(preMoney);
         contractDetail.setPreNum(preNum);
         contractDetail.setRemarks(remarks);
@@ -598,6 +599,7 @@ public class ContractServiceImpl implements ContractService {
         contractDetail.setEppCode(eppCode);
         contractDetail.setCompid(compid);
         contractDetail.setAddress(address);
+        contractDetail.setUpDownMark(0);
 
         contractDetail.setOpId(opid);
 
@@ -617,11 +619,11 @@ public class ContractServiceImpl implements ContractService {
             e.printStackTrace();
         }
         EntityTools.setEntityDefaultValue(contractDetail);
-        contractDetailMapper.insert(contractDetail);
+        contractDetailDao.insert(contractDetail);
         // 同步数据
         try {
             HashMap<String, String> getContractDetailMap = contractMapper.getContractDetailMap(
-                    contractDetail.getContractUid(), contractDetail.getCContractCode());
+                    contractDetail.getContractUID(), contractDetail.getCcontractCode());
             getContractDetailMap.put("StatusTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("StatusTime")));
             getContractDetailMap.put("VerifyTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("VerifyTime")));
             getContractDetailMap.put("CreateTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("CreateTime")));
@@ -1046,12 +1048,15 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public SMContractMaster saveContractMaster(SMContractMaster contractMaster) {
         contractMaster.setContractUID(UUID.randomUUID().toString());
+        contractMaster.setRecStatus(true);
         return contractMasterRepository.save(contractMaster);
     }
 
     @Override
     public void saveContractDetail(ContractDetail contractDetail) {
-        contractDetailMapper.insert(contractDetail);
+        contractDetail.setUpDownMark(0);
+        contractDetail.setRecStatus(true);
+        contractDetailDao.insert(contractDetail);
     }
 
 
