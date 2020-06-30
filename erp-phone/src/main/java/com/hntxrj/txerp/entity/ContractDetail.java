@@ -1,164 +1,217 @@
 package com.hntxrj.txerp.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
+/**
+ * SM_ContractDetail
+ *
+ * @author 刘浩然
+ */
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Table(name = "sm_contractdetail")
-public class ContractDetail implements Serializable {
-
-    /* 子合同号 */
-    @Id
-    @Column(name = "cContractCode")
-    private String cContractCode;
-    /* 企业id */
-    @Id
-    @Column(name = "compid")
+public class ContractDetail extends ContractDetailKey implements Serializable {
     private String compid;
-    /* 主合同UID号 */
-    @Column(name = "contractUid")
-    private String contractUid;
-    /* 项目代号 */
-    @Column(name = "eppCode")
+
+    /**
+     * 项目代号
+     */
     private String eppCode;
-    /* 施工单位代号 */
-    @Column(name = "builderCode")
+
+    /**
+     * 施工单位代号
+     */
     private String builderCode;
-    /* 送货地址 */
-    @Column(name = "address")
+
+    /**
+     * 送货地址
+     */
     private String address;
-    /* 最小泵送量 */
-    @Column(name = "minJumpNum")
+
+    /**
+     * 最小泵送量
+     */
     private BigDecimal minJumpNum;
-    /* 泵送加价金额 */
-    @Column(name = "jumpPriceMarkup")
+
+    /**
+     * 泵送加价金额
+     */
     private BigDecimal jumpPriceMarkup;
-    /* 预付金额 */
-    @Column(name = "preMoney")
+
+    /**
+     * 预付金额
+     */
     private BigDecimal preMoney;
-    /* 预付方量 */
-    @Column(name = "preNum")
+
+    /**
+     * 预付方量
+     */
     private BigDecimal preNum;
-    /* 担保金额 */
-    @Column(name = "suretyMoney")
+
+    /**
+     * 担保金额
+     */
     private BigDecimal suretyMoney;
-    /* 合同方量 */
-    @Column(name = "contractNum")
+
+    /**
+     * 合同方量
+     */
     private BigDecimal contractNum;
-    /* 结账方量 */
-    @Column(name = "accountNum")
+
+    /**
+     * 结账方量
+     */
     private BigDecimal accountNum;
-    /* 以生产金额 */
-    @Column(name = "produceMoney")
+
+    /**
+     * 以生产金额
+     */
     private BigDecimal produceMoney;
-    /* 结账部位 */
-    @Column(name = "accountPlace")
+
+    /**
+     * 结账部位
+     */
     private String accountPlace;
-    /* 是否含税 */
-    @Column(name = "isTax")
-    private String isTax;
-    /* 税额 */
-    @Column(name = "taxRate")
+
+    /**
+     * 是否含税
+     */
+    private Boolean isTax;
+
+    /**
+     * 税额
+     */
     private BigDecimal taxRate;
-    /* 区间(距离) */
-    @Column(name = "distance")
+
+    /**
+     * 区间(距离)
+     */
     private BigDecimal distance;
-    /* 材料状况 */
-    @Column(name = "matStatus")
+
+    /**
+     * 材料状况
+     */
     private Integer matStatus;
-    /* 合同状态 */
-    @Column(name = "contractStatus")
+
+    /**
+     * 合同状态
+     */
     private Integer contractStatus;
-    /* 状态修改时间 */
-    @Column(name = "statusTime")
-    private String statusTime;
-    /* 审核状态 */
-    @Column(name = "verifyStatus")
-    private String verifyStatus;
-    /* 审核人代码 */
-    @Column(name = "verifyId")
+
+    /**
+     * 状态修改时间
+     */
+    private Date statusTime;
+
+    /**
+     * 审核状态
+     */
+    private Boolean verifyStatus;
+
+    /**
+     * 审核人代码
+     */
     private String verifyId;
-    /* 审核时间 */
-    @Column(name = "verifyTime")
-    private String verifyTime;
-    /* 创建人代码 */
-    @Column(name = "opId")
+
+    /**
+     * 审核时间
+     */
+    private Date verifyTime;
+
+    /**
+     * 创建人代码
+     */
     private String opId;
-    /* 创建时间 */
-    @Column(name = "createTime")
-    private String createTime;
-    /* 工地是否GPS标定 */
-    @Column(name = "isGpsLocate")
-    private String isGpsLocate;
-    /* 备注 */
-    @Column(name = "remarks")
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 工地是否GPS标定
+     */
+    private Boolean isGPSLocate;
+
+    /**
+     * 备注
+     */
     private String remarks;
-    /* 网络标识 */
-    @Column(name = "upDown")
-    private String upDown;
-    /* 记录状态(有效) */
-    @Column(name = "recStatus")
-    private String recStatus;
-    /* null */
-    @Column(name = "mortarModule")
+
+    /**
+     * 网络标识
+     */
+    private Boolean upDown;
+
+    /**
+     * 记录状态(有效)
+     */
+    private Boolean recStatus;
+
     private Integer mortarModule;
-    /* null */
-    @Column(name = "mortarStgid")
+
     private String mortarStgid;
-    /* null */
-    @Column(name = "waterModule")
+
     private Integer waterModule;
-    /* null */
-    @Column(name = "waterStgid")
+
     private String waterStgid;
-    /* null */
-    @Column(name = "waterAccountNum")
+
     private BigDecimal waterAccountNum;
-    /* null */
-    @Column(name = "noloadModule")
+
     private Integer noloadModule;
-    /* null */
-    @Column(name = "noloadOderMinNum")
+
     private BigDecimal noloadOderMinNum;
-    /* null */
-    @Column(name = "noloadCarMinNum")
+
     private BigDecimal noloadCarMinNum;
-    /* null */
-    @Column(name = "noloadMoney")
+
     private BigDecimal noloadMoney;
-    /* null */
-    @Column(name = "tableExpenseModule")
+
     private Integer tableExpenseModule;
-    /* null */
-    @Column(name = "upDownMark", insertable = false, updatable = false)
-    private Integer upDownMark = 0;
-    /* 空载收费方式 */
-    @Column(name = "noloadMoneyStyle")
+
+    private Integer upDownMark;
+
+    /**
+     * 空载收费方式
+     */
     private Integer noloadMoneyStyle;
-    /* 允许尾数次数 */
-    @Column(name = "noloadAllowsNumber")
+
+    /**
+     * 允许尾数次数
+     */
     private Integer noloadAllowsNumber;
-    /* 空载费计量方量 */
-    @Column(name = "noloadMoneyNumber")
+
+    /**
+     * 空载费计量方量
+     */
     private BigDecimal noloadMoneyNumber;
-    /* 二级审核状态 */
-    @Column(name = "secondVerifyStatus")
-    private String secondVerifyStatus;
-    /* 二级审核人 */
-    @Column(name = "secondVerifyName")
+
+    /**
+     * 二级审核状态
+     */
+    private Boolean secondVerifyStatus;
+
+    /**
+     * 二级审核人
+     */
     private String secondVerifyName;
-    /* 二级审核时间 */
-    @Column(name = "secondVerifyTime")
-    private String secondVerifyTime;
-    /* 开盘时间 */
-    @Column(name = "openTime")
-    private String openTime;
 
+    /**
+     * 二级审核时间
+     */
+    private Date secondVerifyTime;
+
+    /**
+     * 开盘时间
+     */
+    private Date openTime;
+
+    private BigDecimal rebateRatio;
+
+    private BigDecimal rebateAmount;
+
+    private static final long serialVersionUID = 1L;
 }
-
-

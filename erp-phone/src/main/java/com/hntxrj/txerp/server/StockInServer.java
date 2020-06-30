@@ -233,7 +233,7 @@ public interface StockInServer {
      * @param endTime   结束时间
      * @param type      标识：type=1代表查询本月
      */
-    List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime,Integer type);
+    List<WeightMatParentNameVO> getWeightByMatParent(String compid, String beginTime, String endTime, Integer type);
 
 
     /**
@@ -282,12 +282,13 @@ public interface StockInServer {
      * @param fileName 文件名称
      */
     void downloadPicture(String fileName, HttpServletResponse response) throws ErpException;
-/**
+
+    /**
      * 新图片展示
      *
      * @param fileName 文件名称
      */
-    void showPicture(String fileName,String compid, HttpServletResponse response) throws ErpException;
+    void showPicture(String fileName, String compid, HttpServletResponse response) throws ErpException;
 
     /**
      * 更新检验状态
@@ -299,9 +300,10 @@ public interface StockInServer {
      * @param picturePath 图片路径
      * @param matCode     材料编码
      * @param stkCode     库位编码
+     * @param isAllowOut  是否允许出厂过磅:0不允许 1允许
      */
-    void updateCheckStatus(String token,String compid, BigDecimal deductNum, String stICode, int isPassOrNot,
-                           String picturePath, String matCode, String stkCode, String notReason) throws ErpException;
+    void updateCheckStatus(String token, String compid, BigDecimal deductNum, String stICode, int isPassOrNot,
+                           String picturePath, String matCode, String stkCode, String notReason, int isAllowOut) throws ErpException;
 
     /**
      * 根据公司ID获取库存

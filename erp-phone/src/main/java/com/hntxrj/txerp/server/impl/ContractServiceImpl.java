@@ -9,6 +9,7 @@ import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.ContractDao;
+import com.hntxrj.txerp.dao.ContractDetailDao;
 import com.hntxrj.txerp.entity.*;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
@@ -44,17 +45,25 @@ import java.util.*;
 public class ContractServiceImpl implements ContractService {
 
     private final ContractDao dao;
+
     private final ContractMapper contractMapper;
+
     private final PublicInfoMapper publicInfoMapper;
+
     private final ContractMasterMapper contractMasterMapper;
-    private final ContractDetailMapper contractDetailMapper;
+    private final ContractDetailDao contractDetailDao;
+
     private final AdjunctMapper adjunctMapper;
+
     private final ContractGradePriceDetailRepository contractGradePriceDetailRepository;
+
     private final ConstructionMapper constructionMapper;
+
     private final MsgService msgService;
     private final MsgMapper msgMapper;
     private final SyncPlugin syncPlugin;
     private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
+
     private final ContractMasterRepository contractMasterRepository;
     private final RabbitMQSender rabbitMQSender;
 
@@ -63,17 +72,17 @@ public class ContractServiceImpl implements ContractService {
 
     @Autowired
     public ContractServiceImpl(ContractDao dao, ContractMapper contractMapper, PublicInfoMapper publicInfoMapper,
-                               ContractMasterMapper contractMasterMapper, ContractDetailMapper contractDetailMapper,
-                               AdjunctMapper adjunctMapper,
+                               ContractMasterMapper contractMasterMapper, AdjunctMapper adjunctMapper,
                                ContractGradePriceDetailRepository contractGradePriceDetailRepository,
                                ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
                                ContractMasterRepository contractMasterRepository, SyncPlugin syncPlugin,
                                RabbitMQSender rabbitMQSender) {
+                               ContractMasterRepository contractMasterRepository, SyncPlugin syncPlugin,
+                               ContractDetailDao contractDetailDao) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
         this.contractMasterMapper = contractMasterMapper;
-        this.contractDetailMapper = contractDetailMapper;
         this.adjunctMapper = adjunctMapper;
         this.contractGradePriceDetailRepository = contractGradePriceDetailRepository;
         this.constructionMapper = constructionMapper;
@@ -82,6 +91,7 @@ public class ContractServiceImpl implements ContractService {
         this.syncPlugin = syncPlugin;
         this.contractMasterRepository = contractMasterRepository;
         this.rabbitMQSender = rabbitMQSender;
+        this.contractDetailDao = contractDetailDao;
     }
 
 
@@ -456,14 +466,14 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void verifyContract(String contractUid, String compid,
+    public void verifyContract(String contractUid, String ccontractCode, String compid,
                                String opId, Integer verifyStatus) throws ErpException {
 
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
-        contractMapper.verifyContract(contractUid, compid, opId, sdf.format(new Date()), verifyStatus);
+        contractMapper.verifyContract(contractUid, ccontractCode, compid, opId, sdf.format(new Date()), verifyStatus);
         // 数据同步
-        Map<String, String> map = constructionMapper.getContractDetail(compid, contractUid);
+        Map<String, String> map = constructionMapper.getContractDetail(compid, contractUid, ccontractCode);
         // 把时间戳类型的时间转换成字符串形式存到sync_data表中
         map.put("StatusTime", SimpleDateFormatUtil.timeConvert(map.get("StatusTime")));
         map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));

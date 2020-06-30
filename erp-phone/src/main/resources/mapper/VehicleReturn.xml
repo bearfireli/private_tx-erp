@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hntxrj.txerp.mapper.VehicleReturnMapper">
+
+
+    <select id="vehicleReturnList" resultType="com.hntxrj.txerp.vo.VehicleReturnVO">
+        select vr.compid,
+            vr.TaskId_R as taskIdOld,
+            vr.TaskId_D as taskIdNew,
+            vr.VehicleID,
+            vr.SendTime,
+            vr.InvoiceID as invoiceIdOld,
+            vr.InvoiceID_New as invoiceIdNew,
+            vr.RemnantNum as remnantNum,
+            vr.ReturnNum as returnNum,
+            vr.SurplusNum as surplusNum,
+            vr.ScrapNum as scrapNum,
+            vr.SeparateNum as separateNum,
+            vr.Remarks as remarks,
+            vr.OpId as opId,
+            em.empname as opName,
+            vr.CreateTime as createTime,
+            vr.VehiceNumberOld as vehicleNumberOld,
+            vr.VehiceNumber as vehicleNumberNew,
+            vr.IsUse as isUse,
+            epp1.EPPName as eppNameOld,
+            epp2.EPPName as eppNameNew,
+            tp1.Placing as placingold,
+            tp2.Placing as placingNew,
+            tp1.StgId as stgIdOld,
+            tp2.StgId as stgIdNew,
+            tp1.TechnicalRequirements as technicalRequirementsOld,
+            tp2.TechnicalRequirements as technicalRequirementsNew
+        from PT_VEHICERETURNINFO vr
+            left join PT_TaskPlan tp1 on vr.compid = tp1.compid and vr.TaskId_R = tp1.TaskId
+            left join PT_TaskPlan tp2 on vr.compid = tp2.compid and vr.TaskId_D = tp2.TaskId
+            left join SM_EPPInfo epp1 on vr.compid = epp1.compid and tp1.EPPCode = epp1.EPPCode
+            left join SM_EPPInfo epp2 on vr.compid = epp2.compid and tp2.EPPCode = epp2.EPPCode
+            left join User_employee em on vr.compid = em.compid and vr.OpId = em.OpId
+        where vr.compid = #{compid}
+            and vr.RecStatus = 1
+            <if test="vehicleId !=null and vehicleId!=''">
+                and vr.vehicleId like '%'+#{vehicleId}+'%'
+            </if>
+            <if test="inEppName !=null and inEppName!=''">
+                and epp1.EPPName like '%'+#{inEppName}+'%'
+            </if>
+            <if test="outEppName !=null and outEppName!=''">
+                and epp2.EPPName like '%'+#{outEppName}+'%'
+            </if>
+            <if test="remarks !=null and remarks!=''">
+                and vr.Remarks like '%'+#{remarks}+'%'
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and vr.CreateTime <![CDATA[ >= ]]>   #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and vr.CreateTime <![CDATA[ <= ]]>  #{endTime}
+            </if>
+    </select>
+    <select id="vehicleReturnDetail" resultType="com.hntxrj.txerp.vo.VehicleReturnVO">
+        select vr.compid,
+            vr.TaskId_R as taskIdOld,
+            vr.TaskId_D as taskIdNew,
+            vr.VehicleID,
+            vr.SendTime,
+            vr.InvoiceID as invoiceIdOld,
+            vr.InvoiceID_New as invoiceIdNew,
+            vr.RemnantNum as remnantNum,
+            vr.ReturnNum as returnNum,
+            vr.SurplusNum as surplusNum,
+            vr.ScrapNum as scrapNum,
+            vr.SeparateNum as separateNum,
+            vr.Remarks as remarks,
+            vr.OpId as opId,
+            em.empname as opName,
+            vr.CreateTime as createTime,
+            vr.VehiceNumberOld as vehicleNumberOld,
+            vr.VehiceNumber as vehicleNumberNew,
+            vr.IsUse as isUse,
+            epp1.EPPName as eppNameOld,
+            epp2.EPPName as eppNameNew,
+            tp1.Placing as placingold,
+            tp2.Placing as placingNew,
+            tp1.StgId as stgIdOld,
+            tp2.StgId as stgIdNew,
+            tp1.TechnicalRequirements as technicalRequirementsOld,
+            tp2.TechnicalRequirements as technicalRequirementsNew
+        from PT_VEHICERETURNINFO vr
+            left join PT_TaskPlan tp1 on vr.compid = tp1.compid and vr.TaskId_R = tp1.TaskId
+            left join PT_TaskPlan tp2 on vr.compid = tp2.compid and vr.TaskId_D = tp2.TaskId
+            left join SM_EPPInfo epp1 on vr.compid = epp1.compid and tp1.EPPCode = epp1.EPPCode
+            left join SM_EPPInfo epp2 on vr.compid = epp2.compid and tp2.EPPCode = epp2.EPPCode
+            left join User_employee em on vr.compid = em.compid and vr.OpId = em.OpId
+        where vr.compid = #{compid}
+            and vr.VehicleID=#{vehicleId}
+            and vr.TaskId_R=#{taskIdOld}
+            and vr.SendTime=#{sendTime}
+            and vr.RecStatus = 1
+    </select>
+</mapper>

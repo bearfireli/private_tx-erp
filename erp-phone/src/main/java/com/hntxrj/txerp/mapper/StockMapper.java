@@ -257,9 +257,11 @@ public interface StockMapper {
      * @param stkCode        库位编码
      * @param inspector      检测人
      * @param inspectionTime 检测时间
+     * @param isAllowOut     是否允许出厂过磅:0不允许 1允许
      */
     void updateCheckStatus(String compid, BigDecimal deductNum, String stICode, int isPassOrNot, String picturePath,
-                           String matCode, String stkCode, String notReason, String inspector, Date inspectionTime);
+                           String matCode, String stkCode, String notReason, String inspector, Date inspectionTime,
+                           int isAllowOut);
 
     /**
      * 根据公司ID获取库存

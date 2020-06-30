@@ -142,11 +142,15 @@
     <update id="verifyContract">
         update SM_ContractDetail
         set VerifyStatus=#{verifyStatus},
-            VerifyId=#{opId},
-            VerifyTime=#{verifyTime},
-            updownmark=0
+        VerifyId=#{opId},
+        VerifyTime=#{verifyTime},
+        updownmark=0
         where compid = #{compid}
-          and contractUID = #{contractUid}
+        <if test="ccontractCode != null">
+            <!--TODO: 后续删除判断-->
+            and ccontractCode = #{ccontractCode}
+        </if>
+        and contractUID = #{contractUid}
     </update>
     <select id="getStgIdDropDown" resultType="com.hntxrj.txerp.vo.StgIdDropDown">
         select compid, stgid, NotPumpPrice, PumpPrice, TowerCranePrice, isDefault

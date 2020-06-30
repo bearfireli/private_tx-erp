@@ -107,7 +107,7 @@ public interface ConstructionMapper {
      */
     void deleteBuildId(String buildId, String contractCode);
 
-    Map<String, String> getContractDetail(String compid, String contractUid);
+    Map<String, String> getContractDetail(String compid, String contractUid, String ccontractCode);
 
     /**
      * 作废邀请码

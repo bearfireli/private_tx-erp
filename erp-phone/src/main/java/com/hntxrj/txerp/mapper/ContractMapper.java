@@ -44,7 +44,7 @@ public interface ContractMapper {
      * @param opId         操作员代号
      * @param verifyStatus 审核状态
      */
-    void verifyContract(String contractUid, String compid, String opId, String verifyTime, Integer verifyStatus);
+    void verifyContract(String contractUid, String ccontractCode, String compid, String opId, String verifyTime, Integer verifyStatus);
 
     /**
      * 获取合同砼价格列表

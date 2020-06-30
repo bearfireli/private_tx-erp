@@ -83,8 +83,8 @@ public class ContractApi {
      * @return 结果
      */
     @PostMapping("/verifyContract")
-    public ResultVO verifyContract(String contractUid, String compid, String opId, Integer verifyStatus) throws ErpException {
-        contractService.verifyContract(contractUid, compid, opId, verifyStatus);
+    public ResultVO verifyContract(String contractUid, String ccontractCode, String compid, String opId, Integer verifyStatus) throws ErpException {
+        contractService.verifyContract(contractUid, ccontractCode, compid, opId, verifyStatus);
         return ResultVO.create();
     }
 
