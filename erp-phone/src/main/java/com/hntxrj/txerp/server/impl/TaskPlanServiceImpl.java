@@ -10,6 +10,7 @@ import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.TaskPlan;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
+import com.hntxrj.txerp.rabbitmq.RabbitMQSender;
 import com.hntxrj.txerp.repository.TaskPlanRepository;
 import com.hntxrj.txerp.server.TaskPlanService;
 import com.hntxrj.txerp.util.EntityTools;
@@ -32,9 +33,7 @@ import java.util.*;
 public class TaskPlanServiceImpl implements TaskPlanService {
 
     private final TaskPlanMapper taskPlanMapper;
-
     private final TaskPlanRepository taskPlanRepository;
-
     private final StockMapper stockMapper;
     private final ConcreteMapper concreteMapper;
     private final PublicInfoMapper publicInfoMapper;
@@ -42,10 +41,10 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     private final ConstructionMapper constructionMapper;
     private StirInfoSetServiceImpl stirInfoSetMapper;
     private final MsgService msgService;
-
     private final MsgMapper msgMapper;
     private final SyncPlugin syncPlugin;
     private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
+    private final RabbitMQSender rabbitMQSender;
     @Resource
     private RedisTemplate<String, Date> redisTemplate;
 
@@ -54,7 +53,8 @@ public class TaskPlanServiceImpl implements TaskPlanService {
                                StockMapper stockMapper, ConcreteMapper concreteMapper,
                                PublicInfoMapper publicInfoMapper, SystemVarInitMapper systemVarInitMapper,
                                ConstructionMapper constructionMapper, StirInfoSetServiceImpl stirInfoSetMapper,
-                               MsgService msgService, MsgMapper msgMapper, SyncPlugin syncPlugin) {
+                               MsgService msgService, MsgMapper msgMapper, SyncPlugin syncPlugin,
+                               RabbitMQSender rabbitMQSender) {
         this.taskPlanMapper = taskPlanMapper;
         this.taskPlanRepository = taskPlanRepository;
         this.stockMapper = stockMapper;
@@ -66,6 +66,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         this.msgService = msgService;
         this.msgMapper = msgMapper;
         this.syncPlugin = syncPlugin;
+        this.rabbitMQSender = rabbitMQSender;
     }
 
     @Override
@@ -199,7 +200,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         }
         taskPlan.setAdjustmentTime(taskPlan.getPreTime());
         try {
-            taskPlanRepository.save(taskPlan);
+            TaskPlan saveTaskPlan = taskPlanRepository.save(taskPlan);
             HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskPlan.getTaskId(), taskPlan.getCompid());
             map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
             map.put("PreTime", SimpleDateFormatUtil.timeConvert(map.get("PreTime")));
@@ -216,17 +217,12 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             map.put("VerifyTimeTwo", SimpleDateFormatUtil.timeConvert(map.get("VerifyTimeTwo")));
             // 数据同步
             syncPlugin.save(map, "pt_taskplan", "INS", taskPlan.getCompid());
-
-            int typeId = 1;
-            List<RecipientVO> recipient = msgMapper.getRecipientList(taskPlan.getCompid(), typeId);
-            for (RecipientVO r : recipient) {
-                SendmsgVO sendmsgVO = new SendmsgVO();
-                sendmsgVO.setSyncOtherMachine(2);
-                sendmsgVO.setToAccount(r.getUid().toString());
-                sendmsgVO.setMsgLifeTime(7);
-                sendmsgVO.setMsgContent("有新添加的任务单，请审核!");
-                msgService.sendMsg(sendmsgVO);
-            }
+            MessagePushVO messagePushVO = new MessagePushVO();
+            messagePushVO.setCompid(taskPlan.getCompid());
+            messagePushVO.setTypeId(1);
+            messagePushVO.setTaskId(saveTaskPlan.getTaskId());
+            messagePushVO.setMessage("新增任务单【" + saveTaskPlan.getTaskId() + "】,请审核!");
+            rabbitMQSender.erpPhoneMessagePush(messagePushVO);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -238,7 +234,6 @@ public class TaskPlanServiceImpl implements TaskPlanService {
     public void verifyTaskPlan(String taskId, String compid, Integer verifyStatus) throws ErpException {
         try {
             taskPlanMapper.verifyTaskPlan(taskId, compid, verifyStatus, new Date());
-
 
             HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskId, compid);
             map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
@@ -257,23 +252,18 @@ public class TaskPlanServiceImpl implements TaskPlanService {
             // 数据同步
             syncPlugin.save(map, "PT_TaskPlan", "UP", compid);
 
-
-            int typeId = 2;
-            List<RecipientVO> recipient = msgMapper.getRecipientList(compid, typeId);
-            for (RecipientVO r : recipient) {
-                SendmsgVO sendmsgVO = new SendmsgVO();
-                sendmsgVO.setSyncOtherMachine(2);
-                sendmsgVO.setToAccount(r.getUid().toString());
-                sendmsgVO.setMsgLifeTime(7);
-                String msgContent = "任务单：【" + taskId + "】审核状态修改成功";
-                if (verifyStatus == 1) {
-                    msgContent = "任务单：【" + taskId + "】已审核，请开配比";
-                } else if (verifyStatus == 0) {
-                    msgContent = "任务单：【" + taskId + "】已取消审核";
-                }
-                sendmsgVO.setMsgContent(msgContent);
-                msgService.sendMsg(sendmsgVO);
+            final MessagePushVO messagePushVO = new MessagePushVO();
+            messagePushVO.setCompid(compid);
+            messagePushVO.setTypeId(2);
+            messagePushVO.setTaskId(taskId);
+            String msgContent = "任务单：【" + taskId + "】审核状态修改成功";
+            if (verifyStatus == 1) {
+                msgContent = "任务单：【" + taskId + "】审核成功";
+            } else if (verifyStatus == 0) {
+                msgContent = "任务单：【" + taskId + "】已取消审核";
             }
+            messagePushVO.setMessage(msgContent);
+            rabbitMQSender.erpPhoneMessagePush(messagePushVO);
 
         } catch (Exception e) {
             e.printStackTrace();
