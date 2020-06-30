@@ -36,7 +36,7 @@ public class JPushUtil {
     private final Logger log = LoggerFactory.getLogger(JPushUtil.class);
 
 
-    public void messagePush(MessagePushVO messagePushVO, List<RecipientVO> aliasList) {
+    public void messagePush(MessagePushVO messagePushVO, List<RecipientVO> aliasList) throws ErpException {
 
         if (messagePushVO == null) {
             throw new ErpException(ErrEumn.MESSAGE_PUSH_IS_NULL);
