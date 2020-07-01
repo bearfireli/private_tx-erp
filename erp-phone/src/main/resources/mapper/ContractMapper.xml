@@ -156,7 +156,10 @@
         select compid, stgid, NotPumpPrice, PumpPrice, TowerCranePrice, isDefault
         from SM_GradePriceInfo
         where compid = #{compid}
-          and recstatus = 1
+        <if test="stgId != null">
+            and stgId like '%'+#{stgId}+'%'
+        </if>
+        and recstatus = 1
     </select>
     <select id="getPriceMarkupDropDown" resultType="com.hntxrj.txerp.vo.PriceMarkupDropDown">
         select PPName pName,
@@ -176,7 +179,11 @@
     </select>
     <select id="getContractId" resultType="java.lang.String">
         declare @rt varchar(20);
-        exec [sp_Query_Create_ContractId] 1, #{compid}, @rt output;
+        exec [sp_Query_Create_ContractId] 1,
+        #{compid},
+        @
+        rt
+        output;
         select @rt;
     </select>
 
@@ -224,26 +231,29 @@
 
     <!-- 查询泵车价格 -->
     <select id="selectPumpTruck" resultType="java.lang.Integer">
-        select Pumptype from SM_PumpPriceSet
-        where compid=#{compid}
-        and Pumptype=#{pumpType}
-        and contractUID=#{contractUID}
-        and CContractCode=#{contractDetailCode}
+        select Pumptype
+        from SM_PumpPriceSet
+        where compid = #{compid}
+          and Pumptype = #{pumpType}
+          and contractUID = #{contractUID}
+          and CContractCode = #{contractDetailCode}
     </select>
 
 
     <!-- 修改合同泵车价格 -->
     <select id="updatePumpTruck">
-        update SM_PumpPriceSet set
-          OpId=#{opid},
-          PumpPrice=#{pumPrice},
-          TableExpense=#{tableExpense},
-          CreateTime=#{createTime},
-          RecStatus=1,
-          UpDownMark=0,
-          UpDown=0
-        where compid=#{compid} and  Pumptype=#{pumpType}
-        and  ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
+        update SM_PumpPriceSet
+        set OpId=#{opid},
+            PumpPrice=#{pumPrice},
+            TableExpense=#{tableExpense},
+            CreateTime=#{createTime},
+            RecStatus=1,
+            UpDownMark=0,
+            UpDown=0
+        where compid = #{compid}
+          and Pumptype = #{pumpType}
+          and ContractUID = #{contractUID}
+          and CContractCode = #{contractDetailCode}
     </select>
 
 
@@ -288,13 +298,15 @@
     <!--修改合同运距-->
 
     <insert id="updateContractDistance">
-       update SM_ContractDistanceSet set
-         Distance=#{distance},
-         RecStatus=#{recStatus},
-         Remarks=#{remarks},
-         UpDownMark=0,
-         UpDown=0
-        where compid=#{compid} and ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
+        update SM_ContractDistanceSet
+        set Distance=#{distance},
+            RecStatus=#{recStatus},
+            Remarks=#{remarks},
+            UpDownMark=0,
+            UpDown=0
+        where compid = #{compid}
+          and ContractUID = #{contractUID}
+          and CContractCode = #{contractDetailCode}
 
     </insert>
 
@@ -328,11 +340,12 @@
 
     <!--查询特殊加价材料-->
     <select id="getContractPriceMarkup" resultType="java.lang.String">
-         select PPCode from SM_ContractPriceMarkup
-         where compid=#{compid}
-         and ContractUID=#{contractUid}
-         and CContractCode=#{contractDetailCode}
-         and PPCode=#{ppCode}
+        select PPCode
+        from SM_ContractPriceMarkup
+        where compid = #{compid}
+          and ContractUID = #{contractUid}
+          and CContractCode = #{contractDetailCode}
+          and PPCode = #{ppCode}
     </select>
 
     <!--查询泵车列表-->
@@ -380,19 +393,21 @@
     </select>
 
     <select id="getContractVerifyStatus" resultType="java.lang.Boolean">
-        select VerifyStatus from SM_ContractDetail
-        where ContractUID=#{contractUID}
-         and CContractCode=#{contractDetailCode}
-          and compid=#{compid}
-          and RecStatus=1
+        select VerifyStatus
+        from SM_ContractDetail
+        where ContractUID = #{contractUID}
+          and CContractCode = #{contractDetailCode}
+          and compid = #{compid}
+          and RecStatus = 1
     </select>
 
     <select id="getContractUID" resultType="java.lang.String">
-        select ContractUID from SM_ContractDetail
-        where compid=#{compid}
-        and CContractCode=#{contractDetailCode}
-        and RecStatus=1
-        and verifyStatus =1
+        select ContractUID
+        from SM_ContractDetail
+        where compid = #{compid}
+          and CContractCode = #{contractDetailCode}
+          and RecStatus = 1
+          and verifyStatus = 1
     </select>
 
 
@@ -437,26 +452,37 @@
 
 
     <select id="getContractMaster" resultType="java.util.HashMap">
-        select * from SM_ContractMaster
-        where compid=#{compid} and  ContractId=#{contractId} and ContractUID=#{contractUid}
+        select *
+        from SM_ContractMaster
+        where compid = #{compid}
+          and ContractId = #{contractId}
+          and ContractUID = #{contractUid}
     </select>
 
     <select id="getContractDetailMap" resultType="java.util.HashMap">
-       select * from SM_ContractDetail
-       where ContractUID=#{contractUid} and CContractCode=#{contractDetailCode}
+        select *
+        from SM_ContractDetail
+        where ContractUID = #{contractUid}
+          and CContractCode = #{contractDetailCode}
     </select>
 
 
     <select id="getContractMarkupVO" resultType="com.hntxrj.txerp.entity.ContractPriceMarkup">
-       select top 1 * from sm_contractpricemarkup
-       where ContractUID=#{contractUid} and CContractCode=#{contractDetailCode}
-       and compid=#{compid} and PPCode=#{ppcode}
+        select top 1 *
+        from sm_contractpricemarkup
+        where ContractUID = #{contractUid}
+          and CContractCode = #{contractDetailCode}
+          and compid = #{compid}
+          and PPCode = #{ppcode}
     </select>
 
     <select id="getPumpTruck" resultType="java.util.HashMap">
-       select top 1 * from  SM_PumpPriceSet
-       where compid=#{compid} and  Pumptype=#{pumpType}
-       and  ContractUID=#{contractUID} and CContractCode=#{contractDetailCode}
+        select top 1 *
+        from SM_PumpPriceSet
+        where compid = #{compid}
+          and Pumptype = #{pumpType}
+          and ContractUID = #{contractUID}
+          and CContractCode = #{contractDetailCode}
     </select>
 
 </mapper>

@@ -88,9 +88,10 @@ public interface ContractMapper {
      * 获取标号下拉
      *
      * @param compid 企业id
+     * @param stgId
      * @return 标号下拉
      */
-    List<StgIdDropDown> getStgIdDropDown(String compid);
+    List<StgIdDropDown> getStgIdDropDown(String compid, String stgId);
 
     /**
      * 获取特殊材料下拉

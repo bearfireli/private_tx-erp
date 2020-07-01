@@ -490,7 +490,7 @@ public interface ContractService {
      * @param compid 企业id
      * @return 标号下拉
      */
-    List<StgIdDropDown> getContractStgIdDropDown(String compid);
+    List<StgIdDropDown> getContractStgIdDropDown(String compid, String stgId);
 
     /**
      * 保存合同标号价格

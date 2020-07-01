@@ -745,8 +745,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<StgIdDropDown> getContractStgIdDropDown(String compid) {
-        return contractMapper.getStgIdDropDown(compid);
+    public List<StgIdDropDown> getContractStgIdDropDown(String compid, String stgId) {
+        return contractMapper.getStgIdDropDown(compid, stgId);
     }
 
     @Override
