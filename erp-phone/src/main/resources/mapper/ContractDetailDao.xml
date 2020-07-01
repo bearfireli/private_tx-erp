@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hntxrj.txerp.dao.ContractDetailDao">
+    <resultMap id="BaseResultMap" type="com.hntxrj.txerp.entity.ContractDetail">
+        <id column="ContractUID" jdbcType="VARCHAR" property="contractUID"/>
+        <id column="ccontractCode" jdbcType="VARCHAR" property="ccontractCode"/>
+        <result column="compid" jdbcType="VARCHAR" property="compid"/>
+        <result column="eppCode" jdbcType="VARCHAR" property="eppCode"/>
+        <result column="BuilderCode" jdbcType="VARCHAR" property="builderCode"/>
+        <result column="Address" jdbcType="VARCHAR" property="address"/>
+        <result column="MinJumpNum" jdbcType="DECIMAL" property="minJumpNum"/>
+        <result column="JumpPriceMarkup" jdbcType="DECIMAL" property="jumpPriceMarkup"/>
+        <result column="PreMoney" jdbcType="DECIMAL" property="preMoney"/>
+        <result column="PreNum" jdbcType="DECIMAL" property="preNum"/>
+        <result column="SuretyMoney" jdbcType="DECIMAL" property="suretyMoney"/>
+        <result column="ContractNum" jdbcType="DECIMAL" property="contractNum"/>
+        <result column="AccountNum" jdbcType="DECIMAL" property="accountNum"/>
+        <result column="ProduceMoney" jdbcType="DECIMAL" property="produceMoney"/>
+        <result column="AccountPlace" jdbcType="VARCHAR" property="accountPlace"/>
+        <result column="IsTax" jdbcType="BIT" property="isTax"/>
+        <result column="TaxRate" jdbcType="DECIMAL" property="taxRate"/>
+        <result column="Distance" jdbcType="DECIMAL" property="distance"/>
+        <result column="MatStatus" jdbcType="INTEGER" property="matStatus"/>
+        <result column="ContractStatus" jdbcType="INTEGER" property="contractStatus"/>
+        <result column="StatusTime" jdbcType="TIMESTAMP" property="statusTime"/>
+        <result column="VerifyStatus" jdbcType="BIT" property="verifyStatus"/>
+        <result column="VerifyId" jdbcType="VARCHAR" property="verifyId"/>
+        <result column="VerifyTime" jdbcType="TIMESTAMP" property="verifyTime"/>
+        <result column="OpId" jdbcType="VARCHAR" property="opId"/>
+        <result column="CreateTime" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="IsGPSLocate" jdbcType="BIT" property="isGPSLocate"/>
+        <result column="Remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="UpDown" jdbcType="BIT" property="upDown"/>
+        <result column="RecStatus" jdbcType="BIT" property="recStatus"/>
+        <result column="MortarModule" jdbcType="INTEGER" property="mortarModule"/>
+        <result column="MortarStgid" jdbcType="VARCHAR" property="mortarStgid"/>
+        <result column="WaterModule" jdbcType="INTEGER" property="waterModule"/>
+        <result column="WaterStgid" jdbcType="VARCHAR" property="waterStgid"/>
+        <result column="WaterAccountNum" jdbcType="DECIMAL" property="waterAccountNum"/>
+        <result column="NoloadModule" jdbcType="INTEGER" property="noloadModule"/>
+        <result column="NoloadOderMinNum" jdbcType="DECIMAL" property="noloadOderMinNum"/>
+        <result column="NoloadCarMinNum" jdbcType="DECIMAL" property="noloadCarMinNum"/>
+        <result column="NoloadMoney" jdbcType="DECIMAL" property="noloadMoney"/>
+        <result column="TableExpenseModule" jdbcType="INTEGER" property="tableExpenseModule"/>
+        <result column="UpDownMark" jdbcType="INTEGER" property="upDownMark"/>
+        <result column="NoloadMoneyStyle" jdbcType="INTEGER" property="noloadMoneyStyle"/>
+        <result column="NoloadAllowsNumber" jdbcType="INTEGER" property="noloadAllowsNumber"/>
+        <result column="NoloadMoneyNumber" jdbcType="DECIMAL" property="noloadMoneyNumber"/>
+        <result column="SecondVerifyStatus" jdbcType="BIT" property="secondVerifyStatus"/>
+        <result column="SecondVerifyName" jdbcType="VARCHAR" property="secondVerifyName"/>
+        <result column="SecondVerifyTime" jdbcType="TIMESTAMP" property="secondVerifyTime"/>
+        <result column="OpenTime" jdbcType="TIMESTAMP" property="openTime"/>
+        <result column="RebateRatio" jdbcType="DECIMAL" property="rebateRatio"/>
+        <result column="RebateAmount" jdbcType="DECIMAL" property="rebateAmount"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ContractUID, ccontractCode, compid, eppCode, BuilderCode, Address, MinJumpNum, JumpPriceMarkup,
+    PreMoney, PreNum, SuretyMoney, ContractNum, AccountNum, ProduceMoney, AccountPlace, 
+    IsTax, TaxRate, Distance, MatStatus, ContractStatus, StatusTime, VerifyStatus, VerifyId, 
+    VerifyTime, OpId, CreateTime, IsGPSLocate, Remarks, UpDown, RecStatus, MortarModule, 
+    MortarStgid, WaterModule, WaterStgid, WaterAccountNum, NoloadModule, NoloadOderMinNum, 
+    NoloadCarMinNum, NoloadMoney, TableExpenseModule, UpDownMark, NoloadMoneyStyle, NoloadAllowsNumber, 
+    NoloadMoneyNumber, SecondVerifyStatus, SecondVerifyName, SecondVerifyTime, OpenTime, 
+    RebateRatio, RebateAmount
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="com.hntxrj.txerp.entity.ContractDetailKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from SM_ContractDetail
+        where ContractUID = #{contractUID,jdbcType=VARCHAR}
+        and ccontractCode = #{ccontractCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="com.hntxrj.txerp.entity.ContractDetailKey">
+        delete
+        from SM_ContractDetail
+        where ContractUID = #{contractUID,jdbcType=VARCHAR}
+          and ccontractCode = #{ccontractCode,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.hntxrj.txerp.entity.ContractDetail">
+        insert into SM_ContractDetail (ContractUID, ccontractCode, compid,
+                                       eppCode, BuilderCode, Address,
+                                       MinJumpNum, JumpPriceMarkup, PreMoney,
+                                       PreNum, SuretyMoney, ContractNum,
+                                       AccountNum, ProduceMoney, AccountPlace,
+                                       IsTax, TaxRate, Distance,
+                                       MatStatus, ContractStatus, StatusTime,
+                                       VerifyStatus, VerifyId, VerifyTime,
+                                       OpId, CreateTime, IsGPSLocate,
+                                       Remarks, UpDown, RecStatus,
+                                       MortarModule, MortarStgid, WaterModule,
+                                       WaterStgid, WaterAccountNum, NoloadModule,
+                                       NoloadOderMinNum, NoloadCarMinNum, NoloadMoney,
+                                       TableExpenseModule, UpDownMark, NoloadMoneyStyle,
+                                       NoloadAllowsNumber, NoloadMoneyNumber,
+                                       SecondVerifyStatus, SecondVerifyName, SecondVerifyTime,
+                                       OpenTime, RebateRatio, RebateAmount)
+        values (#{contractUID,jdbcType=VARCHAR}, #{ccontractCode,jdbcType=VARCHAR}, #{compid,jdbcType=VARCHAR},
+                #{eppCode,jdbcType=VARCHAR}, #{builderCode,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+                #{minJumpNum,jdbcType=DECIMAL}, #{jumpPriceMarkup,jdbcType=DECIMAL}, #{preMoney,jdbcType=DECIMAL},
+                #{preNum,jdbcType=DECIMAL}, #{suretyMoney,jdbcType=DECIMAL}, #{contractNum,jdbcType=DECIMAL},
+                #{accountNum,jdbcType=DECIMAL}, #{produceMoney,jdbcType=DECIMAL}, #{accountPlace,jdbcType=VARCHAR},
+                #{isTax,jdbcType=BIT}, #{taxRate,jdbcType=DECIMAL}, #{distance,jdbcType=DECIMAL},
+                #{matStatus,jdbcType=INTEGER}, #{contractStatus,jdbcType=INTEGER}, #{statusTime,jdbcType=TIMESTAMP},
+                #{verifyStatus,jdbcType=BIT}, #{verifyId,jdbcType=VARCHAR}, #{verifyTime,jdbcType=TIMESTAMP},
+                #{opId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{isGPSLocate,jdbcType=BIT},
+                #{remarks,jdbcType=VARCHAR}, #{upDown,jdbcType=BIT}, #{recStatus,jdbcType=BIT},
+                #{mortarModule,jdbcType=INTEGER}, #{mortarStgid,jdbcType=VARCHAR}, #{waterModule,jdbcType=INTEGER},
+                #{waterStgid,jdbcType=VARCHAR}, #{waterAccountNum,jdbcType=DECIMAL}, #{noloadModule,jdbcType=INTEGER},
+                #{noloadOderMinNum,jdbcType=DECIMAL}, #{noloadCarMinNum,jdbcType=DECIMAL},
+                #{noloadMoney,jdbcType=DECIMAL},
+                #{tableExpenseModule,jdbcType=INTEGER}, #{upDownMark,jdbcType=INTEGER},
+                #{noloadMoneyStyle,jdbcType=INTEGER},
+                #{noloadAllowsNumber,jdbcType=INTEGER}, #{noloadMoneyNumber,jdbcType=DECIMAL},
+                #{secondVerifyStatus,jdbcType=BIT}, #{secondVerifyName,jdbcType=VARCHAR},
+                #{secondVerifyTime,jdbcType=TIMESTAMP},
+                #{openTime,jdbcType=TIMESTAMP}, #{rebateRatio,jdbcType=DECIMAL}, #{rebateAmount,jdbcType=DECIMAL})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hntxrj.txerp.entity.ContractDetail">
+        insert into SM_ContractDetail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractUID != null">
+                ContractUID,
+            </if>
+            <if test="ccontractCode != null">
+                ccontractCode,
+            </if>
+            <if test="compid != null">
+                compid,
+            </if>
+            <if test="eppCode != null">
+                eppCode,
+            </if>
+            <if test="builderCode != null">
+                BuilderCode,
+            </if>
+            <if test="address != null">
+                Address,
+            </if>
+            <if test="minJumpNum != null">
+                MinJumpNum,
+            </if>
+            <if test="jumpPriceMarkup != null">
+                JumpPriceMarkup,
+            </if>
+            <if test="preMoney != null">
+                PreMoney,
+            </if>
+            <if test="preNum != null">
+                PreNum,
+            </if>
+            <if test="suretyMoney != null">
+                SuretyMoney,
+            </if>
+            <if test="contractNum != null">
+                ContractNum,
+            </if>
+            <if test="accountNum != null">
+                AccountNum,
+            </if>
+            <if test="produceMoney != null">
+                ProduceMoney,
+            </if>
+            <if test="accountPlace != null">
+                AccountPlace,
+            </if>
+            <if test="isTax != null">
+                IsTax,
+            </if>
+            <if test="taxRate != null">
+                TaxRate,
+            </if>
+            <if test="distance != null">
+                Distance,
+            </if>
+            <if test="matStatus != null">
+                MatStatus,
+            </if>
+            <if test="contractStatus != null">
+                ContractStatus,
+            </if>
+            <if test="statusTime != null">
+                StatusTime,
+            </if>
+            <if test="verifyStatus != null">
+                VerifyStatus,
+            </if>
+            <if test="verifyId != null">
+                VerifyId,
+            </if>
+            <if test="verifyTime != null">
+                VerifyTime,
+            </if>
+            <if test="opId != null">
+                OpId,
+            </if>
+            <if test="createTime != null">
+                CreateTime,
+            </if>
+            <if test="isGPSLocate != null">
+                IsGPSLocate,
+            </if>
+            <if test="remarks != null">
+                Remarks,
+            </if>
+            <if test="upDown != null">
+                UpDown,
+            </if>
+            <if test="recStatus != null">
+                RecStatus,
+            </if>
+            <if test="mortarModule != null">
+                MortarModule,
+            </if>
+            <if test="mortarStgid != null">
+                MortarStgid,
+            </if>
+            <if test="waterModule != null">
+                WaterModule,
+            </if>
+            <if test="waterStgid != null">
+                WaterStgid,
+            </if>
+            <if test="waterAccountNum != null">
+                WaterAccountNum,
+            </if>
+            <if test="noloadModule != null">
+                NoloadModule,
+            </if>
+            <if test="noloadOderMinNum != null">
+                NoloadOderMinNum,
+            </if>
+            <if test="noloadCarMinNum != null">
+                NoloadCarMinNum,
+            </if>
+            <if test="noloadMoney != null">
+                NoloadMoney,
+            </if>
+            <if test="tableExpenseModule != null">
+                TableExpenseModule,
+            </if>
+            <if test="upDownMark != null">
+                UpDownMark,
+            </if>
+            <if test="noloadMoneyStyle != null">
+                NoloadMoneyStyle,
+            </if>
+            <if test="noloadAllowsNumber != null">
+                NoloadAllowsNumber,
+            </if>
+            <if test="noloadMoneyNumber != null">
+                NoloadMoneyNumber,
+            </if>
+            <if test="secondVerifyStatus != null">
+                SecondVerifyStatus,
+            </if>
+            <if test="secondVerifyName != null">
+                SecondVerifyName,
+            </if>
+            <if test="secondVerifyTime != null">
+                SecondVerifyTime,
+            </if>
+            <if test="openTime != null">
+                OpenTime,
+            </if>
+            <if test="rebateRatio != null">
+                RebateRatio,
+            </if>
+            <if test="rebateAmount != null">
+                RebateAmount,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractUID != null">
+                #{contractUID,jdbcType=VARCHAR},
+            </if>
+            <if test="ccontractCode != null">
+                #{ccontractCode,jdbcType=VARCHAR},
+            </if>
+            <if test="compid != null">
+                #{compid,jdbcType=VARCHAR},
+            </if>
+            <if test="eppCode != null">
+                #{eppCode,jdbcType=VARCHAR},
+            </if>
+            <if test="builderCode != null">
+                #{builderCode,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="minJumpNum != null">
+                #{minJumpNum,jdbcType=DECIMAL},
+            </if>
+            <if test="jumpPriceMarkup != null">
+                #{jumpPriceMarkup,jdbcType=DECIMAL},
+            </if>
+            <if test="preMoney != null">
+                #{preMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="preNum != null">
+                #{preNum,jdbcType=DECIMAL},
+            </if>
+            <if test="suretyMoney != null">
+                #{suretyMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="contractNum != null">
+                #{contractNum,jdbcType=DECIMAL},
+            </if>
+            <if test="accountNum != null">
+                #{accountNum,jdbcType=DECIMAL},
+            </if>
+            <if test="produceMoney != null">
+                #{produceMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="accountPlace != null">
+                #{accountPlace,jdbcType=VARCHAR},
+            </if>
+            <if test="isTax != null">
+                #{isTax,jdbcType=BIT},
+            </if>
+            <if test="taxRate != null">
+                #{taxRate,jdbcType=DECIMAL},
+            </if>
+            <if test="distance != null">
+                #{distance,jdbcType=DECIMAL},
+            </if>
+            <if test="matStatus != null">
+                #{matStatus,jdbcType=INTEGER},
+            </if>
+            <if test="contractStatus != null">
+                #{contractStatus,jdbcType=INTEGER},
+            </if>
+            <if test="statusTime != null">
+                #{statusTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="verifyStatus != null">
+                #{verifyStatus,jdbcType=BIT},
+            </if>
+            <if test="verifyId != null">
+                #{verifyId,jdbcType=VARCHAR},
+            </if>
+            <if test="verifyTime != null">
+                #{verifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opId != null">
+                #{opId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isGPSLocate != null">
+                #{isGPSLocate,jdbcType=BIT},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="upDown != null">
+                #{upDown,jdbcType=BIT},
+            </if>
+            <if test="recStatus != null">
+                #{recStatus,jdbcType=BIT},
+            </if>
+            <if test="mortarModule != null">
+                #{mortarModule,jdbcType=INTEGER},
+            </if>
+            <if test="mortarStgid != null">
+                #{mortarStgid,jdbcType=VARCHAR},
+            </if>
+            <if test="waterModule != null">
+                #{waterModule,jdbcType=INTEGER},
+            </if>
+            <if test="waterStgid != null">
+                #{waterStgid,jdbcType=VARCHAR},
+            </if>
+            <if test="waterAccountNum != null">
+                #{waterAccountNum,jdbcType=DECIMAL},
+            </if>
+            <if test="noloadModule != null">
+                #{noloadModule,jdbcType=INTEGER},
+            </if>
+            <if test="noloadOderMinNum != null">
+                #{noloadOderMinNum,jdbcType=DECIMAL},
+            </if>
+            <if test="noloadCarMinNum != null">
+                #{noloadCarMinNum,jdbcType=DECIMAL},
+            </if>
+            <if test="noloadMoney != null">
+                #{noloadMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="tableExpenseModule != null">
+                #{tableExpenseModule,jdbcType=INTEGER},
+            </if>
+            <if test="upDownMark != null">
+                #{upDownMark,jdbcType=INTEGER},
+            </if>
+            <if test="noloadMoneyStyle != null">
+                #{noloadMoneyStyle,jdbcType=INTEGER},
+            </if>
+            <if test="noloadAllowsNumber != null">
+                #{noloadAllowsNumber,jdbcType=INTEGER},
+            </if>
+            <if test="noloadMoneyNumber != null">
+                #{noloadMoneyNumber,jdbcType=DECIMAL},
+            </if>
+            <if test="secondVerifyStatus != null">
+                #{secondVerifyStatus,jdbcType=BIT},
+            </if>
+            <if test="secondVerifyName != null">
+                #{secondVerifyName,jdbcType=VARCHAR},
+            </if>
+            <if test="secondVerifyTime != null">
+                #{secondVerifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="openTime != null">
+                #{openTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="rebateRatio != null">
+                #{rebateRatio,jdbcType=DECIMAL},
+            </if>
+            <if test="rebateAmount != null">
+                #{rebateAmount,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hntxrj.txerp.entity.ContractDetail">
+        update SM_ContractDetail
+        <set>
+            <if test="compid != null">
+                compid = #{compid,jdbcType=VARCHAR},
+            </if>
+            <if test="eppCode != null">
+                eppCode = #{eppCode,jdbcType=VARCHAR},
+            </if>
+            <if test="builderCode != null">
+                BuilderCode = #{builderCode,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                Address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="minJumpNum != null">
+                MinJumpNum = #{minJumpNum,jdbcType=DECIMAL},
+            </if>
+            <if test="jumpPriceMarkup != null">
+                JumpPriceMarkup = #{jumpPriceMarkup,jdbcType=DECIMAL},
+            </if>
+            <if test="preMoney != null">
+                PreMoney = #{preMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="preNum != null">
+                PreNum = #{preNum,jdbcType=DECIMAL},
+            </if>
+            <if test="suretyMoney != null">
+                SuretyMoney = #{suretyMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="contractNum != null">
+                ContractNum = #{contractNum,jdbcType=DECIMAL},
+            </if>
+            <if test="accountNum != null">
+                AccountNum = #{accountNum,jdbcType=DECIMAL},
+            </if>
+            <if test="produceMoney != null">
+                ProduceMoney = #{produceMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="accountPlace != null">
+                AccountPlace = #{accountPlace,jdbcType=VARCHAR},
+            </if>
+            <if test="isTax != null">
+                IsTax = #{isTax,jdbcType=BIT},
+            </if>
+            <if test="taxRate != null">
+                TaxRate = #{taxRate,jdbcType=DECIMAL},
+            </if>
+            <if test="distance != null">
+                Distance = #{distance,jdbcType=DECIMAL},
+            </if>
+            <if test="matStatus != null">
+                MatStatus = #{matStatus,jdbcType=INTEGER},
+            </if>
+            <if test="contractStatus != null">
+                ContractStatus = #{contractStatus,jdbcType=INTEGER},
+            </if>
+            <if test="statusTime != null">
+                StatusTime = #{statusTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="verifyStatus != null">
+                VerifyStatus = #{verifyStatus,jdbcType=BIT},
+            </if>
+            <if test="verifyId != null">
+                VerifyId = #{verifyId,jdbcType=VARCHAR},
+            </if>
+            <if test="verifyTime != null">
+                VerifyTime = #{verifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="opId != null">
+                OpId = #{opId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                CreateTime = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isGPSLocate != null">
+                IsGPSLocate = #{isGPSLocate,jdbcType=BIT},
+            </if>
+            <if test="remarks != null">
+                Remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="upDown != null">
+                UpDown = #{upDown,jdbcType=BIT},
+            </if>
+            <if test="recStatus != null">
+                RecStatus = #{recStatus,jdbcType=BIT},
+            </if>
+            <if test="mortarModule != null">
+                MortarModule = #{mortarModule,jdbcType=INTEGER},
+            </if>
+            <if test="mortarStgid != null">
+                MortarStgid = #{mortarStgid,jdbcType=VARCHAR},
+            </if>
+            <if test="waterModule != null">
+                WaterModule = #{waterModule,jdbcType=INTEGER},
+            </if>
+            <if test="waterStgid != null">
+                WaterStgid = #{waterStgid,jdbcType=VARCHAR},
+            </if>
+            <if test="waterAccountNum != null">
+                WaterAccountNum = #{waterAccountNum,jdbcType=DECIMAL},
+            </if>
+            <if test="noloadModule != null">
+                NoloadModule = #{noloadModule,jdbcType=INTEGER},
+            </if>
+            <if test="noloadOderMinNum != null">
+                NoloadOderMinNum = #{noloadOderMinNum,jdbcType=DECIMAL},
+            </if>
+            <if test="noloadCarMinNum != null">
+                NoloadCarMinNum = #{noloadCarMinNum,jdbcType=DECIMAL},
+            </if>
+            <if test="noloadMoney != null">
+                NoloadMoney = #{noloadMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="tableExpenseModule != null">
+                TableExpenseModule = #{tableExpenseModule,jdbcType=INTEGER},
+            </if>
+            <if test="upDownMark != null">
+                UpDownMark = #{upDownMark,jdbcType=INTEGER},
+            </if>
+            <if test="noloadMoneyStyle != null">
+                NoloadMoneyStyle = #{noloadMoneyStyle,jdbcType=INTEGER},
+            </if>
+            <if test="noloadAllowsNumber != null">
+                NoloadAllowsNumber = #{noloadAllowsNumber,jdbcType=INTEGER},
+            </if>
+            <if test="noloadMoneyNumber != null">
+                NoloadMoneyNumber = #{noloadMoneyNumber,jdbcType=DECIMAL},
+            </if>
+            <if test="secondVerifyStatus != null">
+                SecondVerifyStatus = #{secondVerifyStatus,jdbcType=BIT},
+            </if>
+            <if test="secondVerifyName != null">
+                SecondVerifyName = #{secondVerifyName,jdbcType=VARCHAR},
+            </if>
+            <if test="secondVerifyTime != null">
+                SecondVerifyTime = #{secondVerifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="openTime != null">
+                OpenTime = #{openTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="rebateRatio != null">
+                RebateRatio = #{rebateRatio,jdbcType=DECIMAL},
+            </if>
+            <if test="rebateAmount != null">
+                RebateAmount = #{rebateAmount,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where ContractUID = #{contractUID,jdbcType=VARCHAR}
+        and ccontractCode = #{ccontractCode,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hntxrj.txerp.entity.ContractDetail">
+        update SM_ContractDetail
+        set compid             = #{compid,jdbcType=VARCHAR},
+            eppCode            = #{eppCode,jdbcType=VARCHAR},
+            BuilderCode        = #{builderCode,jdbcType=VARCHAR},
+            Address            = #{address,jdbcType=VARCHAR},
+            MinJumpNum         = #{minJumpNum,jdbcType=DECIMAL},
+            JumpPriceMarkup    = #{jumpPriceMarkup,jdbcType=DECIMAL},
+            PreMoney           = #{preMoney,jdbcType=DECIMAL},
+            PreNum             = #{preNum,jdbcType=DECIMAL},
+            SuretyMoney        = #{suretyMoney,jdbcType=DECIMAL},
+            ContractNum        = #{contractNum,jdbcType=DECIMAL},
+            AccountNum         = #{accountNum,jdbcType=DECIMAL},
+            ProduceMoney       = #{produceMoney,jdbcType=DECIMAL},
+            AccountPlace       = #{accountPlace,jdbcType=VARCHAR},
+            IsTax              = #{isTax,jdbcType=BIT},
+            TaxRate            = #{taxRate,jdbcType=DECIMAL},
+            Distance           = #{distance,jdbcType=DECIMAL},
+            MatStatus          = #{matStatus,jdbcType=INTEGER},
+            ContractStatus     = #{contractStatus,jdbcType=INTEGER},
+            StatusTime         = #{statusTime,jdbcType=TIMESTAMP},
+            VerifyStatus       = #{verifyStatus,jdbcType=BIT},
+            VerifyId           = #{verifyId,jdbcType=VARCHAR},
+            VerifyTime         = #{verifyTime,jdbcType=TIMESTAMP},
+            OpId               = #{opId,jdbcType=VARCHAR},
+            CreateTime         = #{createTime,jdbcType=TIMESTAMP},
+            IsGPSLocate        = #{isGPSLocate,jdbcType=BIT},
+            Remarks            = #{remarks,jdbcType=VARCHAR},
+            UpDown             = #{upDown,jdbcType=BIT},
+            RecStatus          = #{recStatus,jdbcType=BIT},
+            MortarModule       = #{mortarModule,jdbcType=INTEGER},
+            MortarStgid        = #{mortarStgid,jdbcType=VARCHAR},
+            WaterModule        = #{waterModule,jdbcType=INTEGER},
+            WaterStgid         = #{waterStgid,jdbcType=VARCHAR},
+            WaterAccountNum    = #{waterAccountNum,jdbcType=DECIMAL},
+            NoloadModule       = #{noloadModule,jdbcType=INTEGER},
+            NoloadOderMinNum   = #{noloadOderMinNum,jdbcType=DECIMAL},
+            NoloadCarMinNum    = #{noloadCarMinNum,jdbcType=DECIMAL},
+            NoloadMoney        = #{noloadMoney,jdbcType=DECIMAL},
+            TableExpenseModule = #{tableExpenseModule,jdbcType=INTEGER},
+            UpDownMark         = #{upDownMark,jdbcType=INTEGER},
+            NoloadMoneyStyle   = #{noloadMoneyStyle,jdbcType=INTEGER},
+            NoloadAllowsNumber = #{noloadAllowsNumber,jdbcType=INTEGER},
+            NoloadMoneyNumber  = #{noloadMoneyNumber,jdbcType=DECIMAL},
+            SecondVerifyStatus = #{secondVerifyStatus,jdbcType=BIT},
+            SecondVerifyName   = #{secondVerifyName,jdbcType=VARCHAR},
+            SecondVerifyTime   = #{secondVerifyTime,jdbcType=TIMESTAMP},
+            OpenTime           = #{openTime,jdbcType=TIMESTAMP},
+            RebateRatio        = #{rebateRatio,jdbcType=DECIMAL},
+            RebateAmount       = #{rebateAmount,jdbcType=DECIMAL}
+        where ContractUID = #{contractUID,jdbcType=VARCHAR}
+          and ccontractCode = #{ccontractCode,jdbcType=VARCHAR}
+    </update>
+</mapper>
