@@ -76,9 +76,7 @@ public class ContractServiceImpl implements ContractService {
                                ContractGradePriceDetailRepository contractGradePriceDetailRepository,
                                ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
                                ContractMasterRepository contractMasterRepository, SyncPlugin syncPlugin,
-                               RabbitMQSender rabbitMQSender) {
-                               ContractMasterRepository contractMasterRepository, SyncPlugin syncPlugin,
-                               ContractDetailDao contractDetailDao) {
+                               ContractDetailDao contractDetailDao, RabbitMQSender rabbitMQSender) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -493,6 +491,7 @@ public class ContractServiceImpl implements ContractService {
         messagePushVO.setCompid(compid);
         messagePushVO.setTypeId(4);
         messagePushVO.setContractUid(contractUid);
+        messagePushVO.setContractDetailCode(ccontractCode);
         String contractCode = "";
         if (contractVO != null) {
             contractCode = contractVO.getContractCode();
@@ -589,10 +588,10 @@ public class ContractServiceImpl implements ContractService {
         contractMaster.setOpId(opid);
 
 
-        contractDetail.setCContractCode(contractMaster.getContractId() + "-01");
-        contractDetail.setContractUid(contractMasterUid);
-        contractDetail.setCreateTime(simpleDateFormat.format(new Date()));
-        contractDetail.setRecStatus("1");
+        contractDetail.setCcontractCode(contractMaster.getContractId() + "-01");
+        contractDetail.setContractUID(contractMasterUid);
+        contractDetail.setCreateTime(new Date());
+        contractDetail.setRecStatus(true);
         contractDetail.setPreMoney(preMoney);
         contractDetail.setPreNum(preNum);
         contractDetail.setRemarks(remarks);
@@ -601,6 +600,7 @@ public class ContractServiceImpl implements ContractService {
         contractDetail.setEppCode(eppCode);
         contractDetail.setCompid(compid);
         contractDetail.setAddress(address);
+        contractDetail.setUpDownMark(0);
 
         contractDetail.setOpId(opid);
 
@@ -620,11 +620,11 @@ public class ContractServiceImpl implements ContractService {
             e.printStackTrace();
         }
         EntityTools.setEntityDefaultValue(contractDetail);
-        contractDetailMapper.insert(contractDetail);
+        contractDetailDao.insert(contractDetail);
         // 同步数据
         try {
             HashMap<String, String> getContractDetailMap = contractMapper.getContractDetailMap(
-                    contractDetail.getContractUid(), contractDetail.getCContractCode());
+                    contractDetail.getContractUID(), contractDetail.getCcontractCode());
             getContractDetailMap.put("StatusTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("StatusTime")));
             getContractDetailMap.put("VerifyTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("VerifyTime")));
             getContractDetailMap.put("CreateTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("CreateTime")));
@@ -640,7 +640,7 @@ public class ContractServiceImpl implements ContractService {
         messagePushVO.setCompid(compid);
         messagePushVO.setTypeId(3);
         messagePushVO.setContractUid(contractMasterUid);
-        messagePushVO.setContractDetailCode(contractDetail.getCContractCode());
+        messagePushVO.setContractDetailCode(contractDetail.getCcontractCode());
         messagePushVO.setMessage("有新合同,请审核");
         rabbitMQSender.erpPhoneMessagePush(messagePushVO);
     }
@@ -1046,12 +1046,15 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public SMContractMaster saveContractMaster(SMContractMaster contractMaster) {
         contractMaster.setContractUID(UUID.randomUUID().toString());
+        contractMaster.setRecStatus(true);
         return contractMasterRepository.save(contractMaster);
     }
 
     @Override
     public void saveContractDetail(ContractDetail contractDetail) {
-        contractDetailMapper.insert(contractDetail);
+        contractDetail.setUpDownMark(0);
+        contractDetail.setRecStatus(true);
+        contractDetailDao.insert(contractDetail);
     }
 
 

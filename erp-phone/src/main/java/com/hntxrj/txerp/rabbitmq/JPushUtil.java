@@ -24,10 +24,10 @@ import java.util.List;
 public class JPushUtil {
 
 
-    @Value("${app.jPush.appKey}")
+    @Value("${app.jPush.erpPhone.appKey}")
     private String appKey;
 
-    @Value("${app.jPush.masterSecret}")
+    @Value("${app.jPush.erpPhone.masterSecret}")
     private String masterSecret;
 
     @Value("${app.jPush.url}")
