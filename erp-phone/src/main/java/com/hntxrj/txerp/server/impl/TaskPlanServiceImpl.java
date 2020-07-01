@@ -192,7 +192,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         EntityTools.setEntityDefaultValue(taskPlan);
         // 设置记录有效
         taskPlan.setRecStatus('1');
-        taskPlan.setTaskType(1);
+        taskPlan.setTaskType(0);
         taskPlan.setOpId("0225");
         if ("".equals(taskPlan.getDefaultJump())) {
             taskPlan.setDefaultJump("自卸");
