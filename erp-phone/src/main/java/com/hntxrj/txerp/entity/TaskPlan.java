@@ -50,7 +50,7 @@ public class TaskPlan implements Serializable {
     private Integer taskStatus;
     /* 审核标识 */
     @Column(name = "verifystatus")
-    private boolean verifyStatus;
+    private Integer verifyStatus;
     /* 审核员代号 */
     @Column(name = "verifyid")
     private String verifyId;
