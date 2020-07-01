@@ -187,7 +187,7 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         // 设置任务单为等待生产
         taskPlan.setTaskStatus(0);
         // 设置审核状态为未审核
-        taskPlan.setVerifyStatus(false);
+        taskPlan.setVerifyStatus(1);
         taskPlan.setCreateTime(sdf.format(new Date()));
         EntityTools.setEntityDefaultValue(taskPlan);
         // 设置记录有效
