@@ -336,7 +336,7 @@ public interface ContractService {
      * @param compid      企业id
      * @return 合同详情
      */
-    ContractVO getContractDetail(String contractDetailCode, String contractUid, String compid);
+    ContractVO getContractDetail(String contractDetailCode, String compid);
 
     /**
      * 审核/取消审核 合同

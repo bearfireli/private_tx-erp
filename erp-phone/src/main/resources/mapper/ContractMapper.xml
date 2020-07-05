@@ -85,7 +85,6 @@
         left join (select * from DD_PublicInfo where PI_class = 49) statusName
         on statusName.PI_Values = cd.contractStatus and cm.compid = statusName.compid
         where cd.compid = #{compid}
-        and cd.ContractUID = #{contractUid}
         <if test="contractDetailCode != null and contractDetailCode != ''">
             and cd.CContractCode =#{contractDetailCode}
         </if>
@@ -179,11 +178,7 @@
     </select>
     <select id="getContractId" resultType="java.lang.String">
         declare @rt varchar(20);
-        exec [sp_Query_Create_ContractId] 1,
-        #{compid},
-        @
-        rt
-        output;
+        exec [sp_Query_Create_ContractId] 1,#{compid},@rt output;
         select @rt;
     </select>
 

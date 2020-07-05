@@ -1,11 +1,11 @@
 package com.hntxrj.txerp.service.impl;
 
 import com.aliyuncs.exceptions.ClientException;
+import com.hntxrj.txerp.entity.base.QAuthCode;
 import com.hntxrj.txerp.service.AuthCodeService;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.AliMessage;
-import com.hntxrj.txerp.entity.base.QAuthCode;
 import com.hntxrj.txerp.repository.AuthCodeRepository;
 import com.hntxrj.txerp.entity.base.AuthCode;
 import com.querydsl.jpa.impl.JPAQueryFactory;

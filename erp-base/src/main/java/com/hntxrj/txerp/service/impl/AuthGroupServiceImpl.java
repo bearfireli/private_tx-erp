@@ -16,7 +16,6 @@ import com.hntxrj.txerp.vo.AuthGroupDropDownVO;
 import com.hntxrj.txerp.vo.AuthGroupVO;
 import com.hntxrj.txerp.vo.AuthValueVO;
 import com.hntxrj.txerp.vo.PageVO;
-import com.hntxrj.txerp.entity.base.QEnterprise;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;

@@ -68,8 +68,8 @@ public class ContractApi {
      * @return 合同详情
      */
     @PostMapping("/getContractDetail")
-    public ResultVO getContractDetail(String contractDetailCode, String contractUid, String compid) {
-        return ResultVO.create(contractService.getContractDetail(contractDetailCode, contractUid, compid));
+    public ResultVO getContractDetail(String contractDetailCode, String compid) {
+        return ResultVO.create(contractService.getContractDetail(contractDetailCode, compid));
     }
 
 
