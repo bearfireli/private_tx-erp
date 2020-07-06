@@ -456,8 +456,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ContractVO getContractDetail(String contractDetailCode, String contractUid, String compid) {
-        return contractMapper.getContractDetail(contractDetailCode, contractUid, compid);
+    public ContractVO getContractDetail(String contractDetailCode, String compid) {
+        return contractMapper.getContractDetail(contractDetailCode, compid);
     }
 
     @Override
@@ -481,8 +481,7 @@ public class ContractServiceImpl implements ContractService {
             e.printStackTrace();
         }
 
-        ContractVO contractVO = contractMapper.getContractDetail(null
-                , contractUid, compid);
+        ContractVO contractVO = contractMapper.getContractDetail(ccontractCode, compid);
         int typeId = 3;
         List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
         String contractCode = "";
@@ -745,8 +744,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<StgIdDropDown> getContractStgIdDropDown(String compid) {
-        return contractMapper.getStgIdDropDown(compid);
+    public List<StgIdDropDown> getContractStgIdDropDown(String compid, String stgId) {
+        return contractMapper.getStgIdDropDown(compid, stgId);
     }
 
     @Override
