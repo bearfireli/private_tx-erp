@@ -459,8 +459,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public ContractVO getContractDetail(String contractDetailCode, String contractUid, String compid) {
-        return contractMapper.getContractDetail(contractDetailCode, contractUid, compid);
+    public ContractVO getContractDetail(String contractDetailCode, String compid) {
+        return contractMapper.getContractDetail(contractDetailCode, compid);
     }
 
     @Override
@@ -502,8 +502,8 @@ public class ContractServiceImpl implements ContractService {
         }
         messagePushVO.setMessage(msgContent);
         rabbitMQSender.erpPhoneMessagePush(messagePushVO);
-        }
     }
+
 
     @Override
     public List<ContractGradePriceVO> getContractGradePrice(
@@ -742,8 +742,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<StgIdDropDown> getContractStgIdDropDown(String compid) {
-        return contractMapper.getStgIdDropDown(compid);
+    public List<StgIdDropDown> getContractStgIdDropDown(String compid,String stgId) {
+        return contractMapper.getStgIdDropDown(compid,stgId);
     }
 
     @Override
