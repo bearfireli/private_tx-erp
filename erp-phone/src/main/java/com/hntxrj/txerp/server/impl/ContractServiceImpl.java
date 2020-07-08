@@ -13,6 +13,7 @@ import com.hntxrj.txerp.dao.ContractDetailDao;
 import com.hntxrj.txerp.entity.*;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
+import com.hntxrj.txerp.rabbitmq.RabbitMQSender;
 import com.hntxrj.txerp.repository.ContractGradePriceDetailRepository;
 import com.hntxrj.txerp.repository.ContractMasterRepository;
 import com.hntxrj.txerp.server.ContractService;
@@ -64,6 +65,7 @@ public class ContractServiceImpl implements ContractService {
     private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
 
     private final ContractMasterRepository contractMasterRepository;
+    private final RabbitMQSender rabbitMQSender;
 
     @Value("${app.spterp.contractAdjunctPath}")
     private String contractAdjunctPath;
@@ -74,7 +76,7 @@ public class ContractServiceImpl implements ContractService {
                                ContractGradePriceDetailRepository contractGradePriceDetailRepository,
                                ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
                                ContractMasterRepository contractMasterRepository, SyncPlugin syncPlugin,
-                               ContractDetailDao contractDetailDao) {
+                               ContractDetailDao contractDetailDao, RabbitMQSender rabbitMQSender) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -86,6 +88,7 @@ public class ContractServiceImpl implements ContractService {
         this.msgMapper = msgMapper;
         this.syncPlugin = syncPlugin;
         this.contractMasterRepository = contractMasterRepository;
+        this.rabbitMQSender = rabbitMQSender;
         this.contractDetailDao = contractDetailDao;
     }
 
@@ -482,27 +485,25 @@ public class ContractServiceImpl implements ContractService {
         }
 
         ContractVO contractVO = contractMapper.getContractDetail(ccontractCode, compid);
-        int typeId = 3;
-        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
+        MessagePushVO messagePushVO = new MessagePushVO();
+        messagePushVO.setCompid(compid);
+        messagePushVO.setTypeId(4);
+        messagePushVO.setContractUid(contractUid);
+        messagePushVO.setContractDetailCode(ccontractCode);
         String contractCode = "";
         if (contractVO != null) {
             contractCode = contractVO.getContractCode();
         }
-        for (RecipientVO r : recipoentList) {
-            SendmsgVO sendmsgVO = new SendmsgVO();
-            sendmsgVO.setSyncOtherMachine(2);
-            sendmsgVO.setToAccount(r.getUid().toString());
-            sendmsgVO.setMsgLifeTime(7);
-            String msgContent = "合同号：[" + contractCode + "]的审核状态修改成功";
-            if (verifyStatus == 1) {
-                msgContent = "合同号：[" + contractCode + "]已审核";
-            } else if (verifyStatus == 0) {
-                msgContent = "合同号：[" + contractCode + "]已取消审核";
-            }
-            sendmsgVO.setMsgContent(msgContent);
-            msgService.sendMsg(sendmsgVO);
+        String msgContent = "合同号：[" + contractCode + "]的审核状态修改成功";
+        if (verifyStatus == 1) {
+            msgContent = "合同号：[" + contractCode + "]已审核";
+        } else if (verifyStatus == 0) {
+            msgContent = "合同号：[" + contractCode + "]已取消审核";
         }
+        messagePushVO.setMessage(msgContent);
+        rabbitMQSender.erpPhoneMessagePush(messagePushVO);
     }
+
 
     @Override
     public List<ContractGradePriceVO> getContractGradePrice(
@@ -633,17 +634,14 @@ public class ContractServiceImpl implements ContractService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        int typeId = 3;
-        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
-        for (RecipientVO r : recipoentList) {
-            SendmsgVO sendmsgVO = new SendmsgVO();
-            sendmsgVO.setSyncOtherMachine(2);
-            sendmsgVO.setToAccount(r.getUid().toString());
-            sendmsgVO.setMsgLifeTime(7);
-            String msgContent = "有新合同,请审核";
-            sendmsgVO.setMsgContent(msgContent);
-            msgService.sendMsg(sendmsgVO);
-        }
+
+        MessagePushVO messagePushVO = new MessagePushVO();
+        messagePushVO.setCompid(compid);
+        messagePushVO.setTypeId(3);
+        messagePushVO.setContractUid(contractMasterUid);
+        messagePushVO.setContractDetailCode(contractDetail.getCcontractCode());
+        messagePushVO.setMessage("有新合同,请审核");
+        rabbitMQSender.erpPhoneMessagePush(messagePushVO);
     }
 
     @Override
@@ -744,8 +742,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<StgIdDropDown> getContractStgIdDropDown(String compid, String stgId) {
-        return contractMapper.getStgIdDropDown(compid, stgId);
+    public List<StgIdDropDown> getContractStgIdDropDown(String compid,String stgId) {
+        return contractMapper.getStgIdDropDown(compid,stgId);
     }
 
     @Override
