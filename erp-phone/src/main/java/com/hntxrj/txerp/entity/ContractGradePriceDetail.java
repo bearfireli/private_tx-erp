@@ -6,22 +6,28 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Data
 @Table(name = "sm_contractgradepricedetail")
+@IdClass(ContractGradePriceDetail.ContractGradePriceDetailUK.class)
 @Entity
 public class ContractGradePriceDetail implements Serializable {
 
     /* 站别代号 */
+    @Id
     @Column(name = "compid")
     private String compid;
     /* 子合同号 */
+    @Id
     @Column(name = "ccontractcode")
     private String cContractCode;
     /* 主合同UID号 */
+    @Id
     @Column(name = "contractuid")
     private String contractUid;
     /* 标号名称 */
+    @Id
     @Column(name = "stgid")
     private String stgId;
     /* 非泵价格 */
@@ -37,6 +43,7 @@ public class ContractGradePriceDetail implements Serializable {
     @Column(name = "towercraneprice")
     private BigDecimal towerCranePrice;
     /* 价格开始执行时间 */
+    @Id
     @Column(name = "priceetime")
     private String priceETime;
     /* 价格结束时间 */
@@ -70,9 +77,34 @@ public class ContractGradePriceDetail implements Serializable {
     @Column(name = "recstatus")
     private boolean recStatus;
     /* null */
-    @Id
     @Column(name = "id")
     private Integer id;
+
+
+    static class ContractGradePriceDetailUK implements Serializable {
+        private String compid;
+        private String cContractCode;
+        private String contractUid;
+        private String stgId;
+        private String priceETime;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ContractGradePriceDetailUK that = (ContractGradePriceDetailUK) o;
+            return Objects.equals(compid, that.compid) &&
+                    Objects.equals(cContractCode, that.cContractCode) &&
+                    Objects.equals(contractUid, that.contractUid) &&
+                    Objects.equals(stgId, that.stgId) &&
+                    Objects.equals(priceETime, that.priceETime);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(compid, cContractCode, contractUid, stgId, priceETime);
+        }
+    }
 
 }
 
