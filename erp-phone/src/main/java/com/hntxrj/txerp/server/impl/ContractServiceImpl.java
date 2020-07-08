@@ -484,9 +484,7 @@ public class ContractServiceImpl implements ContractService {
             e.printStackTrace();
         }
 
-        ContractVO contractVO = contractMapper.getContractDetail(null
-                , contractUid, compid);
-
+        ContractVO contractVO = contractMapper.getContractDetail(ccontractCode, compid);
         MessagePushVO messagePushVO = new MessagePushVO();
         messagePushVO.setCompid(compid);
         messagePushVO.setTypeId(4);
@@ -504,6 +502,7 @@ public class ContractServiceImpl implements ContractService {
         }
         messagePushVO.setMessage(msgContent);
         rabbitMQSender.erpPhoneMessagePush(messagePushVO);
+        }
     }
 
     @Override

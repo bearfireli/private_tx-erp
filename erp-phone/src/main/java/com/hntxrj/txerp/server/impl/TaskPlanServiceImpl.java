@@ -78,14 +78,15 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         List<TaskPlanListVO> taskPlanListVOList = taskPlanMapper.getTaskPlanList(beginTime, endTime, eppCode,
                 builderCode, placing, taskId, taskStatus, compid, verifyStatus);
         //循环截取预计时间preTime，格式为年月日
-        for (TaskPlanListVO t : taskPlanListVOList) {
-            if (!"".equals(t.getPreTime())) {
-                t.setPreTime(t.getPreTime().substring(0, 16));
+        taskPlanListVOList.forEach(it -> {
+            if (!"".equals(it.getPreTime())) {
+                it.setPreTime(it.getPreTime().substring(0, 16));
             }
-            if (t.getOverNum() == null) {
-                t.setOverNum(new BigDecimal("0.0"));
+            if (it.getOverNum() == null) {
+                it.setOverNum(new BigDecimal("0.0"));
             }
-        }
+        });
+
         PageInfo<TaskPlanListVO> pageInfo = new PageInfo<>(taskPlanListVOList);
         PageVO<TaskPlanListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

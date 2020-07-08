@@ -68,8 +68,8 @@ public class ContractApi {
      * @return 合同详情
      */
     @PostMapping("/getContractDetail")
-    public ResultVO getContractDetail(String contractDetailCode, String contractUid, String compid) {
-        return ResultVO.create(contractService.getContractDetail(contractDetailCode, contractUid, compid));
+    public ResultVO getContractDetail(String contractDetailCode, String compid) {
+        return ResultVO.create(contractService.getContractDetail(contractDetailCode, compid));
     }
 
 
@@ -99,7 +99,7 @@ public class ContractApi {
     @PostMapping("/getContractGradePrice")
     public ResultVO getContractGradePrice(String contractUid, String contractDetailCode, String compid) {
         if (StringUtils.isEmpty(contractUid) && StringUtils.isEmpty(contractDetailCode)) {
-            return ResultVO.create(contractService.getContractStgIdDropDown(compid));
+            return ResultVO.create(contractService.getContractStgIdDropDown(compid, null));
         }
         return ResultVO.create(contractService.getContractGradePrice(contractUid, contractDetailCode, compid));
     }
@@ -291,8 +291,8 @@ public class ContractApi {
      * @return 标号下拉
      */
     @PostMapping("/getStgIdDropDown")
-    public ResultVO getStgIdDropDown(String compid) {
-        return ResultVO.create(contractService.getContractStgIdDropDown(compid));
+    public ResultVO getStgIdDropDown(String compid, String stgId) {
+        return ResultVO.create(contractService.getContractStgIdDropDown(compid, stgId));
     }
 
 

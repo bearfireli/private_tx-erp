@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /*砼标号管理*/
 @RestController
-@RequestMapping("/api/stgIdMange")
+@RequestMapping({"/api/stgIdMange", "/stgId"})
 public class StgIdMangeApi {
     private final StgIdMangeService stgIdMangeService;
 
@@ -22,21 +22,22 @@ public class StgIdMangeApi {
     /**
      * 砼标号管理
      *
-     * @param compid    企业id
+     * @param compid 企业id
      * @param stgId  砼标号
      * @param grade  强度等级
-     * @return  砼标号管理
+     * @return 砼标号管理
      */
-    @PostMapping("/getStgIdManage")
+    @PostMapping({"/getStgIdManage", "/getStgIds"})
     public ResultVO getStgIdManage(String compid, String stgId, String grade,
                                    @RequestParam(defaultValue = "1") Integer page,
                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResultVO.create(stgIdMangeService.getStgidManage(compid,stgId,grade,page,pageSize));
+        return ResultVO.create(stgIdMangeService.getStgidManage(compid, stgId, grade, page, pageSize));
     }
 
 
     /**
      * 获取砼价格列表
+     *
      * @param compid 企业id
      * @return 砼价格列表
      */
@@ -47,18 +48,17 @@ public class StgIdMangeApi {
     }
 
 
-
     /**
      * 砼标号详情
      *
-     * @param compid    企业id
+     * @param compid 企业id
      * @param stgId  砼标号
      * @param grade  强度等级
-     * @return  砼标号管理
+     * @return 砼标号管理
      */
     @PostMapping("/getStgIdManageDetail")
     public ResultVO getStgIdManageDetail(String compid, String stgId, String grade) {
-        return ResultVO.create(stgIdMangeService.getStgIdManageDetail(compid,stgId,grade));
+        return ResultVO.create(stgIdMangeService.getStgIdManageDetail(compid, stgId, grade));
     }
 
     /**
@@ -98,7 +98,7 @@ public class StgIdMangeApi {
             resultVO.setCode(1);
             resultVO.setMsg("砼标号已存在");
             return resultVO;
-        }catch (Exception e) {
+        } catch (Exception e) {
             ResultVO resultVO = new ResultVO();
             resultVO.setCode(1);
             resultVO.setMsg("砼标号添加失败");
@@ -119,8 +119,6 @@ public class StgIdMangeApi {
         stgIdMangeService.deleteStgManage(compid, stgId);
         return ResultVO.create();
     }
-
-
 
 
 }

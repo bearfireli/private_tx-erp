@@ -30,11 +30,11 @@ public interface ContractMapper {
     /**
      * 获取合同详情
      *
-     * @param contractUid 合同uid
+     * @param contractDetailCode 子合同
      * @param compid      企业id
      * @return 合同详情
      */
-    ContractVO getContractDetail(String contractDetailCode, String contractUid, String compid);
+    ContractVO getContractDetail(String contractDetailCode, String compid);
 
     /**
      * 审核/取消审核 合同
@@ -88,9 +88,10 @@ public interface ContractMapper {
      * 获取标号下拉
      *
      * @param compid 企业id
+     * @param stgId
      * @return 标号下拉
      */
-    List<StgIdDropDown> getStgIdDropDown(String compid);
+    List<StgIdDropDown> getStgIdDropDown(String compid, String stgId);
 
     /**
      * 获取特殊材料下拉
