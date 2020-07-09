@@ -300,4 +300,7 @@ public interface StockMapper {
      */
     List<StockSelectVO> getAllStockList(String compid, Integer stirId);
 
+
+    //获取库位信息
+    List<StockVO> getStock(String compid, Integer stirId);
 }

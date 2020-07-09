@@ -928,6 +928,14 @@
         where compid = #{compid}
           and TaskId = #{taskId}
     </update>
+    <update id="updateTaskPLanFormulaStatus">
+        update PT_TaskPlan set FormulaCode=#{formulaCOde},
+                       TheoryFormulaCode=#{theoryFormulaCode},
+                       FormulaStatus=1,
+                       FormulaTime=#{currentTime},
+                       UpDownMark=0
+        where compid=#{compid} and TaskId=#{taskId}
+    </update>
 
     <!--施工方App中查询任务单列表-->
     <select id="buildTaskPlanList" resultType="com.hntxrj.txerp.vo.TaskPlanListVO">
@@ -1112,6 +1120,5 @@
           and PersonalCode = #{personalCode}
           and WorkStarTime = #{workStarTime}
     </select>
-
 
 </mapper>

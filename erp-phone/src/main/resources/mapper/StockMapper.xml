@@ -160,5 +160,19 @@
        where compid=#{compid} and StICode=#{stICode}
     </select>
 
+    <select id="getStock" resultType="com.hntxrj.txerp.vo.StockVO">
+    select ms.StkCode   as stkCode,
+           ms.Sto_Name  as stoName,
+           ms.StirId    as stirId,
+           ms.MatCode   as matCode,
+           ms.OderBy    as oderBy,
+           mm.MatName   as matName,
+           mm.MatParent as matParent
+    from MP_Stock ms
+    left join MP_MaterialInfor mm on ms.compid = mm.compid and ms.MatCode = mm.MatCode
+    where ms.compid=#{compid} and ms.StirId=#{stirId}
+    order by OderBy
+    </select>
+
 
 </mapper>

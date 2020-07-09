@@ -240,7 +240,14 @@ public enum ErrEumn {
     MATERIAL_CHECK_ERROR(100405, "材料检测失败"),
     ROLL_MESSAGE_IS_NULL(100406, "滚动消息不能为空"),
     BEGIN_TIME_IS_NULL(100407, "开始时间不能为空"),
-    END_TIME_IS_NULL(100408, "结束时间不能为空");
+    END_TIME_IS_NULL(100408, "结束时间不能为空"),
+
+
+    THEORY_FORMULA_DETAIL_IS_NULL(100409, "引用配比不能为空"),
+    ADD_FORMULA_IS_NULL(100410, "保存配比不能为空"),
+    ADD_FORMULA_CODE_ID_NULL(100411, "实际配比编号不能为空"),
+    ADD_STIR_ID_IS_NULL(100412, "生产线号不能为空"),
+    SAVE_TASK_THEORY_FORMULA_ERROR(100413, "保存实际配比失败");
 
 
     private Integer code;

@@ -49,4 +49,7 @@ public interface SystemVarInitMapper {
 
     // 获取用户设置的实时库存是否显示骨料的信息
     Map<String,String> getStockAggregate(String compid);
+
+    // 获取引用理论配比方式
+    Integer getTheoryFormulaMode(String compid);
 }
