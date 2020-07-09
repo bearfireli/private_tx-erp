@@ -3,9 +3,9 @@ spring:
     restart:
       exclude: /static/**,/templates/**
   datasource:
-    url: jdbc:sqlserver://192.168.1.122:1433;databaseName=SPTERPNEWData
+    url: jdbc:sqlserver://192.168.31.2:1433;databaseName=SPTERPNEWData
     username: sa
-    password: sa2015
+    password: TongXin2019
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -27,6 +27,10 @@ spring:
     redis:
       time-to-live: 600000
     cache-names: cache1，cache2
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
 mybatis:
   type-aliases-package: com.hntxrj.txerp.mapper
   mapper-locations: classpath:mapper/*.xml
@@ -62,6 +66,18 @@ app:
     #    host: http://localhost:9501
     host: http://localhost:9501
     auth: ${app.cloud.host}/user/tokenUse
+  jPush:
+    url: https://api.jpush.cn/v3/push
+    erpPhone:
+      appKey: 26baeaf40bed37e5c274b843
+      masterSecret: b9192be6883bec8d0e4e7b87
+    erpDriver:
+      appKey: 976c0ee7337b95b73a9b7342
+      masterSecret: 7d7e853c1f6cdf25b1ec6724
+    erpBuilder:
+      appKey:
+      masterSecret:
+
 logging:
   file:
     #    name: spterp.%d{yyyy-MM-dd HH:mm:ss.SSS}.log
