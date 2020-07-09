@@ -2,19 +2,19 @@ package com.hntxrj.txerp.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Data
 @Entity
+@IdClass(TaskPlan.TaskPlanUK.class)
 @Table(name = "pt_taskplan")
 public class TaskPlan implements Serializable {
 
     /* 站别代号 */
+    @Id
     @Column(name = "compid")
     private String compid;
     /* 任务单号 */
@@ -237,4 +237,23 @@ public class TaskPlan implements Serializable {
     /* 下任务单单位标识 */
     @Column(name = "client_type")
     private Integer clientType;
+
+    static class TaskPlanUK implements Serializable {
+        private String taskId;
+        private String compid;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TaskPlanUK that = (TaskPlanUK) o;
+            return Objects.equals(taskId, that.taskId) &&
+                    Objects.equals(compid, that.compid);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(taskId, compid);
+        }
+    }
 }
