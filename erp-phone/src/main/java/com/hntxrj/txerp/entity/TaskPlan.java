@@ -2,19 +2,18 @@ package com.hntxrj.txerp.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @Entity
+@IdClass(TaskPLanPK.class)
 @Table(name = "pt_taskplan")
 public class TaskPlan implements Serializable {
 
     /* 站别代号 */
+    @Id
     @Column(name = "compid")
     private String compid;
     /* 任务单号 */
@@ -237,4 +236,7 @@ public class TaskPlan implements Serializable {
     /* 下任务单单位标识 */
     @Column(name = "client_type")
     private Integer clientType;
+
+
 }
+
