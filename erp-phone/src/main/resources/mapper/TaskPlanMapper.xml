@@ -57,7 +57,7 @@
 
 
     <select id="getTaskPlanByTaskId" resultType="com.hntxrj.txerp.vo.TaskPlanVO">
-        select task.TaskId,
+        select top 1 task.TaskId,
                task.compid,
                sm.ContractId,
                task.ContractUID,
@@ -120,7 +120,8 @@
                  PreTime,
                  task.linkMan, StoneDia, Slump, CementVariety, cv.PI_TypeName, task.verifyStatus, TaskStatus,
                  ts.PI_TypeName,
-                 preRemark, task.placeStyle, ps.PI_TypeName, task.client_type, task.isTax, task.IsExcess
+                 preRemark, task.placeStyle, ps.PI_TypeName, task.client_type, task.isTax, task.IsExcess,task.CreateTime
+        order by task.CreateTime desc
     </select>
 
     <select id="getSendCarList" resultType="com.hntxrj.txerp.vo.SendCarListVO">
