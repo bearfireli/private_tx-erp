@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -433,6 +434,34 @@ public interface ContractService {
                      BigDecimal preMoney, String remarks, String compid, String address,
                      String linkMan, String linkTel, String opid) throws ErpException;
 
+
+    /**
+     * 编辑合同
+     *
+     * @param compid             公司代号
+     * @param contractId         合同编号
+     * @param contractUid        主合同号
+     * @param contractDetailCode 子合同号
+     * @param salesman           业务员代号
+     * @param signDate           签订日期
+     * @param expiresDate        到期时间
+     * @param contractType       合同类别
+     * @param priceStyle         价格执行方式
+     * @param eppCode            工程代号
+     * @param builderCode        施工单位代号
+     * @param contractNum        合同方量
+     * @param preNum             预付方量
+     * @param preMoney           预付金额
+     * @param remarks            备注
+     * @param address            交货地址
+     * @param linkMan            合同联系人
+     * @param linkTel            合同联系电话
+     */
+    void editContract(String compid, String contractId, String contractUid, String contractDetailCode, String salesman,
+                      Timestamp signDate, Timestamp expiresDate, Integer contractType, Integer priceStyle, String eppCode,
+                      String builderCode, BigDecimal contractNum, BigDecimal preNum, BigDecimal preMoney,
+                      String remarks, String address, String linkMan, String linkTel);
+
     /**
      * 上传合同附件
      *
@@ -626,5 +655,7 @@ public interface ContractService {
     SMContractMaster saveContractMaster(SMContractMaster contractMaster);
 
     void saveContractDetail(ContractDetail contractDetail);
+
+
 }
 

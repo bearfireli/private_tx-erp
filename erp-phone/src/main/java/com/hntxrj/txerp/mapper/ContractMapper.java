@@ -5,6 +5,7 @@ import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public interface ContractMapper {
      * 获取合同详情
      *
      * @param contractDetailCode 子合同
-     * @param compid      企业id
+     * @param compid             企业id
      * @return 合同详情
      */
     ContractVO getContractDetail(String contractDetailCode, String compid);
@@ -298,4 +299,40 @@ public interface ContractMapper {
      * 获取合同泵车价格
      */
     Map<String, String> getPumpTruck(String compid, Integer pumpType, String contractUID, String contractDetailCode);
+
+    /**
+     * 编辑主合同
+     *
+     * @param compid       公司代号
+     * @param contractId   合同编号
+     * @param contractUid  主合同号
+     * @param salesman     业务员代号
+     * @param signDate     签订日期
+     * @param expiresDate  到期时间
+     * @param contractType 合同类别
+     * @param priceStyle   价格执行方式
+     * @param linkMan      合同联系人
+     * @param linkTel      合同联系电话
+     */
+    void updateContractMaster(String compid, String contractId, String contractUid, String salesman, Timestamp signDate,
+                              Timestamp expiresDate, Integer contractType, Integer priceStyle, String linkMan,
+                              String linkTel);
+
+    /**
+     * 添加合同
+     *
+     * @param compid             公司代号
+     * @param contractUid        主合同号
+     * @param contractDetailCode 子合同号
+     * @param eppCode            工程代号
+     * @param builderCode        施工单位代号
+     * @param contractNum        合同方量
+     * @param preNum             预付方量
+     * @param preMoney           预付金额
+     * @param remarks            备注
+     * @param address            交货地址
+     */
+    void updateContractDetail(String compid, String contractUid, String contractDetailCode, String eppCode,
+                              String builderCode, BigDecimal contractNum, BigDecimal preNum, BigDecimal preMoney,
+                              String remarks, String address);
 }
