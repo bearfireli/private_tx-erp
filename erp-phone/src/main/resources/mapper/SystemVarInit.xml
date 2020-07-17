@@ -63,6 +63,10 @@
         select * from De_SystemVarInit
         where compid=#{compid} and SystemVar='AggregateIsShow'
     </select>
+    <select id="getTheoryFormulaMode" resultType="java.lang.Integer">
+    select VarValue from De_SystemVarInit
+    where compid=#{compid} and SystemVar='GetTheoryFormulaMode'
+    </select>
 
 
 </mapper>
