@@ -44,6 +44,7 @@ public class ContractVO implements Serializable {
 
     private String linkMan;     //合同联络人
     private String linkTel;     //合同联络人电话
+    private Double preMoney;    //预付金额
 
 
 }

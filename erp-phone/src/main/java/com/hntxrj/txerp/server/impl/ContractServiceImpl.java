@@ -35,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -645,6 +646,50 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    @Transactional
+    public void editContract(String compid, String contractId, String contractUid, String contractDetailCode,
+                             String salesman, Timestamp signDate, Timestamp expiresDate, Integer contractType,
+                             Integer priceStyle, String eppCode, String builderCode, BigDecimal contractNum,
+                             BigDecimal preNum, BigDecimal preMoney, String remarks, String address, String linkMan,
+                             String linkTel) {
+        //编辑主合同
+        contractMapper.updateContractMaster(compid, contractId, contractUid, salesman, signDate, expiresDate, contractType,
+                priceStyle, linkMan, linkTel);
+
+        // 同步数据
+        try {
+            HashMap<String, String> contractMasterMap = contractMapper.getContractMaster(compid,
+                    contractId, contractUid);
+
+            contractMasterMap.put("SignDate", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("SignDate")));
+            contractMasterMap.put("EffectDate", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("EffectDate")));
+            contractMasterMap.put("ExpiresDate", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("ExpiresDate")));
+            contractMasterMap.put("CreateTime", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("CreateTime")));
+            syncPlugin.save(contractMasterMap, "SM_ContractMaster", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //编辑子合同
+        contractMapper.updateContractDetail(compid, contractUid, contractDetailCode, eppCode, builderCode, contractNum,
+                preNum, preMoney, remarks, address);
+
+        // 同步数据
+        try {
+            HashMap<String, String> getContractDetailMap = contractMapper.getContractDetailMap(
+                    contractUid, contractDetailCode);
+            getContractDetailMap.put("StatusTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("StatusTime")));
+            getContractDetailMap.put("VerifyTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("VerifyTime")));
+            getContractDetailMap.put("CreateTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("CreateTime")));
+            getContractDetailMap.put("SecondVerifyTime",
+                    SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("SecondVerifyTime")));
+            getContractDetailMap.put("OpenTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("OpenTime")));
+            syncPlugin.save(getContractDetailMap, "SM_ContractDetail", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public List<Adjunct> uploadAdjunct(String contractUid, String ccontractCode,
                                        Integer num, MultipartFile file, String compid) throws ErpException {
         String adjunctKey = contractUid + ccontractCode;
@@ -742,8 +787,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<StgIdDropDown> getContractStgIdDropDown(String compid,String stgId) {
-        return contractMapper.getStgIdDropDown(compid,stgId);
+    public List<StgIdDropDown> getContractStgIdDropDown(String compid, String stgId) {
+        return contractMapper.getStgIdDropDown(compid, stgId);
     }
 
     @Override

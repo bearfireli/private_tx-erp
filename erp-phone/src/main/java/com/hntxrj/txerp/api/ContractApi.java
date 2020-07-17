@@ -63,8 +63,8 @@ public class ContractApi {
     /**
      * 获取合同详情
      *
-     * @param contractUid 合同uid
-     * @param compid      企业id
+     * @param contractDetailCode 子合同号
+     * @param compid             企业id
      * @return 合同详情
      */
     @PostMapping("/getContractDetail")
@@ -225,7 +225,7 @@ public class ContractApi {
     /**
      * 添加合同
      *
-     * @param contractId   主合同号
+     * @param contractId   合同号
      * @param salesman     业务员代号
      * @param signDate     签订日期
      * @param expiresDate  新版本到期时间
@@ -268,6 +268,43 @@ public class ContractApi {
                 effectDate == null ? null : new Timestamp(effectDate), contractType, priceStyle, eppCode, builderCode,
                 contractNum, preNum, preMoney, remarks, compid, address, linkMan, linkTel, opid);
         return ResultVO.create();
+    }
+
+
+    /**
+     * 添加合同
+     *
+     * @param compid             公司代号
+     * @param contractId         合同编号
+     * @param contractUid        主合同号
+     * @param contractDetailCode 子合同号
+     * @param salesman           业务员代号
+     * @param signDate           签订日期
+     * @param expiresDate        到期时间
+     * @param contractType       合同类别
+     * @param priceStyle         价格执行方式
+     * @param eppCode            工程代号
+     * @param builderCode        施工单位代号
+     * @param contractNum        合同方量
+     * @param preNum             预付方量
+     * @param preMoney           预付金额
+     * @param remarks            备注
+     * @param address            交货地址
+     * @param linkMan            合同联系人
+     * @param linkTel            合同联系电话
+     */
+    @PostMapping("/editContract")
+    public ResultVO editContract(String compid, String contractId, String contractUid, String contractDetailCode,
+                                 String salesman, Long signDate, Long expiresDate, Integer contractType,
+                                 Integer priceStyle, String eppCode, String builderCode, BigDecimal contractNum,
+                                 BigDecimal preNum, BigDecimal preMoney, String remarks, String address,
+                                 String linkMan, String linkTel) {
+        contractService.editContract(compid, contractId, contractUid, contractDetailCode, salesman,
+                signDate == null ? null : new Timestamp(signDate),
+                expiresDate == null ? null : new Timestamp(expiresDate), contractType,
+                priceStyle, eppCode, builderCode, contractNum, preNum, preMoney, remarks, address, linkMan, linkTel);
+        return ResultVO.create();
+
     }
 
 
