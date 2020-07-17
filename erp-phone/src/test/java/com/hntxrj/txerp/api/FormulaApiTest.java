@@ -45,4 +45,19 @@ public class FormulaApiTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
+
+
+    @Test
+    public void testGetTheoryFormulaMode() throws Exception {
+        String compid = "01";                  // 企业id
+        mockMvc.perform(post("/api/formula/getTheoryFormulaMode")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("compid", compid)
+                .accept(MediaType.APPLICATION_JSON)) //执行请求
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
 }

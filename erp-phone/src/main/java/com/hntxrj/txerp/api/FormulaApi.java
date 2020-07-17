@@ -125,8 +125,8 @@ public class FormulaApi {
     @ApiOperation("获取任务单下某个线号的理论配比")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "taskId", value = "开始时间", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "stirId", value = "结束时间", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "taskId", value = "任务单号", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "stirId", value = "线号", required = true, dataType = "int", paramType = "query"),
     })
     @PostMapping("getStirIdTaskUnRealFormula")
     public ResultVO getStirIdTaskUnRealFormula(String compid, String taskId, Integer stirId) {
@@ -137,8 +137,8 @@ public class FormulaApi {
     @ApiOperation("获取任务单下某个线号的实际配比")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "taskId", value = "开始时间", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "stirId", value = "结束时间", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "taskId", value = "任务单号", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "stirId", value = "线号", required = true, dataType = "int", paramType = "query"),
     })
     @PostMapping("getStirIdTaskTheoryFormula")
     public ResultVO getStirIdTaskTheoryFormula(String compid, String taskId, Integer stirId) {
