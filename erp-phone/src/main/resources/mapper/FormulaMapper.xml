@@ -269,7 +269,7 @@
             and IdentifyNumber = #{IdentifyNumber}
         </if>
         <if test="theoryFormulaMode != 1 ">
-            and IdentifyNumber = 2
+            and IdentifyNumber = 1
         </if>
         <if test="searchWord != null and searchWord !='' ">
             and (FormulaCheckCode like '%'+#{searchWord}+'%' or StgId like'%'+#{searchWord}+'%')
