@@ -1324,19 +1324,19 @@ public class TaskPlanServiceImpl implements TaskPlanService {
         taskPlanMapper.deleteTaskPlan(compid, taskId);
 
         HashMap<String, String> map = taskPlanMapper.selectOneByTaskId(taskId, compid);
-        map.put("CreateTime", simpleDateFormat.format(map.get("CreateTime")));
-        map.put("PreTime", simpleDateFormat.format(map.get("PreTime")));
-        map.put("TaskOverTime", simpleDateFormat.format(map.get("TaskOverTime")));
-        map.put("VerifyTime", simpleDateFormat.format(map.get("VerifyTime")));
-        map.put("FormulaTime", simpleDateFormat.format(map.get("FormulaTime")));
-        map.put("OpenTime", simpleDateFormat.format(map.get("OpenTime")));
-        map.put("OverTime", simpleDateFormat.format(map.get("OverTime")));
-        map.put("LinkPipeTime", simpleDateFormat.format(map.get("LinkPipeTime")));
-        map.put("DownTime", simpleDateFormat.format(map.get("DownTime")));
-        map.put("AdjustmentTime", simpleDateFormat.format(map.get("AdjustmentTime")));
-        map.put("LinkPipeOverTime", simpleDateFormat.format(map.get("LinkPipeOverTime")));
-        map.put("TaskOpenTime", simpleDateFormat.format(map.get("TaskOpenTime")));
-        map.put("VerifyTimeTwo", simpleDateFormat.format(map.get("VerifyTimeTwo")));
+        map.put("CreateTime", SimpleDateFormatUtil.timeConvert(map.get("CreateTime")));
+        map.put("PreTime", SimpleDateFormatUtil.timeConvert(map.get("PreTime")));
+        map.put("TaskOverTime", SimpleDateFormatUtil.timeConvert(map.get("TaskOverTime")));
+        map.put("VerifyTime", SimpleDateFormatUtil.timeConvert(map.get("VerifyTime")));
+        map.put("FormulaTime", SimpleDateFormatUtil.timeConvert(map.get("FormulaTime")));
+        map.put("OpenTime", SimpleDateFormatUtil.timeConvert(map.get("OpenTime")));
+        map.put("OverTime", SimpleDateFormatUtil.timeConvert(map.get("OverTime")));
+        map.put("LinkPipeTime", SimpleDateFormatUtil.timeConvert(map.get("LinkPipeTime")));
+        map.put("DownTime", SimpleDateFormatUtil.timeConvert(map.get("DownTime")));
+        map.put("AdjustmentTime", SimpleDateFormatUtil.timeConvert(map.get("AdjustmentTime")));
+        map.put("LinkPipeOverTime", SimpleDateFormatUtil.timeConvert(map.get("LinkPipeOverTime")));
+        map.put("TaskOpenTime", SimpleDateFormatUtil.timeConvert(map.get("TaskOpenTime")));
+        map.put("VerifyTimeTwo", SimpleDateFormatUtil.timeConvert(map.get("VerifyTimeTwo")));
         // 数据同步
         try {
             syncPlugin.save(map, "PT_TaskPlan", "UP", compid);
