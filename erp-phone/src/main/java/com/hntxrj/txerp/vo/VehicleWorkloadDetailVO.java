@@ -49,8 +49,18 @@ public class VehicleWorkloadDetailVO {
      * 销售方量
      */
     private BigDecimal saleNum;
-    private  String personalName;
+    private String personalName;
 
     private String stgId;
+
+    /**
+     * 生产线号
+     */
+    private Integer stirId;
+
+    /**
+     * 线号名称
+     */
+    private String stirName;
 
 }

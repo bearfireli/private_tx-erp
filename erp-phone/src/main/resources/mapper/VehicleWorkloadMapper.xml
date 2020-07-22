@@ -17,13 +17,16 @@
         ps.PI_TypeName placeStyleName,
         SaleNum,
         tp.StgId as stgId,
-        vmpi.personalName as personalName
+        vmpi.personalName as personalName,
+        tsi.StirId as stirId,
+        ds.StirName as stirName
         from PT_TaskSaleInvoice tsi
         left join PT_TaskPlan tp on tsi.compid = tp.compid and tp.TaskId = tsi.TaskId
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
         left join SM_BuilderInfo bi on tp.BuilderCode = bi.BuilderCode and bi.compid = tp.compid
-        left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle and  tsi.compid =ps.compid
+        left join DD_PublicInfo ps on ps.PI_Class = 24 and ps.PI_Values = tp.PlaceStyle and tsi.compid =ps.compid
         left join VM_PersonalInfo vmpi on vmpi.PersonalCode = tsi.PersonalCode and tsi.compid=vmpi.compid
+        left join DD_StirInfoSet ds on tsi.compid = ds.compid and ds.StirId = tsi.StirId
         where bi.compid = #{compid}
         and (tsi.InvoiceType not in (1, 2, 6))
         and (tsi.VehicleStatus not in ('8', '9', '10', '11'))
@@ -55,7 +58,7 @@
         EPPName, VehicleID, tp.compid, Leave_STTime, concreteMark,
         placing,
         ps.PI_TypeName, Arrive_STTime, SaleNum, SendTime,
-        ReturnNum, RemnantNum, InvoiceType, VehicleStatus,tp.StgId,personalName
+        ReturnNum, RemnantNum, InvoiceType, VehicleStatus,tp.StgId,personalName, tsi.StirId, ds.StirName
         order by tsi.TaskId,SendTime
 
     </select>
@@ -253,7 +256,7 @@
         from VM_VehicleWeight vm
         left join User_employee us on vm.compid = us.compid and vm.OPER1 =us.OpId
         left join PT_TaskPlan tp on vm.compid = tp.compid and tp.TaskId = vm.TaskId
-        left join  SM_BuilderInfo  sm on tp.BuilderCode =sm.BuilderCode and tp.compid =sm.compid
+        left join SM_BuilderInfo sm on tp.BuilderCode =sm.BuilderCode and tp.compid =sm.compid
         left join SM_EPPInfo epp on tp.EPPCode = epp.EPPCode and tp.compid = epp.compid
         left join DD_PublicInfo dd on dd.PI_Class ='53' and vm.WeightType =dd.PI_Values
         and vm.compid =dd.compid
@@ -507,8 +510,6 @@
     </select>
 
 
-
-
     <!--司机拖水拖泵汇总(新版本)-->
     <select id="getDriverDragPumpCountNew" resultType="com.hntxrj.txerp.vo.DriverTransportationCountVO">
         select vm.PersonalName personalName,
@@ -548,7 +549,7 @@
     <!--泵车汇总统计-->
     <select id="getPumpTruckCount" resultType="com.hntxrj.txerp.vo.PumpTruckCountVO">
         select jvs.VehicleID,
-        count(jvs.VehicleID)                                       carNum,
+        count(jvs.VehicleID) carNum,
         sum(tsi.SaleNum) - sum(tsi.ReturnNum) - sum(tsi.ScrapNum)-sum(tsi.RemnantNum) num
         from PT_JumpVehicleSendDetail jvs
         left join PT_TaskSaleInvoice tsi
@@ -585,13 +586,13 @@
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
         group by jvs.VehicleID
-        order by  num desc
+        order by num desc
     </select>
 
     <!--泵工汇总统计（老版本）-->
     <select id="getPumpOperatorTruckCount" resultType="com.hntxrj.txerp.vo.PumpTruckCountVO">
-        select pc.VehicleID, dd.PI_TypeName as    typeName,
-        count(jvs.VehicleID)                                       carNum,
+        select pc.VehicleID, dd.PI_TypeName as typeName,
+        count(jvs.VehicleID) carNum,
         sum(tsi.SaleNum) - sum(tsi.ReturnNum) - sum(tsi.ScrapNum)-sum(tsi.RemnantNum) num,
         mm.PersonalName
         from PT_JumpVehicleSendDetail jvs
@@ -629,11 +630,9 @@
     </select>
 
 
-
-
     <!--泵工汇总统计(新版本)-->
     <select id="getPumpOperatorTruckCountNew" resultType="com.hntxrj.txerp.vo.PumpTruckCountVO">
-        select count(jvs.VehicleID)                                       carNum,
+        select count(jvs.VehicleID) carNum,
         sum(tsi.SaleNum) - sum(tsi.ReturnNum) - sum(tsi.ScrapNum)-sum(tsi.RemnantNum) num,
         mm.PersonalName
         from PT_JumpVehicleSendDetail jvs
@@ -670,13 +669,13 @@
         <if test="vehicleId != null ">
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
-        group by  mm.PersonalName
+        group by mm.PersonalName
         order by num desc
     </select>
 
     <!--泵车明细-->
     <select id="getPumpTruckDetails" resultType="com.hntxrj.txerp.vo.PumpTruckDetailsVO">
-        select  pt.TaskId,
+        select pt.TaskId,
         jvs.VehicleID,
         convert(varchar(20), min(jvs.SendTime), 120) as SendTime,
         sm.BuilderShortName,
@@ -692,8 +691,8 @@
         left join PT_TaskPlan pt on jvs.compid = pt.compid and jvs.TaskId = pt.TaskId
         left join VM_PersonalInfo mm on jvs.PersonalCode = mm.PersonalCode and jvs.compid = mm.compid
         left join DD_PublicInfo dd on tsi.compid = dd.compid and tsi.PlaceStyle = dd.PI_Values and dd.PI_Class = 24
-        left join SM_BuilderInfo sm on  pt.compid =sm.compid and pt.BuilderCode =sm.BuilderCode
-        left join  SM_EPPInfo epp on pt.compid =epp.compid and pt.EPPCode =epp.EPPCode
+        left join SM_BuilderInfo sm on pt.compid =sm.compid and pt.BuilderCode =sm.BuilderCode
+        left join SM_EPPInfo epp on pt.compid =epp.compid and pt.EPPCode =epp.EPPCode
         where jvs.compid =#{compid}
         and VehicleID_Jump <![CDATA[ <> ]]> '' and VehicleID_Jump is not null
         and jvs.VehicleID <![CDATA[ <> ]]> '' and jvs.VehicleID is not null
@@ -727,9 +726,9 @@
         select tsi.VehicleID_Jump vehicleJump,sm.EPPName, sum(tsi.SaleNum-tsi.ReturnNum -tsi.ScrapNum-tsi.RemnantNum)num
         from PT_JumpVehicleSendDetail jvs
         left join PT_TaskSaleInvoice tsi on jvs.compid = tsi.compid and jvs.TaskId = tsi.TaskId
-        left join  PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
+        left join PT_TaskPlan pt on tsi.compid =pt.compid and tsi.TaskId =pt.TaskId
         left join SM_EPPInfo sm on pt.compid =sm.compid and pt.EPPCode =sm.EPPCode
-        left join  VM_PersonalInfo vm on tsi.compid =vm.compid and tsi.PersonalCode =vm.PersonalCode
+        left join VM_PersonalInfo vm on tsi.compid =vm.compid and tsi.PersonalCode =vm.PersonalCode
         where tsi.compid = #{compid}
         and VehicleID_Jump <![CDATA[ <> ]]> '' and VehicleID_Jump is not null
         and tsi.VehicleID <![CDATA[ <> ]]> '' and tsi.VehicleID is not null
@@ -755,14 +754,14 @@
         <if test="vehicleId != null">
             and tsi.vehicleID like '%'+#{vehicleId}+'%'
         </if>
-        group by  VehicleID_Jump, EPPName
+        group by VehicleID_Jump, EPPName
         ORDER BY sm.EPPName,tsi.VehicleID_Jump
     </select>
 
     <!--泵车合计-->
     <select id="getPumpTruckSum" resultType="com.hntxrj.txerp.vo.PumpTruckWorkloadStatisticsVO">
         select
-        count(jvs.VehicleID)                                      carNumList,
+        count(jvs.VehicleID) carNumList,
         sum(tsi.SaleNum) - sum(tsi.ReturnNum) - sum(tsi.ScrapNum)-sum(tsi.RemnantNum) numList
         from PT_JumpVehicleSendDetail jvs
         left join PT_TaskSaleInvoice tsi
