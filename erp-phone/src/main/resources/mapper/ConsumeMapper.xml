@@ -90,6 +90,7 @@
         from (select row_number()
         over(order by ProduceTime desc) as rownumber,
         pc.StirId,pc.ProduceTime,pc.VehicleID,pc.StgId,pc.TaskId,tp.Placing,pc.PanCode,pc.PanNum as qty,
+        ds.StirName as stirName,
         sum(pc.MatV1) as MatV1,sum(pc.MatV2) as MatV2,sum(pc.MatV3) as MatV3,
         sum(pc.MatV4) as MatV4,sum(pc.MatV5) as MatV5,sum(pc.MatV6) as MatV6,
         sum(pc.MatV7) as MatV7, sum(pc.MatV8) as MatV8,sum(pc.MatV9) as MatV9,sum(pc.MatV10) as MatV10,
@@ -104,6 +105,7 @@
         sum(pc.MatL20) as MatL20,sum(pc.MatL21) as MatL21,sum(pc.MatL22) as MatL22,sum(pc.MatL23) as MatL23
         from dbo.PT_ProduceConsume pc
         left join PT_TaskPlan tp on pc.TaskId = tp.TaskId and tp.compid=pc.compid
+        left join DD_StirInfoSet ds on pc.compid=ds.compid and pc.StirId=ds.StirId
         where pc.compid = #{compid}
         and (
         isnull(ABS(MatV1-MatL1)/nullif(MatV1,0),0)>0.02
@@ -145,7 +147,7 @@
         <if test="beginTime != null and endTime != null">
             and pc.produceTime between #{beginTime} and #{endTime}
         </if>
-        group by pc.PanNum,pc.StirId,pc.ProduceTime,pc.VehicleID,pc.StgId,pc.TaskId,tp.Placing,pc.PanCode
+        group by pc.PanNum,pc.StirId,pc.ProduceTime,pc.VehicleID,pc.StgId,pc.TaskId,tp.Placing,pc.PanCode,ds.StirName
         ) temp_row
         where rownumber>((#{page}-1)*#{pageSize});
     </select>
