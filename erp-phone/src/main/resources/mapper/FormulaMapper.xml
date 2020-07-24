@@ -280,6 +280,7 @@
         <if test="endTime != null ">
             and CreateTime  <![CDATA[ < ]]> #{endTime}
         </if>
+        order by CreateTime desc
     </select>
 
     <select id="getTheoryFormulaDetail" resultType="java.util.HashMap">
