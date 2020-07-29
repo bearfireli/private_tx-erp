@@ -18,6 +18,7 @@
         set NumberOfSignings=#{numberOfSignings},
             SigningTime     = #{signingTime},
             SaleFileImage   = #{saleFileImage},
+            VehicleID_Jump  = #{jumpVehicle},
             updownmark=0,
             upStatus=1
         where ID = #{invoiceId}
