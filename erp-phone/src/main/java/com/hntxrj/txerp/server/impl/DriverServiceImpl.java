@@ -22,7 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 功能及介绍：司机模块数据处理层
@@ -122,21 +125,12 @@ public class DriverServiceImpl implements DriverService {
                                                                       String builderCode, String placing,
                                                                       Integer page,
                                                                       Integer pageSize, String driverCode) {
-        List<TaskSaleInvoiceDriverListVO> taskSaleInvoiceDriverListVOS = new ArrayList<>();
         PageHelper.startPage(page, pageSize, "SendTime desc");
         List<TaskSaleInvoiceDriverListVO> taskSaleInvoiceLists =
                 driverMapper.driverGetTaskSaleInvoiceList(invoiceId == null ? null : String.valueOf(invoiceId),
                         compid, beginTime, endTime, eppCode, upStatus, builderCode, placing, driverCode);
 
-        for (TaskSaleInvoiceDriverListVO taskSaleInvoice : taskSaleInvoiceLists) {
-            //司机端小票查询不显示已打票但车辆状态为正在生产的小票（主要针对先打票后生产的搅拌站）
-            if (taskSaleInvoice.getInvoiceType() == 4 && taskSaleInvoice.getVehicleStatus() == 3) {
-                continue;
-            }
-            taskSaleInvoiceDriverListVOS.add(taskSaleInvoice);
-        }
-
-        PageInfo<TaskSaleInvoiceDriverListVO> pageInfo = new PageInfo<>(taskSaleInvoiceDriverListVOS);
+        PageInfo<TaskSaleInvoiceDriverListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
         PageVO<TaskSaleInvoiceDriverListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
@@ -302,7 +296,6 @@ public class DriverServiceImpl implements DriverService {
     public GpsLocateTempInfo getDriverLocation(String compid, String vehicleId) {
         return driverMapper.getDriverLocation(compid, vehicleId);
     }
-
     @Override
     public List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime) {
         return driverMapper.driverVehicleCount(compid, driverCode, beginTime, endTime);
