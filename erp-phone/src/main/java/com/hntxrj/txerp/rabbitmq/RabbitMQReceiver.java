@@ -37,7 +37,7 @@ public class RabbitMQReceiver {
         //获取需要推送的推送人
         List<RecipientVO> recipientList = getRecipientList(message);
         //调用极光推送api推送消息
-        jPushUtil.messagePush(message, recipientList);
+        jPushUtil.erpPhoneMessagePush(message, recipientList);
     }
 
     @RabbitListener(queues = RabbitConfig.DRIVER_QUEUE)

@@ -31,7 +31,7 @@ import java.util.Map;
  * 功能及介绍：司机模块数据处理层
  * <p>
  */
-@Service()
+@Service
 public class DriverServiceImpl implements DriverService {
 
     private final DriverDao driverDao;
@@ -296,6 +296,7 @@ public class DriverServiceImpl implements DriverService {
     public GpsLocateTempInfo getDriverLocation(String compid, String vehicleId) {
         return driverMapper.getDriverLocation(compid, vehicleId);
     }
+
     @Override
     public List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime) {
         return driverMapper.driverVehicleCount(compid, driverCode, beginTime, endTime);
