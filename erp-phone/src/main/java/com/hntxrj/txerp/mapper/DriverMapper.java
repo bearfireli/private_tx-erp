@@ -147,7 +147,8 @@ public interface DriverMapper {
      * @param signingTime      签订时间
      * @param numberOfSignings 签收方量
      */
-    void saveSaleFileImage(String compid, String saleFileImage, String invoiceId, String signingTime, Double numberOfSignings);
+    void saveSaleFileImage(String compid, String saleFileImage, String invoiceId, String signingTime,
+                           Double numberOfSignings, String jumpVehicle);
 
     /**
      * 编辑签收方量
@@ -183,6 +184,6 @@ public interface DriverMapper {
 
 
     GpsLocateTempInfo getDriverLocation(String compid, String vehicleId);
-  
+
     List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime);
 }

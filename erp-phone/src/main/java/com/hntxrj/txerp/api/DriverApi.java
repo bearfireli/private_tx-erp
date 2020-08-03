@@ -202,7 +202,7 @@ public class DriverApi {
      */
     @RequestMapping("/saveTaskSaleInvoiceReceiptSign")
     public ResultVO saveTaskSaleInvoiceReceiptSign(MultipartFile image, Double receiptNum, String invoiceId,
-                                                   String compid) throws ErpException {
+                                                   String compid, String jumpVehicle) throws ErpException {
         File file = new File(taskSaleInvoiceUploadPath + invoiceId + ".png");
         try {
             if (file.createNewFile()) {
@@ -210,7 +210,8 @@ public class DriverApi {
             }
             String saleFileImage = invoiceId + ".png";
 
-            driverService.saveSaleFileImage(saleFileImage, invoiceId, compid, receiptNum == null ? 0.0 : receiptNum);
+            driverService.saveSaleFileImage(saleFileImage, invoiceId, compid, receiptNum == null ? 0.0 : receiptNum,
+                    jumpVehicle);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ErpException(ErrEumn.SAVE_PICTURE_ERROR);
