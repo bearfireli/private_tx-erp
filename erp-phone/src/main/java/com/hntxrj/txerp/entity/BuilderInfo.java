@@ -17,7 +17,7 @@ public class BuilderInfo implements Serializable {
     @Id
     private String compid;
     private String opid;
-    private Timestamp createtime;
+    private String createtime;
     private String buildercode;
     private String buildername;
     private String buildershortname;

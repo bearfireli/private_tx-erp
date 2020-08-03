@@ -3,6 +3,8 @@ package com.hntxrj.txerp.server.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.SyncPlugin;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.EppDao;
 import com.hntxrj.txerp.entity.EppInfo;
 import com.hntxrj.txerp.entity.PageBean;
@@ -15,7 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 功能: 工程服务接口实现层
@@ -30,12 +37,15 @@ public class EppServiceImpl implements EppService {
     private final EppDao eppDao;
     private final EppMapper eppMapper;
     private final ConstructionMapper constructionMapper;
+    private final SimpleDateFormat sdf = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
+    private final SyncPlugin syncPlugin;
 
     @Autowired
-    public EppServiceImpl(EppDao eppDao, EppMapper eppMapper, ConstructionMapper constructionMapper) {
+    public EppServiceImpl(EppDao eppDao, EppMapper eppMapper, ConstructionMapper constructionMapper, SyncPlugin syncPlugin) {
         this.eppDao = eppDao;
         this.eppMapper = eppMapper;
         this.constructionMapper = constructionMapper;
+        this.syncPlugin = syncPlugin;
     }
 
 
@@ -81,16 +91,65 @@ public class EppServiceImpl implements EppService {
     @Override
     public PageVO<EppDropDownVO> getBuildDropDown(String eppName, Integer buildId, Integer page, Integer pageSize) {
         //首先根据buildId查询出关联的合同号和子合同号。
-        List<String>  contractDetailCodes=constructionMapper.getContractCodeList(buildId);
-        List<String> contractUIDList=constructionMapper.getContractUID(buildId);
+        List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
+        List<String> contractUIDList = constructionMapper.getContractUID(buildId);
 
         //只能查询出绑定的合同的工程名称
 
         PageHelper.startPage(page, pageSize);
-        List<EppDropDownVO> eppDropDownVOList = eppMapper.getBuildDropDown(contractDetailCodes,contractUIDList, eppName);
+        List<EppDropDownVO> eppDropDownVOList = eppMapper.getBuildDropDown(contractDetailCodes, contractUIDList, eppName);
         PageInfo<EppDropDownVO> eppDropDownVOPageInfo = new PageInfo<>(eppDropDownVOList);
         PageVO<EppDropDownVO> pageVO = new PageVO<>();
         pageVO.format(eppDropDownVOPageInfo);
         return pageVO;
+    }
+
+    @Override
+    public void addEppInfo(String compid, String eppName, String shortName, String address, String linkMan,
+                           String phone, String remarks) {
+        //获取当前日期
+        String nowDate = sdf.format(new Date());
+
+        //获取生成的工程名称代号
+        String eppCode = getEppCode(compid);
+        eppMapper.addEppInfo(compid, eppName, eppCode, shortName, address, linkMan, phone, remarks, nowDate);
+        EppInfo eppInfo = eppMapper.getEppInfo(eppCode, compid);
+        try {
+            syncPlugin.save(eppInfo, "SM_EPPInfo", "INS", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private String getEppCode(String compid) {
+        String eppCode = eppMapper.getMaxEppCode(compid);
+
+        //正则匹配找出eppCode中最大的数值
+        Pattern compile = Pattern.compile("[0-9]\\d*$");
+        Matcher matcher = compile.matcher(eppCode);
+        String preMaxCode = "";
+        while (matcher.find()) {
+            preMaxCode = matcher.group(0);
+        }
+
+        //获取最大数值所在的索引，将之前的字符串分割，之后的数值加1
+        int startIndex = eppCode.indexOf(preMaxCode);
+        String preEppCode = eppCode.substring(0, startIndex);
+
+        int length = preMaxCode.length();
+        int maxId = Integer.parseInt(preMaxCode);
+
+        StringBuilder maxCode = new StringBuilder(String.valueOf(maxId + 1));
+
+        //将加1之后的数值转换成字符串
+        int dValue = length - maxCode.length();
+        if (dValue > 0) {
+            for (int i = 0; i < dValue; i++) {
+                maxCode.insert(0, "0");
+            }
+        }
+
+        return preEppCode + maxCode;
     }
 }
