@@ -155,7 +155,8 @@ public interface DriverService {
      * @param compid           企业id
      * @param numberOfSignings 签收方量
      */
-    void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double numberOfSignings);
+    void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double numberOfSignings,
+                           String jumpVehicle);
 
     /**
      * 编辑签收方量

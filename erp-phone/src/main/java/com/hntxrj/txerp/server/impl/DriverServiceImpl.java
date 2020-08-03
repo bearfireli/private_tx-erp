@@ -147,9 +147,11 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double numberOfSignings) {
+    public void saveSaleFileImage(String saleFileImage, String invoiceId, String compid, Double numberOfSignings,
+                                  String jumpVehicle) {
         SimpleDateFormat dateFormat = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
-        driverMapper.saveSaleFileImage(compid, saleFileImage, invoiceId, dateFormat.format(new Date()), numberOfSignings);
+        driverMapper.saveSaleFileImage(compid, saleFileImage, invoiceId, dateFormat.format(new Date()), numberOfSignings,
+                jumpVehicle);
     }
 
     @Override
