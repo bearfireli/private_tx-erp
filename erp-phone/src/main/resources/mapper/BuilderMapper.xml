@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.BuilderMapper">
+    <insert id="addBuilderInfo">
+        insert into SM_BuilderInfo(compid, OpId, BuilderCode, BuilderName, BuilderShortName,
+                           Address, LinkTel, Fax, Corporation,RecStatus,UpDown,UpDownMark)
+        values (#{compid},'0225',#{builderCode},#{builderName},#{builderShortName},#{address},
+        #{linkTel},#{fax},#{corporation},1,0,0)
+    </insert>
     <select id="getBuilderDropDown" resultType="com.hntxrj.txerp.vo.BuilderDropDownVO">
         select
         BuilderCode, BuilderShortName builderName
@@ -533,6 +539,11 @@
         <foreach collection="contractUIDList" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+    </select>
+    <select id="getMaxBuilderCode" resultType="java.lang.String">
+        select max(BuilderCode)
+        from SM_BuilderInfo
+        where compid = #{compid}
     </select>
 
 

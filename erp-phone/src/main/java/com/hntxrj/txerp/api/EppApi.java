@@ -67,5 +67,23 @@ public class EppApi {
         return resultVO;
     }
 
+    /**
+     * 添加工程名称
+     *
+     * @param compid    企业代号
+     * @param eppName   工程名称模糊查询
+     * @param shortName 企业id
+     * @param address   页码
+     * @param linkMan   每页数量
+     * @param phone     每页数量
+     * @param remarks   每页数量
+     */
+    @PostMapping("/addEppInfo")
+    public ResultVO addEppName(String compid, String eppName, String shortName, String address, String linkMan,
+                               String phone, String remarks) {
+        eppService.addEppInfo(compid, eppName, shortName, address, linkMan, phone, remarks);
+        return ResultVO.create();
+    }
+
 
 }

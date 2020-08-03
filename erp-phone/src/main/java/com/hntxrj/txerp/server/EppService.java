@@ -6,6 +6,8 @@ import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.vo.EppDropDownVO;
 import com.hntxrj.txerp.vo.PageVO;
 
+import javax.transaction.Transactional;
+
 /**
  * 功能:   工程服务接口
  *
@@ -53,10 +55,11 @@ public interface EppService {
 
     /**
      * 获取工程名称
-     * @param eppCode   工程代号
-     * @param compid     企业id
+     *
+     * @param eppCode 工程代号
+     * @param compid  企业id
      * @return 工程对象
-     * */
+     */
     EppInfo getEppInfo(String eppCode, String compid);
 
 
@@ -64,10 +67,14 @@ public interface EppService {
      * 获取工地端App工程名称下拉
      *
      * @param eppName  工程名称模糊查询
-     * @param buildId   企业id
+     * @param buildId  企业id
      * @param page     页码
      * @param pageSize 每页数量
      * @return 带分页工程下拉列表
      */
     PageVO<EppDropDownVO> getBuildDropDown(String eppName, Integer buildId, Integer page, Integer pageSize);
+
+    @Transactional
+    void addEppInfo(String compid, String eppName, String shortName, String address, String linkMan, String phone,
+                    String remarks);
 }

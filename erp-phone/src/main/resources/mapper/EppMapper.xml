@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.EppMapper">
+    <insert id="addEppInfo">
+        insert into SM_EPPInfo(compid, EPPCode, EPPName, ShortName,
+                       Address, LinkMan, LinkTel, OpId, CreateTime, Remarks,
+                       RecStatus, UpDown, DemarcateMap, UpDownMark)
+        values (#{compid},#{eppCode},#{eppName},#{shortName},#{address},#{linkMan},
+        #{phone},'0225',#{nowDate},#{remarks},1,0,0,0)
+    </insert>
     <select id="getDropDown" resultType="com.hntxrj.txerp.vo.EppDropDownVO">
         select EPPName, EPPCode ,Address from SM_EPPInfo where compid=#{compid} and RecStatus=1
         <if test="eppName != null and eppName != ''">
@@ -24,7 +31,7 @@
         <if test="eppName != null and eppName != ''">
             and eppName like '%'+#{eppName}+'%'
         </if>
-        group by   se.EPPName, se.EPPCode ,se.Address
+        group by se.EPPName, se.EPPCode ,se.Address
     </select>
 
     <select id="getEppInfo" resultType="com.hntxrj.txerp.entity.EppInfo">
@@ -32,5 +39,8 @@
     </select>
     <select id="getEppInfoByCreateTime" resultType="com.hntxrj.txerp.entity.EppInfo">
         select * from SM_EPPInfo where compid=#{compid} and CreateTime=#{createTime}
+    </select>
+    <select id="getMaxEppCode" resultType="java.lang.String">
+        select max(EPPCode) from SM_EPPInfo where compid=#{compid}
     </select>
 </mapper>

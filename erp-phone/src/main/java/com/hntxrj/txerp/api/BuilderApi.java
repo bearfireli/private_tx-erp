@@ -168,4 +168,22 @@ public class BuilderApi {
     public ResultVO checkTaskSaleInvoice(Integer buildId, String compid, Integer id) throws ErpException {
         return ResultVO.create(builderService.checkTaskSaleInvoice(buildId, compid, id));
     }
+
+
+    @ApiOperation("添加施工单位")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "builderName", value = "施工方用户id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "builderShortName", value = "小票id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "address", value = "小票id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "Corporation", value = "法人", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "fax", value = "传真", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "phone", value = "联系电话", required = true, dataType = "String", paramType = "query"),
+    })
+    @PostMapping("/addBuilderInfo")
+    public ResultVO addBuilderInfo(String compid, String builderName, String builderShortName, String address,
+                                   String Corporation, String fax, String phone) {
+        builderService.addBuilderInfo(compid, builderName, builderShortName, address, Corporation, fax, phone);
+        return ResultVO.create();
+    }
 }
