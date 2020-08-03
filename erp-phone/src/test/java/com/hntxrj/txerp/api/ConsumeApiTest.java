@@ -35,8 +35,6 @@ public class ConsumeApiTest {
     }
 
     @Test
-    @Transactional
-    @Rollback
     public void testGetErrorProductList() throws Exception {
         String COMP_ID = "01";
         String BEGIN_TIME = "1556673952000";
