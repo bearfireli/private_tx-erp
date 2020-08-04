@@ -42,10 +42,8 @@ public class DriverServiceImpl implements DriverService {
     private final JPushUtil jPushUtil;
 
     @Resource
-    private RedisTemplate<String, Date> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    @Resource
-    private RedisTemplate<String, List<VehicleIdVO>> driverPushRedisTemplate;
 
     @Autowired
     public DriverServiceImpl(DriverDao driverDao, DriverMapper driverMapper, VehicleService vehicleService, JPushUtil jPushUtil) {
@@ -320,7 +318,7 @@ public class DriverServiceImpl implements DriverService {
         List<VehicleIdVO> waitCars = vehicleService.getWaitCars(compid);
 
         //获取缓存中等待生产的车辆
-        List<VehicleIdVO> vehicleIdVOS = driverPushRedisTemplate.opsForValue().get("waitCars:" + compid);
+        List<VehicleIdVO> vehicleIdVOS = (List<VehicleIdVO>) redisTemplate.opsForValue().get("waitCars:" + compid);
 
         //先判断等待派车的车辆与缓存中的车辆是否一致，如果不一致，则发送消息提示
         if (vehicleIdVOS == null || vehicleIdVOS.size() < 1) {
@@ -400,7 +398,7 @@ public class DriverServiceImpl implements DriverService {
         }
 
         //把新的等待派车的集合存进缓存中
-        driverPushRedisTemplate.opsForValue().set("waitCars:" + compid, waitCars);
+        redisTemplate.opsForValue().set("waitCars:" + compid, waitCars);
     }
 
 
