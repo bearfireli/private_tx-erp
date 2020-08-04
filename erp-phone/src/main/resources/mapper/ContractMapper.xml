@@ -72,7 +72,8 @@
         cm.ContractType,
         ContractType_pi.PI_TypeName contractTypeName,
         cm.PriceStyle,
-        PriceStyle_pi.PI_TypeName priceStyleName
+        PriceStyle_pi.PI_TypeName priceStyleName,
+        cd.PreMoney preMoney
         from SM_ContractMaster cm
         left join SM_ContractDetail cd on cm.ContractUID = cd.ContractUID and cm.compid = cd.compid
         left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid = epp.compid
@@ -380,7 +381,6 @@
         where cd.compid = #{compid}
         and cm.RecStatus=1
         and cd.RecStatus=1
-        and cd.verifyStatus = 1
         <if test="searchName != null and searchName!='' ">
             and (epp.EPPName like '%'+#{searchName}+'%' or bu.BuilderShortName like '%'+#{searchName}+'%')
         </if>
@@ -477,6 +477,39 @@
         where compid = #{compid}
           and Pumptype = #{pumpType}
           and ContractUID = #{contractUID}
+          and CContractCode = #{contractDetailCode}
+    </select>
+
+
+    <select id="updateContractMaster">
+        update SM_ContractMaster
+        set Salesman=#{salesman},
+            SignDate=#{signDate},
+            ExpiresDate=#{expiresDate},
+            ContractType=#{contractType},
+            PriceStyle=#{priceStyle},
+            LinkMan=#{linkMan},
+            LinkTel=#{linkTel},
+            UpDownMark=0,
+            empname='0225'
+        where compid = #{compid}
+          and ContractId = #{contractId}
+          and ContractUID = #{contractUid}
+    </select>
+
+
+    <select id="updateContractDetail">
+        update SM_ContractDetail
+        set EPPCode=#{eppCode},
+            BuilderCode=#{builderCode},
+            ContractNum=#{contractNum},
+            PreNum=#{preNum},
+            PreMoney=#{preMoney},
+            Remarks=#{remarks},
+            Address=#{address},
+            UpDownMark=0
+        where compid = #{compid}
+          and ContractUID = #{contractUid}
           and CContractCode = #{contractDetailCode}
     </select>
 

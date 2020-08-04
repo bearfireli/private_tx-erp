@@ -14,9 +14,9 @@ spring:
       max-file-size: 10MB
       max-request-size: 20MB
   datasource:
-    url: jdbc:mysql://localhost/tx-cloud?characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.31.17/tx-cloud?characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
     username: root
-    password: root
+    password: TongXin2019
     hikari:
       pool-name: base_pool1_0_2
   jpa:
@@ -57,6 +57,6 @@ app:
     imgFilePath: ${app.workspace}\upload\checkImgPath\
   feedback:
     imgFilePath: ${app.workspace}\pic
-  host: http://192.168.31.86:8088
+  host: localhost:8088
 server:
   port: 9501

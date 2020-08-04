@@ -13,6 +13,7 @@ import com.hntxrj.txerp.dao.ContractDetailDao;
 import com.hntxrj.txerp.entity.*;
 import com.hntxrj.txerp.im.MsgService;
 import com.hntxrj.txerp.mapper.*;
+import com.hntxrj.txerp.rabbitmq.RabbitMQSender;
 import com.hntxrj.txerp.repository.ContractGradePriceDetailRepository;
 import com.hntxrj.txerp.repository.ContractMasterRepository;
 import com.hntxrj.txerp.server.ContractService;
@@ -34,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -64,6 +66,7 @@ public class ContractServiceImpl implements ContractService {
     private final SimpleDateFormat simpleDateFormat = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
 
     private final ContractMasterRepository contractMasterRepository;
+    private final RabbitMQSender rabbitMQSender;
 
     @Value("${app.spterp.contractAdjunctPath}")
     private String contractAdjunctPath;
@@ -74,7 +77,7 @@ public class ContractServiceImpl implements ContractService {
                                ContractGradePriceDetailRepository contractGradePriceDetailRepository,
                                ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
                                ContractMasterRepository contractMasterRepository, SyncPlugin syncPlugin,
-                               ContractDetailDao contractDetailDao) {
+                               ContractDetailDao contractDetailDao, RabbitMQSender rabbitMQSender) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -86,6 +89,7 @@ public class ContractServiceImpl implements ContractService {
         this.msgMapper = msgMapper;
         this.syncPlugin = syncPlugin;
         this.contractMasterRepository = contractMasterRepository;
+        this.rabbitMQSender = rabbitMQSender;
         this.contractDetailDao = contractDetailDao;
     }
 
@@ -482,27 +486,25 @@ public class ContractServiceImpl implements ContractService {
         }
 
         ContractVO contractVO = contractMapper.getContractDetail(ccontractCode, compid);
-        int typeId = 3;
-        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
+        MessagePushVO messagePushVO = new MessagePushVO();
+        messagePushVO.setCompid(compid);
+        messagePushVO.setTypeId(4);
+        messagePushVO.setContractUid(contractUid);
+        messagePushVO.setContractDetailCode(ccontractCode);
         String contractCode = "";
         if (contractVO != null) {
             contractCode = contractVO.getContractCode();
         }
-        for (RecipientVO r : recipoentList) {
-            SendmsgVO sendmsgVO = new SendmsgVO();
-            sendmsgVO.setSyncOtherMachine(2);
-            sendmsgVO.setToAccount(r.getUid().toString());
-            sendmsgVO.setMsgLifeTime(7);
-            String msgContent = "合同号：[" + contractCode + "]的审核状态修改成功";
-            if (verifyStatus == 1) {
-                msgContent = "合同号：[" + contractCode + "]已审核";
-            } else if (verifyStatus == 0) {
-                msgContent = "合同号：[" + contractCode + "]已取消审核";
-            }
-            sendmsgVO.setMsgContent(msgContent);
-            msgService.sendMsg(sendmsgVO);
+        String msgContent = "合同号：[" + contractCode + "]的审核状态修改成功";
+        if (verifyStatus == 1) {
+            msgContent = "合同号：[" + contractCode + "]已审核";
+        } else if (verifyStatus == 0) {
+            msgContent = "合同号：[" + contractCode + "]已取消审核";
         }
+        messagePushVO.setMessage(msgContent);
+        rabbitMQSender.erpPhoneMessagePush(messagePushVO);
     }
+
 
     @Override
     public List<ContractGradePriceVO> getContractGradePrice(
@@ -633,16 +635,57 @@ public class ContractServiceImpl implements ContractService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        int typeId = 3;
-        List<RecipientVO> recipoentList = msgMapper.getRecipientList(compid, typeId);
-        for (RecipientVO r : recipoentList) {
-            SendmsgVO sendmsgVO = new SendmsgVO();
-            sendmsgVO.setSyncOtherMachine(2);
-            sendmsgVO.setToAccount(r.getUid().toString());
-            sendmsgVO.setMsgLifeTime(7);
-            String msgContent = "有新合同,请审核";
-            sendmsgVO.setMsgContent(msgContent);
-            msgService.sendMsg(sendmsgVO);
+
+        MessagePushVO messagePushVO = new MessagePushVO();
+        messagePushVO.setCompid(compid);
+        messagePushVO.setTypeId(3);
+        messagePushVO.setContractUid(contractMasterUid);
+        messagePushVO.setContractDetailCode(contractDetail.getCcontractCode());
+        messagePushVO.setMessage("有新合同,请审核");
+        rabbitMQSender.erpPhoneMessagePush(messagePushVO);
+    }
+
+    @Override
+    @Transactional
+    public void editContract(String compid, String contractId, String contractUid, String contractDetailCode,
+                             String salesman, Timestamp signDate, Timestamp expiresDate, Integer contractType,
+                             Integer priceStyle, String eppCode, String builderCode, BigDecimal contractNum,
+                             BigDecimal preNum, BigDecimal preMoney, String remarks, String address, String linkMan,
+                             String linkTel) {
+        //编辑主合同
+        contractMapper.updateContractMaster(compid, contractId, contractUid, salesman, signDate, expiresDate, contractType,
+                priceStyle, linkMan, linkTel);
+
+        // 同步数据
+        try {
+            HashMap<String, String> contractMasterMap = contractMapper.getContractMaster(compid,
+                    contractId, contractUid);
+
+            contractMasterMap.put("SignDate", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("SignDate")));
+            contractMasterMap.put("EffectDate", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("EffectDate")));
+            contractMasterMap.put("ExpiresDate", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("ExpiresDate")));
+            contractMasterMap.put("CreateTime", SimpleDateFormatUtil.timeConvert(contractMasterMap.get("CreateTime")));
+            syncPlugin.save(contractMasterMap, "SM_ContractMaster", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //编辑子合同
+        contractMapper.updateContractDetail(compid, contractUid, contractDetailCode, eppCode, builderCode, contractNum,
+                preNum, preMoney, remarks, address);
+
+        // 同步数据
+        try {
+            HashMap<String, String> getContractDetailMap = contractMapper.getContractDetailMap(
+                    contractUid, contractDetailCode);
+            getContractDetailMap.put("StatusTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("StatusTime")));
+            getContractDetailMap.put("VerifyTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("VerifyTime")));
+            getContractDetailMap.put("CreateTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("CreateTime")));
+            getContractDetailMap.put("SecondVerifyTime",
+                    SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("SecondVerifyTime")));
+            getContractDetailMap.put("OpenTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("OpenTime")));
+            syncPlugin.save(getContractDetailMap, "SM_ContractDetail", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

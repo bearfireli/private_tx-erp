@@ -6,6 +6,7 @@ import com.hntxrj.txerp.entity.BuilderInfo;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.vo.*;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Map;
@@ -165,4 +166,19 @@ public interface BuilderService {
      * @param id      小票id
      */
     TaskSaleInvoiceDetailVO checkTaskSaleInvoice(Integer buildId, String compid, Integer id) throws ErpException;
+
+    /**
+     * 添加施工单位
+     *
+     * @param compid           //企业代号
+     * @param builderName      //施工方名称
+     * @param builderShortName //施工方简称
+     * @param address          // 地址
+     * @param corporation      //法人
+     * @param fax              //传真
+     * @param phone            //联系人
+     */
+    @Transactional
+    void addBuilderInfo(String compid, String builderName, String builderShortName, String address,
+                        String corporation, String fax, String phone);
 }

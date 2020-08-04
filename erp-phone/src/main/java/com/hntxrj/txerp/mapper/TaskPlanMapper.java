@@ -457,4 +457,8 @@ public interface TaskPlanMapper {
 
     // 获取司机排班对象
     Map<String, String> getDriverShiftVO(String compid, String vehicleId, String personalCode, String workStarTime);
+
+    //修改任务单中的配比是否开具状态
+    void updateTaskPLanFormulaStatus(String compid, String taskId, String formulaCOde, String theoryFormulaCode,
+                                     String currentTime);
 }

@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hntxrj.txerp.mapper.FormulaMapper">
+    <update id="verifyTaskUnrealFormula">
+        update LM_TaskUnrealFormula
+        set VerifyStatus=#{verifyStatus},
+            VerifyId = '0225',
+            VerifyTime = #{currentTime},
+            UpDownMark = 0,
+            UpDown = 0
+        where compid = #{compid}
+          and TaskId = #{taskId}
+          and FormulaCode = #{formulaCode}
+          and StirId = #{stirId}
+    </update>
+    <update id="verifyTaskTheoryFormula">
+        update LM_TaskTheoryFormula
+        set VerifyStatus=#{verifyStatus},
+            VerifyId = '0225',
+            VerifyTime = #{currentTime},
+            UpDownMark = 0,
+            UpDown = 0
+        where compid = #{compid}
+          and TaskId = #{taskId}
+          and FormulaCode = #{formulaCode}
+          and StirId = #{stirId}
+    </update>
 
     <select id="getFormulaList" resultType="java.util.Map">
         select TaskId, pi.PI_TypeName placeStyleName, dd.PI_TypeName TaskStatusName,
@@ -38,6 +62,7 @@
         <if test="startTime != null and endTime != null">
             and (AdjustmentTime between #{startTime} and #{endTime})
         </if>
+        order by pf.CreateTime desc
     </select>
     <select id="getFormulaByTaskId" resultType="java.util.Map">
         select TaskId,
@@ -237,4 +262,90 @@
         select top 1 * from LM_TaskTheoryFormula
         where compid=#{compid} and TaskId=#{taskId} and StirId=#{stirId}
     </select>
+    <select id="theoryFormulaList" resultType="com.hntxrj.txerp.vo.TheoryFormulaVO">
+        select * from LM_TheoryFormula
+        where compid=#{compid}
+        <if test="theoryFormulaMode == 1 ">
+            and IdentifyNumber = #{IdentifyNumber}
+        </if>
+        <if test="theoryFormulaMode != 1 ">
+            and IdentifyNumber = 1
+        </if>
+        <if test="searchWord != null and searchWord !='' ">
+            and (FormulaCheckCode like '%'+#{searchWord}+'%' or StgId like'%'+#{searchWord}+'%')
+        </if>
+        <if test="beginTime != null ">
+            and CreateTime  <![CDATA[ >= ]]> #{beginTime}
+        </if>
+        <if test="endTime != null ">
+            and CreateTime  <![CDATA[ < ]]> #{endTime}
+        </if>
+        order by CreateTime desc
+    </select>
+
+    <select id="getTheoryFormulaDetail" resultType="java.util.HashMap">
+        select * from LM_TheoryFormula
+        where compid=#{compid}
+            and FormulaCheckCode=#{formulaCheckCode}
+            and TheoryFormulaCode=#{theoryFormulaCode}
+            and StgId=#{stgId}
+            and IdentifyNumber=#{identifyNumber}
+    </select>
+
+    <select id="getTaskProduceFormulaByTheory" resultType="com.hntxrj.txerp.entity.TaskProduceFormula">
+        select top 1 * from LM_TheoryFormula
+        where compid=#{compid}
+            and TheoryFormulaCode=#{theoryFormulaCode}
+            and StgId=#{stgId}
+            and IdentifyNumber=#{identifyNumber}
+    </select>
+    <select id="getStirIdTaskUnRealFormula" resultType="java.util.HashMap">
+        select top 1 * from LM_TaskUnrealFormula
+        where compid=#{compid}
+        and TaskId=#{taskId}
+        and StirId=#{stirId}
+    </select>
+    <select id="getStirIdTaskTheoryFormula" resultType="java.util.HashMap">
+        select top 1 * from LM_TaskTheoryFormula
+        where compid=#{compid}
+        and TaskId=#{taskId}
+        and StirId=#{stirId}
+    </select>
+    <select id="getTaskProduceFormula" resultType="com.hntxrj.txerp.entity.TaskProduceFormula">
+        select top 1 *
+        from LM_TaskProduceFormula
+        where compid=#{compid}
+        and TaskId=#{taskId}
+        and StirId=#{stirId}
+    </select>
+    <select id="getFormulaCode" resultType="java.lang.String">
+        select top 1 FormulaCode
+        from LM_TaskProduceFormula
+        where FormulaCode like #{formulaCode} + '%'
+        order by  FormulaCode desc
+    </select>
+
+    <select id="getTaskProduceFormulaMap" resultType="java.util.HashMap">
+        select top 1 *
+        from LM_TaskProduceFormula
+        where compid = #{compid}
+            and TaskId = #{taskId}
+            and StirId=#{stirId}
+    </select>
+    <select id="getTaskUnrealFormula" resultType="java.util.HashMap">
+        select top 1 *
+        from LM_TaskUnrealFormula
+        where compid = #{compid}
+            and TaskId = #{taskId}
+            and StirId=#{stirId}
+    </select>
+    <select id="getTaskTheoryFormula" resultType="java.util.HashMap">
+        select top 1 *
+        from LM_TaskTheoryFormula
+        where compid = #{compid}
+            and TaskId = #{taskId}
+            and StirId=#{stirId}
+    </select>
+
+
 </mapper>

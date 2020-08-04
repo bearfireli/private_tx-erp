@@ -5,13 +5,15 @@ import lombok.Data;
 import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
+
+
 /*每盘配料明细*/
 @Data
 public class PlatelngredientsVO {
     /*线号*/
     private Integer stirId;
+    /*线号名称*/
+    private String stirName;
     /*任务单号*/
     private String taskId;
     /*标号*/
@@ -236,5 +238,10 @@ public class PlatelngredientsVO {
     /* 称量值回收水 */
     @Column(name = "matl23")
     private BigDecimal matL23;
+
+    //工程名称
+    private String eppName;
+    //施工单位
+    private String builderName;
 
 }
