@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.core.util.TLSSigAPIv2;
 import com.hntxrj.txerp.vo.SendmsgVO;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;

@@ -6,7 +6,6 @@ import com.arronlong.httpclientutil.common.HttpHeader;
 import com.arronlong.httpclientutil.exception.HttpProcessException;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
-import com.hntxrj.txerp.core.util.TLSSigAPIv2;
 import com.hntxrj.txerp.vo.FriendsVO;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
