@@ -32,6 +32,7 @@ public class TaskSaleInvoiceListVO {
 
     private String vehicleStatusName;
 
+    private Integer invoiceType;
     private String invoiceTypeName;
 
     //砼方量
@@ -39,15 +40,15 @@ public class TaskSaleInvoiceListVO {
     private double taWeight;
     private double grWeight;
     private double netWeight;
-    private int  WeightType;
+    private int WeightType;
     private String WeightTypeName;
     private String slump;
-    private String  placing;
+    private String placing;
     private String arriveSttime;
     private double qianNum;
     private double numberOfSignings; // 签收方量
     private double saleNum;
-    private  String vehicleStatus;
-    private  String attribute;
+    private String vehicleStatus;
+    private String attribute;
     private String leaveTime;       //离厂时间
 }

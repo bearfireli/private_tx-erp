@@ -4,6 +4,7 @@
     <!--    type搜索时间类型：0表示派车时间；1表示出厂时间-->
     <select id="getTaskSaleInvoiceList" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceListVO">
         select tsi.ID,
+        tsi.InvoiceType as invoiceType,
         vv.VehicleStatus,
         tsi.VehicleID,
         (tsi.SaleNum - tsi.ReturnNum - tsi.RemnantNum -tsi.ScrapNum) SaleNum,
