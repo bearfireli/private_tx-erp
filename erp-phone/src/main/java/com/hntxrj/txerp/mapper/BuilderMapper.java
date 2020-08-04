@@ -85,7 +85,7 @@ public interface BuilderMapper {
      *
      * @param contractDetailCodes 企业代号
      * @param contractUIDList     企业代号
-     * @param searchWords          搜索关键字
+     * @param searchWords         搜索关键字
      * @return 调度派车列表
      */
     List<SendCarListVO> getBuildSendCarList(List<String> contractDetailCodes, List<String> contractUIDList,
@@ -159,4 +159,10 @@ public interface BuilderMapper {
     TaskSaleInvoiceDetailVO getTaskSaleInvoiceDetailVO(Integer id, String compid,
                                                        List<String> contractUIDList, List<String> contractDetailCodes);
 
+    //获取最大的施工单位代号
+    String getMaxBuilderCode(String compid);
+
+    //添加施工单位
+    void addBuilderInfo(String compid, String builderCode, String builderName, String builderShortName,
+                        String address, String corporation, String fax, String linkTel, String nowDate);
 }

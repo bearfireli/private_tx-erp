@@ -3,8 +3,10 @@ package com.hntxrj.txerp.server.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.BuilderDao;
 import com.hntxrj.txerp.entity.BuilderInfo;
 import com.hntxrj.txerp.entity.PageBean;
@@ -17,11 +19,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 功能:   施工单位服务接口实现层
@@ -37,13 +40,16 @@ public class BuilderServiceImpl implements BuilderService {
     private final BuilderDao builderDao;
     private final BuilderMapper builderMapper;
     private final ConstructionMapper constructionMapper;
+    private final SyncPlugin syncPlugin;
+    private final SimpleDateFormat sdf = SimpleDateFormatUtil.getDefaultSimpleDataFormat();
 
 
     @Autowired
-    public BuilderServiceImpl(BuilderDao builderDao, BuilderMapper builderMapper, ConstructionMapper constructionMapper) {
+    public BuilderServiceImpl(BuilderDao builderDao, BuilderMapper builderMapper, ConstructionMapper constructionMapper, SyncPlugin syncPlugin) {
         this.builderDao = builderDao;
         this.builderMapper = builderMapper;
         this.constructionMapper = constructionMapper;
+        this.syncPlugin = syncPlugin;
     }
 
 
@@ -310,6 +316,21 @@ public class BuilderServiceImpl implements BuilderService {
         return taskSaleInvoiceDetailVO;
     }
 
+    @Override
+    public void addBuilderInfo(String compid, String builderName, String builderShortName, String address,
+                               String corporation, String fax, String phone) {
+        String nowDate = sdf.format(new Date());
+        String builderCode = getBuilderCode(compid);
+        builderMapper.addBuilderInfo(compid, builderCode, builderName, builderShortName, address, corporation,
+                fax, phone, nowDate);
+        BuilderInfo builderInfo = builderMapper.getBuilderInfo(builderCode, compid);
+        try {
+            syncPlugin.save(builderInfo, "SM_BuilderInfo", "INS", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // 验证施工方用户是否绑定合同，返回绑定的合同列表
     private Map<String, List<String>> checkContract(Integer buildId) throws ErpException {
@@ -323,6 +344,36 @@ public class BuilderServiceImpl implements BuilderService {
         map.put("contractUIDList", contractUIDList);
         map.put("contractDetailCodes", contractDetailCodes);
         return map;
+    }
+
+
+    private String getBuilderCode(String compid) {
+        String builderCode = builderMapper.getMaxBuilderCode(compid);
+        //正则匹配找出eppCode中最大的数值
+        Pattern compile = Pattern.compile("[0-9]\\d*$");
+        Matcher matcher = compile.matcher(builderCode);
+        String preMaxCode = "";
+        while (matcher.find()) {
+            preMaxCode = matcher.group(0);
+        }
+
+        //获取最大数值所在的索引，将之前的字符串分割，之后的数值加1
+        int startIndex = builderCode.indexOf(preMaxCode);
+        String preBuilderCode = builderCode.substring(0, startIndex);
+
+        int length = preMaxCode.length();
+        int maxId = Integer.parseInt(preMaxCode);
+
+        StringBuilder maxCode = new StringBuilder(String.valueOf(maxId + 1));
+
+        //将加1之后的数值转换成字符串
+        int dValue = length - maxCode.length();
+        if (dValue > 0) {
+            for (int i = 0; i < dValue; i++) {
+                maxCode.insert(0, "0");
+            }
+        }
+        return preBuilderCode + maxCode;
     }
 
 

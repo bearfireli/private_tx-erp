@@ -1,6 +1,6 @@
 package com.hntxrj.txerp.api;
 
-import com.hntxrj.txerp.server.BuilderService;
+import com.hntxrj.txerp.server.ConsumeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,47 +23,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
-public class BuilderApiTest {
+public class ConsumeApiTest {
     private MockMvc mockMvc;
+
     @Resource
-    private BuilderService builderService;
+    private ConsumeService consumeService;
 
     @Before
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new BuilderApi(builderService)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new ConsumeApi(consumeService)).build();
     }
 
     @Test
-    public void testGetBuildTaskSaleInvoiceList() throws Exception {
-        mockMvc.perform(post("/api/builder/getBuildTaskSaleInvoiceList")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("buildId", "1")
-                .accept(MediaType.APPLICATION_JSON)) //执行请求
-                .andExpect(jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    public void testAddBuilderInfo() throws Exception {
+    public void testGetErrorProductList() throws Exception {
         String COMP_ID = "01";
-        String BUILDER_NAME = "测试施工单位全称";
-        String BUILDER_SHORT_NAME = "测试施工单位简称";
-        String ADDRESS = "盛地大厦";
-        String CORPORATION = "张四";
-        String FAX = "5847-5877";
-        String PHONE = "15874524885";
-        mockMvc.perform(post("/api/builder/addBuilderInfo")
+        String BEGIN_TIME = "1556673952000";
+        String END_TIME = "1564622752000";
+        mockMvc.perform(post("/api/consume/getErrorProductList")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("compid", COMP_ID)
-                .param("builderName", BUILDER_NAME)
-                .param("builderShortName", BUILDER_SHORT_NAME)
-                .param("address", ADDRESS)
-                .param("Corporation", CORPORATION)
-                .param("fax", FAX)
-                .param("phone", PHONE)
+                .param("beginTime", BEGIN_TIME)
+                .param("endTime", END_TIME)
                 .accept(MediaType.APPLICATION_JSON)) //执行请求
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.status().isOk())

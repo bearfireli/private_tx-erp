@@ -239,4 +239,9 @@ public class PlatelngredientsVO {
     @Column(name = "matl23")
     private BigDecimal matL23;
 
+    //工程名称
+    private String eppName;
+    //施工单位
+    private String builderName;
+
 }
