@@ -6,15 +6,19 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 
 @Data
 @Entity
 @Table(name = "pt_taskplan")
+@IdClass(TaskPlanPK.class)
 public class TaskPlan implements Serializable {
 
     /* 站别代号 */
+    @Id
     @Column(name = "compid")
     private String compid;
     /* 任务单号 */
