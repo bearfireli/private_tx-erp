@@ -14,6 +14,7 @@ public class MessagePushVO implements Serializable {
     private String contractUid;         //主合同号
     private String contractDetailCode;  //子合同号
     private String stirId;              //线号
+    private String vehicleId;           //车号
 
 
 }

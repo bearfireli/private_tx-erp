@@ -3,6 +3,7 @@ package com.hntxrj.txerp.server;
 import com.hntxrj.txerp.entity.UserComp;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * 企业服务
@@ -54,4 +55,10 @@ public interface CompService {
      * @param compid 企业id
      */
     void deleteComp(String compid);
+
+    /**
+     * 获取所有企业id
+     */
+    List<String> getAllCompId();
+
 }

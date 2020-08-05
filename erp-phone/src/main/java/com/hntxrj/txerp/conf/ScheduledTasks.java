@@ -1,31 +1,40 @@
 package com.hntxrj.txerp.conf;
 
-
-import com.hntxrj.txerp.entity.MsgQueue;
-import com.hntxrj.txerp.server.MsgQueueService;
+import com.hntxrj.txerp.core.exception.ErpException;
+import com.hntxrj.txerp.server.CompService;
+import com.hntxrj.txerp.server.DriverService;
+import com.hntxrj.txerp.vo.MessagePushVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@EnableScheduling
 public class ScheduledTasks {
 
-    private final MsgQueueService msgQueueService;
+    private final CompService compService;
+    private final DriverService driverService;
 
     @Autowired
-    public ScheduledTasks(MsgQueueService msgQueueService) {
-        this.msgQueueService = msgQueueService;
+    public ScheduledTasks(CompService compService, DriverService driverService) {
+        this.compService = compService;
+        this.driverService = driverService;
     }
 
-    @Scheduled(fixedRate = 3000)
-    public void pushTask() {
-        // 读取退出里的内容
-        List<MsgQueue> msgQueueList = msgQueueService.readNotPushMsg();
-        // 推送处理
-        msgQueueService.push(msgQueueList);
-    }
 
+    @Scheduled(cron = "*/60 * * * * ?")
+    public void waitCarsPush() throws ErpException {
+        //获取所有的企业id
+        List<String> compIds = compService.getAllCompId();
+        MessagePushVO messagePushVO = new MessagePushVO();
+
+        //对每个企业等待生产的车辆进行消息推送
+        for (String compid : compIds) {
+            driverService.messagePush(compid, messagePushVO);
+        }
+    }
 
 }

@@ -820,4 +820,17 @@
             and vm.SecondTime <![CDATA[ <= ]]> #{endTime}
         </if>
     </select>
+    <select id="getWaitCars" resultType="com.hntxrj.txerp.vo.VehicleIdVO">
+        select top 3
+        CarID as vehicleId
+        from VM_VehicelManagement
+        where compid = #{compid} and RecStatus=1
+        and VehicleClass ='1'
+        and VehicleStatus =1
+        order by CreateTime
+    </select>
+    <select id="getDriverByVehicleId" resultType="java.lang.String">
+        select PersonalCode from VM_PersonalWorkClass
+        where compid=#{compid} and VehicleID=#{vehicleId}
+    </select>
 </mapper>

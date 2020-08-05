@@ -114,7 +114,7 @@ public interface VehicleService {
      * @param pageSize  每页显示条数
      * @return 乔亚北
      */
-    PageVO<VehicleWorkloadSummaryVO> getVehicleWorkloadSummary(String compid,String personalName, String eppCode,
+    PageVO<VehicleWorkloadSummaryVO> getVehicleWorkloadSummary(String compid, String personalName, String eppCode,
                                                                String placing, String taskId,
                                                                String vehicleId,
                                                                String beginTime, String endTime,
@@ -134,7 +134,7 @@ public interface VehicleService {
      * @param pageSize  每页显示条数
      * @return 乔亚北
      */
-    PageVO<VehicleWorkloadSummaryVO> getVehicleWorkloadSummaryCount(String compid,String personalName, String eppCode,
+    PageVO<VehicleWorkloadSummaryVO> getVehicleWorkloadSummaryCount(String compid, String personalName, String eppCode,
                                                                     String placing,
                                                                     String taskId, String vehicleId,
                                                                     String beginTime, String endTime,
@@ -153,7 +153,7 @@ public interface VehicleService {
      * @param page      分页
      * @param pageSize  每页显示条数
      */
-    PageVO<VehicleWorkTowingPumpDetailVO> getVehicleWorkTowingPumpDetail(String compid,String personalName, String eppCode,
+    PageVO<VehicleWorkTowingPumpDetailVO> getVehicleWorkTowingPumpDetail(String compid, String personalName, String eppCode,
                                                                          String placing, String taskId,
                                                                          String vehicleId,
                                                                          String beginTime, String endTime,
@@ -172,7 +172,7 @@ public interface VehicleService {
      * @param page      分页
      * @param pageSize  每页显示条数
      */
-    PageVO<VehicleWorkTowingPumpCountVO> getVehicleWorkTowingPumpCount(String compid, String personalName,String eppCode,
+    PageVO<VehicleWorkTowingPumpCountVO> getVehicleWorkTowingPumpCount(String compid, String personalName, String eppCode,
                                                                        String placing, String taskId,
                                                                        String vehicleId,
                                                                        String beginTime, String endTime,
@@ -183,7 +183,7 @@ public interface VehicleService {
      *
      * @param compid     企业
      * @param eppCode    工程代码
-     * @param empName   过磅员
+     * @param empName    过磅员
      * @param weightType 过磅类别
      * @param beginTime  开始时间
      * @param endTime    结束时间
@@ -231,7 +231,7 @@ public interface VehicleService {
      */
     PageVO<DriverTransportationCountVO> getDriverTransportationCount(String compid, String eppCode,
                                                                      String placing, String taskId,
-                                                                     String vehicleId, String personalName,String isNewVersion,
+                                                                     String vehicleId, String personalName, String isNewVersion,
                                                                      String beginTime, String endTime,
                                                                      Integer page, Integer pageSize);
 
@@ -270,10 +270,10 @@ public interface VehicleService {
      * @param pageSize     每页显示条数
      */
     PageVO<DriverTransportationCountVO> getDriverTransportationCarNumList(String compid, String eppCode,
-                                                                   String placing, String taskId,
-                                                                   String vehicleId, String personalName,
-                                                                   String beginTime, String endTime,
-                                                                   Integer page, Integer pageSize);
+                                                                          String placing, String taskId,
+                                                                          String vehicleId, String personalName,
+                                                                          String beginTime, String endTime,
+                                                                          Integer page, Integer pageSize);
 
     /**
      * 司机拖水拖泵汇总
@@ -291,7 +291,7 @@ public interface VehicleService {
      */
     PageVO<DriverTransportationCountVO> getDriverDragPumpCount(String compid, String eppCode,
                                                                String placing, String taskId,
-                                                               String vehicleId, String personalName,String isNewVersion,
+                                                               String vehicleId, String personalName, String isNewVersion,
                                                                String beginTime, String endTime,
                                                                Integer page, Integer pageSize);
 
@@ -309,7 +309,7 @@ public interface VehicleService {
      * @param pageSize     每页显示条数
      */
     PageVO<PumpTruckCountVO> getPumpTruckCount(String compid, String eppCode, String personalName,
-                                               String stirId, String vehicleId, String taskId,String beginTime,
+                                               String stirId, String vehicleId, String taskId, String beginTime,
                                                String endTime, Integer page, Integer pageSize) throws ErpException;
 
     /**
@@ -327,7 +327,7 @@ public interface VehicleService {
      */
     PageVO<PumpTruckCountVO> getPumpOperatorTruckCount(String compid, String eppCode,
                                                        String personalName,
-                                                       String stirId, String vehicleId,String taskId,String isNewVersion,
+                                                       String stirId, String vehicleId, String taskId, String isNewVersion,
                                                        String beginTime, String endTime,
                                                        Integer page, Integer pageSize) throws ErpException;
 
@@ -345,7 +345,7 @@ public interface VehicleService {
      * @param pageSize     每页显示条数
      */
     PageVO<PumpTruckDetailsVO> getPumpTruckDetails(String compid, String eppCode, String personalName,
-                                                   String stirId, String vehicleId,String typeName,String taskId,
+                                                   String stirId, String vehicleId, String typeName, String taskId,
                                                    String beginTime, String endTime,
                                                    Integer page, Integer pageSize);
 
@@ -364,7 +364,7 @@ public interface VehicleService {
      */
     PageVO<PumpTruckWorkloadStatisticsVO> getPumpTruckWorkloadStatistics(String compid,
                                                                          String eppCode,
-                                                                         String personalName,String taskId,
+                                                                         String personalName, String taskId,
                                                                          String stirId, String vehicleId,
                                                                          String beginTime, String endTime,
                                                                          Integer page, Integer pageSize);
@@ -383,22 +383,35 @@ public interface VehicleService {
      * @param pageSize     每页显示条数
      */
     PageVO<PumpTruckWorkloadStatisticsVO> getPumpTruckSum(String compid,
-                                                                         String eppCode,
-                                                                         String personalName,
-                                                                         String stirId, String vehicleId,
-                                                                         String beginTime, String endTime,
-                                                                         Integer page, Integer pageSize);
+                                                          String eppCode,
+                                                          String personalName,
+                                                          String stirId, String vehicleId,
+                                                          String beginTime, String endTime,
+                                                          Integer page, Integer pageSize);
 
     /**
      * 搅拌车过磅查询汇总
      *
      * @param compid     企业
      * @param eppCode    工程代码
-     * @param empName   过磅员
+     * @param empName    过磅员
      * @param weightType 过磅类别
      * @param beginTime  开始时间
      * @param endTime    结束时间
      */
-    Map<String,Double> getWorkloadStatisticsCount(String compid, String eppCode, String empName,
-                                                  Integer weightType, String beginTime, String endTime);
+    Map<String, Double> getWorkloadStatisticsCount(String compid, String eppCode, String empName,
+                                                   Integer weightType, String beginTime, String endTime);
+
+
+    /**
+     * 查询等待生产的搅拌车
+     *
+     * @param compid 企业
+     */
+    List<VehicleIdVO> getWaitCars(String compid);
+
+    /**
+     * 根据车号查询司机
+     */
+    List<String> getDriverByVehicleId(String compid, String vehicleId);
 }

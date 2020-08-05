@@ -94,7 +94,7 @@ public interface VehicleWorkloadMapper {
      *
      * @param compid     企业
      * @param eppCode    工程代码
-     * @param empName   过磅员
+     * @param empName    过磅员
      * @param weightType 过磅类别
      * @param beginTime  开始时间
      * @param endTime    结束时间
@@ -331,4 +331,15 @@ public interface VehicleWorkloadMapper {
      */
     Double getWorkloadStatisticsCount(String compid, String eppCode, String empName, Integer weightType,
                                       String beginTime, String endTime);
+
+
+    /**
+     * 获取等待派车的车辆列表
+     */
+    List<VehicleIdVO> getWaitCars(String compid);
+
+    /**
+     * 根据车号查询司机代号
+     */
+    List<String> getDriverByVehicleId(String compid, String vehicleId);
 }

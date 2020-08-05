@@ -213,6 +213,11 @@ public interface DriverService {
      * @param endTime    结束时间
      */
     List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime);
+
+    /**
+     * 给等待生产的车辆司机发提醒消息
+     */
+    void messagePush(String compid, MessagePushVO messagePushVO) throws ErpException;
 }
 
 
