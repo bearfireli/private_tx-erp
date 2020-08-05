@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,12 +39,22 @@ public class TaskSaleInvoiceServiceImpl implements TaskSaleInvoiceService {
                                                                 String builderCode, String taskId, String placing,
                                                                 String taskStatus, Integer type, String stirId,
                                                                 Integer page, Integer pageSize) {
+        List<TaskSaleInvoiceListVO> taskSaleInvoiceVOLists = new ArrayList<>();
         PageHelper.startPage(page, pageSize, "SendTime desc");
         List<TaskSaleInvoiceListVO> taskSaleInvoiceLists =
                 taskSaleInvoiceMapper.getTaskSaleInvoiceList(invoiceId == null ? null : String.valueOf(invoiceId),
                         compid, beginTime, endTime, eppCode, upStatus, builderCode, taskId, placing,
                         taskStatus, type, stirId);
-        PageInfo<TaskSaleInvoiceListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
+
+
+        for (TaskSaleInvoiceListVO taskSaleInvoiceList : taskSaleInvoiceLists) {
+            if (taskSaleInvoiceList.getInvoiceType() == 4 && "3".equals(taskSaleInvoiceList.getVehicleStatus())) {
+                //说明是已打票,但是没有完成生产（有些站是先打票，后生产，会出现这种情况），这种情况的小票不查询
+                continue;
+            }
+            taskSaleInvoiceVOLists.add(taskSaleInvoiceList);
+        }
+        PageInfo<TaskSaleInvoiceListVO> pageInfo = new PageInfo<>(taskSaleInvoiceVOLists);
         PageVO<TaskSaleInvoiceListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
