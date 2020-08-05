@@ -1,6 +1,5 @@
 package com.hntxrj.txerp.mapper;
 
-import com.hntxrj.txerp.entity.ProductConsume;
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -8,7 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface ConsumeMapper {
-/**
+    /**
      * 任务单消耗列表
      *
      * @param compid    企业id
@@ -22,9 +21,8 @@ public interface ConsumeMapper {
      * @return 任务单消耗列表
      */
     List<TaskConsumeVO> getTaskConsumeList(String compid, String beginTime, String endTime,
-                                           String vehicleId, String stgId , String taskId, String stirId,
+                                           String vehicleId, String stgId, String taskId, String stirId,
                                            Integer page, Integer pageSize);
-
 
 
     /**
@@ -41,7 +39,7 @@ public interface ConsumeMapper {
      * @return 每盘配料明细
      */
     List<PlatelngredientsVO> getFormulaDetails(String compid, String beginTime, String endTime,
-                                               String vehicleId, String stgId , String taskId, String stirId,
+                                               String vehicleId, String stgId, String taskId, String stirId,
                                                Integer page, Integer pageSize);
 
     /**
@@ -58,8 +56,8 @@ public interface ConsumeMapper {
      * @return 每盘配料明细
      */
     List<PlatelngredientsVO> getErrorProductList(String compid, String beginTime, String endTime,
-                                               String vehicleId, String stgId , String taskId, String stirId,
-                                               Integer page, Integer pageSize);
+                                                 String vehicleId, String stgId, String taskId, String stirId,
+                                                 Integer page, Integer pageSize);
 
     /**
      * 标号消耗汇总
@@ -75,8 +73,9 @@ public interface ConsumeMapper {
      * @return 标号消耗汇总
      */
     List<ConsumeptionTotalVO> getConsumptionTotal(String compid, String beginTime, String endTime,
-                                                  String vehicleId, String stgId , String taskId, String stirId,
+                                                  String vehicleId, String stgId, String taskId, String stirId,
                                                   Integer page, Integer pageSize);
+
     /**
      * 原材料统计汇总（老版本）
      *
@@ -107,6 +106,7 @@ public interface ConsumeMapper {
 
     /**
      * 生产消耗汇总合计方量
+     *
      * @param compid    企业id
      * @param beginTime 开始时间
      * @param endTime   结束时间MP_StkPrice
@@ -117,18 +117,18 @@ public interface ConsumeMapper {
      * @param pageSize  每页数量
      * @return 生产消耗汇总合计方量
      */
-    List<ConsumePtionCloseVO>getConsumeClose(String compid, String beginTime, String endTime,
-                                             String vehicleId, String stgId , String taskId, String stirId,
-                                             Integer page, Integer pageSize);
+    List<ConsumePtionCloseVO> getConsumeClose(String compid, String beginTime, String endTime,
+                                              String vehicleId, String stgId, String taskId, String stirId,
+                                              Integer page, Integer pageSize);
 
     /**
      * 查询生产材料详细名称
      *
      * @param compid 企业id
-     * @param stirId  线号
+     * @param stirId 线号
      * @return 查询材料名
      */
-    List<StockVO> getProductDatail(String compid,Integer stirId);
+    List<StockVO> getProductDatail(String compid, Integer stirId);
 
     /**
      * 获取指定时间的超差盘数
@@ -152,5 +152,45 @@ public interface ConsumeMapper {
      */
     List<ConsumptionHistogram> getConsumptionHistogram(String compid, String beginTime, String endTime,
                                                        String vehicleId, String stgId, String taskId, String stirId);
+
+    /**
+     * 每车消耗列表
+     *
+     * @param compid    　企业
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param stirId    　线号
+     * @param stgId     　标号
+     * @param taskId    　任务单号
+     * @param vehicleId 　车号
+     */
+    List<VehicleConsumeVO> getVehicleConsumeList(String compid, String beginTime, String endTime, String stirId,
+                                                 String stgId, String taskId, String vehicleId);
+
+
+    /**
+     * 车辆消耗详情
+     *
+     * @param compid    　企业
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param stirId    　线号
+     * @param stgId     　标号
+     * @param taskId    　任务单号
+     * @param vehicleId 　车号
+     */
+    Integer getVehicleConsumeSum(String compid, String beginTime, String endTime, String stirId, String stgId,
+                                   String taskId, String vehicleId);
+
+    /**
+     * 车辆消耗详情
+     *
+     * @param compid    企业id
+     * @param vehicleId 车号
+     * @param stirId    线号
+     */
+    RawCollectVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId);
+
+
 }
 
