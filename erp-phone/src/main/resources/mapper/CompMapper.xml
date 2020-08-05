@@ -17,6 +17,10 @@
          UpDownMark=0
         where  longname = #{compName} and shortname=#{compShortName}
     </update>
+    <select id="getAllCompId" resultType="java.lang.String">
+        select compid
+        from user_comp
+    </select>
 
 
 </mapper>

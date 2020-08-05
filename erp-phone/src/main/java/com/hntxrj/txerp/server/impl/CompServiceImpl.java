@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author lhr
@@ -67,5 +68,10 @@ public class CompServiceImpl implements CompService {
     @Override
     public void deleteComp(String compid) {
         compMapper.deleteComp(compid, new Date());
+    }
+
+    @Override
+    public List<String> getAllCompId() {
+        return compMapper.getAllCompId();
     }
 }

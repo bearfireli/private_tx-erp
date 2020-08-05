@@ -269,7 +269,7 @@ public class VehicleServiceImpl implements VehicleService {
      *
      * @param compid     企业
      * @param eppCode    工程代码
-     * @param empName   过磅员
+     * @param empName    过磅员
      * @param weightType 过磅类别
      * @param beginTime  开始时间
      * @param endTime    结束时间
@@ -361,7 +361,7 @@ public class VehicleServiceImpl implements VehicleService {
             pageVO.format(pageInfo);
             return pageVO;
 
-        }else{
+        } else {
             PageVO<DriverTransportationCountVO> pageVO = new PageVO<>();
             PageHelper.startPage(page, pageSize);
             List<DriverTransportationCountVO> vehicleWorkloadSummaryVOS =
@@ -472,7 +472,7 @@ public class VehicleServiceImpl implements VehicleService {
             PageInfo<DriverTransportationCountVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
             pageVO.format(pageInfo);
             return pageVO;
-        }else{
+        } else {
             PageVO<DriverTransportationCountVO> pageVO = new PageVO<>();
             PageHelper.startPage(page, pageSize);
             List<DriverTransportationCountVO> vehicleWorkloadSummaryVOS =
@@ -501,7 +501,7 @@ public class VehicleServiceImpl implements VehicleService {
      */
     @Override
     public PageVO<PumpTruckCountVO> getPumpTruckCount(String compid, String eppCode, String personalName,
-                                                      String stirId, String vehicleId,String taskId,
+                                                      String stirId, String vehicleId, String taskId,
                                                       String beginTime, String endTime,
                                                       Integer page, Integer pageSize) {
         PageVO<PumpTruckCountVO> pageVO = new PageVO<>();
@@ -509,7 +509,7 @@ public class VehicleServiceImpl implements VehicleService {
         try {
             List<PumpTruckCountVO> vehicleWorkloadSummaryVOS =
                     vehicleWorkloadMapper.getPumpTruckCount(compid, eppCode, personalName,
-                            stirId, vehicleId,taskId,
+                            stirId, vehicleId, taskId,
                             beginTime, endTime);
             for (PumpTruckCountVO ptc : vehicleWorkloadSummaryVOS) {
                 if (ptc.getVehicleId() == null) {
@@ -544,7 +544,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public PageVO<PumpTruckCountVO> getPumpOperatorTruckCount(String compid, String eppCode,
                                                               String personalName, String stirId,
-                                                              String vehicleId,String taskId,String isNewVersion,
+                                                              String vehicleId, String taskId, String isNewVersion,
                                                               String beginTime, String endTime,
                                                               Integer page, Integer pageSize) {
 
@@ -555,7 +555,7 @@ public class VehicleServiceImpl implements VehicleService {
             try {
                 List<PumpTruckCountVO> vehicleWorkloadSummaryVOS =
                         vehicleWorkloadMapper.getPumpOperatorTruckCountNew(compid, eppCode,
-                                personalName, stirId, vehicleId,taskId,
+                                personalName, stirId, vehicleId, taskId,
                                 beginTime, endTime);
                 PageInfo<PumpTruckCountVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
                 pageVO.format(pageInfo);
@@ -567,13 +567,13 @@ public class VehicleServiceImpl implements VehicleService {
             }
             return pageVO;
 
-        }else{
+        } else {
             PageVO<PumpTruckCountVO> pageVO = new PageVO<>();
             PageHelper.startPage(page, pageSize);
             try {
                 List<PumpTruckCountVO> vehicleWorkloadSummaryVOS =
                         vehicleWorkloadMapper.getPumpOperatorTruckCount(compid, eppCode,
-                                personalName, stirId, vehicleId,taskId,
+                                personalName, stirId, vehicleId, taskId,
                                 beginTime, endTime);
                 for (PumpTruckCountVO ptc : vehicleWorkloadSummaryVOS) {
                     if (ptc.getVehicleId() == null) {
@@ -608,14 +608,14 @@ public class VehicleServiceImpl implements VehicleService {
      */
     @Override
     public PageVO<PumpTruckDetailsVO> getPumpTruckDetails(String compid, String eppCode, String personalName,
-                                                          String stirId, String vehicleId,String typeName,String taskId,
+                                                          String stirId, String vehicleId, String typeName, String taskId,
                                                           String beginTime, String endTime,
                                                           Integer page, Integer pageSize) {
         PageVO<PumpTruckDetailsVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<PumpTruckDetailsVO> vehicleWorkloadSummaryVOS =
                 vehicleWorkloadMapper.getPumpTruckDetails(compid, eppCode, personalName,
-                        stirId, vehicleId,typeName,taskId,
+                        stirId, vehicleId, typeName, taskId,
                         beginTime, endTime);
         PageInfo<PumpTruckDetailsVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
         pageVO.format(pageInfo);
@@ -645,7 +645,7 @@ public class VehicleServiceImpl implements VehicleService {
         PageVO<PumpTruckWorkloadStatisticsVO> pageVO = new PageVO<>();
         PageHelper.startPage(page, pageSize);
         List<PumpTruckWorkloadStatisticsVO> vehicleWorkloadSummaryVOS =
-                vehicleWorkloadMapper.getPumpTruckWorkloadStatistics(compid, eppCode, personalName,taskId,
+                vehicleWorkloadMapper.getPumpTruckWorkloadStatistics(compid, eppCode, personalName, taskId,
                         stirId, vehicleId,
                         beginTime, endTime);
         PageInfo<PumpTruckWorkloadStatisticsVO> pageInfo = new PageInfo<>(vehicleWorkloadSummaryVOS);
@@ -692,7 +692,7 @@ public class VehicleServiceImpl implements VehicleService {
      *
      * @param compid     企业
      * @param eppCode    工程代码
-     * @param empName   过磅员
+     * @param empName    过磅员
      * @param weightType 过磅类别
      * @param beginTime  开始时间
      * @param endTime    结束时间
@@ -700,11 +700,22 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public Map<String, Double> getWorkloadStatisticsCount(String compid, String eppCode, String empName,
                                                           Integer weightType, String beginTime, String endTime) {
-        Double totalNum=vehicleWorkloadMapper.getWorkloadStatisticsCount(compid,eppCode,empName,weightType,
-                beginTime,endTime);
+        Double totalNum = vehicleWorkloadMapper.getWorkloadStatisticsCount(compid, eppCode, empName, weightType,
+                beginTime, endTime);
         Map<String, Double> map = new HashMap<>();
         map.put("totalNum", totalNum);
         return map;
+    }
+
+    @Override
+    public List<VehicleIdVO> getWaitCars(String compid) {
+        return vehicleWorkloadMapper.getWaitCars(compid);
+    }
+
+    @Override
+    public List<String> getDriverByVehicleId(String compid, String vehicleId) {
+        return vehicleWorkloadMapper.getDriverByVehicleId(compid, vehicleId);
+
     }
 
 }
