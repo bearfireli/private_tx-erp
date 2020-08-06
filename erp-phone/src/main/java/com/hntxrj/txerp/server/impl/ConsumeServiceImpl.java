@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.dao.ConsumeDao;
-import com.hntxrj.txerp.entity.ProductConsume;
 import com.hntxrj.txerp.mapper.ConsumeMapper;
 import com.hntxrj.txerp.server.ConsumeService;
 import com.hntxrj.txerp.vo.*;
@@ -12,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -345,6 +344,38 @@ public class ConsumeServiceImpl implements ConsumeService {
     @Override
     public Integer getErrorPan(String compid, String beginTime, String endTime) {
         return consumeMapper.getErrorPan(compid, beginTime, endTime);
+    }
+
+    @Override
+    public PageVO<VehicleConsumeVO> getVehicleConsumeList(String compid, String beginTime, String endTime, String stirId,
+                                                          String stgId, String taskId, String vehicleId, Integer page,
+                                                          Integer pageSize) {
+
+        PageHelper.startPage(page, pageSize);
+        List<VehicleConsumeVO> vehicleConsumeVO = consumeMapper.getVehicleConsumeList(compid, beginTime, endTime,
+                stirId, stgId, taskId, vehicleId);
+
+        PageInfo<VehicleConsumeVO> pageInfo = new PageInfo<>(vehicleConsumeVO);
+        PageVO<VehicleConsumeVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
+    }
+
+    @Override
+    public Map<String, Integer> getVehicleConsumeSum(String compid, String beginTime, String endTime, String stirId,
+                                                     String stgId, String taskId, String vehicleId) {
+        Map<String, Integer> map = new HashMap<>();
+        Integer count = consumeMapper.getVehicleConsumeSum(compid, beginTime, endTime, stirId, stgId, taskId, vehicleId);
+        if (count == null) {
+            count = 0;
+        }
+        map.put("count", count);
+        return map;
+    }
+
+    @Override
+    public RawCollectVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId) {
+        return consumeMapper.getVehicleConsumeDetail(compid, vehicleId, stirId);
     }
 
     private List<RawCollectVO> changeUnit(List<RawCollectVO> rawCollectVOS) {
