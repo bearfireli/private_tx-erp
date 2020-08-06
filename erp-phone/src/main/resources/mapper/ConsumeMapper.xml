@@ -449,13 +449,13 @@
             and pc.StirId = #{stirId}
         </if>
         <if test="stgId != null and stgId !=''">
-            and tp.StgId = #{stgId}
+            and tp.StgId like '%'+ #{stgId} +'%'
         </if>
         <if test="taskId != null and taskId !=''">
-            and pc.TaskId = #{taskId}
+            and pc.TaskId like '%' + #{taskId} +'%'
         </if>
         <if test="vehicleId != null and vehicleId !=''">
-            and pc.VehicleID=#{vehicleId}
+            and pc.VehicleID like '%' + #{vehicleId} + '%'
         </if>
         group by pc.ProduceId, pc.VehicleID, pc.compid, pc.TaskId, tp.Placing, tp.StgId,
         pc.StirId, sf.StirName, tsi.Leave_STTime
@@ -477,14 +477,14 @@
         <if test="stirId != null and stirId !=''">
             and pc.StirId = #{stirId}
         </if>
-        <if test="stgId != null and stgId !='' ">
-            and tp.StgId = #{stgId}
+        <if test="stgId != null and stgId !=''">
+            and tp.StgId like '%'+ #{stgId} +'%'
         </if>
-        <if test="taskId != null and taskId !='' ">
-            and pc.TaskId = #{taskId}
+        <if test="taskId != null and taskId !=''">
+            and pc.TaskId like '%'+ #{taskId} +'%'
         </if>
-        <if test="vehicleId != null and vehicleId !='' ">
-            and pc.VehicleID=#{vehicleId}
+        <if test="vehicleId != null and vehicleId !=''">
+            and pc.VehicleID like '%'+ #{vehicleId}+ '%'
         </if>
     </select>
     <select id="getVehicleConsumeDetail" resultType="com.hntxrj.txerp.vo.RawCollectVO">

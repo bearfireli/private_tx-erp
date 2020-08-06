@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hntxrj.txerp.dao.ConsumeDao;
-import com.hntxrj.txerp.entity.ProductConsume;
 import com.hntxrj.txerp.mapper.ConsumeMapper;
 import com.hntxrj.txerp.server.ConsumeService;
 import com.hntxrj.txerp.vo.*;
@@ -364,7 +363,7 @@ public class ConsumeServiceImpl implements ConsumeService {
 
     @Override
     public Map<String, Integer> getVehicleConsumeSum(String compid, String beginTime, String endTime, String stirId,
-                                                       String stgId, String taskId, String vehicleId) {
+                                                     String stgId, String taskId, String vehicleId) {
         Map<String, Integer> map = new HashMap<>();
         Integer count = consumeMapper.getVehicleConsumeSum(compid, beginTime, endTime, stirId, stgId, taskId, vehicleId);
         if (count == null) {

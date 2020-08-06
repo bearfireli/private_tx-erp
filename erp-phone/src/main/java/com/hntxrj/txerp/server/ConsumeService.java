@@ -268,7 +268,7 @@ public interface ConsumeService {
      * @param vehicleId 　车号
      */
     Map<String, Integer> getVehicleConsumeSum(String compid, String beginTime, String endTime, String stirId,
-                                                String stgId, String taskId, String vehicleId);
+                                              String stgId, String taskId, String vehicleId);
 
     /**
      * 每车消耗列表

@@ -295,7 +295,7 @@ public class ConsumeApi {
      */
     @PostMapping("/getVehicleConsumeSum")
     public ResultVO getVehicleConsumeSum(String compid, Long beginTime, Long endTime, String stirId, String stgId,
-                                           String taskId, String vehicleId) {
+                                         String taskId, String vehicleId) {
         SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
         return ResultVO.create(consumeService.getVehicleConsumeSum(compid,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
