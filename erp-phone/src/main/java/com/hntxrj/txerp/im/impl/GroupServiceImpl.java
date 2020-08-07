@@ -7,13 +7,13 @@ import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.im.GroupService;
 import com.hntxrj.txerp.vo.IMGroupMemberVO;
 import com.hntxrj.txerp.vo.IMGroupVO;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@Log4j
+@Slf4j
 public class GroupServiceImpl implements GroupService {
 
     private AccountServiceImpl accountService;

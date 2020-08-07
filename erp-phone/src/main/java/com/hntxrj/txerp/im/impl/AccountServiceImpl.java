@@ -12,7 +12,7 @@ import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.im.AccountService;
 import com.hntxrj.txerp.im.ImBaseData;
 import com.hntxrj.txerp.vo.IMUserVO;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.http.Header;
 
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Log4j
+@Slf4j
 public class AccountServiceImpl implements AccountService {
     public static final MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
     //腾讯云即时通讯API接口路径
