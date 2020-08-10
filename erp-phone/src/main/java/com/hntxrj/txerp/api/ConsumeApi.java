@@ -253,4 +253,69 @@ public class ConsumeApi {
                 endTime == null ? null : sdf.format(new Date(endTime)));
         return ResultVO.create(value);
     }
+
+
+    /**
+     * 车辆消耗列表
+     *
+     * @param compid    　企业
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param stirId    　线号
+     * @param stgId     　标号
+     * @param taskId    　任务单号
+     * @param vehicleId 　车号
+     * @param page      　页码
+     * @param pageSize  　每页大小
+     */
+    @PostMapping("/getVehicleConsumeList")
+    public ResultVO getVehicleConsumeList(String compid, Long beginTime, Long endTime, String stirId, String stgId,
+                                          String taskId, String vehicleId,
+                                          @RequestParam(defaultValue = "1") Integer page,
+                                          @RequestParam(defaultValue = "10") Integer pageSize) {
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+
+        return ResultVO.create(consumeService.getVehicleConsumeList(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)),
+                stirId, stgId, taskId, vehicleId, page, pageSize));
+    }
+
+
+    /**
+     * 车辆消耗列表
+     *
+     * @param compid    　企业
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param stirId    　线号
+     * @param stgId     　标号
+     * @param taskId    　任务单号
+     * @param vehicleId 　车号
+     */
+    @PostMapping("/getVehicleConsumeSum")
+    public ResultVO getVehicleConsumeSum(String compid, Long beginTime, Long endTime, String stirId, String stgId,
+                                         String taskId, String vehicleId) {
+        SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+        return ResultVO.create(consumeService.getVehicleConsumeSum(compid,
+                beginTime == null ? null : sdf.format(new Date(beginTime)),
+                endTime == null ? null : sdf.format(new Date(endTime)),
+                stirId, stgId, taskId, vehicleId));
+    }
+
+
+    /**
+     * 每车消耗详情
+     *
+     * @param compid    　企业
+     * @param stirId    　线号
+     * @param vehicleId 　车号
+     */
+    @PostMapping("/getVehicleConsumeDetail")
+    public ResultVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId, String taskId,
+                                            String produceId) {
+        return ResultVO.create(consumeService.getVehicleConsumeDetail(compid, vehicleId, stirId, taskId, produceId));
+    }
+
+
 }

@@ -25,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class ConsumeApiTest {
     private MockMvc mockMvc;
+    private final String COMP_ID = "01";
+    String BEGIN_TIME = "1556673952000";
+    String END_TIME = "1564622752000";
 
     @Resource
     private ConsumeService consumeService;
@@ -36,14 +39,57 @@ public class ConsumeApiTest {
 
     @Test
     public void testGetErrorProductList() throws Exception {
-        String COMP_ID = "01";
-        String BEGIN_TIME = "1556673952000";
-        String END_TIME = "1564622752000";
+
         mockMvc.perform(post("/api/consume/getErrorProductList")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("compid", COMP_ID)
                 .param("beginTime", BEGIN_TIME)
                 .param("endTime", END_TIME)
+                .accept(MediaType.APPLICATION_JSON)) //执行请求
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
+    @Test
+    public void testGetVehicleConsumeList() throws Exception {
+
+        mockMvc.perform(post("/api/consume/getVehicleConsumeList")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("compid", COMP_ID)
+                .accept(MediaType.APPLICATION_JSON)) //执行请求
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
+    @Test
+    public void testGetVehicleConsumeSum() throws Exception {
+
+        mockMvc.perform(post("/api/consume/getVehicleConsumeSum")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("compid", COMP_ID)
+                .param("beginTime", BEGIN_TIME)
+                .param("endTime", END_TIME)
+                .accept(MediaType.APPLICATION_JSON)) //执行请求
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
+    @Test
+    public void testGetVehicleConsumeDetail() throws Exception {
+
+        mockMvc.perform(post("/api/consume/getVehicleConsumeDetail")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("compid", COMP_ID)
+                .param("vehicleId", BEGIN_TIME)
+                .param("stirId", "1")
+                .param("taskId", "190801002")
+                .param("produceId", "2122")
                 .accept(MediaType.APPLICATION_JSON)) //执行请求
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.status().isOk())

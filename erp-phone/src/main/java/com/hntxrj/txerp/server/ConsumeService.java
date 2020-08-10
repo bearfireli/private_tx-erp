@@ -5,26 +5,27 @@ import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.vo.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ConsumeService {
 
     /**
      * 生产消耗汇总
      *
-     * @param mark            状态
-     * @param compid          企业
-     * @param currPage        当企业
-     * @param pageSize        页长度
-     * @param vehicleID       车号
-     * @param stirId          线号
-     * @param taskId          任务单好
-     * @param stgId           砼标号
-     * @param empName         操作员
-     * @param placing         浇筑部位
-     * @param eppName         工程名称
+     * @param mark             状态
+     * @param compid           企业
+     * @param currPage         当企业
+     * @param pageSize         页长度
+     * @param vehicleID        车号
+     * @param stirId           线号
+     * @param taskId           任务单好
+     * @param stgId            砼标号
+     * @param empName          操作员
+     * @param placing          浇筑部位
+     * @param eppName          工程名称
      * @param builderShortName 施工单位简称
-     * @param openTime        查询时间
-     * @param overTime        救赎时间
+     * @param openTime         查询时间
+     * @param overTime         救赎时间
      * @return json
      */
     JSONArray spQueryVQueryProduceConsume(String compid, Integer currPage, Integer pageSize, String vehicleID,
@@ -224,7 +225,7 @@ public interface ConsumeService {
      * 查询生产材料详细名称
      *
      * @param compid 企业id
-     * @param stirId  线号
+     * @param stirId 线号
      * @return 查询材料名
      */
     PageVO<StockVO> getProductDatail(String compid, Integer stirId);
@@ -237,4 +238,46 @@ public interface ConsumeService {
      * @param endTime   　结束时间
      */
     Integer getErrorPan(String compid, String beginTime, String endTime);
+
+    /**
+     * 每车消耗列表
+     *
+     * @param compid    　企业
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param stirId    　线号
+     * @param stgId     　标号
+     * @param taskId    　任务单号
+     * @param vehicleId 　车号
+     * @param page      　页码
+     * @param pageSize  　每页大小
+     */
+    PageVO<VehicleConsumeVO> getVehicleConsumeList(String compid, String beginTime, String endTime, String stirId,
+                                                   String stgId, String taskId, String vehicleId, Integer page,
+                                                   Integer pageSize);
+
+    /**
+     * 车辆消耗列表汇总
+     *
+     * @param compid    　企业
+     * @param beginTime 　开始时间
+     * @param endTime   　结束时间
+     * @param stirId    　线号
+     * @param stgId     　标号
+     * @param taskId    　任务单号
+     * @param vehicleId 　车号
+     */
+    Map<String, Integer> getVehicleConsumeSum(String compid, String beginTime, String endTime, String stirId,
+                                              String stgId, String taskId, String vehicleId);
+
+    /**
+     * 每车消耗列表
+     *
+     * @param compid    　企业
+     * @param stirId    　线号
+     * @param vehicleId 　车号
+     */
+    RawCollectVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId, String taskId, String produceId);
+
+
 }

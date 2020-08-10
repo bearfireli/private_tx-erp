@@ -423,5 +423,132 @@
           )
   and compid=#{compid} and  produceTime between #{beginTime} and #{endTime}
     </select>
+    <select id="getVehicleConsumeList" resultType="com.hntxrj.txerp.vo.VehicleConsumeVO">
+        select sum(pc.PanNum) as panNum,
+        pc.ProduceId as invoiceId,
+        pc.compid as compid,
+        pc.TaskId as taskId,
+        pc.VehicleID as vehicleId,
+        tp.Placing,
+        tp.StgId,
+        pc.StirId,
+        sf.StirName,
+        tsi.Leave_STTime as leaveTime
+        from PT_ProduceConsume pc
+        left join PT_TaskPlan tp on pc.compid = tp.compid and pc.TaskId = tp.TaskId
+        left join PT_TaskSaleInvoice tsi on pc.compid = tsi.compid and pc.ProduceId = tsi.ID
+        left join DD_StirInfoSet sf on pc.compid = sf.compid and pc.StirId = sf.StirId
+        where pc.compid = #{compid}
+        <if test="beginTime != null ">
+            and pc.ProduceTime <![CDATA[ >= ]]> #{beginTime}
+        </if>
+        <if test="endTime != null ">
+            and pc.ProduceTime <![CDATA[ < ]]> #{endTime}
+        </if>
+        <if test="stirId != null and stirId !=''">
+            and pc.StirId = #{stirId}
+        </if>
+        <if test="stgId != null and stgId !=''">
+            and tp.StgId like '%'+ #{stgId} +'%'
+        </if>
+        <if test="taskId != null and taskId !=''">
+            and pc.TaskId like '%' + #{taskId} +'%'
+        </if>
+        <if test="vehicleId != null and vehicleId !=''">
+            and pc.VehicleID like '%' + #{vehicleId} + '%'
+        </if>
+        group by pc.ProduceId, pc.VehicleID, pc.compid, pc.TaskId, tp.Placing, tp.StgId,
+        pc.StirId, sf.StirName, tsi.Leave_STTime
+        order by convert(int, pc.ProduceId) desc
+    </select>
+
+
+    <select id="getVehicleConsumeSum" resultType="java.lang.Integer">
+        select sum(PanNum) as num
+        from PT_ProduceConsume pc
+        left join PT_TaskPlan tp on pc.compid = tp.compid and pc.TaskId = tp.TaskId
+        where pc.compid = #{compid}
+        <if test="beginTime != null ">
+            and pc.ProduceTime <![CDATA[ >= ]]> #{beginTime}
+        </if>
+        <if test="endTime != null ">
+            and pc.ProduceTime <![CDATA[ < ]]> #{endTime}
+        </if>
+        <if test="stirId != null and stirId !=''">
+            and pc.StirId = #{stirId}
+        </if>
+        <if test="stgId != null and stgId !=''">
+            and tp.StgId like '%'+ #{stgId} +'%'
+        </if>
+        <if test="taskId != null and taskId !=''">
+            and pc.TaskId like '%'+ #{taskId} +'%'
+        </if>
+        <if test="vehicleId != null and vehicleId !=''">
+            and pc.VehicleID like '%'+ #{vehicleId}+ '%'
+        </if>
+    </select>
+    <select id="getVehicleConsumeDetail" resultType="com.hntxrj.txerp.vo.RawCollectVO">
+        select isnull(sum(pc.PanNum), 0) as qty,
+        isnull(sum(pc.MatV1), 0)
+        as MatV1,
+        isnull(sum(pc.MatV2), 0) as MatV2,
+        isnull(sum(pc.MatV3), 0) as MatV3,
+        isnull(sum(pc.MatV4), 0) as MatV4,
+        isnull(sum(pc.MatV5), 0) as MatV5,
+        isnull(sum(pc.MatV6), 0) as MatV6,
+        isnull(sum(pc.MatV7), 0) as MatV7,
+        isnull(sum(pc.MatV8), 0) as MatV8,
+        isnull(sum(pc.MatV9), 0) as MatV9,
+        isnull(sum(pc.MatV10), 0) as MatV10,
+        isnull(sum(pc.MatV11), 0) as
+        MatV11,
+        isnull(sum(pc.MatV12), 0) as MatV12,
+        isnull(sum(pc.MatV13), 0) as MatV13,
+        isnull(sum(pc.MatV14), 0) as MatV14,
+        isnull(sum(pc.MatV15), 0) as MatV15,
+        isnull(sum(pc.MatV16), 0) as
+        MatV16,
+        isnull(sum(pc.MatV17), 0) as MatV17,
+        isnull(sum(pc.MatV18), 0) as MatV18,
+        isnull(sum(pc.MatV19), 0) as MatV19,
+        isnull(sum(pc.MatV20), 0) as MatV20,
+        isnull(sum(pc.MatV21), 0) as MatV21,
+        isnull(sum(pc.MatV22), 0) as
+        MatV22,
+        isnull(sum(pc.MatV23), 0) as MatV23,
+        isnull(sum(pc.MatL1), 0) as MatL1,
+        isnull(sum(pc.MatL2), 0) as MatL2,
+        isnull(sum(pc.MatL3), 0) as MatL3,
+        isnull(sum(pc.MatL4), 0) as MatL4,
+        isnull(sum(pc.MatL5), 0) as
+        MatL5,
+        isnull(sum(pc.MatL6), 0) as MatL6,
+        isnull(sum(pc.MatL7), 0) as MatL7,
+        isnull(sum(pc.MatL8), 0) as MatL8,
+        isnull(sum(pc.MatL9), 0) as MatL9,
+        isnull(sum(pc.MatL10), 0) as MatL10,
+        isnull(sum(pc.MatL11), 0) as MatL11,
+        isnull(sum(pc.MatL12), 0)
+        as MatL12,
+        isnull(sum(pc.MatL13), 0) as MatL13,
+        isnull(sum(pc.MatL14), 0) as MatL14,
+        isnull(sum(pc.MatL15), 0) as MatL15,
+        isnull(sum(pc.MatL16), 0) as MatL16,
+        isnull(sum(pc.MatL17), 0) as
+        MatL17,
+        isnull(sum(pc.MatL18), 0) as MatL18,
+        isnull(sum(pc.MatL19), 0) as MatL19,
+        isnull(sum(pc.MatL20), 0) as MatL20,
+        isnull(sum(pc.MatL21), 0) as MatL21,
+        isnull(sum(pc.MatL22), 0) as MatL22,
+        isnull(sum(pc.MatL23), 0) as MatL23
+        from PT_ProduceConsume pc
+        where pc.compid = #{compid}
+        and pc.VehicleID=#{vehicleId}
+        and pc.StirId=#{stirId}
+        and pc.TaskId=#{taskId}
+        and pc.ProduceId=#{produceId}
+    </select>
+
 
 </mapper>
