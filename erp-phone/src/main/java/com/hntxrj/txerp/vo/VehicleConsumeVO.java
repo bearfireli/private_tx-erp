@@ -16,5 +16,6 @@ public class VehicleConsumeVO {
     private Double panNum;
     private Timestamp leaveTime;
     private Integer invoiceId;
+    private String sendTime;
 
 }
