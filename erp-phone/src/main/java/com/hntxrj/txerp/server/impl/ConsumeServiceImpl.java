@@ -374,8 +374,9 @@ public class ConsumeServiceImpl implements ConsumeService {
     }
 
     @Override
-    public RawCollectVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId) {
-        return consumeMapper.getVehicleConsumeDetail(compid, vehicleId, stirId);
+    public RawCollectVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId,
+                                                String taskId, String produceId) {
+        return consumeMapper.getVehicleConsumeDetail(compid, vehicleId, stirId, taskId, produceId);
     }
 
     private List<RawCollectVO> changeUnit(List<RawCollectVO> rawCollectVOS) {

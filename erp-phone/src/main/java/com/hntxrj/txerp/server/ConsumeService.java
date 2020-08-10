@@ -277,7 +277,7 @@ public interface ConsumeService {
      * @param stirId    　线号
      * @param vehicleId 　车号
      */
-    RawCollectVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId);
+    RawCollectVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId, String taskId, String produceId);
 
 
 }

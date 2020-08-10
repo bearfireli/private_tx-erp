@@ -87,7 +87,9 @@ public class ConsumeApiTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("compid", COMP_ID)
                 .param("vehicleId", BEGIN_TIME)
-                .param("endTime", END_TIME)
+                .param("stirId", "1")
+                .param("taskId", "190801002")
+                .param("produceId", "2122")
                 .accept(MediaType.APPLICATION_JSON)) //执行请求
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.status().isOk())
