@@ -180,7 +180,7 @@ public interface ConsumeMapper {
      * @param vehicleId 　车号
      */
     Integer getVehicleConsumeSum(String compid, String beginTime, String endTime, String stirId, String stgId,
-                                   String taskId, String vehicleId);
+                                 String taskId, String vehicleId);
 
     /**
      * 车辆消耗详情
@@ -189,7 +189,7 @@ public interface ConsumeMapper {
      * @param vehicleId 车号
      * @param stirId    线号
      */
-    RawCollectVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId);
+    RawCollectVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId, String taskId, String produceId);
 
 
 }

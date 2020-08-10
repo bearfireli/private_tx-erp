@@ -546,6 +546,8 @@
         where pc.compid = #{compid}
         and pc.VehicleID=#{vehicleId}
         and pc.StirId=#{stirId}
+        and pc.TaskId=#{taskId}
+        and pc.ProduceId=#{produceId}
     </select>
 
 

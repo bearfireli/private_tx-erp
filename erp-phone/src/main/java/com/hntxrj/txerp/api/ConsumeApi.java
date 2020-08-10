@@ -312,8 +312,9 @@ public class ConsumeApi {
      * @param vehicleId 　车号
      */
     @PostMapping("/getVehicleConsumeDetail")
-    public ResultVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId) {
-        return ResultVO.create(consumeService.getVehicleConsumeDetail(compid, vehicleId, stirId));
+    public ResultVO getVehicleConsumeDetail(String compid, String vehicleId, Integer stirId, String taskId,
+                                            String produceId) {
+        return ResultVO.create(consumeService.getVehicleConsumeDetail(compid, vehicleId, stirId, taskId, produceId));
     }
 
 
