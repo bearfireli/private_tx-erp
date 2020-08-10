@@ -433,7 +433,8 @@
         tp.StgId,
         pc.StirId,
         sf.StirName,
-        tsi.Leave_STTime as leaveTime
+        tsi.Leave_STTime as leaveTime,
+        tsi.SendTime as sendTime
         from PT_ProduceConsume pc
         left join PT_TaskPlan tp on pc.compid = tp.compid and pc.TaskId = tp.TaskId
         left join PT_TaskSaleInvoice tsi on pc.compid = tsi.compid and pc.ProduceId = tsi.ID
@@ -458,7 +459,7 @@
             and pc.VehicleID like '%' + #{vehicleId} + '%'
         </if>
         group by pc.ProduceId, pc.VehicleID, pc.compid, pc.TaskId, tp.Placing, tp.StgId,
-        pc.StirId, sf.StirName, tsi.Leave_STTime
+        pc.StirId, sf.StirName, tsi.Leave_STTime,tsi.SendTime
         order by convert(int, pc.ProduceId) desc
     </select>
 
