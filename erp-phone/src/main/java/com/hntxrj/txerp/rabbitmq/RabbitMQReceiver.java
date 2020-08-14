@@ -2,6 +2,7 @@ package com.hntxrj.txerp.rabbitmq;
 
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
+import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.mapper.MsgMapper;
 import com.hntxrj.txerp.vo.MessagePushVO;
 import com.hntxrj.txerp.vo.RecipientVO;
@@ -13,6 +14,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -33,7 +35,8 @@ public class RabbitMQReceiver {
     @RabbitListener(queues = RabbitConfig.PHONE_QUEUE)
     @RabbitHandler
     public void erpPhoneReceive(MessagePushVO message) throws ErpException {
-        logger.info("erpPhone消息消费者:{}", message);
+        logger.info(SimpleDateFormatUtil.getDefaultSimpleDataFormat().format(new Date()));
+        logger.info("erpPhone消息消费者---------:{}", message);
         //获取需要推送的推送人
         List<RecipientVO> recipientList = getRecipientList(message);
         //调用极光推送api推送消息
