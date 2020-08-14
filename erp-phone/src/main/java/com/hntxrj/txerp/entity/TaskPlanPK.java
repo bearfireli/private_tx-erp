@@ -18,5 +18,3 @@ public class TaskPlanPK implements Serializable {
     private String taskId;
 
 }
-
-

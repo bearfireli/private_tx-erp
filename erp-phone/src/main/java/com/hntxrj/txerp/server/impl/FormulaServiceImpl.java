@@ -270,6 +270,9 @@ public class FormulaServiceImpl implements FormulaService {
         if (theoryFormulaCode == null) {
             throw new ErpException(ErrEumn.THEORY_FORMULA_DETAIL_IS_NULL);
         }
+        if (theoryFormulaDetailMap == null) {
+            throw new ErpException(ErrEumn.THEORY_FORMULA_DETAIL_IS_NULL);
+        }
         //给theoryDetailVO对象赋值
         getTheoryDetailVO(theoryFormulaDetailMap, theoryDetailVO);
         //获取材料，库位，材料用量的对应关系，赋值给theoryDetailVO对象
@@ -433,12 +436,15 @@ public class FormulaServiceImpl implements FormulaService {
 
     //获取配比材料名与材料用量的对应情况；  such as:  mat1-->matV1,mat2-->matV2
     private List<FormulaDataVO> getFormulas(String compid, Integer stirId, HashMap<String, Object> map, Integer number) {
+        // 获取各个材料名和材料用量的一一对应关系
+        Map<String, BigDecimal> matToMatValue = getMatValue(map, number);
         List<FormulaDataVO> formulaDataVOS = new ArrayList<>();
         //查询库位列表
         List<StockVO> stockVOList = stockMapper.getStock(compid, stirId);
         for (int i = 0; i < number; i++) {
             FormulaDataVO formulaDataVO = new FormulaDataVO();
             if (i < stockVOList.size()) {
+                // 获取库位
                 StockVO stockVO = stockVOList.get(i);
                 //保存材料名
                 if (stockVO.getMatCode() == null) {
@@ -448,11 +454,13 @@ public class FormulaServiceImpl implements FormulaService {
                 }
 
                 //保存含水率和材料用量
-                BigDecimal matValue = (BigDecimal) map.get("MatV" + (i + 1));
+                BigDecimal matValue = matToMatValue.get(formulaDataVO.getMat());
                 BigDecimal wr = (BigDecimal) map.get("WR" + (i + 1));
-                formulaDataVO.setWr(wr);
-                formulaDataVO.setMatValue(matValue);
+                formulaDataVO.setWr(wr == null ? new BigDecimal(0) : wr);
+                formulaDataVO.setMatValue(matValue == null ? new BigDecimal(0) : matValue);
                 formulaDataVO.setMatParent(stockVO.getMatParent());
+                formulaDataVO.setOrderBy(stockVO.getOderBy());
+                formulaDataVO.setSortBy(stockVO.getSortBy());
 
                 //保存库位信息
                 if (stockVO.getMatParent() == null) {
@@ -601,6 +609,23 @@ public class FormulaServiceImpl implements FormulaService {
         taskTheoryFormulaLog.setOperType(1);
         taskTheoryFormulaLog.setOperTime(sdf.format(new Date()));
         return taskTheoryFormulaLogRepository.save(taskTheoryFormulaLog);
+    }
+
+
+    /**
+     * 以材料名称为key,材料用量为value,把材料和材料用量的对应关系存进map集合中
+     */
+    private Map<String, BigDecimal> getMatValue(HashMap<String, Object> map, Integer number) {
+        Map<String, BigDecimal> matValueMap = new HashMap<>();
+        for (int i = 0; i < number; i++) {
+            BigDecimal value = (BigDecimal) map.get("MatV" + (i + 1));
+            String matName = (String) map.get("Mat" + (i + 1));
+            if (matName != null) {
+                matValueMap.put(matName, value);
+            }
+
+        }
+        return matValueMap;
     }
 
 

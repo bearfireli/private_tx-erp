@@ -166,12 +166,13 @@
            ms.StirId    as stirId,
            ms.MatCode   as matCode,
            ms.OderBy    as oderBy,
+           ms.SortBy    as sortBy,
            mm.MatName   as matName,
            mm.MatParent as matParent
     from MP_Stock ms
     left join MP_MaterialInfor mm on ms.compid = mm.compid and ms.MatCode = mm.MatCode
     where ms.compid=#{compid} and ms.StirId=#{stirId}
-    order by OderBy
+    order by ms.SortBy
     </select>
 
 

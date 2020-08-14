@@ -31,5 +31,8 @@ public class StockVO {
     //称重值
     private BigDecimal stoWeight;
 
+    //库位显示序号
+    private Integer sortBy;
+
 
 }
