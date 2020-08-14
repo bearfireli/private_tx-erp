@@ -32,6 +32,7 @@ public class RabbitMQReceiver {
         this.jPushUtil = jPushUtil;
     }
 
+    
 //    @RabbitListener(queues = RabbitConfig.PHONE_QUEUE)
 //    @RabbitHandler
 //    public void erpPhoneReceive(MessagePushVO message) throws ErpException {
