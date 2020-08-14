@@ -153,7 +153,7 @@ public class JPushUtil {
         //最终请求的json参数
         JSONObject jsonObject = new JSONObject();
 
-        log.info("需要推送的人列表：", aliasArray);
+        log.info("需要推送的人列表:{}", aliasArray);
         for (RecipientVO recipientVO : aliasList) {
             aliasArray.add(recipientVO.getPhone() + messagePushVO.getCompid());
         }
@@ -178,7 +178,7 @@ public class JPushUtil {
         notificationJson.put("android", androidJson);
         notificationJson.put("ios", iosJson);
 
-        log.info("发消息时设置的信息接收人", aliasArray);
+        log.info("发消息时设置的信息接收人:{}", aliasArray);
         audienceJson.put("alias", aliasArray);
 
         optionsJson.put("time_to_live", 60);
