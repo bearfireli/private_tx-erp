@@ -68,6 +68,7 @@ public class JPushUtil {
         try {
             Response response = call.execute();
             if (response.body() != null) {
+                log.info("推送的消息体:{}", pushParam.toString());
                 log.info("推送消息成功:{}", response.body().string());
                 response.body().close();
             }
