@@ -513,4 +513,10 @@
           and CContractCode = #{contractDetailCode}
     </select>
 
+    <select id="queryByContractIdAndCompid" resultType="com.hntxrj.txerp.entity.ContractMaster">
+        select top 1 *
+        from SM_ContractMaster
+        where compid = #{compid}
+            and ContractId = #{contractId}
+    </select>
 </mapper>
