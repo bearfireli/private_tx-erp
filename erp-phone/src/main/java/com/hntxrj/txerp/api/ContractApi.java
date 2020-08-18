@@ -558,4 +558,17 @@ public class ContractApi {
         contractService.saveContractDetail(contractDetail);
         return ResultVO.create();
     }
+
+    /**
+     * 追加合同方量
+     *
+     * @param compid        企业id
+     * @param taskId        任务单id
+     * @param appendContractNum     添加方量
+     */
+    @PostMapping("/appendContractNum")
+    public ResultVO appendContractNum(String compid, String taskId, Double appendContractNum) throws ErpException {
+        contractService.addContractNumByTaskId(compid, taskId, appendContractNum);
+        return ResultVO.create();
+    }
 }
