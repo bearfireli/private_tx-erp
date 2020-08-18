@@ -552,6 +552,11 @@ public class ContractServiceImpl implements ContractService {
         if (contractId == null) {
             throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_CONTRACTID);
         }
+        // 判断是否已经创建合同
+        ContractMaster contractMasterExist = contractMapper.queryByContractIdAndCompid(contractId, compid);
+        if (contractMasterExist != null) {
+            throw new ErpException(ErrEumn.CONTRACT_ALREADY_EXISTS);
+        }
 
         if (eppCode == null) {
             throw new ErpException(ErrEumn.ADD_CONTRACT_NOT_FOUND_EPPCODE);
