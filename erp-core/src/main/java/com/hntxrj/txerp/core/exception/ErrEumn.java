@@ -15,6 +15,7 @@ public enum ErrEumn {
     ADD_CONTRACT_NOT_FOUND_EPPCODE(-21003, "找不到工程代号"),
     ADD_CONTRACT_NOT_FOUND_BUILDERCODE(-21005, "找不到施工单位代号"),
 //    ADD_CONTRACT_GRADE_PRICE_ERROR(-210004, "修改合同标号价格失败"),
+    CONTRACT_ALREADY_EXISTS(-21006, "合同编号已存在"),
 
 
     ADD_CONTRACT_GRADE_PRICE_ERROR(-21010, "修改合同标号价格失败"),

@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.mapper;
 
+import com.hntxrj.txerp.entity.ContractMaster;
 import com.hntxrj.txerp.entity.ContractPriceMarkup;
 import com.hntxrj.txerp.vo.*;
 import org.apache.ibatis.annotations.Mapper;
@@ -335,4 +336,12 @@ public interface ContractMapper {
     void updateContractDetail(String compid, String contractUid, String contractDetailCode, String eppCode,
                               String builderCode, BigDecimal contractNum, BigDecimal preNum, BigDecimal preMoney,
                               String remarks, String address);
+
+    /**
+     * 根据合同编号 和 公司代号查询合同
+     * @param contractId
+     * @param compid
+     * @return
+     */
+    ContractMaster queryByContractIdAndCompid(String contractId, String compid);
 }
