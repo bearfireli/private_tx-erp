@@ -519,4 +519,11 @@
         where compid = #{compid}
             and ContractId = #{contractId}
     </select>
+
+    <update id="appendContractNum">
+        update SM_ContractDetail
+        set ContractNum = ContractNum + #{appendNum}
+        where compid = #{compid}
+          and CContractCode = #{contractDetailCode}
+    </update>
 </mapper>

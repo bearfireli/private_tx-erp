@@ -16,6 +16,9 @@ public enum ErrEumn {
     ADD_CONTRACT_NOT_FOUND_BUILDERCODE(-21005, "找不到施工单位代号"),
 //    ADD_CONTRACT_GRADE_PRICE_ERROR(-210004, "修改合同标号价格失败"),
     CONTRACT_ALREADY_EXISTS(-21006, "合同编号已存在"),
+    COMPID_IS_EMPTY(-21007, "企业id为空"),
+    TASKID_IS_EMPTY(-21008, "任务单号为空"),
+    APPEND_NUM_IS_EMPTY(-21009, "新增方量为空"),
 
 
     ADD_CONTRACT_GRADE_PRICE_ERROR(-21010, "修改合同标号价格失败"),

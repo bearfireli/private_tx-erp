@@ -656,6 +656,13 @@ public interface ContractService {
 
     void saveContractDetail(ContractDetail contractDetail);
 
-
+    /**
+     * 长按任务单 添加合同方量
+     *
+     * @param compid        企业id
+     * @param taskId        任务单id
+     * @param appendNum     添加方量
+     */
+    void addContractNumByTaskId(String compid, String taskId, Integer appendNum) throws ErpException;
 }
 
