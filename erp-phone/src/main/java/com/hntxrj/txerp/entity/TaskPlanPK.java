@@ -17,5 +17,3 @@ public class TaskPlanPK implements Serializable {
     @Column(name = "taskid")
     private String taskId;
 }
-
-

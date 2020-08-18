@@ -30,10 +30,10 @@ public class RabbitMQReceiver {
         this.jPushUtil = jPushUtil;
     }
 
+
     @RabbitListener(queues = RabbitConfig.PHONE_QUEUE)
     @RabbitHandler
     public void erpPhoneReceive(MessagePushVO message) throws ErpException {
-        logger.info("erpPhone消息消费者:{}", message);
         //获取需要推送的推送人
         List<RecipientVO> recipientList = getRecipientList(message);
         //调用极光推送api推送消息
