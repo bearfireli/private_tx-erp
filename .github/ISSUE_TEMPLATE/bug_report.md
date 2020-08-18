@@ -1,3 +1,11 @@
+---
+name: Bug report
+about: 提交一个问题或bug
+title: ''
+labels: ''
+assignees: ''
+---
+
 **描述错误**
 清楚简明地描述错误是什么。
 
