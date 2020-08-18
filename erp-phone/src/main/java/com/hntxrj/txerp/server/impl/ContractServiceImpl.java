@@ -1111,20 +1111,20 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void addContractNumByTaskId(String compid, String taskId, Integer appendNum) throws ErpException{
+    public void addContractNumByTaskId(String compid, String taskId, Double appendContractNum) throws ErpException{
         if (compid == null || compid.isEmpty()) {
             throw new ErpException(ErrEumn.COMPID_IS_EMPTY);
         }
         if (taskId == null || taskId.isEmpty()) {
             throw new ErpException(ErrEumn.TASKID_IS_EMPTY);
         }
-        if (appendNum == null) {
+        if (appendContractNum == null) {
             throw new ErpException(ErrEumn.APPEND_NUM_IS_EMPTY);
         }
         // 查询任务单
         TaskPlanVO taskPlanVO = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
         // 添加方量
-        contractMapper.appendContractNum(compid, taskPlanVO.getContractDetailCode(), appendNum);
+        contractMapper.appendContractNum(compid, taskPlanVO.getContractDetailCode(), appendContractNum);
 
         // 同步数据
         try {

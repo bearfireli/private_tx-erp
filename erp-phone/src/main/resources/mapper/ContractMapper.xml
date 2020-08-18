@@ -522,8 +522,9 @@
 
     <update id="appendContractNum">
         update SM_ContractDetail
-        set ContractNum = ContractNum + #{appendNum}
+        set ContractNum = ContractNum + #{appendContractNum}
         where compid = #{compid}
           and CContractCode = #{contractDetailCode}
+          and updownMark=0
     </update>
 </mapper>

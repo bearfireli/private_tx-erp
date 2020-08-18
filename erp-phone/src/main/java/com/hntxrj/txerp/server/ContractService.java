@@ -661,8 +661,8 @@ public interface ContractService {
      *
      * @param compid        企业id
      * @param taskId        任务单id
-     * @param appendNum     添加方量
+     * @param appendContractNum     添加方量
      */
-    void addContractNumByTaskId(String compid, String taskId, Integer appendNum) throws ErpException;
+    void addContractNumByTaskId(String compid, String taskId, Double appendContractNum) throws ErpException;
 }
 

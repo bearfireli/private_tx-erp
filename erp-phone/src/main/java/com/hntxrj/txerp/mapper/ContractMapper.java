@@ -345,5 +345,5 @@ public interface ContractMapper {
      */
     ContractMaster queryByContractIdAndCompid(String contractId, String compid);
 
-    void appendContractNum(String compid, String contractDetailCode, Integer appendNum);
+    void appendContractNum(String compid, String contractDetailCode, Double appendContractNum);
 }

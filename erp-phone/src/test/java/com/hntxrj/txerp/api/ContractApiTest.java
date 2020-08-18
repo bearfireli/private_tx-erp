@@ -46,12 +46,12 @@ public class ContractApiTest {
     public void testGetTaskSaleInvoiceList() throws Exception {
         String COM_PID = "01";      // 企业id
         String taskId = "p012000001";      // 任务单号
-        String appendNum = "0";      // 任务单号
+        String appendContractNum = "0";      // 任务单号
         mockMvc.perform(post("/api/contract/appendContractNum")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("compid", COM_PID)
                 .param("taskId", taskId)
-                .param("appendNum", appendNum)
+                .param("appendContractNum", appendContractNum)
                 .accept(MediaType.APPLICATION_JSON)) //执行请求
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.status().isOk())
