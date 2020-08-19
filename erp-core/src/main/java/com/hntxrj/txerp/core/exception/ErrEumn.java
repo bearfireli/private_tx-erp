@@ -228,6 +228,8 @@ public enum ErrEumn {
     DEL_FRIENDS_NULL(-100207, "没有选择好友，请选择要删除的好友"),
     TOACCOUNT_IS_NULL(-100208, "请选择消息接收人。"),
     MsgBody_IS_NULL(-100209, "消息不能为空。"),
+    INVOICE_ID_IS_EMPTY(-100210, "小票ID不能为空"),
+    PUMP_DRIVER_IS_EMPTY5(-100211, "泵车号不能为空"),
 
     ACCOUNT_NULL_ERROR(100301, "导入账号不能为空"),
     IM_SDK_ERROR(100302, "请求腾讯云即时通讯IM错误"),
