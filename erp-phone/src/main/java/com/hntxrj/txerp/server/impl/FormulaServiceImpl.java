@@ -455,6 +455,7 @@ public class FormulaServiceImpl implements FormulaService {
 
                 //保存含水率和材料用量
                 BigDecimal matValue = matToMatValue.get(formulaDataVO.getMat());
+                matToMatValue.remove(formulaDataVO.getMat());
                 BigDecimal wr = (BigDecimal) map.get("WR" + (i + 1));
                 formulaDataVO.setWr(wr == null ? new BigDecimal(0) : wr);
                 formulaDataVO.setMatValue(matValue == null ? new BigDecimal(0) : matValue);
