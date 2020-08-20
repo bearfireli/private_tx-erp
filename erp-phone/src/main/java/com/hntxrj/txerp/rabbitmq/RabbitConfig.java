@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.rabbitmq;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.amqp.core.Queue;
@@ -7,9 +8,23 @@ import org.springframework.amqp.core.Queue;
 @Configuration
 public class RabbitConfig {
 
-    public static final String PHONE_QUEUE = "erpPhoneQueue";
-    public static final String DRIVER_QUEUE = "erpDriverQueue";
-    public static final String BUILDER_QUEUE = "erpBuilderQueue";
+    public static String PHONE_QUEUE;
+    @Value("${queues.erp-phone-queue}")
+    public void setPhoneQueue(String queueName) {
+        PHONE_QUEUE = queueName;
+    }
+
+    public static String DRIVER_QUEUE;
+    @Value("${queues.erp-driver-queue}")
+    public void setDriverQueue(String queueName) {
+        DRIVER_QUEUE = queueName;
+    }
+
+    public static String BUILDER_QUEUE;
+    @Value("${queues.erp-builder-queue}")
+    public void setBuilderQueue(String queueName) {
+        BUILDER_QUEUE = queueName;
+    }
 
     @Bean
     public Queue erpPhoneQueue() {

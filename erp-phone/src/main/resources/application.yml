@@ -87,3 +87,9 @@ logging:
     com.hntxrj.mapper: DEBUG
 server:
   port: 8088
+
+# 队列名
+queues:
+  erp-phone-queue: erpPhoneQueue
+  erp-driver-queue: erpDriverQueue
+  erp-builder-queue: erpBuilderQueue
