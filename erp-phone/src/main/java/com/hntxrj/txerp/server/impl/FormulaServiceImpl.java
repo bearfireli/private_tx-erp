@@ -276,7 +276,7 @@ public class FormulaServiceImpl implements FormulaService {
         //给theoryDetailVO对象赋值
         getTheoryDetailVO(theoryFormulaDetailMap, theoryDetailVO);
         //获取材料，库位，材料用量的对应关系，赋值给theoryDetailVO对象
-        List<FormulaDataVO> formulas = getFormulas(compid, stirId, theoryFormulaDetailMap, 23);
+        List<FormulaDataVO> formulas = getTheoryFormulas(compid, stirId, theoryFormulaDetailMap);
         theoryDetailVO.setFormulas(formulas);
         return theoryDetailVO;
     }
@@ -289,7 +289,7 @@ public class FormulaServiceImpl implements FormulaService {
         if (map != null) {
             //给theoryDetailVO对象赋值
             getTheoryDetailVO(map, theoryDetailVO);
-            List<FormulaDataVO> formulas = getFormulas(compid, stirId, map, 27);
+            List<FormulaDataVO> formulas = getTaskFormulas(compid, stirId, map);
             theoryDetailVO.setFormulas(formulas);
         }
         return theoryDetailVO;
@@ -302,7 +302,7 @@ public class FormulaServiceImpl implements FormulaService {
         if (map != null) {
             //给theoryDetailVO对象赋值
             getTheoryDetailVO(map, theoryDetailVO);
-            List<FormulaDataVO> formulas = getFormulas(compid, stirId, map, 27);
+            List<FormulaDataVO> formulas = getTaskFormulas(compid, stirId, map);
             theoryDetailVO.setFormulas(formulas);
         }
 
@@ -434,14 +434,14 @@ public class FormulaServiceImpl implements FormulaService {
     }
 
 
-    //获取配比材料名与材料用量的对应情况；  such as:  mat1-->matV1,mat2-->matV2
-    private List<FormulaDataVO> getFormulas(String compid, Integer stirId, HashMap<String, Object> map, Integer number) {
+    //获取配比模板中 配比材料名与材料用量的对应情况；  such as:  mat1-->matV1,mat2-->matV2
+    private List<FormulaDataVO> getTheoryFormulas(String compid, Integer stirId, HashMap<String, Object> map) {
         // 获取各个材料名和材料用量的一一对应关系
-        Map<String, BigDecimal> matToMatValue = getMatValue(map, number);
+        Map<String, BigDecimal> matToMatValue = getMatValue(map, 23);
         List<FormulaDataVO> formulaDataVOS = new ArrayList<>();
         //查询库位列表
         List<StockVO> stockVOList = stockMapper.getStock(compid, stirId);
-        for (int i = 0; i < number; i++) {
+        for (int i = 0; i < 23; i++) {
             FormulaDataVO formulaDataVO = new FormulaDataVO();
             if (i < stockVOList.size()) {
                 // 获取库位
@@ -474,6 +474,47 @@ public class FormulaServiceImpl implements FormulaService {
         }
 
         return formulaDataVOS;
+    }
+
+
+    // 获取理论配比和实际配比  配比材料名与材料用量的对应情况；  such as:  mat1-->matV1,mat2-->matV2
+    private List<FormulaDataVO> getTaskFormulas(String compid, Integer stirId, HashMap<String, Object> map) {
+
+        List<FormulaDataVO> formulaDataVOS = new ArrayList<>();
+
+        for (int i = 0; i < 27; i++) {
+            FormulaDataVO formulaDataVO = new FormulaDataVO();
+
+            BigDecimal value = (BigDecimal) map.get("MatV" + (i + 1));
+            String matName = (String) map.get("Mat" + (i + 1));
+            BigDecimal wr = (BigDecimal) map.get("WR" + (i + 1));
+
+            //通过正则匹配获取配比材料名称括号中的材料代号
+            String pattern = "(?<=\\()[^\\)]+";
+            Pattern p = Pattern.compile(pattern);
+            Matcher matcher = p.matcher(matName);
+            String matCode = "";
+            while (matcher.find()) {
+                matCode = matcher.group(0);
+            }
+            // 通过材料名称查询材料对应的库位名称
+            StockVO stockVO = stockMapper.getStockByMatCode(compid, stirId, matCode);
+
+            if (stockVO != null) {
+                formulaDataVO.setMatParent(stockVO.getMatParent());
+                formulaDataVO.setStockName(stockVO.getStoName());
+            }
+            formulaDataVO.setSortBy(i+1);
+            formulaDataVO.setOrderBy(i+1);
+            formulaDataVO.setMat(matName);
+            formulaDataVO.setMatValue(value == null ? new BigDecimal("0") : value);
+            formulaDataVO.setWr(wr);
+            formulaDataVOS.add(formulaDataVO);
+
+        }
+
+        return formulaDataVOS;
+
     }
 
 
