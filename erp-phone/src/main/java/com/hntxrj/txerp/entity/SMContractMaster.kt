@@ -11,48 +11,48 @@ import javax.persistence.*
 open class SMContractMaster {
     @Id
     @Column(name = "compid", nullable = false)
-    var compid: String? = null
+    open var compid: String? = null
 
     @Id
     @Column(name = "contractid", nullable = false)
-    var contractId: String? = null
+    open var contractId: String? = null
 
     @Id
     @Column(name = "contractuid", nullable = false)
-    var contractUID: String? = null
+    open var contractUID: String? = null
 
     @Column(name = "salesman", nullable = true)
-    var salesman: String? = null
+    open var salesman: String? = null
 
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "signdate", nullable = true)
-    var signDate: Date? = null
+    open var signDate: Date? = null
 
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "effectdate", nullable = true)
-    var effectDate: Date? = null
+    open var effectDate: Date? = null
 
     @Column(name = "expiresdate", nullable = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    var expiresDate: Date? = null
+    open var expiresDate: Date? = null
 
 
     @Column(name = "contracttype", nullable = true)
-    var contractType: Int? = null
+    open var contractType: Int? = null
 
 
     @Column(name = "accountday", nullable = true)
-    var accountDay: Int? = null
+    open var accountDay: Int? = null
 
 
     @Column(name = "lockdate", nullable = true)
-    var lockDate: Int? = null
+    open var lockDate: Int? = null
 
 
     @Column(name = "lockrate", nullable = true)
-    var lockRate: BigDecimal? = null
+    open var lockRate: BigDecimal? = null
 
 
     @Column(name = "linkman", nullable = true)
