@@ -349,7 +349,7 @@ public interface ContractMapper {
     void appendContractNum(String compid, String contractDetailCode, Double appendContractNum);
 
     /**
-     * 获取主合同和子合同集合
+     * 获取主合同
      * @param contractUid
      * @param compid
      * @return
@@ -357,7 +357,7 @@ public interface ContractMapper {
     ContractMaster queryContractMasterByContractUidAndCompid(String contractUid, String compid);
 
     /**
-     * 获取主合同和子合同集合
+     * 获取子合同
      * @param contractUid
      * @param compid
      * @return
