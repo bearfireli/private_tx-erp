@@ -1164,10 +1164,26 @@ public class ContractServiceImpl implements ContractService {
         return map;
     }
 
+    /**
+     * 获取主合同和子合同集合
+     * @param contractUid
+     * @param compid
+     * @return
+     */
     @Override
-    public ContractMasterDetailsVO getContractMasterDetail(String contractUid, String compid) {
-        // TODO:等待实现getContractMasterDetail
-        return null;
+    public ContractMasterDetailsVO getContractMasterDetail(String contractUid, String compid) throws ErpException {
+        if (compid == null || compid.isEmpty()) {
+            throw new ErpException(ErrEumn.COMPID_IS_EMPTY);
+        }
+        if (contractUid == null || contractUid.isEmpty()) {
+            throw new ErpException(ErrEumn.CONTRACT_CMUID_NULL);
+        }
+        // 查询主合同
+        ContractMaster contractMaster = contractMapper.queryContractMasterByContractUidAndCompid(contractUid, compid);
+        // 查询子合同
+        List<ContractDetail> contractDetails = contractMapper.queryContractDetailByContractUidAndCompid(contractUid, compid);
+
+        return new ContractMasterDetailsVO(contractMaster,contractDetails);
     }
 }
 

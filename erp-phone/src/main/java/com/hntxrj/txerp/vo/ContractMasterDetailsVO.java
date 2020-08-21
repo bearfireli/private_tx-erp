@@ -38,4 +38,12 @@ public class ContractMasterDetailsVO {
                 ", contractDetails=" + contractDetails +
                 '}';
     }
+
+    public ContractMasterDetailsVO() {
+    }
+
+    public ContractMasterDetailsVO(ContractMaster contractMaster, List<ContractDetail> contractDetails) {
+        this.contractMaster = contractMaster;
+        this.contractDetails = contractDetails;
+    }
 }
