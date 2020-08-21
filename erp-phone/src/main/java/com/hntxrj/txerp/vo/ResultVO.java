@@ -3,26 +3,30 @@ package com.hntxrj.txerp.vo;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
+
 import java.io.Serializable;
 
+/**
+ * @author haoranliu
+ */
 @Data
-public class ResultVO implements Serializable {
+public class ResultVO<T> implements Serializable {
 
     private Integer code;
     private String msg;
-    private Object data;
+    private T data;
 
 
-    public static ResultVO create(Object date) {
-        ResultVO resultVO = new ResultVO();
+    public static <T> ResultVO<T> create(T date) {
+        ResultVO<T> resultVO = new ResultVO<>();
         resultVO.setCode(0);
         resultVO.setMsg("ok");
         resultVO.setData(date);
         return resultVO;
     }
 
-    public static ResultVO create() {
-        ResultVO resultVO = new ResultVO();
+    public static <T> ResultVO<T> create() {
+        ResultVO<T> resultVO = new ResultVO<>();
         resultVO.setCode(0);
         resultVO.setMsg("ok");
         return resultVO;

@@ -45,6 +45,7 @@ import java.util.*;
 @Slf4j
 public class ContractServiceImpl implements ContractService {
 
+
     private final ContractDao dao;
 
     private final ContractMapper contractMapper;
@@ -1111,7 +1112,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void addContractNumByTaskId(String compid, String taskId, Double appendContractNum) throws ErpException{
+    public void addContractNumByTaskId(String compid, String taskId, Double appendContractNum) throws ErpException {
         if (compid == null || compid.isEmpty()) {
             throw new ErpException(ErrEumn.COMPID_IS_EMPTY);
         }
@@ -1163,6 +1164,11 @@ public class ContractServiceImpl implements ContractService {
         return map;
     }
 
+    @Override
+    public ContractMasterDetailsVO getContractMasterDetail(String contractUid, String compid) {
+        // TODO:等待实现getContractMasterDetail
+        return null;
+    }
 }
 
 

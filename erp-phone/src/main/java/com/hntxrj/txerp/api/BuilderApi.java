@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,13 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@Api(tags = "工地端")
+/**
+ * 工程信息相关接口
+ *
+ * @author haoranliu
+ */
+@Api(tags = "工程信息相关接口")
 @RestController
 @RequestMapping("/api/builder")
 @Slf4j
 public class BuilderApi {
     private final BuilderService builderService;
-    private SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
+    private final SimpleDateFormat sdf = SimpleDateFormatUtil.getSimpleDataFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public BuilderApi(BuilderService builderService) {
@@ -182,8 +188,8 @@ public class BuilderApi {
     })
     @PostMapping("/addBuilderInfo")
     public ResultVO addBuilderInfo(String compid, String builderName, String builderShortName, String address,
-                                   String Corporation, String fax, String phone) {
-        builderService.addBuilderInfo(compid, builderName, builderShortName, address, Corporation, fax, phone);
+                                   @RequestParam(value = "Corporation") String corporation, String fax, String phone) {
+        builderService.addBuilderInfo(compid, builderName, builderShortName, address, corporation, fax, phone);
         return ResultVO.create();
     }
 }

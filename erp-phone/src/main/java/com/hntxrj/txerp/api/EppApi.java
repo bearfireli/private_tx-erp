@@ -18,14 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class EppApi {
 
     private final EppService eppService;
-    private ResultVO resultVO;
 
     @Autowired
     public EppApi(EppService eppService) {
-        resultVO = new ResultVO();
-        resultVO.setMsg("ok");
-        resultVO.setCode(0);
-        resultVO.setData(null);
         this.eppService = eppService;
     }
 
@@ -44,8 +39,7 @@ public class EppApi {
                                 @RequestParam(defaultValue = "10") Integer pageSize) {
         log.info("【获取工程名称下拉】eppName={}，compid={}, page={}, pageSize={}",
                 eppName, compid, page, pageSize);
-        resultVO.setData(eppService.getDropDown(eppName, compid, page, pageSize));
-        return resultVO;
+        return ResultVO.create(eppService.getDropDown(eppName, compid, page, pageSize));
     }
 
     /**
@@ -63,8 +57,7 @@ public class EppApi {
                                      @RequestParam(defaultValue = "10") Integer pageSize) {
         log.info("【获取工程名称下拉】eppName={}，buildId={}, page={}, pageSize={}",
                 eppName, buildId, page, pageSize);
-        resultVO.setData(eppService.getBuildDropDown(eppName, buildId, page, pageSize));
-        return resultVO;
+        return ResultVO.create(eppService.getBuildDropDown(eppName, buildId, page, pageSize));
     }
 
     /**

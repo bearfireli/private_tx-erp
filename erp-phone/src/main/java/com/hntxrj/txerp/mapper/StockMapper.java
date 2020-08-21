@@ -303,4 +303,7 @@ public interface StockMapper {
 
     //获取库位信息
     List<StockVO> getStock(String compid, Integer stirId);
+
+    //通过材料代号获取库位信息
+    StockVO getStockByMatCode(String compid, Integer stirId, String matCode);
 }

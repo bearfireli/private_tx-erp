@@ -50,7 +50,6 @@ app:
   spterp:
     #  uploadpath: /Users/lhr/Desktop/blogUpload/articleImage/
     uploadpath: D:\spterp\header
-    version: D:\Tomcat 8.0\webapps\ROOT\
     # erp 企业类型(用于判断是否走第三方接口的存储过程)
     erptype: 1
     # 合同附件上传路径
@@ -84,7 +83,7 @@ logging:
     path: /tmp/spterp/
     # 要保留日志的总大小
   level:
-    com.hntxrj.mapper: DEBUG
+    com.hntxrj.mapper: info
 server:
   port: 8088
 
