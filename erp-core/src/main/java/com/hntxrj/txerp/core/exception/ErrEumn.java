@@ -16,6 +16,9 @@ public enum ErrEumn {
     ADD_CONTRACT_NOT_FOUND_BUILDERCODE(-21005, "找不到施工单位代号"),
 //    ADD_CONTRACT_GRADE_PRICE_ERROR(-210004, "修改合同标号价格失败"),
     CONTRACT_ALREADY_EXISTS(-21006, "合同编号已存在"),
+    COMPID_IS_EMPTY(-21007, "企业id为空"),
+    TASKID_IS_EMPTY(-21008, "任务单号为空"),
+    APPEND_NUM_IS_EMPTY(-21009, "新增方量为空"),
 
 
     ADD_CONTRACT_GRADE_PRICE_ERROR(-21010, "修改合同标号价格失败"),
@@ -225,6 +228,8 @@ public enum ErrEumn {
     DEL_FRIENDS_NULL(-100207, "没有选择好友，请选择要删除的好友"),
     TOACCOUNT_IS_NULL(-100208, "请选择消息接收人。"),
     MsgBody_IS_NULL(-100209, "消息不能为空。"),
+    INVOICE_ID_IS_EMPTY(-100210, "小票ID不能为空"),
+    PUMP_DRIVER_IS_EMPTY5(-100211, "泵车号不能为空"),
 
     ACCOUNT_NULL_ERROR(100301, "导入账号不能为空"),
     IM_SDK_ERROR(100302, "请求腾讯云即时通讯IM错误"),

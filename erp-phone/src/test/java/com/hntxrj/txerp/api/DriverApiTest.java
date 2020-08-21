@@ -100,4 +100,23 @@ public class DriverApiTest {
             file.delete();
         }
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testBindDriverToInvoice() throws Exception {
+        String ID = "1";
+        String COMP_ID = "01";
+        String vehiclePump = "test_code";
+
+        mockMvc.perform(post("/driver/bindDriverToInvoice")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("id", ID)
+                .param("compid", COMP_ID)
+                .param("vehiclePump", vehiclePump)
+                .accept(MediaType.APPLICATION_JSON)) //执行请求
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
 }

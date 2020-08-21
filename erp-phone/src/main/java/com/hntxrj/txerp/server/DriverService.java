@@ -218,6 +218,14 @@ public interface DriverService {
      * 给等待生产的车辆司机发提醒消息
      */
     void messagePush(String compid, MessagePushVO messagePushVO) throws ErpException;
+
+    /**
+     * 小票绑定泵车号
+     * @param id
+     * @param compid
+     * @param vehiclePump
+     */
+    void bindDriverToInvoice(Integer id, String compid, String vehiclePump) throws ErpException;
 }
 
 

@@ -384,4 +384,16 @@ public class DriverApi {
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
     }
+
+    @ApiOperation("小票绑定泵车号")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "小票id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "vehiclePump", value = "泵车号", required = true, dataType = "String", paramType = "query")
+    })
+    @PostMapping("/bindDriverToInvoice")
+    public ResultVO bindDriverToInvoice(Integer id, String compid, String vehiclePump) throws ErpException {
+        driverService.bindDriverToInvoice(id, compid, vehiclePump);
+        return ResultVO.create();
+    }
 }

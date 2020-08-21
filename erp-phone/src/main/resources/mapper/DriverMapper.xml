@@ -318,4 +318,19 @@
         where compid = #{compid}
           and CarID = #{vehicleId}
     </update>
+
+    <update id="bindDriverToInvoice">
+        update PT_TaskSaleInvoice
+        set UpDownMark=0,
+            VehicleID_Jump=#{vehiclePump}
+        where ID = #{id}
+            and compid = #{compid}
+    </update>
+
+    <select id="queryOneInvoice" resultType="java.util.Map">
+        select *
+        from PT_TaskSaleInvoice
+        where ID = #{id}
+          and compid = #{compid}
+    </select>
 </mapper>
