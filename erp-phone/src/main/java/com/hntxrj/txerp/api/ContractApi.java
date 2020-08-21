@@ -6,6 +6,8 @@ import com.hntxrj.txerp.entity.SMContractMaster;
 import com.hntxrj.txerp.server.ContractService;
 import com.hntxrj.txerp.server.SalesmanService;
 import com.hntxrj.txerp.util.AuthUtilKt;
+import com.hntxrj.txerp.vo.ContractMasterDetailsVO;
+import com.hntxrj.txerp.vo.ContractVO;
 import com.hntxrj.txerp.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -68,8 +70,14 @@ public class ContractApi {
      * @return 合同详情
      */
     @PostMapping("/getContractDetail")
-    public ResultVO getContractDetail(String contractDetailCode, String compid) {
+    public ResultVO<ContractVO> getContractDetail(String contractDetailCode, String compid) {
         return ResultVO.create(contractService.getContractDetail(contractDetailCode, compid));
+    }
+
+
+    @PostMapping("/getContractMasterDetail")
+    public ResultVO<ContractMasterDetailsVO> getContractMasterDetail(String contractUid, String compid) {
+        return ResultVO.create(contractService.getContractMasterDetail(contractUid, compid));
     }
 
 
@@ -562,9 +570,9 @@ public class ContractApi {
     /**
      * 追加合同方量
      *
-     * @param compid        企业id
-     * @param taskId        任务单id
-     * @param appendContractNum     添加方量
+     * @param compid            企业id
+     * @param taskId            任务单id
+     * @param appendContractNum 添加方量
      */
     @PostMapping("/appendContractNum")
     public ResultVO appendContractNum(String compid, String taskId, Double appendContractNum) throws ErpException {
