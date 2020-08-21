@@ -30,8 +30,7 @@ public class RabbitMQReceiver {
         this.jPushUtil = jPushUtil;
     }
 
-
-    @RabbitListener(queues = RabbitConfig.PHONE_QUEUE)
+    @RabbitListener(queues = "${queues.erp-phone-queue}")
     @RabbitHandler
     public void erpPhoneReceive(MessagePushVO message) throws ErpException {
         //获取需要推送的推送人
@@ -40,13 +39,13 @@ public class RabbitMQReceiver {
         jPushUtil.erpPhoneMessagePush(message, recipientList);
     }
 
-    @RabbitListener(queues = RabbitConfig.DRIVER_QUEUE)
+    @RabbitListener(queues = "${queues.erp-driver-queue}")
     @RabbitHandler
     public void erpDriverReceive(MessagePushVO message) {
         logger.info("erpDriver消息消费者:{}", message);
     }
 
-    @RabbitListener(queues = RabbitConfig.BUILDER_QUEUE)
+    @RabbitListener(queues = "${queues.erp-builder-queue}")
     @RabbitHandler
     public void erpBuilderReceive(MessagePushVO message) {
         logger.info("erpBuilder消息消费者:{}", message);
