@@ -72,9 +72,8 @@ public class ControllerAspect {
 
     }
 
-    // TODO: 暂时禁用统计功能，方便开发，同时后续需要将统计api迁移到tx-cloud项目
-//    @Around("execution(* com.hntxrj.txerp.api.*.*(..))||" +
-//            "execution(* com.hntxrj.txerp.controller.stock.StockController.getRealStock(..))")
+    @Around("execution(* com.hntxrj.txerp.api.*.*(..))||" +
+            "execution(* com.hntxrj.txerp.controller.stock.StockController.getRealStock(..))")
     private Object mappingAround(ProceedingJoinPoint joinPoint) throws Throwable {
         String functionName;  //拦截到的方法对应的中文名称
 
@@ -113,9 +112,8 @@ public class ControllerAspect {
 
     /**
      * 拦截器，判断用户是否超出到期时间，如果超出到期时间，禁止访问
-     * TODO: 暂时暂停--到期时间验证
      */
-//    @Around("execution(* com.hntxrj.txerp.api.*.*(..))")
+    @Around("execution(* com.hntxrj.txerp.api.*.*(..))")
     private Object getExpireTime(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletResponse response = ((ServletRequestAttributes)
                 Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();
@@ -194,7 +192,9 @@ public class ControllerAspect {
         }
     }
 
-    //向erp-base项目发送请求，获取当前企业的到期时间
+    /**
+     * 向erp-base项目发送请求，获取当前企业的到期时间
+     */
     private long getExpireTime(String enterprise) {
         String baseUrl;
         baseUrl = url + "/v1/project/getExpireTime";
