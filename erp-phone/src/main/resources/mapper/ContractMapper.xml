@@ -527,4 +527,19 @@
         where compid = #{compid}
           and CContractCode = #{contractDetailCode}
     </update>
+
+    <select id="queryContractMasterByContractUidAndCompid" resultType="com.hntxrj.txerp.entity.ContractMaster">
+        select top 1 *
+        from SM_ContractMaster
+        where compid = #{compid}
+          and ContractUID = #{contractUid}
+    </select>
+
+    <select id="queryContractDetailByContractUidAndCompid" resultType="com.hntxrj.txerp.entity.ContractDetail">
+        select *
+        from SM_ContractDetail
+        where compid = #{compid}
+            and ContractUID = #{contractUid}
+    </select>
+
 </mapper>

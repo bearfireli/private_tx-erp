@@ -57,4 +57,19 @@ public class ContractApiTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
+
+    // 获取主合同和子合同集合
+    @Test
+    public void testGetContractMasterDetail() throws Exception {
+        String COM_PID = "01";              // 企业id
+        String contractUid = "{66942602-36C9-4A29-A450-F0EC64236C7B}";       // 主合同id
+        mockMvc.perform(post("/api/contract/getContractMasterDetail")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("compid", COM_PID)
+                .param("contractUid", contractUid)
+                .accept(MediaType.APPLICATION_JSON)) //执行请求
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
 }

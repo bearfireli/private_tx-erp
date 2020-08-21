@@ -75,8 +75,14 @@ public class ContractApi {
     }
 
 
+    /**
+     * 获取主合同和子合同集合
+     * @param contractUid   // 主合同id
+     * @param compid        // 企业id
+     * @return
+     */
     @PostMapping("/getContractMasterDetail")
-    public ResultVO<ContractMasterDetailsVO> getContractMasterDetail(String contractUid, String compid) {
+    public ResultVO<ContractMasterDetailsVO> getContractMasterDetail(String contractUid, String compid) throws ErpException {
         return ResultVO.create(contractService.getContractMasterDetail(contractUid, compid));
     }
 

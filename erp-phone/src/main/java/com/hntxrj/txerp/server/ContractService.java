@@ -346,7 +346,7 @@ public interface ContractService {
      * @param compid      企业id
      * @return 合同详情
      */
-    ContractMasterDetailsVO getContractMasterDetail(String contractUid, String compid);
+    ContractMasterDetailsVO getContractMasterDetail(String contractUid, String compid) throws ErpException;
 
     /**
      * 审核/取消审核 合同

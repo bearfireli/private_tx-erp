@@ -1,5 +1,6 @@
 package com.hntxrj.txerp.mapper;
 
+import com.hntxrj.txerp.entity.ContractDetail;
 import com.hntxrj.txerp.entity.ContractMaster;
 import com.hntxrj.txerp.entity.ContractPriceMarkup;
 import com.hntxrj.txerp.vo.*;
@@ -346,4 +347,21 @@ public interface ContractMapper {
     ContractMaster queryByContractIdAndCompid(String contractId, String compid);
 
     void appendContractNum(String compid, String contractDetailCode, Double appendContractNum);
+
+    /**
+     * 获取主合同
+     * @param contractUid
+     * @param compid
+     * @return
+     */
+    ContractMaster queryContractMasterByContractUidAndCompid(String contractUid, String compid);
+
+    /**
+     * 获取子合同
+     * @param contractUid
+     * @param compid
+     * @return
+     */
+    List<ContractDetail> queryContractDetailByContractUidAndCompid(String contractUid, String compid);
+
 }
