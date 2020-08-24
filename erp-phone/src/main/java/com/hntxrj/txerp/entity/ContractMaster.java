@@ -84,4 +84,14 @@ public class ContractMaster {
     @Column(name = "upDownMark")
     private Integer upDownMark;
 
+    /* 额外加价 */
+    @Column(name = "ExtraMarkUp")
+    private BigDecimal extraMarkUp;
+    /* 业务组名 */
+    @Column(name = "BusinessGroup")
+    private String businessGroup;
+    /* 操作员名称 */
+    @Column(name = "empname")
+    private String empname;
+
 }
