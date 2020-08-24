@@ -2,6 +2,8 @@ package com.hntxrj.txerp.mapper;
 
 import com.hntxrj.txerp.entity.EppInfo;
 import com.hntxrj.txerp.vo.EppDropDownVO;
+import com.hntxrj.txerp.vo.EppListVO;
+import com.hntxrj.txerp.vo.PageVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -48,4 +50,11 @@ public interface EppMapper {
     void addEppInfo(String compid, String eppName, String eppCode, String shortName, String address, String linkMan,
                     String phone, String remarks,String nowDate);
 
+    /**
+     * 获取工程名称分页数据
+     * @param eppName
+     * @param compid
+     * @return
+     */
+    List<EppListVO> getEppList(String eppName, String compid);
 }

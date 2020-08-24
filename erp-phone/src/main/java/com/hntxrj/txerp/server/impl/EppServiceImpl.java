@@ -12,6 +12,7 @@ import com.hntxrj.txerp.mapper.ConstructionMapper;
 import com.hntxrj.txerp.mapper.EppMapper;
 import com.hntxrj.txerp.server.EppService;
 import com.hntxrj.txerp.vo.EppDropDownVO;
+import com.hntxrj.txerp.vo.EppListVO;
 import com.hntxrj.txerp.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -119,6 +120,17 @@ public class EppServiceImpl implements EppService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public PageVO<EppListVO> getEppList(String eppName, String compid, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+
+        List<EppListVO> eppList = eppMapper.getEppList(eppName, compid);
+        PageInfo<EppListVO> pageInfo = new PageInfo<>(eppList);
+        PageVO<EppListVO> pageVO = new PageVO<>();
+        pageVO.format(pageInfo);
+        return pageVO;
     }
 
 

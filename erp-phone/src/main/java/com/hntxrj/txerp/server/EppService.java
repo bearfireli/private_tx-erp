@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.hntxrj.txerp.entity.EppInfo;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.vo.EppDropDownVO;
+import com.hntxrj.txerp.vo.EppListVO;
 import com.hntxrj.txerp.vo.PageVO;
 
 import javax.transaction.Transactional;
@@ -77,4 +78,16 @@ public interface EppService {
     @Transactional
     void addEppInfo(String compid, String eppName, String shortName, String address, String linkMan, String phone,
                     String remarks);
+
+    /**
+     * 获取工程名称分页数据
+     *
+     * @param eppName  工程名称模糊查询
+     * @param compid   企业id
+     * @param page     页码
+     * @param pageSize 每页数量
+     * @return 工程名称分页数据
+     */
+    PageVO<EppListVO> getEppList(String eppName, String compid, Integer page, Integer pageSize);
+
 }

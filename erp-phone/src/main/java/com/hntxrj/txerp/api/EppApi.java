@@ -1,7 +1,14 @@
 package com.hntxrj.txerp.api;
 
+import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.server.EppService;
+import com.hntxrj.txerp.util.AuthUtilKt;
+import com.hntxrj.txerp.vo.PageVO;
 import com.hntxrj.txerp.vo.ResultVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 工程api
  */
+@Api(tags = {"工程接口"}, description = "工程相关接口")
 @RestController
 @RequestMapping("/api/epp")
 @Slf4j
@@ -78,5 +88,17 @@ public class EppApi {
         return ResultVO.create();
     }
 
+    @ApiOperation("获取主合同和子合同集合")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "eppName", value = "工程名称", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "eppCode", value = "工程名称", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "page", value = "当前页", required = true, dataType = "Integer", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页条数", required = true, dataType = "Integer", paramType = "query")
+    })
+    @PostMapping("/getContractEppList")
+    public ResultVO getContractEppList(String eppName, @RequestParam(defaultValue = "1") Integer page,
+                                       @RequestParam(defaultValue = "10") Integer pageSize, HttpServletRequest request) throws ErpException {
 
+        return ResultVO.create(eppService.getEppList(eppName, AuthUtilKt.getCompid(request), page, pageSize));
+    }
 }

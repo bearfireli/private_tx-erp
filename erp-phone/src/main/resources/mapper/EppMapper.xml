@@ -43,4 +43,12 @@
     <select id="getMaxEppCode" resultType="java.lang.String">
         select max(EPPCode) from SM_EPPInfo where compid=#{compid}
     </select>
+
+    <select id="getEppList" resultType="com.hntxrj.txerp.vo.EppListVO">
+        select * from SM_EPPInfo
+        where compid=#{compid}
+        <if test="eppName != null and eppName != ''">
+            and eppName like '%' + #{eppName} + '%'
+        </if>
+    </select>
 </mapper>
