@@ -58,11 +58,11 @@
           and PersonalCode = #{driverCode}
     </select>
 
-    <select id="getDriverNames" resultType="java.lang.String">
-        select personalName
+    <select id="getDriverNames" resultType="com.hntxrj.txerp.vo.DriverVO">
+       select PersonalCode as personalCode,
+              PersonalName as personalName
         from VM_PersonalInfo
         where compid = #{compid}
-          and PersonalCode = #{driverCode}
     </select>
     <select id="driverGetTaskSaleInvoiceList" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO">
         select tsi.ID,

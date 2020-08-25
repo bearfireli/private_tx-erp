@@ -52,12 +52,11 @@ public interface DriverMapper {
 
 
     /**
-     * 根据司机编号查询司机姓名
+     * 根据司机编号和司机姓名对应关系
      *
-     * @param compid     企业id
-     * @param driverCode 司机编号
+     * @param compid 企业id
      */
-    String getDriverNames(String compid, String driverCode);
+    List<DriverVO> getDriverNames(String compid);
 
     /**
      * 小票详情
