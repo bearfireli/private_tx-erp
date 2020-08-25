@@ -69,9 +69,9 @@ public interface DriverService {
 
 
     /**
-     * 根据司机编号查询司机姓名
+     * 查询司机代号和名称的对应关系
      */
-    String getDriverNames(String compid, String driverCode);
+    Map<String, String> getDriverNames(String compid);
 
     /**
      * 获取签收人手写图片
@@ -221,6 +221,7 @@ public interface DriverService {
 
     /**
      * 小票绑定泵车号
+     *
      * @param id
      * @param compid
      * @param vehiclePump

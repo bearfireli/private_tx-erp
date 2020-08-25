@@ -262,19 +262,11 @@ public class DriverApi {
     /**
      * 根据司机编号集合查询出司机名称集合
      *
-     * @param compid      企业id
-     * @param driverCodes 司机代号
+     * @param compid 企业id
      */
     @RequestMapping("/getDriverNames")
-    public ResultVO getDriverNames(String compid, String driverCodes) {
-
-        Map<String, String> map = new HashMap<>();
-        String[] driverCodeList = driverCodes.split(",");
-        for (String driverCode : driverCodeList) {
-            String driverName = driverService.getDriverNames(compid, driverCode);
-            map.put(driverCode, driverName);
-        }
-        return ResultVO.create((map));
+    public ResultVO getDriverNames(String compid) {
+        return ResultVO.create((driverService.getDriverNames(compid)));
     }
 
 
