@@ -49,7 +49,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Autowired
     public DriverServiceImpl(DriverDao driverDao, DriverMapper driverMapper, VehicleService vehicleService, ContractMapper contractMapper,
-                             SyncPlugin syncPlugin,JPushUtil jPushUtil) {
+                             SyncPlugin syncPlugin, JPushUtil jPushUtil) {
         this.driverDao = driverDao;
         this.driverMapper = driverMapper;
         this.vehicleService = vehicleService;
@@ -107,12 +107,17 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public String getDriverNames(String compid, String driverCode) {
+    public Map<String, String> getDriverNames(String compid) {
+        Map<String, String> map = new HashMap();
         //如果传递的公司代号是个位数，前面加一个0
         if (compid.length() == 1) {
             compid = "0" + compid;
         }
-        return driverMapper.getDriverNames(compid, driverCode);
+        List<DriverVO> driverVOList = driverMapper.getDriverNames(compid);
+        for (DriverVO driverVO : driverVOList) {
+            map.put(driverVO.getPersonalCode(), driverVO.getPersonalName());
+        }
+        return map;
     }
 
     @Override
@@ -407,29 +412,29 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void bindDriverToInvoice(Integer id, String compid, String vehiclePump) throws ErpException{
-        if (id == null){
+    public void bindDriverToInvoice(Integer id, String compid, String vehiclePump) throws ErpException {
+        if (id == null) {
             throw new ErpException(ErrEumn.INVOICE_ID_IS_EMPTY);
         }
-        if (compid.isEmpty()){
+        if (compid.isEmpty()) {
             throw new ErpException(ErrEumn.COMPID_IS_EMPTY);
         }
-        if (vehiclePump.isEmpty()){
+        if (vehiclePump.isEmpty()) {
             throw new ErpException(ErrEumn.PUMP_DRIVER_IS_EMPTY5);
         }
         driverMapper.bindDriverToInvoice(id, compid, vehiclePump);
         // 同步数据
         try {
             Map<String, String> invoiceMap = driverMapper.queryOneInvoice(id, compid);
-            invoiceMap.put("SendTime",SimpleDateFormatUtil.timeConvert(invoiceMap.get("SendTime")));
-            invoiceMap.put("Leave_STTime",SimpleDateFormatUtil.timeConvert(invoiceMap.get("Leave_STTime")));
-            invoiceMap.put("Arrive_STTime",SimpleDateFormatUtil.timeConvert(invoiceMap.get("Arrive_STTime")));
-            invoiceMap.put("Arrive_WATime",SimpleDateFormatUtil.timeConvert(invoiceMap.get("Arrive_WATime")));
-            invoiceMap.put("Leave_WATime",SimpleDateFormatUtil.timeConvert(invoiceMap.get("Leave_WATime")));
-            invoiceMap.put("UnloadStarTime",SimpleDateFormatUtil.timeConvert(invoiceMap.get("UnloadStarTime")));
-            invoiceMap.put("UnlodeOverTime",SimpleDateFormatUtil.timeConvert(invoiceMap.get("UnlodeOverTime")));
-            invoiceMap.put("VerifyTime",SimpleDateFormatUtil.timeConvert(invoiceMap.get("VerifyTime")));
-            invoiceMap.put("SigningTime",SimpleDateFormatUtil.timeConvert(invoiceMap.get("SigningTime")));
+            invoiceMap.put("SendTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("SendTime")));
+            invoiceMap.put("Leave_STTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("Leave_STTime")));
+            invoiceMap.put("Arrive_STTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("Arrive_STTime")));
+            invoiceMap.put("Arrive_WATime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("Arrive_WATime")));
+            invoiceMap.put("Leave_WATime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("Leave_WATime")));
+            invoiceMap.put("UnloadStarTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("UnloadStarTime")));
+            invoiceMap.put("UnlodeOverTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("UnlodeOverTime")));
+            invoiceMap.put("VerifyTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("VerifyTime")));
+            invoiceMap.put("SigningTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("SigningTime")));
             syncPlugin.save(invoiceMap, "PT_TaskSaleInvoice", "UP", compid);
         } catch (SQLException e) {
             e.printStackTrace();
