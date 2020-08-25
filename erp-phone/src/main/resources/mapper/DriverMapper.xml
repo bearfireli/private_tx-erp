@@ -58,11 +58,11 @@
           and PersonalCode = #{driverCode}
     </select>
 
-    <select id="getDriverNames" resultType="java.lang.String">
-        select personalName
+    <select id="getDriverNames" resultType="com.hntxrj.txerp.vo.DriverVO">
+       select PersonalCode as personalCode,
+              PersonalName as personalName
         from VM_PersonalInfo
         where compid = #{compid}
-          and PersonalCode = #{driverCode}
     </select>
     <select id="driverGetTaskSaleInvoiceList" resultType="com.hntxrj.txerp.vo.TaskSaleInvoiceDriverListVO">
         select tsi.ID,
@@ -110,6 +110,8 @@
         and tsi.PersonalCode=#{driverCode}
         and tsi.InvoiceType not in('1','2','6')
         and tsi.recStatus = 1
+        and (tsi.Arrive_STTime > '2000-01-01 00:00:00'
+        or vv.VehicleStatus = 2)
         <if test="invoiceId != null ">
             and tsi.ID like '%'+#{invoiceId}+'%'
         </if>
