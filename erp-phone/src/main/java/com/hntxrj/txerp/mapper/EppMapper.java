@@ -2,8 +2,7 @@ package com.hntxrj.txerp.mapper;
 
 import com.hntxrj.txerp.entity.EppInfo;
 import com.hntxrj.txerp.vo.EppDropDownVO;
-import com.hntxrj.txerp.vo.EppListVO;
-import com.hntxrj.txerp.vo.PageVO;
+import com.hntxrj.txerp.vo.EppInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -52,9 +51,39 @@ public interface EppMapper {
 
     /**
      * 获取工程名称分页数据
+     * @param eppCode
      * @param eppName
      * @param compid
      * @return
      */
-    List<EppListVO> getEppList(String eppName, String compid);
+    List<EppInfoVO> getEppList(String eppCode, String eppName, String compid);
+
+    /**
+     * 获取工程名称 VO
+     *
+     * @param eppCode 工程代号
+     * @param compid  企业id
+     * @return 工程对象
+     */
+    EppInfoVO getEppInfoVO(String eppCode, String compid);
+
+    /**
+     * 新建工程名称
+     * @param eppInfoVO
+     */
+    void insertEppInfo(EppInfoVO eppInfoVO);
+
+    /**
+     * 更新工程名称
+     * @param eppInfoVO
+     */
+    void updateEppInfo(EppInfoVO eppInfoVO);
+
+    /**
+     * 修改启用状态
+     * @param eppCode
+     * @param compid
+     * @param recStatus
+     */
+    void changeEppRecStatus(String eppCode, String compid, Integer recStatus);
 }

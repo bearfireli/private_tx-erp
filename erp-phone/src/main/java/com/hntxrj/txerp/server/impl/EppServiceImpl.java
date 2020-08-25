@@ -12,11 +12,12 @@ import com.hntxrj.txerp.mapper.ConstructionMapper;
 import com.hntxrj.txerp.mapper.EppMapper;
 import com.hntxrj.txerp.server.EppService;
 import com.hntxrj.txerp.vo.EppDropDownVO;
-import com.hntxrj.txerp.vo.EppListVO;
+import com.hntxrj.txerp.vo.EppInfoVO;
 import com.hntxrj.txerp.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -85,11 +86,6 @@ public class EppServiceImpl implements EppService {
     }
 
     @Override
-    public EppInfo getEppInfo(String eppCode, String compid) {
-        return eppMapper.getEppInfo(eppCode, compid);
-    }
-
-    @Override
     public PageVO<EppDropDownVO> getBuildDropDown(String eppName, Integer buildId, Integer page, Integer pageSize) {
         //首先根据buildId查询出关联的合同号和子合同号。
         List<String> contractDetailCodes = constructionMapper.getContractCodeList(buildId);
@@ -123,16 +119,61 @@ public class EppServiceImpl implements EppService {
     }
 
     @Override
-    public PageVO<EppListVO> getEppList(String eppName, String compid, Integer page, Integer pageSize) {
+    public PageVO<EppInfoVO> getEppList(String eppCode, String eppName, String compid, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
 
-        List<EppListVO> eppList = eppMapper.getEppList(eppName, compid);
-        PageInfo<EppListVO> pageInfo = new PageInfo<>(eppList);
-        PageVO<EppListVO> pageVO = new PageVO<>();
+        List<EppInfoVO> eppList = eppMapper.getEppList(eppCode, eppName, compid);
+        PageInfo<EppInfoVO> pageInfo = new PageInfo<>(eppList);
+        PageVO<EppInfoVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
     }
 
+    @Override
+    public EppInfoVO getEppInfoVO(String eppCode, String compid) {
+        return eppMapper.getEppInfoVO(eppCode, compid);
+    }
+
+    @Override
+    public String saveOrUpdateEppInfo(EppInfoVO eppInfoVO) {
+        //获取生成的工程名称代号
+        String compid = eppInfoVO.getCompid();
+        String eppCode = this.getEppCode(compid);
+        // 同步标识
+        String syncOption;
+
+        if (StringUtils.isEmpty(eppInfoVO.getEppCode())) {
+            // 插入操作
+            eppInfoVO.setEppCode(eppCode);
+            eppInfoVO.setCreateTime(new Date());
+            eppMapper.insertEppInfo(eppInfoVO);
+
+            // 同步 插入操作
+            syncOption = "INS";
+        }else {
+            // 更新操作
+            eppMapper.updateEppInfo(eppInfoVO);
+            // 同步 插入操作
+            syncOption = "UP";
+            // 查询使用
+            eppCode = eppInfoVO.getEppCode();
+        }
+
+        // 同步数据
+        EppInfo eppInfo = eppMapper.getEppInfo(eppCode, compid);
+        try {
+            syncPlugin.save(eppInfo, "SM_EPPInfo", syncOption, compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return eppCode;
+    }
+
+    @Override
+    public void changeEppRecStatus(String eppCode, String compid, Integer recStatus) {
+        eppMapper.changeEppRecStatus(eppCode, compid, recStatus);
+    }
 
     private String getEppCode(String compid) {
         String eppCode = eppMapper.getMaxEppCode(compid);
