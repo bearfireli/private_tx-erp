@@ -110,6 +110,8 @@
         and tsi.PersonalCode=#{driverCode}
         and tsi.InvoiceType not in('1','2','6')
         and tsi.recStatus = 1
+        and (tsi.Arrive_STTime > '2000-01-01 00:00:00'
+        or vv.VehicleStatus = 2)
         <if test="invoiceId != null ">
             and tsi.ID like '%'+#{invoiceId}+'%'
         </if>
