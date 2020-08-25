@@ -213,5 +213,11 @@ public class ContractDetail extends ContractDetailKey implements Serializable {
 
     private BigDecimal rebateAmount;
 
+    // 工程名称
+    private String eppName;
+
+    // 施工单位
+    private String builderName;
+
     private static final long serialVersionUID = 1L;
 }
