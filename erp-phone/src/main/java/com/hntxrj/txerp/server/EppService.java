@@ -78,7 +78,7 @@ public interface EppService {
      * @param pageSize 每页数量
      * @return 工程名称分页数据
      */
-    PageVO<EppInfoVO> getEppList(String eppCode, String eppName, String compid, Integer page, Integer pageSize);
+    PageVO<EppInfoVO> getEppPageVO(String eppCode, String eppName, Integer recStatus, String compid, Integer page, Integer pageSize);
 
     /**
      * 获取工程名称

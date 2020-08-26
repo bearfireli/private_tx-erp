@@ -53,10 +53,11 @@ public interface EppMapper {
      * 获取工程名称分页数据
      * @param eppCode
      * @param eppName
+     * @param recStatus
      * @param compid
      * @return
      */
-    List<EppInfoVO> getEppList(String eppCode, String eppName, String compid);
+    List<EppInfoVO> getEppList(String eppCode, String eppName, Integer recStatus, String compid);
 
     /**
      * 获取工程名称 VO

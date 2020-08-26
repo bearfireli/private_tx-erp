@@ -119,10 +119,10 @@ public class EppServiceImpl implements EppService {
     }
 
     @Override
-    public PageVO<EppInfoVO> getEppList(String eppCode, String eppName, String compid, Integer page, Integer pageSize) {
+    public PageVO<EppInfoVO> getEppPageVO(String eppCode, String eppName, Integer recStatus, String compid, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
 
-        List<EppInfoVO> eppList = eppMapper.getEppList(eppCode, eppName, compid);
+        List<EppInfoVO> eppList = eppMapper.getEppList(eppCode, eppName, recStatus, compid);
         PageInfo<EppInfoVO> pageInfo = new PageInfo<>(eppList);
         PageVO<EppInfoVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);

@@ -53,6 +53,9 @@
         <if test="eppName != null and eppName != ''">
             and EPPName like '%' + #{eppName} + '%'
         </if>
+        <if test="recStatus != null">
+            and RecStatus=#{recStatus}
+        </if>
     </select>
 
     <select id="getEppInfoVO" resultType="com.hntxrj.txerp.vo.EppInfoVO">

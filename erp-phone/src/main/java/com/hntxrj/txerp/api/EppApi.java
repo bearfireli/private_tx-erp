@@ -94,14 +94,15 @@ public class EppApi {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "eppCode", value = "工程代号", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "eppName", value = "工程名称", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "recStatus", value = "是否启用", required = true, dataType = "Integer", paramType = "query"),
             @ApiImplicitParam(name = "page", value = "当前页", required = true, dataType = "Integer", paramType = "query"),
             @ApiImplicitParam(name = "pageSize", value = "每页条数", required = true, dataType = "Integer", paramType = "query")
     })
     @PostMapping("/getContractEppList")
-    public ResultVO getContractEppList(String eppCode, String eppName, @RequestParam(defaultValue = "1") Integer page,
+    public ResultVO getContractEppList(String eppCode, String eppName, Integer recStatus, @RequestParam(defaultValue = "1") Integer page,
                                        @RequestParam(defaultValue = "10") Integer pageSize, HttpServletRequest request) throws ErpException {
 
-        return ResultVO.create(eppService.getEppList(eppCode, eppName, AuthUtilKt.getCompid(request), page, pageSize));
+        return ResultVO.create(eppService.getEppPageVO(eppCode, eppName, recStatus, AuthUtilKt.getCompid(request), page, pageSize));
     }
 
     @ApiOperation("根据工程代号查询工程名称")
