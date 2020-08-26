@@ -350,17 +350,17 @@ public interface ContractMapper {
 
     /**
      * 获取主合同
-     * @param contractUid
-     * @param compid
-     * @return
+     * @param contractUid   主合同id
+     * @param compid        企业id
+     * @return ContractMaster
      */
     ContractMaster queryContractMasterByContractUidAndCompid(String contractUid, String compid);
 
     /**
      * 获取子合同
-     * @param contractUid
-     * @param compid
-     * @return
+     * @param contractUid   主合同id
+     * @param compid        企业id
+     * @return List<ContractDetail>
      */
     List<ContractDetail> queryContractDetailByContractUidAndCompid(String contractUid, String compid);
 

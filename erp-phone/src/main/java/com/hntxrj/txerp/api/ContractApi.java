@@ -9,6 +9,10 @@ import com.hntxrj.txerp.util.AuthUtilKt;
 import com.hntxrj.txerp.vo.ContractMasterDetailsVO;
 import com.hntxrj.txerp.vo.ContractVO;
 import com.hntxrj.txerp.vo.ResultVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Api(tags = {"合同接口"}, description = "合同相关接口")
 @RestController
 @RequestMapping("/api/contract/")
 @Slf4j
@@ -74,13 +79,11 @@ public class ContractApi {
         return ResultVO.create(contractService.getContractDetail(contractDetailCode, compid));
     }
 
-
-    /**
-     * 获取主合同和子合同集合
-     * @param contractUid   // 主合同id
-     * @param compid        // 企业id
-     * @return
-     */
+    @ApiOperation("获取主合同和子合同集合")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "contractUid", value = "主合同id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query")
+    })
     @PostMapping("/getContractMasterDetail")
     public ResultVO<ContractMasterDetailsVO> getContractMasterDetail(String contractUid, String compid) throws ErpException {
         return ResultVO.create(contractService.getContractMasterDetail(contractUid, compid));
