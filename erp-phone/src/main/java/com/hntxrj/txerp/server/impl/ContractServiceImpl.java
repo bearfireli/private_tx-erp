@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -1166,16 +1167,16 @@ public class ContractServiceImpl implements ContractService {
 
     /**
      * 获取主合同和子合同集合
-     * @param contractUid
-     * @param compid
-     * @return
+     * @param contractUid   主合同id
+     * @param compid        企业id
+     * @return ContractMasterDetailsVO
      */
     @Override
     public ContractMasterDetailsVO getContractMasterDetail(String contractUid, String compid) throws ErpException {
-        if (compid == null || compid.isEmpty()) {
+        if (StringUtils.isEmpty(compid)) {
             throw new ErpException(ErrEumn.COMPID_IS_EMPTY);
         }
-        if (contractUid == null || contractUid.isEmpty()) {
+        if (StringUtils.isEmpty(contractUid)) {
             throw new ErpException(ErrEumn.CONTRACT_CMUID_NULL);
         }
         // 查询主合同

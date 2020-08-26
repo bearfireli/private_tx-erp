@@ -536,10 +536,12 @@
     </select>
 
     <select id="queryContractDetailByContractUidAndCompid" resultType="com.hntxrj.txerp.entity.ContractDetail">
-        select *
-        from SM_ContractDetail
-        where compid = #{compid}
-            and ContractUID = #{contractUid}
+        select cd.*, epp.EPPName as eppName, bu.BuilderShortName as builderName
+        from SM_ContractDetail cd
+             left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid=epp.compid
+             left join SM_BuilderInfo bu on cd.BuilderCode = bu.BuilderCode and cd.compid=bu.compid
+        where cd.compid = #{compid}
+            and cd.ContractUID = #{contractUid}
     </select>
 
 </mapper>
