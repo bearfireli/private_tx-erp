@@ -161,10 +161,12 @@ public class EppServiceImpl implements EppService {
 
         // 同步数据
         EppInfo eppInfo = eppMapper.getEppInfo(eppCode, compid);
-        try {
-            syncPlugin.save(eppInfo, "SM_EPPInfo", syncOption, compid);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (eppInfo != null){
+            try {
+                syncPlugin.save(eppInfo, "SM_EPPInfo", syncOption, compid);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return eppCode;
