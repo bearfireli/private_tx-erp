@@ -6,7 +6,7 @@ import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.entity.*;
 import com.hntxrj.txerp.service.TankService;
 import com.hntxrj.txerp.vo.ResultVO;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +18,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/api/tank")
-@Log4j
+@Slf4j
 public class TankApi {
 
     private final TankService tankService;

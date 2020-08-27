@@ -340,6 +340,15 @@ public interface ContractService {
     ContractVO getContractDetail(String contractDetailCode, String compid);
 
     /**
+     * 获取合同详情(整个合同，所有子合同）
+     *
+     * @param contractUid 合同uid
+     * @param compid      企业id
+     * @return 合同详情
+     */
+    ContractMasterDetailsVO getContractMasterDetail(String contractUid, String compid) throws ErpException;
+
+    /**
      * 审核/取消审核 合同
      *
      * @param contractUid  合同代号
@@ -656,6 +665,13 @@ public interface ContractService {
 
     void saveContractDetail(ContractDetail contractDetail);
 
-
+    /**
+     * 长按任务单 添加合同方量
+     *
+     * @param compid            企业id
+     * @param taskId            任务单id
+     * @param appendContractNum 添加方量
+     */
+    void addContractNumByTaskId(String compid, String taskId, Double appendContractNum) throws ErpException;
 }
 

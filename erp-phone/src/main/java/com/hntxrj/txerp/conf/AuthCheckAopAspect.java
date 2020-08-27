@@ -63,10 +63,9 @@ public class AuthCheckAopAspect {
             e.printStackTrace();
         }
     }
-
-    @Around("execution(* com.hntxrj.txerp.api.*.*(..))")
+    //TODO: 暂时注释，等待后续权限验证迁移
+//    @Around("execution(* com.hntxrj.txerp.api.*.*(..))")
     private Object authCheck(ProceedingJoinPoint joinPoint) throws Throwable {
-        //TODO: 暂时注释
 //        //获取每次请求的request和response
 //        HttpServletRequest request = ((ServletRequestAttributes)
 //                Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();

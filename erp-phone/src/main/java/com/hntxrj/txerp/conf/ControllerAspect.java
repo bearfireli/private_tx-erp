@@ -41,7 +41,7 @@ public class ControllerAspect {
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
-    private static Map<String, String> functionMap = new HashMap<>();
+    private static final Map<String, String> functionMap = new HashMap<>();
 
     //静态代码块对functionMap进行赋值，随着类的加载只加载一次
     static {
@@ -192,7 +192,9 @@ public class ControllerAspect {
         }
     }
 
-    //向erp-base项目发送请求，获取当前企业的到期时间
+    /**
+     * 向erp-base项目发送请求，获取当前企业的到期时间
+     */
     private long getExpireTime(String enterprise) {
         String baseUrl;
         baseUrl = url + "/v1/project/getExpireTime";

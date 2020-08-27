@@ -3,11 +3,13 @@ package com.hntxrj.txerp.server.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hntxrj.SyncPlugin;
 import com.hntxrj.txerp.core.exception.ErpException;
 import com.hntxrj.txerp.core.exception.ErrEumn;
 import com.hntxrj.txerp.core.util.SimpleDateFormatUtil;
 import com.hntxrj.txerp.dao.DriverDao;
 import com.hntxrj.txerp.entity.GpsLocateTempInfo;
+import com.hntxrj.txerp.mapper.ContractMapper;
 import com.hntxrj.txerp.mapper.DriverMapper;
 import com.hntxrj.txerp.rabbitmq.JPushUtil;
 import com.hntxrj.txerp.server.DriverService;
@@ -23,6 +25,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -35,19 +38,24 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverDao driverDao;
     private final DriverMapper driverMapper;
+    private final ContractMapper contractMapper;
     private final VehicleService vehicleService;
     private final JPushUtil jPushUtil;
+    private final SyncPlugin syncPlugin;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
 
     @Autowired
-    public DriverServiceImpl(DriverDao driverDao, DriverMapper driverMapper, VehicleService vehicleService, JPushUtil jPushUtil) {
+    public DriverServiceImpl(DriverDao driverDao, DriverMapper driverMapper, VehicleService vehicleService, ContractMapper contractMapper,
+                             SyncPlugin syncPlugin, JPushUtil jPushUtil) {
         this.driverDao = driverDao;
         this.driverMapper = driverMapper;
         this.vehicleService = vehicleService;
         this.jPushUtil = jPushUtil;
+        this.contractMapper = contractMapper;
+        this.syncPlugin = syncPlugin;
     }
 
     /**
@@ -99,12 +107,17 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public String getDriverNames(String compid, String driverCode) {
+    public Map<String, String> getDriverNames(String compid) {
+        Map<String, String> map = new HashMap();
         //如果传递的公司代号是个位数，前面加一个0
         if (compid.length() == 1) {
             compid = "0" + compid;
         }
-        return driverMapper.getDriverNames(compid, driverCode);
+        List<DriverVO> driverVOList = driverMapper.getDriverNames(compid);
+        for (DriverVO driverVO : driverVOList) {
+            map.put(driverVO.getPersonalCode(), driverVO.getPersonalName());
+        }
+        return map;
     }
 
     @Override
@@ -129,21 +142,12 @@ public class DriverServiceImpl implements DriverService {
                                                                       String builderCode, String placing,
                                                                       Integer page,
                                                                       Integer pageSize, String driverCode) {
-        List<TaskSaleInvoiceDriverListVO> taskSaleInvoiceDriverListVOS = new ArrayList<>();
         PageHelper.startPage(page, pageSize, "SendTime desc");
         List<TaskSaleInvoiceDriverListVO> taskSaleInvoiceLists =
                 driverMapper.driverGetTaskSaleInvoiceList(invoiceId == null ? null : String.valueOf(invoiceId),
                         compid, beginTime, endTime, eppCode, upStatus, builderCode, placing, driverCode);
 
-        for (TaskSaleInvoiceDriverListVO taskSaleInvoice : taskSaleInvoiceLists) {
-            //司机端小票查询不显示已打票但车辆状态为正在生产的小票（主要针对先打票后生产的搅拌站）
-            if (taskSaleInvoice.getInvoiceType() == 4 && taskSaleInvoice.getVehicleStatus() == 3) {
-                continue;
-            }
-            taskSaleInvoiceDriverListVOS.add(taskSaleInvoice);
-        }
-
-        PageInfo<TaskSaleInvoiceDriverListVO> pageInfo = new PageInfo<>(taskSaleInvoiceDriverListVOS);
+        PageInfo<TaskSaleInvoiceDriverListVO> pageInfo = new PageInfo<>(taskSaleInvoiceLists);
         PageVO<TaskSaleInvoiceDriverListVO> pageVO = new PageVO<>();
         pageVO.format(pageInfo);
         return pageVO;
@@ -405,6 +409,36 @@ public class DriverServiceImpl implements DriverService {
 
         //把新的等待派车的集合存进缓存中
         redisTemplate.opsForValue().set("waitCars:" + compid, waitCars);
+    }
+
+    @Override
+    public void bindDriverToInvoice(Integer id, String compid, String vehiclePump) throws ErpException {
+        if (id == null) {
+            throw new ErpException(ErrEumn.INVOICE_ID_IS_EMPTY);
+        }
+        if (compid.isEmpty()) {
+            throw new ErpException(ErrEumn.COMPID_IS_EMPTY);
+        }
+        if (vehiclePump.isEmpty()) {
+            throw new ErpException(ErrEumn.PUMP_DRIVER_IS_EMPTY5);
+        }
+        driverMapper.bindDriverToInvoice(id, compid, vehiclePump);
+        // 同步数据
+        try {
+            Map<String, String> invoiceMap = driverMapper.queryOneInvoice(id, compid);
+            invoiceMap.put("SendTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("SendTime")));
+            invoiceMap.put("Leave_STTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("Leave_STTime")));
+            invoiceMap.put("Arrive_STTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("Arrive_STTime")));
+            invoiceMap.put("Arrive_WATime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("Arrive_WATime")));
+            invoiceMap.put("Leave_WATime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("Leave_WATime")));
+            invoiceMap.put("UnloadStarTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("UnloadStarTime")));
+            invoiceMap.put("UnlodeOverTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("UnlodeOverTime")));
+            invoiceMap.put("VerifyTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("VerifyTime")));
+            invoiceMap.put("SigningTime", SimpleDateFormatUtil.timeConvert(invoiceMap.get("SigningTime")));
+            syncPlugin.save(invoiceMap, "PT_TaskSaleInvoice", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 

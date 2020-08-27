@@ -1,9 +1,9 @@
 package com.hntxrj.txerp.server;
 
 import com.alibaba.fastjson.JSONArray;
-import com.hntxrj.txerp.entity.EppInfo;
 import com.hntxrj.txerp.entity.PageBean;
 import com.hntxrj.txerp.vo.EppDropDownVO;
+import com.hntxrj.txerp.vo.EppInfoVO;
 import com.hntxrj.txerp.vo.PageVO;
 
 import javax.transaction.Transactional;
@@ -54,16 +54,6 @@ public interface EppService {
 
 
     /**
-     * 获取工程名称
-     *
-     * @param eppCode 工程代号
-     * @param compid  企业id
-     * @return 工程对象
-     */
-    EppInfo getEppInfo(String eppCode, String compid);
-
-
-    /**
      * 获取工地端App工程名称下拉
      *
      * @param eppName  工程名称模糊查询
@@ -77,4 +67,40 @@ public interface EppService {
     @Transactional
     void addEppInfo(String compid, String eppName, String shortName, String address, String linkMan, String phone,
                     String remarks);
+
+    /**
+     * 获取工程名称分页数据
+     *
+     * @param eppCode  工程代号
+     * @param eppName  工程名称模糊查询
+     * @param compid   企业id
+     * @param page     页码
+     * @param pageSize 每页数量
+     * @return 工程名称分页数据
+     */
+    PageVO<EppInfoVO> getEppPageVO(String eppCode, String eppName, Integer recStatus, String compid, Integer page, Integer pageSize);
+
+    /**
+     * 获取工程名称
+     *
+     * @param eppCode 工程代号
+     * @param compid  企业id
+     * @return 工程对象
+     */
+    EppInfoVO getEppInfoVO(String eppCode, String compid);
+
+    /**
+     * 保存更新工程名称
+     *
+     * @param eppInfoVO
+     */
+    String saveOrUpdateEppInfo(EppInfoVO eppInfoVO);
+
+    /**
+     * 修改启用状态
+     * @param eppCode
+     * @param compid
+     * @param recStatus
+     */
+    void changeEppRecStatus(String eppCode, String compid, Integer recStatus);
 }

@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +45,7 @@ import java.util.*;
 @Scope("prototype")
 @Slf4j
 public class ContractServiceImpl implements ContractService {
+
 
     private final ContractDao dao;
 
@@ -68,6 +70,8 @@ public class ContractServiceImpl implements ContractService {
     private final ContractMasterRepository contractMasterRepository;
     private final RabbitMQSender rabbitMQSender;
 
+    private final TaskPlanMapper taskPlanMapper;
+
     @Value("${app.spterp.contractAdjunctPath}")
     private String contractAdjunctPath;
 
@@ -77,7 +81,8 @@ public class ContractServiceImpl implements ContractService {
                                ContractGradePriceDetailRepository contractGradePriceDetailRepository,
                                ConstructionMapper constructionMapper, MsgService msgService, MsgMapper msgMapper,
                                ContractMasterRepository contractMasterRepository, SyncPlugin syncPlugin,
-                               ContractDetailDao contractDetailDao, RabbitMQSender rabbitMQSender) {
+                               ContractDetailDao contractDetailDao, RabbitMQSender rabbitMQSender,
+                               TaskPlanMapper taskPlanMapper) {
         this.dao = dao;
         this.contractMapper = contractMapper;
         this.publicInfoMapper = publicInfoMapper;
@@ -91,6 +96,7 @@ public class ContractServiceImpl implements ContractService {
         this.contractMasterRepository = contractMasterRepository;
         this.rabbitMQSender = rabbitMQSender;
         this.contractDetailDao = contractDetailDao;
+        this.taskPlanMapper = taskPlanMapper;
     }
 
 
@@ -1106,6 +1112,38 @@ public class ContractServiceImpl implements ContractService {
         contractDetailDao.insert(contractDetail);
     }
 
+    @Override
+    public void addContractNumByTaskId(String compid, String taskId, Double appendContractNum) throws ErpException {
+        if (compid == null || compid.isEmpty()) {
+            throw new ErpException(ErrEumn.COMPID_IS_EMPTY);
+        }
+        if (taskId == null || taskId.isEmpty()) {
+            throw new ErpException(ErrEumn.TASKID_IS_EMPTY);
+        }
+        if (appendContractNum == null) {
+            throw new ErpException(ErrEumn.APPEND_NUM_IS_EMPTY);
+        }
+        // 查询任务单
+        TaskPlanVO taskPlanVO = taskPlanMapper.getTaskPlanByTaskId(compid, taskId);
+        // 添加方量
+        contractMapper.appendContractNum(compid, taskPlanVO.getContractDetailCode(), appendContractNum);
+
+        // 同步数据
+        try {
+            HashMap<String, String> getContractDetailMap = contractMapper.getContractDetailMap(
+                    taskPlanVO.getContractUID(), taskPlanVO.getContractDetailCode());
+            getContractDetailMap.put("StatusTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("StatusTime")));
+            getContractDetailMap.put("VerifyTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("VerifyTime")));
+            getContractDetailMap.put("CreateTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("CreateTime")));
+            getContractDetailMap.put("SecondVerifyTime",
+                    SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("SecondVerifyTime")));
+            getContractDetailMap.put("OpenTime", SimpleDateFormatUtil.timeConvert(getContractDetailMap.get("OpenTime")));
+            syncPlugin.save(getContractDetailMap, "SM_ContractDetail", "UP", compid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 判断合同审核状态
@@ -1127,6 +1165,27 @@ public class ContractServiceImpl implements ContractService {
         return map;
     }
 
+    /**
+     * 获取主合同和子合同集合
+     * @param contractUid   主合同id
+     * @param compid        企业id
+     * @return ContractMasterDetailsVO
+     */
+    @Override
+    public ContractMasterDetailsVO getContractMasterDetail(String contractUid, String compid) throws ErpException {
+        if (StringUtils.isEmpty(compid)) {
+            throw new ErpException(ErrEumn.COMPID_IS_EMPTY);
+        }
+        if (StringUtils.isEmpty(contractUid)) {
+            throw new ErpException(ErrEumn.CONTRACT_CMUID_NULL);
+        }
+        // 查询主合同
+        ContractMaster contractMaster = contractMapper.queryContractMasterByContractUidAndCompid(contractUid, compid);
+        // 查询子合同
+        List<ContractDetail> contractDetails = contractMapper.queryContractDetailByContractUidAndCompid(contractUid, compid);
+
+        return new ContractMasterDetailsVO(contractMaster,contractDetails);
+    }
 }
 
 

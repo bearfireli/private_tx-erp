@@ -519,4 +519,29 @@
         where compid = #{compid}
             and ContractId = #{contractId}
     </select>
+
+    <update id="appendContractNum">
+        update SM_ContractDetail
+        set ContractNum = ContractNum + #{appendContractNum},
+            updownMark = 0
+        where compid = #{compid}
+          and CContractCode = #{contractDetailCode}
+    </update>
+
+    <select id="queryContractMasterByContractUidAndCompid" resultType="com.hntxrj.txerp.entity.ContractMaster">
+        select top 1 *
+        from SM_ContractMaster
+        where compid = #{compid}
+          and ContractUID = #{contractUid}
+    </select>
+
+    <select id="queryContractDetailByContractUidAndCompid" resultType="com.hntxrj.txerp.entity.ContractDetail">
+        select cd.*, epp.EPPName as eppName, bu.BuilderShortName as builderName
+        from SM_ContractDetail cd
+             left join SM_EPPInfo epp on cd.EPPCode = epp.EPPCode and cd.compid=epp.compid
+             left join SM_BuilderInfo bu on cd.BuilderCode = bu.BuilderCode and cd.compid=bu.compid
+        where cd.compid = #{compid}
+            and cd.ContractUID = #{contractUid}
+    </select>
+
 </mapper>

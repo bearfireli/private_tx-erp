@@ -262,19 +262,11 @@ public class DriverApi {
     /**
      * 根据司机编号集合查询出司机名称集合
      *
-     * @param compid      企业id
-     * @param driverCodes 司机代号
+     * @param compid 企业id
      */
     @RequestMapping("/getDriverNames")
-    public ResultVO getDriverNames(String compid, String driverCodes) {
-
-        Map<String, String> map = new HashMap<>();
-        String[] driverCodeList = driverCodes.split(",");
-        for (String driverCode : driverCodeList) {
-            String driverName = driverService.getDriverNames(compid, driverCode);
-            map.put(driverCode, driverName);
-        }
-        return ResultVO.create((map));
+    public ResultVO getDriverNames(String compid) {
+        return ResultVO.create((driverService.getDriverNames(compid)));
     }
 
 
@@ -383,5 +375,17 @@ public class DriverApi {
         return ResultVO.create(driverService.driverVehicleCount(compid, driverCode,
                 beginTime == null ? null : sdf.format(new Date(beginTime)),
                 endTime == null ? null : sdf.format(new Date(endTime))));
+    }
+
+    @ApiOperation("小票绑定泵车号")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "小票id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "vehiclePump", value = "泵车号", required = true, dataType = "String", paramType = "query")
+    })
+    @PostMapping("/bindDriverToInvoice")
+    public ResultVO bindDriverToInvoice(Integer id, String compid, String vehiclePump) throws ErpException {
+        driverService.bindDriverToInvoice(id, compid, vehiclePump);
+        return ResultVO.create();
     }
 }

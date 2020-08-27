@@ -6,7 +6,13 @@ import com.hntxrj.txerp.entity.SMContractMaster;
 import com.hntxrj.txerp.server.ContractService;
 import com.hntxrj.txerp.server.SalesmanService;
 import com.hntxrj.txerp.util.AuthUtilKt;
+import com.hntxrj.txerp.vo.ContractMasterDetailsVO;
+import com.hntxrj.txerp.vo.ContractVO;
 import com.hntxrj.txerp.vo.ResultVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +25,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Api(tags = {"合同接口"}, description = "合同相关接口")
 @RestController
 @RequestMapping("/api/contract/")
 @Slf4j
@@ -68,8 +75,18 @@ public class ContractApi {
      * @return 合同详情
      */
     @PostMapping("/getContractDetail")
-    public ResultVO getContractDetail(String contractDetailCode, String compid) {
+    public ResultVO<ContractVO> getContractDetail(String contractDetailCode, String compid) {
         return ResultVO.create(contractService.getContractDetail(contractDetailCode, compid));
+    }
+
+    @ApiOperation("获取主合同和子合同集合")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "contractUid", value = "主合同id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "compid", value = "企业id", required = true, dataType = "String", paramType = "query")
+    })
+    @PostMapping("/getContractMasterDetail")
+    public ResultVO<ContractMasterDetailsVO> getContractMasterDetail(String contractUid, String compid) throws ErpException {
+        return ResultVO.create(contractService.getContractMasterDetail(contractUid, compid));
     }
 
 
@@ -556,6 +573,19 @@ public class ContractApi {
     public ResultVO saveContractDetail(ContractDetail contractDetail, HttpServletRequest request) throws ErpException {
         contractDetail.setOpId(Objects.requireNonNull(AuthUtilKt.getOpId(request)));
         contractService.saveContractDetail(contractDetail);
+        return ResultVO.create();
+    }
+
+    /**
+     * 追加合同方量
+     *
+     * @param compid            企业id
+     * @param taskId            任务单id
+     * @param appendContractNum 添加方量
+     */
+    @PostMapping("/appendContractNum")
+    public ResultVO appendContractNum(String compid, String taskId, Double appendContractNum) throws ErpException {
+        contractService.addContractNumByTaskId(compid, taskId, appendContractNum);
         return ResultVO.create();
     }
 }

@@ -43,4 +43,46 @@
     <select id="getMaxEppCode" resultType="java.lang.String">
         select max(EPPCode) from SM_EPPInfo where compid=#{compid}
     </select>
+
+    <select id="getEppList" resultType="com.hntxrj.txerp.vo.EppInfoVO">
+        select * from SM_EPPInfo
+        where compid=#{compid}
+        <if test="eppCode != null and eppCode != ''">
+            and EPPCode = #{eppCode}
+        </if>
+        <if test="eppName != null and eppName != ''">
+            and EPPName like '%' + #{eppName} + '%'
+        </if>
+        <if test="recStatus != null">
+            and RecStatus=#{recStatus}
+        </if>
+    </select>
+
+    <select id="getEppInfoVO" resultType="com.hntxrj.txerp.vo.EppInfoVO">
+        select *
+        from SM_EPPInfo
+        where EPPCode=#{eppCode} and compid=#{compid}
+    </select>
+
+    <insert id="insertEppInfo" parameterType="com.hntxrj.txerp.vo.EppInfoVO">
+        insert into SM_EPPInfo(compid, EPPCode, EPPName, ShortName,
+                               Address, LinkMan, LinkTel, OpId, CreateTime, Remarks,
+                               RecStatus, UpDown, DemarcateMap, UpDownMark, AccountingAccountCode)
+        values (#{compid},#{eppCode},#{eppName},#{shortName},#{address},#{linkMan},
+                #{linkTel},'0225',#{createTime},#{remarks},#{recStatus},0,0,0,#{accountingAccountCode})
+    </insert>
+
+    <update id="updateEppInfo" parameterType="com.hntxrj.txerp.vo.EppInfoVO">
+        update SM_EPPInfo
+            set EPPName=#{eppName},ShortName=#{shortName},Address=#{address},
+                LinkMan=#{linkMan},LinkTel=#{linkTel},RecStatus=#{recStatus},
+                Remarks=#{remarks},AccountingAccountCode=#{accountingAccountCode}
+            where EPPCode=#{eppCode} and compid=#{compid}
+    </update>
+
+    <update id="changeEppRecStatus">
+        update SM_EPPInfo
+        set RecStatus=#{recStatus}
+        where EPPCode=#{eppCode} and compid=#{compid}
+    </update>
 </mapper>

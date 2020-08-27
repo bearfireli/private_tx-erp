@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DriverMapper {
@@ -51,12 +52,11 @@ public interface DriverMapper {
 
 
     /**
-     * 根据司机编号查询司机姓名
+     * 根据司机编号和司机姓名对应关系
      *
-     * @param compid     企业id
-     * @param driverCode 司机编号
+     * @param compid 企业id
      */
-    String getDriverNames(String compid, String driverCode);
+    List<DriverVO> getDriverNames(String compid);
 
     /**
      * 小票详情
@@ -186,4 +186,9 @@ public interface DriverMapper {
     GpsLocateTempInfo getDriverLocation(String compid, String vehicleId);
 
     List<DriverVehicleCountVO> driverVehicleCount(String compid, String driverCode, String beginTime, String endTime);
+
+    // 小票绑定泵车号
+    void bindDriverToInvoice(Integer id, String compid, String vehiclePump);
+
+    Map<String, String> queryOneInvoice(Integer id, String compid);
 }
